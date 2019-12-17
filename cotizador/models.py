@@ -1,6 +1,5 @@
 from django.db import models
 from grappelli_extras.models import base, BaseEntity, get_code
-from image_cropping.fields import ImageCropField
 from datetime import datetime, timedelta, date
 from django.contrib.auth.models import User
 from .numero_letra import numero_a_letras
@@ -545,14 +544,6 @@ class Ticket(base):
             return "%s:%s:%s" % (str(hor).zfill(2), str(minu).zfill(2), str(seg).zfill(2))
         return "<span>00:00:00</span> <button class='btn-trust btn-trust-sm contacto-directo' data-ticket='%s'>Contacto directo</button>" \
                % self.id
-
-
-class Banner(BaseEntity):
-    imagen = ImageCropField(upload_to='banners')
-    cropping = ImageRatioField('imagen', '400x800', allow_fullsize=True, verbose_name="vista previa")
-
-    class Meta:
-        verbose_name_plural = "Publicidad"
 
 
 class benAbstract(base):

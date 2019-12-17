@@ -198,6 +198,7 @@ TEMPLATES = [
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'cotizador.context_processors.Entidades',
+                'utils.context_processors.Utils',
             ],
         },
     },

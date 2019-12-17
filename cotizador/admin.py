@@ -162,11 +162,6 @@ class TicketAdmin(admin.ModelAdmin):
 admin.site.register(Entidad, entidad_admin)
 
 
-@admin.register(Banner)
-class bannerAdmin(ImageCroppingMixin, entidad_admin):
-    pass
-
-
 class beneficiarios_sepelio(admin.TabularInline):
     model = benSepelio
     extra = 0
