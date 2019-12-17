@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <title>Consentimiento</title>
+    <style type="text/css">
+        @page {
+            size: A5 landscape;
+            margin-left: 1cm;
+            margin-right: 1cm;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div><p style="margin-bottom: 50px; padding-top: 100px; font-size: 1.5em">Managua {{ poliza.created|date:'M' }} {{ poliza.created|date:'d' }} de {{ poliza.created|date:'Y' }}, Hora: {{ poliza.created|date:'H:m:s' }}. </p></div>
+<table style="width: 100%; padding-top: 5mm">
+    <tr>
+        <td>
+            <figure id="assa">
+                <img src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
+                     style="height: 65px"/>
+            </figure>
+        </td>
+        <td  colspan="2">
+            <div style="font-size: 2.5em; font-weight: 900;
+            font-family: 'Open Sans', Arial, monospace;
+            padding-top: 30px">Consentimiento del asegurado.</div>
+        </td>
+    </tr>
+</table>
+
+<table style="margin-top: 20mm; font-size: 1.7em;">
+    <tr>
+        <td colspan="3" style="text-align: justify">
+            <p> Yo <b>{{ poliza.nombre_asegurado }}</b> con cédula <b>{{ poliza.cedula }}</b>
+                autorizo a ASSA Compañía de Seguros a enviar la documentación concerniente a la póliza
+                con orden de trabajo número {{ poliza.print_code }} del vehículo marca {{ poliza.marca }}
+                modelo {{ poliza.modelo }} año {{ poliza.anno }} via correo electrónico.</p>
+            <p>A la dirección: <b>{{ poliza.user.email }}</b></p>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

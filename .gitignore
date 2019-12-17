@@ -1,0 +1,16 @@
+/venv
+.idea/
+*.pyc
+*.pyo
+/static
+/media
+/components
+sb.sqlite3
+.vscode/
+package-lock.json
+<<<<<<< HEAD
+.ipynb_checkpoints/
+=======
+.ipynb_checkpoints/*
+>>>>>>> 28f7e5831e7301951d074f2209884380859b644c
+*.ipynb

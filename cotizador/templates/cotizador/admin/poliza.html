@@ -1,0 +1,243 @@
+{% extends 'admin/change_form.html' %}
+
+
+{% block object-tools-items %}
+    <li><a href="#" id="btn-documentos"> Documentos</a></li>
+    <li><a href="#" id="btn-cotizacion"> Cotización</a></li>
+    <li><a href="#" id="btn-condiciones"> Condiciones</a></li>
+    <li><a href="#" id="btn-orden"> Orden de Trabajo</a></li>
+    <li><a href="#" id="btn-numero"> Ingresar Número de Póliza</a></li>
+    {{ block.super }}
+
+{% endblock %}
+
+
+{% block content %}
+    {{ block.super }}
+    <div id="modal-numero" data-iziModal-fullscreen="true" class="iziModal"
+         data-iziModal-title="Número de Póliza"
+         data-iziModal-subtitle="Favor ingrese el número de póliza y de recibo, obtenido de la aseguradora"
+         data-iziModal-icon="">
+        <article id="grp-content" style="top: 0!important; padding: 0 20px 90px">
+
+            <div id="grp-content-container">
+
+
+                <form enctype="multipart/form-data" novalidate="">
+
+                    <div>
+
+
+                        <fieldset class="module grp-module" style="margin-top: 40px">
+
+                            <div class="form-row grp-row grp-cells-1">
+                                <div class="field-box l-2c-fluid l-d-4">
+                                    <div class="c-1">
+                                        <label for="id_code">Número de Póliza</label>
+                                    </div>
+                                    <div class="c-2">
+                                        <input type="text" name="no_poliza" value="{{ original.no_poliza }}"
+                                               class="vTextField" maxlength="25" id="id_no_poliza">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row grp-row grp-cells-1">
+                                <div class="field-box l-2c-fluid l-d-4">
+                                    <div class="c-1">
+                                        <label for="id_code">Número de Recibo</label>
+                                    </div>
+                                    <div class="c-2">
+                                        <input type="text" name="no_recibo" value="{{ original.no_recibo }}"
+                                               class="vTextField" maxlength="25" id="id_no_recibo">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+
+                        <div class="module grp-module">
+                        <div class="form-row grp-row" style="display: flex; justify-content: flex-end">
+                            <button class="grp-button" type="button" id="ingresar-numero"
+                            style="float: right; width: 100px">Aceptar</button>
+                        </div>
+                        </div>
+
+
+                        <footer class="grp-module grp-submit-row grp-fixed-footer">
+
+                        </footer>
+
+
+                    </div>
+                </form>
+
+            </div>
+
+        </article>
+    </div>
+{% endblock %}
+
+
+
+{% block extrahead %}
+
+    {{ block.super }}
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+
+                // modal para el cambio de número de póliza y recibo
+
+                const modal = $('#modal-numero').iziModal({
+                    headerColor: '#222222', zindex: 9999,
+                    width: 1000
+                });
+
+                $('#btn-numero').on('click', function () {
+                    $(modal).iziModal('open');
+                });
+
+                $('#ingresar-numero').on('click', function () {
+                    $.ajax("{% url 'cotizador:ingresar_numero_poliza' %}", {
+                        method: 'post',
+                        data: {original: "{{ original.id }}", no_poliza: $('#id_no_poliza').val(),
+                        no_recibo: $('#id_no_recibo').val()},
+                        success: function (response) {
+                            location.reload()
+                        }
+                    })
+                });
+
+
+                // generar pdf
+                const generar_cotizacion = function () {
+
+                    let data = new FormData();
+                    data.append('id', {{ original.id }});
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', "{% url 'cotizador:print_cotizacion' %}", true);
+                    xhr.responseType = 'blob';
+
+                    xhr.onload = function (e) {
+                        if (this.status === 200) {
+                            let blob = new Blob([this.response], {type: 'application/pdf'});
+                            let link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "Cotizacion.pdf";
+                            link.click();
+                        } else {
+                            alert(
+                                'Ooops Ha ocurrido un Error!',
+                                'Por que ha ocurrido esto?',
+                                'error'
+                            )
+                        }
+                    };
+
+                    xhr.send(data);
+
+
+                };
+
+                $('#btn-cotizacion').on('click', generar_cotizacion);
+
+                const generar_condiciones = function () {
+
+                    let data = new FormData();
+                    data.append('id', {{ original.id }});
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', "{% url 'cotizador:print_condiciones' %}", true);
+                    xhr.responseType = 'blob';
+
+                    xhr.onload = function (e) {
+                        if (this.status === 200) {
+                            let blob = new Blob([this.response], {type: 'application/pdf'});
+                            let link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "Condiciones.pdf";
+                            link.click();
+                        } else {
+                            alert(
+                                'Ooops Ha ocurrido un Error!',
+                                'Por que ha ocurrido esto?',
+                                'error'
+                            )
+                        }
+                    };
+
+                    xhr.send(data);
+
+
+                };
+
+                $('#btn-condiciones').on('click', generar_condiciones);
+
+                const generar_orden = function () {
+
+                    let data = new FormData();
+                    data.append('id', {{ original.id }});
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', "{% url 'cotizador:print_orden_trabajo' %}", true);
+                    xhr.responseType = 'blob';
+
+                    xhr.onload = function (e) {
+                        if (this.status === 200) {
+                            let blob = new Blob([this.response], {type: 'application/pdf'});
+                            let link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "OC # {{ original.code }}.pdf";
+                            link.click();
+                        } else {
+                            alert(
+                                'Ooops Ha ocurrido un Error!',
+                                'Por que ha ocurrido esto?',
+                                'error'
+                            )
+                        }
+                    };
+
+                    xhr.send(data);
+
+
+                };
+
+                $('#btn-orden').on('click', generar_orden);
+
+                const generar_documentos = function () {
+
+                    let data = new FormData();
+                    data.append('id', {{ original.id }});
+                    let xhr = new XMLHttpRequest();
+                    xhr.open('POST', "{% url 'cotizador:print_documentos' %}", true);
+                    xhr.responseType = 'blob';
+
+                    xhr.onload = function (e) {
+                        if (this.status === 200) {
+                            let blob = new Blob([this.response], {type: 'application/pdf'});
+                            let link = document.createElement('a');
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = "Documentos.pdf";
+                            link.click();
+                        } else {
+                            alert(
+                                'Ooops Ha ocurrido un Error!',
+                                'Por que ha ocurrido esto?',
+                                'error'
+                            )
+                        }
+                    };
+
+                    xhr.send(data);
+
+
+                };
+
+                $('#btn-documentos').on('click', generar_documentos);
+            })
+        })(grp.jQuery)
+
+    </script>
+{% endblock %}

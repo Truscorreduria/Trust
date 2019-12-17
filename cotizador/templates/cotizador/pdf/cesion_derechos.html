@@ -1,0 +1,188 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 0.3cm 1.5cm 0 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #000000;
+        }
+
+        ol {
+            counter-reset: list;
+        }
+
+        ol > li {
+            list-style: none;
+        }
+
+        ol > li:before {
+            content: counter(list, lower-alpha) ") ";
+            counter-increment: list;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                </figure>
+            </td>
+            <td style="padding: 0 0 0 30px">
+                <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+            </td>
+            <td style="padding: -15px 0 0 30px;">
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+            </td>
+        </tr>
+        <tr style="margin-top: 0">
+            <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block content %}
+
+    <p style="width: 100%; text-align: right; font-size: 1.4em; font-weight: 900; margin: 0; padding: 0">ADENDA "A"</p>
+    <p style="width: 100%; text-align: center; font-weight: 900; font-size: 1.4em; margin: 0; padding: 0">ADENDA DE
+        CESION DE DERECHO</p>
+
+    <p style="width: 100%; margin: 0;margin-top: 10mm">
+        Los suscritos hacemos las declaraciones y convenios en lo siguiente:
+    </p>
+
+    <ol style="text-align: justify">
+        <li>
+            DECLARACIONES: <b>ASSA Compañía de Seguros, S. A.</b>, que en adelante se llamará la Compañía, con
+            fecha {{ poliza.created }}, emitió a favor de <b
+                style="text-transform: uppercase">{{ poliza.nombres }} {{ poliza.apellidos }}</b>, la póliza de SEGURO
+            DE
+            AUTOMOVIL No. 02B56667 con Suma Asegurada de <b>U$ {{ poliza.suma_asegurada|intcomma }}
+            ({{ poliza.suma_asegurada_letras|upper }} DOLARES)</b>,
+            sujeta a los términos, Cláusulas y condiciones consignadas, que son del conocimiento de los abajo firmantes.
+        </li>
+        <li>
+            CESIÓN DE DERECHO: Que por el presente documento, el Asegurado <b>{{ poliza.nombres|upper }} {{ poliza.apellidos|upper }}</b>,
+            a quién en adelante se llamará el Cedente, cede los derechos que tiene sobre dicha Póliza a favor de <b>BANCO DE AMERICA
+            CENTRAL</b>, a quien en lo sucesivo se denominará el Cesionario, a efectos de que en caso de siniestro de
+            los Bienes Asegurados y que el Cedente tenga derecho a percibir alguna indemnización por dicho siniestro, la
+            Compañía pagará al Cesionario del monto de esa indemnización la suma de
+            <b>U$ {{ poliza.suma_asegurada|intcomma }} ({{ poliza.suma_asegurada_letras|upper }} DOLARES)</b>
+            o el saldo que el Cedente adeude al Cesionario en la fecha del siniestro o bien lo que alcanzare con el
+            producto de la indemnización. Esta cesión es efectiva desde el día {{ poliza.fecha_emision }} hasta el día
+            {{ poliza.fecha_vencimiento }}.
+        </li>
+        <li>
+            En caso de existir otra u otras Cesiones contratadas o notificadas a la Compañía con anterioridad a esta
+            fecha, la Compañíapagará las correspondientes Cesiones en el orden de fechas en que fueron contratadas, sin
+            exceder del monto indemnizable dentro del límite máximo de la Suma Asegurada por dicha Póliza sin que haya
+            proporcionalidad en las cesiones otorgadas. Esta cesión no afecta la preferencia que por razón de tiempo
+            tengan las decisiones y actuaciones judiciales que incidan sobre la Póliza descrita en este documento.
+        </li>
+    </ol>
+
+    <p style="width: 100%; text-align: justify">
+        Cualesquiera otras condiciones relacionadas con la presente Cesión, debe constar en documento donde se ratifique
+        que la Compañía ha sido debidamente notificada
+    </p>
+
+    <table style="width: 80%; text-align: center; margin: 20mm 10mm 0 10mm">
+        <tr>
+            <td style="border-top: 0.4px solid black; padding-top: 4px">FIRMA DEL CEDENTE</td>
+            <td></td>
+            <td style="border-top: 0.4px solid black; padding-top: 4px">FIRMA DEL CESIONARIO</td>
+        </tr>
+    </table>
+
+    <p>
+        Hacemos constar que en la fecha abajo señalada recibimos debidamente firmados tres tantos de igual tenor del
+        presente documento, de los cuales el original queda en poder del Cesionario y las dos copias serán: una para la
+        Compañía y la otra para el Cedente. El recibo del presente documento surte efectos de su notificación pero no
+        significa de ninguna manera reconocimiento de las obligaciones eventuales que establece la Póliza descrita, pues
+        queda sujeta a todas las Cláusulas y Adendas que forman parte del correspondiente Contrato, así como al o los
+        ajustes que en su caso, verifique la Compañía en relación al siniestro.
+    </p>
+
+    <p>Esta Adenda es adherida y forma parte integrante de la Póliza antes mencionada</p>
+
+    <p>En testimonio de lo cual, se emite la presente Adenda en la Ciudad de Managua, a los 18 días del mes de Marzo del
+        año 2019.</p>
+
+    <table style="margin-bottom: 10mm">
+        <tr>
+            <td colspan="7" style="font-weight: 900;">Bienes Asegurados:</td>
+        </tr>
+        <tr>
+            <td>Certificado</td>
+            <td>Vehículo Marca:</td>
+            <td>Año:</td>
+            <td>No. Chasis</td>
+            <td>No. Motor</td>
+            <td>Color</td>
+            <td style="text-align: right">Suma Asegurada</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>{{ poliza.marca }}</td>
+            <td>{{ poliza.anno }}</td>
+            <td>{{ poliza.chasis }}</td>
+            <td>{{ poliza.motor }}</td>
+            <td>{{ poliza.color }}</td>
+            <td style="text-align: right">{{ poliza.suma_asegurada|intcomma }}</td>
+        </tr>
+        <tr>
+            <td colspan="6" style="text-align: right; font-weight: 900; font-size: .8em">Total:</td>
+            <td style="text-align: right; font-weight: 900;">U$ {{ poliza.suma_asegurada|intcomma }}</td>
+        </tr>
+    </table>
+
+    <div>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">Riesgos Cubiertos: La presente Cesión de
+            Derecho será aplicable únicamente en
+            caso que el automotor arriba
+            citado, sufra pérdidas a causa de los siguientes riesgos: </p>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">COLISIONES MAS ROBO TOTAL O PARCIAL A
+            CONSECUENCIA DE ROBO TOTAL</p>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">ROTURA DE VIDRIO</p>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">DESORDENES PÚBLICOS</p>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">RIESGOS CATASTRÓFICOS</p>
+        <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">(*)Se aplicará el 30% de Deducible en caso
+            de robo.</p>
+    </div>
+
+    <div style="position: relative; width: 100%;">
+        <table style="margin-top: 0">
+            <tr>
+                <td></td>
+                <td><img src="{% static 'cotizador/images/firma.assa.png' %}" alt=""></td>
+                <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
+            </tr>
+            <tr>
+                <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                <td style="padding: 3px 25%; text-align: center;
+                border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
+                </td>
+                <td style="text-align: right">Original</td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock %}

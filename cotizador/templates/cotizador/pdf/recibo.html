@@ -1,0 +1,302 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        table#datos-poliza {
+            border: none;
+            padding: 0;
+        }
+
+        table#datos-pago {
+            margin-top: 20px;
+            font-weight: 900;
+        }
+
+        table#datos-total {
+            font-weight: 900;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .number {
+            text-align: right;
+        }
+
+        div.saltopagina {
+            display: block;
+            page-break-before: always;
+        }
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                </figure>
+            </td>
+            <td style="padding: 0 0 0 30px">
+                <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+            </td>
+            <td style="padding: -15px 0 0 30px;">
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+            </td>
+        </tr>
+        <tr style="margin-top: 0">
+            <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block content %}
+    <center>
+        <h1><b>RECIBO DE PRIMA No. {{ poliza.no_recibo }}</b></h1>
+    </center>
+
+    <div class="row">
+        <div style="width: 100%;text-align: right">Fecha: {{ poliza.fecha_emision|date:'d/m/Y' }}</div>
+    </div>
+
+    <table>
+        <tr>
+            <td style="border: 1px solid black; padding: 7px">
+                <table id="datos-poliza">
+                    <tr>
+                        <td style="width: 205px">RAMO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>AUTOMOVIL</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">PÓLIZA No.</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.numero }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CONCEPTO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>EMISION NUEVA</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">VIGENCIA</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.fecha_emision }} AL {{ poliza.fecha_vencimiento }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">FECHA EFECTIVA</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.fecha_emision }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CONTRATANTE/ASEGURADO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.nombres }} {{ poliza.apellidos }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CEDULA/RUC</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.cedula }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">DIRECCIÓN COBRO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.domicilio }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table id="datos-pago">
+        <tr class="legend">
+            <td style="border: 1px solid black; padding-top: 7px; text-align: center; font-size: 1.3em; background-color: silver;">
+                MONEDA: DÓLARES
+            </td>
+            <td style="border: 1px solid black; padding-top: 7px; text-align: center; font-size: 1.3em; background-color: silver;">
+                DATOS DEL PRODUCTOR
+            </td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black; padding: 7px">
+                <table style="width: 100%; padding: 0 2px;">
+                    <tr>
+                        <td>Prima Neta:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.subtotal|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Emisión:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.emision|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>I.V.A. 15%:</td>
+                        <td class="number">U$</td>
+                        <td class="number" style="border-bottom: 1px solid black;">{{ poliza.iva|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dir. Gral. Bomberos 1%:</td>
+                        <td class="number">U$</td>
+                        <td class="number">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.total|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Menos Depósito:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.monto_cuota|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>SALDO:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.saldo|intcomma }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            <td style="border: 1px solid black; padding: 7px">
+                <p>AGENCIA: 005486</p>
+                <p>NOMBRE: TRUST CORREDURÍA DE SEGUROS S.A.</p>
+                <p>CN 1393-0</p>
+            </td>
+        </tr>
+    </table>
+
+    {% if poliza.forma_pago == 'anual' or poliza.medio_pago == 'deduccion_nomina' %}
+        <table style="margin-top: 20px">
+            <tr>
+                <td style="border: 1px solid black">
+                    <table id="datos-total">
+                        <tr>
+                            <td colspan="3" style="background-color: silver; padding: 10%">FORMA DE
+                                PAGO: CONTADO / DIA DE COBRO: {{ poliza.fecha_emision.day }} DEL MES
+                                CORRESPONDIENTE
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="background-color: silver; padding: 10%">CUOTA</td>
+                            <td style="background-color: silver; padding: 10%">FECHA</td>
+                            <td style="background-color: silver; padding: 10%">MONTO</td>
+                        </tr>
+                        <tr>
+                            <td>1 / 1</td>
+                            <td>{{ poliza.fecha_emision }}</td>
+                            <td>
+                                <table style="padding: 1.5px">
+                                    <tr>
+                                        <td>U$</td>
+                                        <td style="border-bottom: 1px solid black; text-align: right; padding: 0 2px">{{ poliza.total }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>U$</td>
+                                        <td style="text-align: right">{{ poliza.total }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+
+    {% if poliza.forma_pago == 'mensual' and not poliza.medio_pago == 'deduccion_nomina' %}
+        <table style="margin-top: 20px">
+            <tr>
+                <td style="border: 1px solid black">
+                    <table id="datos-total" style="line-height: 12px">
+                        <tr>
+                            <td colspan="3" style="background-color: silver; padding: 10%">FORMA DE
+                                PAGO: CRÉDITO / DIA DE COBRO: {{ poliza.fecha_pago.day }} DEL MES
+                                CORRESPONDIENTE
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="background-color: silver; padding: 10%">CUOTA</td>
+                            <td style="background-color: silver; padding: 10%">FECHA</td>
+                            <td style="background-color: silver; text-align: right; padding: 0 20px">MONTO</td>
+                        </tr>
+                        {% for pago in poliza.tabla_pago %}
+                            <tr>
+                                <td>{{ pago.numero }} / {{ pago.cuotas }}</td>
+                                <td>{{ pago.fecha|date:'d/m/Y' }}</td>
+                                <td>
+                                    <table style="padding: 1.5px">
+                                        <tr>
+                                            <td style="color: white">TOTAL</td>
+                                            <td>U$</td>
+                                            <td style="text-align: right; padding: 0 20px">{{ pago.monto }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <table style="padding: 1.5px">
+                                    <tr>
+                                        <td>TOTAL</td>
+                                        <td style="border-top: 0.1px solid black">U$</td>
+                                        <td style="text-align: right; padding: 0 20px; border-top: 0.1px solid black">{{ poliza.total }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+
+    <div style="width: 100%">
+        <table style="margin-top: 15px">
+            <tr>
+                <td></td>
+                <td><img src="{% static 'cotizador/images/firma.assa.png' %}" alt=""></td>
+                <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
+            </tr>
+            <tr>
+                <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                <td style="padding: 3px 25%; text-align: center;
+                border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
+                </td>
+                <td style="text-align: right">Original</td>
+            </tr>
+        </table>
+    </div>
+
+{% endblock %}

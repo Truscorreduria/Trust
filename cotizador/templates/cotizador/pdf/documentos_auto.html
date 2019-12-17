@@ -1,0 +1,865 @@
+{% extends 'cotizador/pdf/multipages.html' %}
+
+{% load static humanize %}
+
+{% block page_content %}
+
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        table#datos-poliza {
+            border: none;
+            padding: 0;
+        }
+
+        table#datos-pago {
+            margin-top: 20px;
+            font-weight: 900;
+        }
+
+        table#datos-total {
+            font-weight: 900;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .number {
+            text-align: right;
+        }
+
+        div.saltopagina {
+            display: block;
+            page-break-before: always;
+        }
+    </style>
+
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                </figure>
+            </td>
+            <td style="padding: 0 0 0 30px">
+                <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+            </td>
+            <td style="padding: -15px 0 0 30px;">
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+            </td>
+        </tr>
+        <tr style="margin-top: 0">
+            <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+        </tr>
+    </table>
+
+    <center>
+        <h1><b>RECIBO DE PRIMA No. {{ poliza.no_recibo }}</b></h1>
+    </center>
+
+    <div class="row">
+        <div style="width: 100%;text-align: right">Fecha: {{ poliza.fecha_emision|date:'d/m/Y' }}</div>
+    </div>
+
+    <table>
+        <tr>
+            <td style="border: 1px solid black; padding: 7px">
+                <table id="datos-poliza">
+                    <tr>
+                        <td style="width: 205px">RAMO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>AUTOMOVIL</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">PÓLIZA No.</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.no_poliza }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CONCEPTO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>EMISION NUEVA</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">VIGENCIA</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.fecha_emision }} AL {{ poliza.fecha_vencimiento }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">FECHA EFECTIVA</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.fecha_emision }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CONTRATANTE/ASEGURADO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.nombres }} {{ poliza.apellidos }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">CEDULA/RUC</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.cedula }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 205px">DIRECCIÓN COBRO</td>
+                        <td style="text-align: right; width: 3px;">:</td>
+                        <td>{{ poliza.domicilio }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table id="datos-pago">
+        <tr class="legend">
+            <td style="border: 1px solid black; padding-top: 7px; text-align: center; font-size: 1.3em; background-color: silver;">
+                MONEDA: DÓLARES
+            </td>
+            <td style="border: 1px solid black; padding-top: 7px; text-align: center; font-size: 1.3em; background-color: silver;">
+                DATOS DEL PRODUCTOR
+            </td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black; padding: 7px">
+                <table style="width: 100%; padding: 0 2px;">
+                    <tr>
+                        <td>Prima Neta:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.subtotal|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Emisión:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.emision|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>I.V.A. 15%:</td>
+                        <td class="number">U$</td>
+                        <td class="number" style="border-bottom: 1px solid black;">{{ poliza.iva|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dir. Gral. Bomberos 1%:</td>
+                        <td class="number">U$</td>
+                        <td class="number">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Total:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.total|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Menos Depósito:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.monto_cuota|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>SALDO:</td>
+                        <td class="number">U$</td>
+                        <td class="number">{{ poliza.saldo|intcomma }}</td>
+                    </tr>
+                </table>
+            </td>
+
+            <td style="border: 1px solid black; padding: 7px">
+                <p>AGENCIA: 005486</p>
+                <p>NOMBRE: TRUST CORREDURÍA DE SEGUROS S.A.</p>
+                <p>CN 1393-0</p>
+            </td>
+        </tr>
+    </table>
+
+    {% if poliza.forma_pago == 'anual' or poliza.medio_pago == 'deduccion_nomina' %}
+        <table style="margin-top: 20px">
+            <tr>
+                <td style="border: 1px solid black">
+                    <table id="datos-total">
+                        <tr>
+                            <td colspan="3" style="background-color: silver; padding: 10%">FORMA DE
+                                PAGO: CONTADO / DIA DE COBRO: {{ poliza.fecha_emision.day }} DEL MES
+                                CORRESPONDIENTE
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="background-color: silver; padding: 10%">CUOTA</td>
+                            <td style="background-color: silver; padding: 10%">FECHA</td>
+                            <td style="background-color: silver; padding: 10%">MONTO</td>
+                        </tr>
+                        <tr>
+                            <td>1 / 1</td>
+                            <td>{{ poliza.fecha_emision }}</td>
+                            <td>
+                                <table style="padding: 1.5px">
+                                    <tr>
+                                        <td>U$</td>
+                                        <td style="border-bottom: 1px solid black; text-align: right; padding: 0 2px">{{ poliza.total }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>U$</td>
+                                        <td style="text-align: right">{{ poliza.total }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+
+    {% if poliza.forma_pago == 'mensual' and not poliza.medio_pago == 'deduccion_nomina' %}
+        <table style="margin-top: 20px">
+            <tr>
+                <td style="border: 1px solid black">
+                    <table id="datos-total" style="line-height: 12px">
+                        <tr>
+                            <td colspan="3" style="background-color: silver; padding: 10%">FORMA DE
+                                PAGO: CRÉDITO / DIA DE COBRO: {{ poliza.fecha_pago.day }} DEL MES
+                                CORRESPONDIENTE
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td style="background-color: silver; padding: 10%">CUOTA</td>
+                            <td style="background-color: silver; padding: 10%">FECHA</td>
+                            <td style="background-color: silver; text-align: right; padding: 0 20px">MONTO</td>
+                        </tr>
+                        {% for pago in poliza.tabla_pago %}
+                            <tr>
+                                <td>{{ pago.numero }} / {{ pago.cuotas }}</td>
+                                <td>{{ pago.fecha|date:'d/m/Y' }}</td>
+                                <td>
+                                    <table style="padding: 1.5px">
+                                        <tr>
+                                            <td style="color: white">TOTAL</td>
+                                            <td>U$</td>
+                                            <td style="text-align: right; padding: 0 20px">{{ pago.monto }}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <table style="padding: 1.5px">
+                                    <tr>
+                                        <td>TOTAL</td>
+                                        <td style="border-top: 0.1px solid black">U$</td>
+                                        <td style="text-align: right; padding: 0 20px; border-top: 0.1px solid black">{{ poliza.total }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                    </table>
+                </td>
+            </tr>
+        </table>
+    {% endif %}
+
+
+    <div style="width: 100%">
+        <table style="margin-top: 15px">
+            <tr>
+                <td></td>
+                <td><img src="{% static 'cotizador/images/firma.assa.png' %}" alt=""></td>
+                <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
+            </tr>
+            <tr>
+                <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                <td style="padding: 3px 25%; text-align: center;
+                border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
+                </td>
+                <td style="text-align: right">Original</td>
+            </tr>
+        </table>
+    </div>
+
+    <pdf:nextpage/>
+
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 0.3cm 1.5cm 0 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .pull-right {
+            text-align: right;
+        }
+
+        table#datos-auto {
+            padding: 0;
+        }
+
+        table#datos-auto tr {
+            margin: 5px 0;
+        }
+
+    </style>
+
+
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                </figure>
+            </td>
+            <td style="padding: 0 0 0 30px">
+                <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+            </td>
+            <td style="padding: -15px 0 0 30px;">
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+            </td>
+        </tr>
+        <tr style="margin-top: 0">
+            <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+        </tr>
+    </table>
+
+
+    <p style="width: 100%; color: red; font-weight: 900; text-align: right;
+    margin: 0 180px 0 0; padding: 0; font-size: 1.3em">
+        Póliza: {{ poliza.no_poliza }}</p>
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="2">
+                <p style="margin: 0; padding: 0;">CONDICIONES PARTICULARES</p>
+                <p style="margin: 0; padding: 0;">POLIZA NUEVA DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">Fecha de Emisión: {{ poliza.fecha_emision }}</p>
+                <p style="margin: 0; padding: 0;">Plan: SEGURO DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">Moneda: DOLARES</p>
+            </td>
+            <td style="text-align: right;">
+                Grupo Cob: EMPBR
+            </td>
+            <td style="text-align: right;">
+                Grupo Pol: BPRO
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
+            border-bottom: 0.1px solid black; line-height: 0">Asegurado/Contratante: codigo-pendiente
+                {{ poliza.nombres }} {{ poliza.apellidos }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="2" style="padding-top: 3px;"><b>Datos:</b></td>
+            <td colspan="3" style="padding-top: 3px;"><b>Vigencia de la póliza:</b> 366
+                días
+            </td>
+        </tr>
+        <tr>
+            <td>Cédula o RUC:</td>
+            <td>{{ poliza.cedula }}</td>
+            <td>Desde:</td>
+            <td style="color: blue">{{ poliza.fecha_emision }}</td>
+            <td>(00:01 Horas)</td>
+        </tr>
+        <tr>
+            <td>Teléfono:</td>
+            <td>{{ poliza.telefono }}</td>
+            <td>Hasta:</td>
+            <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
+            <td>(24:00 Horas)</td>
+        </tr>
+        <tr>
+            <td>Celular:</td>
+            <td>Por reportar</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Apdo.:</td>
+            <td>Por reportar</td>
+            {% if not poliza.cesion_derecho %}
+                <td></td>
+                <td></td>
+                <td></td>
+            {% else %}
+                <td>Acreedor/Beneficiario</td>
+                <td colspan="2">{{ poliza.beneficiario.name }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ poliza.email }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black;">Dirección:</td>
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="4" style="padding-top: 3px"><b>Detalle del Vehículo
+                asegurado</b></td>
+        </tr>
+        <tr>
+            <td>Certificado No:</td>
+            <td></td>
+            <td>Uso:</td>
+            <td>{{ poliza.uso }}</td>
+        </tr>
+        <tr>
+            <td>Marca:</td>
+            <td>{{ poliza.marca }}</td>
+            <td>No. Motor:</td>
+            <td>{{ poliza.motor }}</td>
+        </tr>
+        <tr>
+            <td>Modelo:</td>
+            <td>{{ poliza.modelo }}</td>
+            <td>No. VIN:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Año:</td>
+            <td>{{ poliza.anno }}</td>
+            <td>Capacidad:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Placa:</td>
+            <td>{{ poliza.placa }}</td>
+            <td>No. Chasis:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Suma Asegurada:</td>
+            <td><b>U$ {{ poliza.suma_asegurada|intcomma }}</b></td>
+            <td>Color:</td>
+            <td>{{ poliza.color }}</td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">Depreciacion Mes:</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">1.00%</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">Toneladas:</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">0.00</td>
+        </tr>
+    </table>
+
+    <table style="margin: 0; padding: 0; line-height: 3px; ">
+        <thead>
+        <tr>
+            <th colspan="4" style="text-align: left">Detalle de Coberturas</th>
+            <th>Suma Asegurada</th>
+            <th colspan="2">Deducible</th>
+            <th style="text-align: right">Prima</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% ifequal poliza.tipo_cobertura 'amplia' %}
+            <tr>
+                <td style="background-color: rgba(243,243,245,0.84)" colspan="4">Responsabilidad Civil Del Conductor Por
+                    Muerte O Lesiones A Pasajeros
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$10,000.00</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Gastos Medicos</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$10,000.00</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Colisiones Mas Robo Total O Parcial A
+                    Consecuencia De Robo Total (1)
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> {{ poliza.suma_asegurada|intcomma }}</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">20% Mínimo U$
+                    100.00
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">{{ poliza.prima }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Rotura De Vidrios</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> {{ poliza.rotura_vidrios|intcomma }}</td>
+                <td colspan="2"
+                    style="text-align: center; background-color: rgba(243,243,245,0.84)">{{ poliza.deducible_rotura_vidrios|intcomma }}</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Desordenes Publicos</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">{{ poliza.suma_asegurada|intcomma }}</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">20% Mínimo U$
+                    100.00
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Riesgos Catastroficos</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">{{ poliza.suma_asegurada|intcomma }}</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">20% Mínimo U$
+                    100.00
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Extension Territorial</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.01</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">30% Mínimo U$
+                    100.00
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+            </tr>
+        {% endifequal %}
+
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Muerte O Lesiones
+                Causadas A Una Persona
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">55.00</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Muerte O Lesiones
+                Causadas A Dos O Mas Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> 5,000.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Daños Materiales
+                Causados A Terceras Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> 2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="margin-top: 20px">
+        <tr>
+            <td>
+                {% ifequal poliza.tipo_cobertura 'amplia' %}
+                    <p>Gastos de Salvamento (US$150.00).</p>
+                {% endifequal %}
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td style="text-align: right">{{ poliza.subtotal }}</td>
+                    </tr>
+                    <tr>
+                        <td>Derecho emisión</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">{{ poliza.emision }}</td>
+                    </tr>
+                    <tr>
+                        <td>I.V.A.</td>
+                        <td> 15%</td>
+                        <td></td>
+                        <td style="text-align: right">{{ poliza.iva }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Total a Pagar:</b></td>
+                        <td></td>
+                        <td>U$</td>
+                        <td style="text-align: right"><b>{{ poliza.total }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 15px; border-left: 3px solid silver; padding-left: 3px;">
+        <tr style="padding-top: 3px">
+            <td>Frecuencia de Pago</td>
+            <td>Forma de Pago</td>
+            <td>Día de Pago</td>
+            <td>Monto / Cuota</td>
+        </tr>
+        <tr>
+            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas }}) {% ifequal poliza.cuotas 1 %}Pago{% else %}
+                Pagos{% endifequal %}</td>
+            <td>Directo En Caja</td>
+            <td>{{ poliza.fecha_pago.day }} del mes correspondiente</td>
+            <td>U$ {{ poliza.monto_cuota }}</td>
+        </tr>
+    </table>
+
+    <p style="font-size: 0.9em; text-align: justify; margin: 2px 0">LIMITE DE RESPONSABILIDAD: La cantidad máxima a que
+        ascenderá la
+        indemnización en caso de siniestro, queda
+        limitada a la suma máxima aquí asegurada, de manera
+        que los pagos que tuviera que hacer la Compañía por uno o varios siniestros originados por los riesgos
+        cubiertos, no excederán la suma máxima estipulada en cada cobertura.
+        En toda pérdida amparada por la cobertura de esta Póliza se aplicarán los deducibles y coaseguros estipulados
+        para cada riesgo contratado por el Asegurado</p>
+
+    <p style="font-size: 0.9em; text-align: justify; margin: 2px 0">Queda entendido que el Asegurado y ASSA Compañía de
+        Seguros, S.A.,
+        han convenido en celebrar el presente Contrato
+        de Seguro, conforme la Solicitud de Aseguramiento,
+        Condiciones Generales de esta Póliza, Condiciones Particulares, Adenda y demás documentos que forman parte de
+        esta Póliza.</p>
+
+    <p style="font-size: 0.9em; text-align: justify; margin: 2px 0">En fe de lo cual se firman las presentes Condiciones
+        Particulares
+        en la ciudad de Managua, Nicaragua, a los 28
+        días del mes de Febrero del año 2019</p>
+
+    <div style="position: relative; width: 100%;">
+        <table style="margin-top: 0">
+            <tr>
+                <td></td>
+                <td><img src="{% static 'cotizador/images/firma.assa.png' %}" alt=""></td>
+                <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
+            </tr>
+            <tr>
+                <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                <td style="padding: 3px 25%; text-align: center;
+                border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
+                </td>
+                <td style="text-align: right">Original</td>
+            </tr>
+        </table>
+    </div>
+
+    {% if poliza.cesion_derecho %}
+
+        <pdf:nextpage/>
+
+        <style type="text/css">
+            @page {
+                size: letter portrait;
+                margin: 0.3cm 1.5cm 0 1.5cm;
+            }
+
+            body {
+                font-family: "Helvetica", "sans-serif";
+                color: #000000;
+            }
+
+            ol {
+                counter-reset: list;
+            }
+
+            ol > li {
+                list-style: none;
+            }
+
+            ol > li:before {
+                content: counter(list, lower-alpha) ") ";
+                counter-increment: list;
+            }
+
+        </style>
+
+        <table style="width: 100%; margin: 0; padding: 0">
+            <tr>
+                <td colspan="2">
+                    <figure id="assa">
+                        <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                    </figure>
+                </td>
+                <td style="padding: 0 0 0 30px">
+                    <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                    <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                    <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                    <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+                </td>
+                <td style="padding: -15px 0 0 30px;">
+                    <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                    <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                    <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+                </td>
+            </tr>
+            <tr style="margin-top: 0">
+                <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+            </tr>
+        </table>
+
+
+        <p style="width: 100%; text-align: right; font-size: 1.4em; font-weight: 900; margin: 0; padding: 0">ADENDA
+            "A"</p>
+        <p style="width: 100%; text-align: center; font-weight: 900; font-size: 1.4em; margin: 0; padding: 0">ADENDA DE
+            CESION DE DERECHO</p>
+
+        <p style="width: 100%; margin: 0;margin-top: 10mm">
+            Los suscritos hacemos las declaraciones y convenios en lo siguiente:
+        </p>
+
+        <ol style="text-align: justify">
+            <li>
+                DECLARACIONES: <b>ASSA Compañía de Seguros, S. A.</b>, que en adelante se llamará la Compañía, con
+                fecha {{ poliza.created }}, emitió a favor de <b
+                    style="text-transform: uppercase">{{ poliza.nombres }} {{ poliza.apellidos }}</b>, la póliza de
+                SEGURO
+                DE
+                AUTOMOVIL No. 02B56667 con Suma Asegurada de <b>U$ {{ poliza.suma_asegurada|intcomma }}
+                ({{ poliza.suma_asegurada_letras|upper }} DOLARES)</b>,
+                sujeta a los términos, Cláusulas y condiciones consignadas, que son del conocimiento de los abajo
+                firmantes.
+            </li>
+            <li>
+                CESIÓN DE DERECHO: Que por el presente documento, el Asegurado
+                <b>{{ poliza.nombres|upper }} {{ poliza.apellidos|upper }}</b>,
+                a quién en adelante se llamará el Cedente, cede los derechos que tiene sobre dicha Póliza a favor de <b>BANCO
+                DE AMERICA
+                CENTRAL</b>, a quien en lo sucesivo se denominará el Cesionario, a efectos de que en caso de siniestro
+                de
+                los Bienes Asegurados y que el Cedente tenga derecho a percibir alguna indemnización por dicho
+                siniestro, la
+                Compañía pagará al Cesionario del monto de esa indemnización la suma de
+                <b>U$ {{ poliza.suma_asegurada|intcomma }} ({{ poliza.suma_asegurada_letras|upper }} DOLARES)</b>
+                o el saldo que el Cedente adeude al Cesionario en la fecha del siniestro o bien lo que alcanzare con el
+                producto de la indemnización. Esta cesión es efectiva desde el día {{ poliza.fecha_emision }} hasta el
+                día
+                {{ poliza.fecha_vencimiento }}.
+            </li>
+            <li>
+                En caso de existir otra u otras Cesiones contratadas o notificadas a la Compañía con anterioridad a esta
+                fecha, la Compañíapagará las correspondientes Cesiones en el orden de fechas en que fueron contratadas,
+                sin
+                exceder del monto indemnizable dentro del límite máximo de la Suma Asegurada por dicha Póliza sin que
+                haya
+                proporcionalidad en las cesiones otorgadas. Esta cesión no afecta la preferencia que por razón de tiempo
+                tengan las decisiones y actuaciones judiciales que incidan sobre la Póliza descrita en este documento.
+            </li>
+        </ol>
+
+        <p style="width: 100%; text-align: justify">
+            Cualesquiera otras condiciones relacionadas con la presente Cesión, debe constar en documento donde se
+            ratifique
+            que la Compañía ha sido debidamente notificada
+        </p>
+
+        <table style="width: 80%; text-align: center; margin: 20mm 10mm 0 10mm">
+            <tr>
+                <td style="border-top: 0.4px solid black; padding-top: 4px">FIRMA DEL CEDENTE</td>
+                <td></td>
+                <td style="border-top: 0.4px solid black; padding-top: 4px">FIRMA DEL CESIONARIO</td>
+            </tr>
+        </table>
+
+        <p>
+            Hacemos constar que en la fecha abajo señalada recibimos debidamente firmados tres tantos de igual tenor del
+            presente documento, de los cuales el original queda en poder del Cesionario y las dos copias serán: una para
+            la
+            Compañía y la otra para el Cedente. El recibo del presente documento surte efectos de su notificación pero
+            no
+            significa de ninguna manera reconocimiento de las obligaciones eventuales que establece la Póliza descrita,
+            pues
+            queda sujeta a todas las Cláusulas y Adendas que forman parte del correspondiente Contrato, así como al o
+            los
+            ajustes que en su caso, verifique la Compañía en relación al siniestro.
+        </p>
+
+        <p>Esta Adenda es adherida y forma parte integrante de la Póliza antes mencionada</p>
+
+        <p>En testimonio de lo cual, se emite la presente Adenda en la Ciudad de Managua, a los 18 días del mes de Marzo
+            del
+            año 2019.</p>
+
+        <table style="margin-bottom: 10mm">
+            <tr>
+                <td colspan="7" style="font-weight: 900;">Bienes Asegurados:</td>
+            </tr>
+            <tr>
+                <td>Certificado</td>
+                <td>Vehículo Marca:</td>
+                <td>Año:</td>
+                <td>No. Chasis</td>
+                <td>No. Motor</td>
+                <td>Color</td>
+                <td style="text-align: right">Suma Asegurada</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>{{ poliza.marca }}</td>
+                <td>{{ poliza.anno }}</td>
+                <td>{{ poliza.chasis }}</td>
+                <td>{{ poliza.motor }}</td>
+                <td>{{ poliza.color }}</td>
+                <td style="text-align: right">{{ poliza.suma_asegurada|intcomma }}</td>
+            </tr>
+            <tr>
+                <td colspan="6" style="text-align: right; font-weight: 900; font-size: .8em">Total:</td>
+                <td style="text-align: right; font-weight: 900;">U$ {{ poliza.suma_asegurada|intcomma }}</td>
+            </tr>
+        </table>
+
+        <div>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">Riesgos Cubiertos: La presente Cesión de
+                Derecho será aplicable únicamente en
+                caso que el automotor arriba
+                citado, sufra pérdidas a causa de los siguientes riesgos: </p>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">COLISIONES MAS ROBO TOTAL O PARCIAL A
+                CONSECUENCIA DE ROBO TOTAL</p>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">ROTURA DE VIDRIO</p>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">DESORDENES PÚBLICOS</p>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">RIESGOS CATASTRÓFICOS</p>
+            <p style="padding: 0; margin: 0; line-height: 0; font-size: .75em;">(*)Se aplicará el 30% de Deducible en
+                caso
+                de robo.</p>
+        </div>
+
+        <div style="position: relative; width: 100%;">
+            <table style="margin-top: 0">
+                <tr>
+                    <td></td>
+                    <td><img src="{% static 'cotizador/images/firma.assa.png' %}" alt=""></td>
+                    <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
+                </tr>
+                <tr>
+                    <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                    <td style="padding: 3px 25%; text-align: center;
+                border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
+                    </td>
+                    <td style="text-align: right">Original</td>
+                </tr>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

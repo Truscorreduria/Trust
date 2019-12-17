@@ -1,0 +1,366 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .pull-right {
+            text-align: right;
+        }
+
+        table#datos-auto {
+            padding: 0;
+        }
+
+        table#datos-auto tr {
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table>
+        <tr>
+            <td>
+                <p style="padding: 0; margin: 0;">Barrio Largaespada, del busto de José Martí</p>
+                <p style="padding: 0; margin: 0;">1c este, 1c lago, Edificio Oficenter GZ. Planta Baja.</p>
+                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
+            </td>
+            <td>
+
+            </td>
+            <td class="pull-right">
+                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108 </p>
+                <p style="padding: 0; margin: 0;">Correo contacto@trustcorreduria.com</p>
+                <p style="padding: 0; margin: 0;">www.trustcorreduria.com</p>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block content %}
+    <table style="width: 100%; margin-top: 50px">
+        <tr>
+            <td></td>
+            <td>
+                <h1 style="font-size: 1.2em; text-align: center"><b>INDICATIVO DE COSTO Y COBERTURA</b></h1>
+                <h1 style="font-size: 1.2em; text-align: center"><b>PROGRAMA EXCLUSIVO DE COLABORADORES BANPRO</b></h1>
+            </td>
+            <td class="pull-right">Fecha: {{ poliza.fecha_emision|date:'d/m/Y' }}</td>
+        </tr>
+    </table>
+
+    <p style="font-size: 10pt"><b>Sr(a). {{ poliza.nombres }} {{ poliza.apellidos }}</b></p>
+
+    <p style="text-align: justify">Trust Correduría, atendiendo su solicitud, le presenta la
+        oferta de seguros de automóvil con la compañía de Seguros ASSA, la cual cuenta con tasa preferencial de
+        colaborador de Banpro.</p>
+
+    <table>
+
+        <tr>
+            <td colspan="5"
+                style="border: 1px solid black; padding-top: 3px; text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Datos de Vehículo
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="border: 1px solid black">
+                <table>
+                    <tr>
+                        <td colspan="5">
+                            <table style="margin: 0; padding: 0 0 0 3px">
+                                <tr>
+                                    <td style="width: 125px; text-align: left"><b>MARCA:</b></td>
+                                    <td style="width: 165px; text-align: left">{{ poliza.marca }}</td>
+                                    <td style="width: 65px; text-align: right"><b></b></td>
+                                    <td style="width: 125px; text-align: left; margin-left: 7px"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 65px; text-align: left"><b>MODELO:</b></td>
+                                    <td style="width: 165px; text-align: left">{{ poliza.modelo }}</td>
+                                    <td style="width: 65px; text-align: right"><b></b></td>
+                                    <td style="width: 125px; text-align: left; margin-left: 7px"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 65px; text-align: left"><b>AÑO:</b></td>
+                                    <td style="width: 125px; text-align: left">{{ poliza.anno }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="text-align: right">
+                            <img src="{% static 'cotizador/images/logo.cotizacion.jpg' %}" alt="">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2"
+                style="border: 1px solid black; padding-top: 3px; text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Coberturas
+            </td>
+            <td style="border: 1px solid black; padding-top: 3px; text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Suma Asegurada
+            </td>
+            <td style="border: 1px solid black; padding-top: 3px; text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Coaseguro
+            </td>
+            <td style="border: 1px solid black; padding-top: 3px; text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Deducible
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="5" style="margin-left: 7px"><b>Responsabilidad Civil del Seguro
+                            Obligatorio</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px">a) Muerte o Lesiones a una Persona</td>
+                        <td style="text-align: center">$2,500.00</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px">b) Muerte o Lesiones a dos o más Personas</td>
+                        <td style="text-align: center">$5,000.00</td>
+                        <td style="text-align: center">0%</td>
+                        <td style="text-align: center">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px">c) Daños a la Propiedad Ajena</td>
+                        <td style="text-align: center">$2,500.00</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        {% ifnotequal poliza.costo_exceso 0 %}
+            <tr>
+                <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                    <table id="datos-auto">
+                        <tr>
+                            <td colspan="5" style="margin-left: 7px"><b>Exceso en responsabilidad civil</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="margin-left: 7px">a) Exceso en Muerte o Lesiones a una Persona</td>
+                            <td style="text-align: center">${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="margin-left: 7px">b) Exceso en Muerte o Lesiones a dos o más Personas</td>
+                            <td style="text-align: center">${{ poliza.monto_exceso_ampliado|floatformat:2|intcomma }}</td>
+                            <td style="text-align: center">0%</td>
+                            <td style="text-align: center">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="margin-left: 7px">c) Exceso en Daños a la Propiedad Ajena</td>
+                            <td style="text-align: center">${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        {% endifnotequal %}
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Colisiones, Autoignición, Incendio, Rayo y/o
+                            Explosión</b></td>
+                        <td style="text-align: center"><b>${{ poliza.suma_asegurada|floatformat:2|intcomma }}</b></td>
+                        <td style="text-align: center"><b>{{ poliza.porcentaje }}</b></td>
+                        <td style="text-align: center"><b>${{ poliza.minimo_deducible|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Desórdenes Públicos</b></td>
+                        <td style="text-align: center"><b>${{ poliza.suma_asegurada|floatformat:2|intcomma }}</b></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Riesgos Catastróficos</b></td>
+                        <td style="text-align: center"><b>${{ poliza.suma_asegurada|floatformat:2|intcomma }}</b></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Robo Total o Parcial a consecuencia de Robo
+                            Total</b></td>
+                        <td style="text-align: center"><b>${{ poliza.suma_asegurada|floatformat:2|intcomma }}</b></td>
+                        <td style="text-align: center"><b>{{ poliza.porcentaje }}</b></td>
+                        <td style="text-align: center"><b>${{ poliza.minimo_deducible|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Rotura de Vidrios</b></td>
+                        <td style="text-align: center"><b>${{ poliza.rotura_vidrios|floatformat:2|intcomma }}</b></td>
+                        <td style="text-align: center"><b>0%</b></td>
+                        <td style="text-align: center"><b>${{ poliza.deducible_rotura_vidrios|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Responsabilidad Civil del Conductor</b></td>
+                        <td style="text-align: center"><b>$10,000.00</b></td>
+                        <td style="text-align: center"><b>{{ poliza.porcentaje }}</b></td>
+                        <td style="text-align: center"><b>${{ poliza.minimo_deducible|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Gastos Médicos a los Ocupantes</b></td>
+                        <td style="text-align: center"><b>$10,000.00</b></td>
+                        <td style="text-align: center"><b>{{ poliza.porcentaje }}</b></td>
+                        <td style="text-align: center"><b>${{ poliza.minimo_deducible|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px 0 0 0; border: 1px solid black">
+                <table id="datos-auto">
+                    <tr>
+                        <td colspan="2" style="margin-left: 7px"><b>Extensión Territorial</b></td>
+                        <td style="text-align: center"><b></b></td>
+                        <td style="text-align: center"><b>{{ poliza.porcentaje_extension }}</b></td>
+                        <td style="text-align: center"><b>${{ poliza.minimo_deducible_extension|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5"
+                style="border: 1px solid black; padding-top: 3px;
+                text-align: center; font-size: 1.1em; background-color: #87a73d; color: white">
+                Coberturas Exclusiva sin Cobros de Prima
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="padding: 7px; border: 1px solid black">
+                <table id="datos-auto">
+
+                    <tr>
+                        <td colspan="4">Remolque de vehículo por averías</td>
+                        <td>
+                            <img src="{% static 'cotizador/images/check.cotizacion.png' %}" alt="">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">Responsabilidad Civil del Conductor</td>
+                        <td>
+                            <img src="{% static 'cotizador/images/check.cotizacion.png' %}" alt="">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">Gastos Médicos para los Ocupantes</td>
+                        <td>
+                            <img src="{% static 'cotizador/images/check.cotizacion.png' %}" alt="">
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">Extensión Territorial a Centroamérica y Panamá</td>
+                        <td>
+                            <img src="{% static 'cotizador/images/check.cotizacion.png' %}" alt="">
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="5" style="border: 1px solid black; padding-top: 3px;
+                text-align: right; font-size: 1.1em; background-color: #87a73d; color: white;
+                margin-right: 7px; font-weight: 900; font-size: 1.1em">
+                ${{ poliza.total|intcomma }}</td>
+        </tr>
+
+    </table>
+
+    <p>Esta tarifa es un beneficio exclusivo de la empresa {{ user.profile.entidad.name }}.Sin otro particular, nos
+        despedimos deseándole éxito en su día.</p>
+
+    <p style="margin-bottom: 50px">Atentamente,</p>
+
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <p style="margin: 0; padding: 0">
+                        <img src="{% static 'cotizador/images/sello.trust.png' %}" alt="">
+                    </p>
+                    <p style="margin: 0; padding: 0;"><a
+                            href="https://www.trustcorreduria.com/">www.trustcorreduria.com</a></p>
+                    <p style="margin: 0; padding: 0;">Trust Correduria de Seguros</p>
+                </td>
+                <td colspan="3">
+                    <p style="transform: rotate(20deg)">
+
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <p style="margin: 0; width: 100%; text-align: right">Más que una Alianza de Negocios, Una Relación de
+        Confianza...</p>
+
+{% endblock %}

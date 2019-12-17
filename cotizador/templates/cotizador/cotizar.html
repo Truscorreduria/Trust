@@ -1,0 +1,2128 @@
+{% extends 'cotizador/base.html' %}
+{% load static humanize %}
+
+
+{% block styles %}
+    {{ block.super }}
+
+    <link rel="stylesheet"
+          href="{% static 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'glyphicons/styles/glyphicons.css' %}">
+    <link rel="stylesheet" href="{% static 'smartwizard/dist/css/smart_wizard.min.css' %}">
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.css' %}">
+    <link rel="stylesheet" href="{% static 'smartwizard/dist/css/smart_wizard_theme_dots.min.css' %}">
+
+{% endblock %}
+
+
+{% block extra-style %}
+    <style type="text/css">
+        .number {
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .deducible, .deducible-territorial {
+            text-align: center;
+        }
+
+        th {
+            text-align: center;
+        }
+
+        #table-cuentas-bancarias {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #table-cuentas-bancarias th, #table-cuentas-bancarias td {
+            border: 1px solid black;
+            padding: 0 5px;
+        }
+
+        .modal-footer {
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .upgradable-active {
+            color: black
+        }
+
+        .p-upgrades-notes {
+            display: none;
+        }
+
+        .btn-upgrade {
+            color: white !important;
+        }
+
+        .upgrade-unavailable {
+            display: none;
+        }
+
+        .upgrade-available {
+            display: table-row;
+        }
+
+        figure#test {
+            content: " ";
+            width: 100%;
+            height: 100%;
+            background: url('http://{{ request.get_host }}{% static 'cotizador/images/aseguradoras/assa.png' %}') no-repeat;
+            background-position: 0 20px;
+            background-size: 25%;
+        }
+
+        .with-errors {
+            color: red !important;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content-section %}
+    <section id="cotizar-section">
+        <div class="title">
+            <figure>
+                <img src="{% static 'cotizador/images/inicio/cotizar.blanco.png' %}" alt="cotizar">
+            </figure>
+            <p>
+                Me gustaría cotizar un seguro de:
+            </p>
+        </div>
+        <div class="options">
+            <a id="option-auto">
+                <img src="{% static 'cotizador/images/auto.png' %}" alt="">
+                <p>Auto</p>
+            </a>
+            <a id="option-sepelio">
+                <img src="{% static 'cotizador/images/funerarios.png' %}" alt="">
+                <p>Sepelio</p>
+            </a>
+            <a id="option-accidente">
+                <img src="{% static 'cotizador/images/accidente.png' %}" alt="">
+                <p>Accidente</p>
+            </a>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block modales %}
+
+    <div class="help-overlay"></div>
+
+    <div class="help-modal">
+        <button class="help-modal-btn">Cerrar</button>
+
+        <div class="help-modal-content">
+
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-auto" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalCenterTitle">Seguro de vehículo</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="smartwizard">
+
+                        <ul>
+                            <li>
+                                <a href="#step-0">Paso 1<br/>
+                                    <small>Define tu vehículo</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-1">Paso 2<br/>
+                                    <small>Paquete de coberturas</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-2">Paso 3<br/>
+                                    <small>Orden de emisión de póliza</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-3">Paso 4<br/>
+                                    <small>Forma de pago</small>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div>
+
+                            <div id="step-0">
+                                <label for="Paquete"><b>Define tu vehículo</b></label><br>
+                                <div id="form-step-0" role="form" data-toggle="validator">
+
+                                    <div class="row">
+
+                                        <div class="col-lg-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label for="marca">Marca</label>
+                                                <select class="form-control" name="marca" id="marca" required>
+                                                    <option disabled selected></option>
+                                                    {% for marca in marcas %}
+                                                        <option value="{{ marca.0 }}"> {{ marca.1 }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label for="anno">Año</label>
+                                                <select class="form-control" id="anno" name="anno" required>
+                                                    <option disabled selected></option>
+                                                    {% for anno in annos %}
+                                                        <option value="{{ anno.0 }}"> {{ anno.1 }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4 col-sm-4">
+                                            <div class="form-group">
+                                                <label for="modelo">Modelo</label>
+                                                <select class="form-control" name="modelo" id="modelo" required>
+                                                    <option disabled selected></option>
+                                                    {% for modelo in modelos %}
+                                                        <option value="{{ modelo.0 }}"> {{ modelo.1 }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <div class="help-block with-errors"></div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="container sin-registro">
+                                            <p>¿No encuentras tu vehículo?</p>
+                                            <p><a class="cotizar-manual" href="#">Click aqui</a></p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="step-1">
+                                <div class="layer"></div>
+                                <div id="form-step-1" role="form" data-toggle="validator">
+                                    <label for="Paquete">
+                                        <b style="color: black; font-size: 1.5em">Selecciona tu paquete de
+                                            coberturas</b>
+                                    </label>
+                                    <br>
+                                    <div class="container-fluid">
+                                        <input type="hidden" value="amplia" id="tipo-cobertura"/>
+                                        <input type="hidden" value="{{ config.PORCENTAJE_DEDUCIBLE }}"
+                                               id="porcentaje-deducible"/>
+                                        <input type="hidden"
+                                               value="{{ config.PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL }}"
+                                               id="porcentaje-deducible-extension"/>
+                                        <input type="hidden" value="{{ config.MINIMO_DEDUCIBLE }}"
+                                               id="minimo-deducible"/>
+                                        <input type="hidden" value="{{ config.MINIMO_DEDUCIBLE }}"
+                                               id="minimo-deducible-extension"/>
+                                        <input type="hidden" value="0.0" id="deducible-rotura-vidrios"/>
+                                        <input type="hidden" value="0.0" id="costo-exceso"/>
+                                        <input type="hidden" value="0.0" id="monto-exceso"/>
+                                        <ul id="clothing-nav" class="nav nav-tabs" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#basica"
+                                                   id="basica-tab" role="tab" data-toggle="tab"
+                                                   aria-controls="basica"
+                                                   aria-expanded="true">
+                                                    <b>Responsabilidad civil obligatoria</b>
+                                                    <br>
+                                                    Cobertura daños a terceros.
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="#amplia" role="tab"
+                                                   id="apliada-tab" data-toggle="tab" aria-controls="apliada">
+                                                    <b>Cobertura Amplia</b>
+                                                    <br>
+                                                    Daños propios + R.Civil + otras.
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <div id="clothing-nav-content" class="tab-content">
+
+                                            <div role="tabpanel" class="tab-pane fade"
+                                                 id="basica" aria-labelledby="basica-tab">
+                                                <div class="container">
+                                                    <table class="datos-vehiculo">
+                                                        <thead>
+                                                        <tr>
+                                                            <td>Marca</td>
+                                                            <td>Modelo</td>
+                                                            <td>Año</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td><span id="span-marca-basica"></span></td>
+                                                            <td><span id="span-modelo-basica"></span></td>
+                                                            <td><span id="span-anno-basica"></span></td>
+                                                            {% comment %}<td style="display: flex; justify-content: flex-end">
+                                                                <div id="btn-cotizacion-basica"
+                                                                     class="btn btn-small">
+                                                                    <small>Descargar</small>
+                                                                    <span class="fa fa-file-pdf"></span>
+                                                                </div>
+                                                            </td>{% endcomment %}
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <div class="row">
+                                                        <table class="cotizador-table-auto-basica">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Detalles de coberturas</th>
+                                                                <th class="number">Suma asegurada</th>
+                                                                <th>Deducible</th>
+                                                                <th class="number">Prima</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody style="font-weight: 900;">
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>La Responsabilidad Civil Legal del conductor por muerte o lesiones corporales a terceras personas,hasta por la Suma Asegurada establecida para esta cobertura en las condiciones particulares. Laindemnización comprenderá:</p><ol><li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro encaso de fallecimiento.</li><li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total oparcial de las personas lesionadas.</li><li>Los gastos y costos legales a que fuere condenado el asegurado, en caso de juicio seguidoen contra por cualquier tercero perjudicado.</li></ol><p>No se consideraran terceras personas con respecto del asegurado y de los conductores: susfamiliares hasta el cuarto grado de consanguinidad y segundo de afinidad. Así como tampoco laspersonas que con el conviven, estuvieren a su cargo o al servicio de cualquiera de ellos, ni las quese encuentren dentro del vehículo asegurado al momento del accidente.Esta cobertura se aplica solo cuando el conductor es declarado civilmente responsable delaccidente por fallo de la autoridad competente.</p>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a una persona
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r9-sum"
+                                                                                          value="2500.0">
+                                                                    <span>2,500.00</span></td>
+                                                                <td style="text-align: center">No aplica</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r9-total"
+                                                                                          value="{{ soa_descontado }}">
+                                                                    <span>{{ soa_descontado|floatformat:2|intcomma }}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>La Responsabilidad Civil Legal del conductor por muerte o lesiones corporales a terceras personas,hasta por la Suma Asegurada establecida para esta cobertura en las condiciones particulares. Laindemnización comprenderá:</p><ol><li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro encaso de fallecimiento.</li><li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total oparcial de las personas lesionadas.</li><li>Los gastos y costos legales a que fuere condenado el asegurado, en caso de juicio seguidoen contra por cualquier tercero perjudicado.</li></ol><p>No se consideraran terceras personas con respecto del asegurado y de los conductores: susfamiliares hasta el cuarto grado de consanguinidad y segundo de afinidad. Así como tampoco laspersonas que con el conviven, estuvieren a su cargo o al servicio de cualquiera de ellos, ni las quese encuentren dentro del vehículo asegurado al momento del accidente.Esta cobertura se aplica solo cuando el conductor es declarado civilmente responsable delaccidente por fallo de la autoridad competente.</p>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a dos o mas personas
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r10-sum"
+                                                                                          value="5000">
+                                                                    <span>5,000.00</span></td>
+                                                                <td style="text-align: center">No aplica</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r10-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>La Responsabilidad Civil Legal del conductor por muerte o lesiones corporales a terceras personas,hasta por la Suma Asegurada establecida para esta cobertura en las condiciones particulares. Laindemnización comprenderá:</p><ol><li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro encaso de fallecimiento.</li><li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total oparcial de las personas lesionadas.</li><li>Los gastos y costos legales a que fuere condenado el asegurado, en caso de juicio seguidoen contra por cualquier tercero perjudicado.</li></ol><p>No se consideraran terceras personas con respecto del asegurado y de los conductores: susfamiliares hasta el cuarto grado de consanguinidad y segundo de afinidad. Así como tampoco laspersonas que con el conviven, estuvieren a su cargo o al servicio de cualquiera de ellos, ni las quese encuentren dentro del vehículo asegurado al momento del accidente.Esta cobertura se aplica solo cuando el conductor es declarado civilmente responsable delaccidente por fallo de la autoridad competente.</p>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a
+                                                                    terceras personas
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r11-sum"
+                                                                                          value="2500.0">
+                                                                    <span>2,500.00</span></td>
+                                                                <td style="text-align: center">No aplica</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r11-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-8">
+                                                        </div>
+                                                        <div class="col-sm-4" style="padding: 0">
+                                                            <table style="width: 100%">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>Prima</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" id="prima-basica"
+                                                                               value="{{ soa_descontado }}">
+                                                                        <span>{{ soa_descontado|floatformat:2|intcomma }}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Derecho emisión</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden"
+                                                                               id="derecho-emision-basica"
+                                                                               value="">
+                                                                        <span>0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>I.V.A</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" id="iva-basica"
+                                                                               value="">
+                                                                        <span>0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Total a pagar</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden"
+                                                                               value="{{ soa_descontado }}"
+                                                                               id="total-pagar-basica">
+                                                                        <span> U$ {{ soa_descontado|floatformat:2|intcomma }}</span>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane fade show active"
+                                                 id="amplia" aria-labelledby="apliada-tab">
+
+                                                <div class="container">
+                                                    <input type="hidden" id="valor_nuevo">
+
+                                                    <table class="datos-vehiculo">
+                                                        <thead>
+                                                        <tr>
+                                                            <td>Marca</td>
+                                                            <td>Modelo</td>
+                                                            <td>Año</td>
+                                                            <td></td>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr>
+                                                            <td><span id="span-marca"></span></td>
+                                                            <td><span id="span-modelo"></span></td>
+                                                            <td><span id="span-anno"></span></td>
+                                                            <td style="display: flex; justify-content: flex-end">
+                                                                <div id="btn-cotizacion"
+                                                                     class="btn btn-trust btn-trust-sm">
+                                                                    <small>Descargar</small>
+                                                                    <span class="fa fa-file-pdf"></span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                    <div class="row">
+                                                        <table class="cotizador-table-auto-amplia">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>Detalles de coberturas</th>
+                                                                <th class="number">Suma asegurada</th>
+                                                                <th>Deducible</th>
+                                                                <th class="number">Prima</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody style="font-weight: 900;">
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la indemnización que el conductor estuviere obligado legalmente a pagar cuando sea declarado civilmente responsable por la muerte o lesiones corporales causadas accidentalmente por el uso del vehículo asegurado a personas transportadas a título gratuito, siempre que viajen en la parte destinada a pasajeros.</p> <p>Esta cobertura aplica solamente cuando el conductor del vehículo asegurado es declarado civilmente culpable por fallo de la autoridad competente.</p>">
+                                                                    Responsabilidad civil del conductor por muerte o
+                                                                    lesiones a pasajeros
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r1-sum">
+                                                                    <span>10,000.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r1-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, la Compañía reembolsará al asegurado el valor de los gastos necesarios y razonables en que incurra por concepto de hospitalización, honorarios médicos, medicinas, exámenes radiológicos y de laboratorio de él mismo, su cónyuge, familiares o cualquier otra persona a su cargo o servicio, por lesiones corporales sufridas en el accidente cubierto por esta Póliza, mientras viajen en la parte destinada al conductor y pasajeros del vehículo asegurado.</p>">
+                                                                    Gastos médicos a ocupantes
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r2-sum"
+                                                                                          value="">
+                                                                    <span>10,000.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r2-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Colisiones, Auto ignición, Incendio accidental, Rayo y explosión</p> <p>Sin exceder el valor asegurado por vehículo detallado en las condiciones particulares, mediante esta cobertura se amparan:</p> <ul> <li>Los daños totales o parciales que sufra el vehículo asegurado a consecuencia directa de choque y vuelco accidental, auto ignición, incendio accidental, rayo o acción directa de una explosión.</li> <li>Los gastos de remolque al taller de reparación en los que incurriere el asegurado, así como pago de vigilantes cuando el vehículo tuviese que ser dejado temporalmente en el lugar del accidente, siempre que el siniestro se encuentre cubierto y hasta por la suma asegurada indicada como gastos de salvamento en las condiciones particulares.</li> </ul> <p>Pérdida total</p> <p>Sin exceder el valor asegurado detallado en las condiciones particulares, esta cobertura ampara la pérdida total del vehículo asegurado a consecuencia directa de: Choque y vuelco accidental, auto ignición, incendio accidental, rayo o acción directa de una explosión. Se considerará pérdida total cuando el costo de la reparación del vehículo, aprobado por la Compañía, exceda del 75% del valor asegurado indicado en las condiciones particulares de la presente Póliza.</p> <p>Robo total del vehículo o parcial a consecuencia de robo total</p> <p>Sin exceder el valor asegurado detallado en las condiciones particulares, esta cobertura ampara el robo total del vehículo asegurado y el daño físico con que aparezca después de haber ocurrido el robo, como consecuencia directa de tal robo. Bajo esta cobertura no se ampara el robo parcial de cualesquiera de las partes útiles o accesorios del vehículo asegurado, a menos que tal robo sea a consecuencia de robo total.</p> <p>En caso de robo, la Compañía dispondrá de cuarenta y cinco (45) días, contados a partir de la fecha del reclamo para hacer las investigaciones del caso y procurar la recuperación del vehículo, no quedando obligada a efectuar ningún pago antes de transcurrido este plazo.</p>">
+                                                                    Colisiones mas robo total o parcial
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r4-sum"
+                                                                                          value="">
+                                                                    <span>5,000.00</span></td>
+                                                                <td class="deducible">20% Mínimo U$ 100.00</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r4-total"
+                                                                                          value="">
+                                                                    <span>5,000.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Ampara el costo e instalación normal de los vidrios del vehículo asegurado por la rotura accidental de ellos, siempre que tal rotura se dé afectando solamente a los vidrios, es decir, sin afectar la carrocería.</p>">
+                                                                    Rotura de vidrios
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r5-sum"
+                                                                                          value="">
+                                                                    <span>5,000.00</span></td>
+                                                                <td class="deducible-rotura-vidrios"
+                                                                    style="text-align: center">0.0
+                                                                </td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r5-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Ampara los daños materiales causados directamente al vehículo asegurado por personas que toman parte en desórdenes públicos. Para los efectos de esta cobertura, se entenderá por desórdenes públicos, las alteraciones del orden público producidas por el movimiento desordenado por un grupo no menor de 12 personas civiles que actúen de manera tumultuosa, bulliciosa o violenta en desafío de la autoridad legítimamente constituida o infringiendo sus disposiciones, pero sin tener el objetivo de destitución del gobierno por la fuerza.</p>">
+                                                                    Desórdenes públicos
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r6-sum">
+                                                                    <span>5,000.00</span></td>
+                                                                <td class="deducible">20% Mínimo U$ 100.00</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r6-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Ampara los daños materiales que sufra el vehículo asegurado a consecuencia directa de: temblor, terremoto, erupción volcánica, inundación, maremoto, tornado, huracán, ciclón, tifón, vientos tempestuosos, desbordamiento de ríos, esteros, lagos, lagunas, cauces pluviales en vías de circulación y derrumbes en carreteras abiertas al tránsito.</p>">
+                                                                    Riesgos catastróficos
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r7-sum"
+                                                                                          value="">
+                                                                    <span>5,000.00</span></td>
+                                                                <td class="deducible">20% Mínimo U$ 100.00</td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r7-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Extiende la cobertura del seguro, bajo los mismos términos y condiciones, a los países de Centroamérica y Panamá. Sin embargo, para los efectos de la cobertura de responsabilidad civil, esta será efectiva después que se agote la que el asegurado haya tomado en el otro país donde sea obligatoria esta cobertura.</>">
+                                                                    Extensión territorial
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r8-sum"
+                                                                                          value="5000">
+                                                                    <span>Sin límite de evento</span></td>
+                                                                <td class="deducible-territorial">20% Mínimo U$ 100.00
+                                                                </td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r8-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+
+                                                            <tr class="upgradable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá:</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a una persona
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r9-sum"
+                                                                                          value="2500.0">
+                                                                    <span>2,500.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r9-total"
+                                                                                          value="{{ config.SOA_AUTOMOVIL }}">
+                                                                    <span>{{ config.SOA_AUTOMOVIL|floatformat:2|intcomma }}</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="upgradable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá:</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a dos o mas personas
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r10-sum"
+                                                                                          value="5000">
+                                                                    <span>5,000.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r10-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr class="upgradable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá.</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    R. Civil obligatoria por muerte o lesiones
+                                                                    causadas
+                                                                    a
+                                                                    terceras personas
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r11-sum"
+                                                                                          value="2500.0">
+                                                                    <span>2,500.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r11-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+
+                                                            <tr class="upgrade-value upgrade-unavailable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la Póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá:</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    Exceso en R. Civil obligatoria por muerte o lesiones
+                                                                    causadas a una persona
+                                                                </td>
+                                                                <td class="number">
+                                                                    <select name="exceso" id="select-exceso">
+                                                                        <option value="0.00">0.00</option>
+                                                                        <option value="2500.00">2,500.00</option>
+                                                                        <option value="5000.00">5,000.00</option>
+                                                                        <option value="7500.00">7,500.00</option>
+                                                                    </select>
+                                                                </td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r12-total"
+                                                                                          value="0.0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr class="upgrade-value upgrade-unavailable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la Póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá.</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    Excecso en R. Civil obligatoria por muerte o
+                                                                    lesiones
+                                                                    causadas a dos o mas personas
+                                                                </td>
+                                                                <td class="number">
+                                                                    <input type="hidden" id="r13-sum"
+                                                                           value="0.0">
+                                                                    <span>0.00</span>
+                                                                </td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r13-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+                                                            <tr class="upgrade-value upgrade-unavailable">
+                                                                <td class="tip-help"
+                                                                    data-title="<p>Hasta por el límite monetario establecido en las condiciones particulares de la póliza, esta cobertura cubre la responsabilidad civil legal que pueda derivarse como consecuencia de un accidente de tránsito cubierto por la Póliza, contra la persona que conduzca el vehículo asegurado, y que resulten como consecuencia lesiones corporales incluyendo la muerte de terceros, así como daños materiales a terceros en sus bienes.</p> <p>La indemnización comprenderá.</p> <ul> <li>Los gastos razonables de curación de las terceras personas lesionadas o de su entierro en caso de fallecimiento.</li> <li>La indemnización legal que deba pagar el asegurado por muerte o incapacidad total o parcial de las personas lesionadas.</li> <li>Los gastos y costas legales a que fuere condenado el asegurado, en caso de juicio seguido en su contra por cualquier tercero perjudicado.</li> </ul>">
+                                                                    Exceso en R. Civil obligatoria por muerte o lesiones
+                                                                    causadas a terceras Personas
+                                                                </td>
+                                                                <td class="number"><input type="hidden" id="r14-sum"
+                                                                                          value="2500.0">
+                                                                    <span>0.00</span></td>
+                                                                <td></td>
+                                                                <td class="number"><input type="hidden"
+                                                                                          id="r14-total"
+                                                                                          value="0">
+                                                                    <span>0.00</span></td>
+                                                            </tr>
+
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-sm-8 cotizador-notas-amplia">
+                                                            <p>Gastos de salvamento (US$ 150.00)</p>
+                                                            <p>(1) Se aplicará deducible del 30% en caso de
+                                                                robo</p>
+                                                        </div>
+                                                        <div class="col-sm-4" style="padding: 0">
+                                                            <table class="cotizador-table-total-amplia">
+                                                                <tbody>
+                                                                <tr>
+                                                                    <td>Prima</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" id="prima-total"
+                                                                               value="0.0">
+                                                                        <span>0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Derecho emisión</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" id="derecho-emision"
+                                                                               value="">
+                                                                        <span>0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>I.V.A</td>
+                                                                    <td></td>
+                                                                    <td>15%</td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" id="iva" value="">
+                                                                        <span>0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Total a pagar</td>
+                                                                    <td></td>
+                                                                    <td></td>
+                                                                    <td class="number">
+                                                                        <input type="hidden" value=""
+                                                                               id="total-pagar">
+                                                                        <span>U$0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row" style="border: 1px solid silver;">
+
+                                                        <p class="p-upgrades-notes">
+                                                            <span class="upgrade-notes">Cotizar exeso de responsabilidad civil obligatoria.</span>
+                                                            <a class="btn btn-small btn-trust btn-trust-sm btn-upgrade unactive">cotiza
+                                                                aquí</a>
+                                                        </p>
+
+                                                        <p class="p-info-notes">
+                                                            Los datos
+                                                            mostrados pueden variar según descripciones exactas
+                                                            de su vehiculo</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="step-2">
+
+                                <div id="form-step-2" role="form" data-toggle="validator">
+
+                                    <div class="card">
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p>¿Desea contratar este seguro a nombre de otra persona?</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="cambio_asegurado" id="cambio-asegurado-si"
+                                                           value="si">
+                                                    <label class="form-check-label" for="cambio-asegurado-si">
+                                                        SI
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"
+                                                           name="cambio_asegurado" id="cambio-asegurado-no"
+                                                           value="no" checked>
+                                                    <label class="form-check-label" for="cambio-asegurado-no">
+                                                        NO
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert-info">
+                                            <label style="padding: 7px 0 0 7px">
+                                                <b>Datos del asegurado</b>
+                                            </label>
+                                        </div>
+
+                                        <div class="container">
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+
+                                                    <div class="form-group">
+                                                        <label for="nombres">Nombres</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="nombres" readonly
+                                                               value="{{ user.profile.nombres }}"
+                                                               autocomplete="off"
+                                                               id="nombres" placeholder="NOMBRES" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="apellidos">Apellidos</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="apellidos" readonly
+                                                               value="{{ user.profile.apellidos }}"
+                                                               autocomplete="off"
+                                                               id="apellidos" placeholder="APELLIDOS" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="col-lg-6">
+
+                                                    <div class="form-group">
+                                                        <label for="telefono">Teléfono</label>
+                                                        <input type="text"
+                                                               class="form-control form-control-sm mask-celular"
+                                                               name="telefono" readonly autocomplete="off"
+                                                               value="{{ user.profile.telefono }}"
+                                                               id="telefono" placeholder="2222 2222" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="celular">Celular</label>
+                                                        <input type="text"
+                                                               class="form-control form-control-sm mask-celular"
+                                                               name="celular" readonly max="8"
+                                                               value="{{ user.profile.celular }}"
+                                                               id="celular" placeholder="8888 8888" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="email">Email</label>
+                                                        <input type="email" class="form-control form-control-sm"
+                                                               name="email" readonly value="{{ user.email }}"
+                                                               autocomplete="off"
+                                                               id="email" placeholder="nombre@ejemplo.com" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="cedula">Cédula/RUC</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="cedula" readonly value="{{ user.profile.cedula }}"
+                                                               autocomplete="off"
+                                                               id="cedula" placeholder="" required max="14">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label for="departamento">Departamento</label>
+                                                        <select class="form-control" name="departamento"
+                                                                id="departamento" required readonly>
+                                                            <option> -------</option>
+                                                            {% for d in departamentos %}
+                                                                <option value="{{ d.id }}"> {{ d.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label for="municipio">Municipio</label>
+                                                        <select class="form-control" name="municipio" id="municipio"
+                                                                required readonly>
+                                                            <option value="1"> -------</option>
+                                                            {% comment %}{% for m in municipios %}
+                                                                <option value="{{ m.id }}"> {{ m.name }}</option>
+                                                            {% endfor %}{% endcomment %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="domicilio">Dirección / Domicilio.</label>
+                                                        <textarea class="form-control form-control-sm"
+                                                                  name="domicilio" readonly
+                                                                  id="domicilio" cols="30" rows="3"
+                                                                  required>{{ user.profile.domicilio }}</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group" id="group-parentezco-automovil"
+                                                         style="display: none">
+                                                        <label for="parentezco_automovil">Parentesco</label>
+                                                        <select class="form-control form-control-sm"
+                                                                name="parentezco_automovil" readonly
+                                                                id="parentezco_automovil" required>
+                                                            <option value=""></option>
+                                                            <option value="Papá">Papá</option>
+                                                            <option value="Mamá">Mamá</option>
+                                                            <option value="Conyuge">Conyuge</option>
+                                                            <option value="Hermano">Hermano</option>
+                                                            <option value="Hermano">Hermano</option>
+                                                            <option value="Hijo">Hijo</option>
+                                                            <option value="Hija">Hija</option>
+                                                            <option value="Abuelo">Abuelo</option>
+                                                            <option value="Abuela">Abuela</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="alert-info">
+                                            <label style="padding: 7px 0 0 7px"><b>Datos finales del
+                                                vehículo</b></label>
+                                        </div>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+
+                                                    <div class="form-group">
+                                                        <label for="exampleFormControlFile1">Circulación</label>
+                                                        <input type="file" class="form-control-file form-control-sm"
+                                                               id="file-circulacion" required multiple="true">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="exampleFormControlSelect1">¿La circulación está a
+                                                            nombre del
+                                                            dueño actual?</label>
+                                                        <select class="form-control form-control-sm"
+                                                                id="status-circulacion">
+                                                            <option value="si">Si</option>
+                                                            <option value="no">No</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="file-cedula">Cédula del dueño actual</label>
+                                                        <input type="file" class="form-control-file form-control-sm"
+                                                               id="file-cedula" required multiple="true">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group" style="display: none">
+                                                        <label for="file-compraventa">Carta de compra venta</label>
+                                                        <input type="file" class="form-control-file form-control-sm"
+                                                               id="file-carta"  multiple="true">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-lg-6">
+
+                                                    <div class="form-group">
+                                                        <label for="fecha-emision">Inicio vigencia</label>
+                                                        <div class='input-group date' id='fecha-emision-group'>
+                                                            <input type='text' class="form-control form-control-sm"
+                                                                   name="fecha-emision"
+                                                                   id="fecha-emision" required/>
+                                                            <span class="input-group-append input-group-addon">
+                                                        <span class="input-group-text glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                        </div>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="chasis">No. de chasis</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="chasis"
+                                                               id="chasis" placeholder="No de Chasis" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="motor">No. de motor</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="motor" motor
+                                                               id="motor" placeholder="No de Motor" required>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="placa">No. de placa</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="placa"
+                                                               id="placa" placeholder="No de Placa">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label for="uso">Uso del vehículo</label>
+                                                        <select type="text" class="form-control form-control-sm"
+                                                                name="uso"
+                                                                id="uso" required>
+                                                            <option value="PARTICULAR">PARTICULAR</option>
+                                                            <option value="COMERCIAL">COMERCIAL</option>
+                                                        </select>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6" id="col-dannos">
+
+                                                    <div class="form-group">
+                                                        <label for="danno">¿El vehiculo presenta algun daño
+                                                            actualemente?</label>
+                                                        <select name="danno" id="danno"
+                                                                class="form-control form-control-sm">
+                                                            <option value="no">No</option>
+                                                            <option value="si">Si</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group" style="display: none">
+                                                        <label for="danno_descripcion">Describa el daño del
+                                                            vehiculo.</label>
+                                                        <textarea class="form-control form-control-sm"
+                                                                  name="danno_descripcion"
+                                                                  id="danno_descripcion" cols="30" rows="3"></textarea>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-6">
+
+                                                    <div class="form-group">
+                                                        <label for="color">Color</label>
+                                                        <select type="text" class="form-control form-control-sm"
+                                                                name="color"
+                                                                id="color">
+                                                            <option value="BLANCO">BLANCO</option>
+                                                            <option value="ROJO">ROJO</option>
+                                                            <option value="AZUL">AZUL</option>
+                                                            <option value="NEGRO">NEGRO</option>
+                                                            <option value="GRIS">GRIS</option>
+                                                            <option value="COBRE">COBRE</option>
+                                                            <option value="PLATEADO">PLATEADO</option>
+                                                            <option value="VERDE">VERDE</option>
+                                                            <option value="AMARILLO">AMARILLO</option>
+                                                            <option value="DORADO">DORADO</option>
+                                                            <option value="OTRO">OTRO</option>
+                                                        </select>
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                    <div class="form-group" id="group-color-otro" style="display: none">
+                                                        <label for="color_otro">Indique el color</label>
+                                                        <input type="text" class="form-control form-control-sm"
+                                                               name="color_otro"
+                                                               id="color_otro" placeholder="COLOR">
+                                                        <div class="help-block with-errors"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card" id="card-cesion-derecho">
+                                        <div class="alert-info">
+                                            <label style="padding: 7px 0 0 7px">
+                                                <b>Beneficiario</b>
+                                            </label>
+                                        </div>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+
+                                                    <div class="form-group">
+                                                        <label for="">¿Existe cesión de derechos de la póliza?</label>
+                                                        <select name="cesion_derecho" id="cesion-derecho"
+                                                                class="form-control form-control-sm">
+                                                            <option value="no">No</option>
+                                                            <option value="si">Si</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="form-group" style="display: none">
+                                                        <label for="entidad">Elija la entidad financiera</label>
+                                                        <select name="entidad" id="entidad"
+                                                                class="form-control form-control-sm">
+                                                            <option value="">--------</option>
+                                                            {% for e in entidades %}
+                                                                <option value="{{ e.id }}">{{ e.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div id="step-3">
+
+                                <div id="form-step-3" role="form" data-toggle="validator">
+
+                                    <br><label><b>Forma de Pago</b></label><br>
+                                    <p>Elige entre las formas de pago disponibles.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="pago-anual"
+                                                       value="anual" name="forma-pago" checked>
+                                                <label class="custom-control-label" for="pago-anual">
+                                                    <b>1 PAGO</b> ANUAL TOTAL DE<br>
+                                                    <h2 id="h2-anual" class="dollar"></h2>
+                                                </label><br>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-radio custom-control-inline"
+                                                 id="custom-radio-pago-mensual">
+                                                <input type="radio" class="custom-control-input" id="pago-mensual"
+                                                       name="forma-pago" value="mensual">
+                                                <label class="custom-control-label" for="pago-mensual">
+                                                    <b>En cuotas quincenales</b><br>
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <select name="cantidad_cuotas" id="cantidad_cuotas"
+                                                                    class="form-control" style="min-width: 65px"
+                                                                    disabled>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="hidden" id="valor-cuota" name="valor_cuota"
+                                                                   value="0.0">
+                                                            <h2 id="h2-mensual" class="dollar"
+                                                                style="display: flex"></h2>
+                                                        </div>
+
+                                                    </div>
+
+                                                </label><br>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br><label><b>Medio de pago</b></label><br>
+                                    <p>Usa el medio de pago de tu preferencia.</p>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="debito-automatico"
+                                                       value="debito_automatico" name="medio-pago" required>
+                                                <label class="custom-control-label" for="debito-automatico">
+                                                    Débito automatico<br>
+                                                </label><br>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="deduccion-nomina"
+                                                       name="medio-pago" value="deduccion_nomina">
+                                                <label class="custom-control-label" for="deduccion-nomina">
+                                                    Deducción por nómina<br>
+                                                </label><br>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="custom-control custom-radio custom-control-inline"
+                                                 id="custom-radio-deposito-referenciado">
+                                                <input type="radio" class="custom-control-input"
+                                                       id="deposito-referenciado"
+                                                       name="medio-pago" value="deposito_referenciado">
+                                                <label class="custom-control-label" for="deposito-referenciado">
+                                                    Depósito referenciado<br>
+                                                </label><br>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row zona-debito" style="display: none">
+                                        <div class="col-md-6 col-xs-12">
+                                            <form id="form-card">
+                                                <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Nombre*</span>
+                                                    </span>
+                                                    <input type="text" class="form-control"
+                                                           placeholder="TITULAR DE LA TARJETA"
+                                                           id="name">
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Número*</span>
+                                                    </span>
+                                                            <input type="text" class="form-control"
+                                                                   placeholder="•••• •••• •••• ••••"
+                                                                   id="number">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Vencimiento*</span>
+                                                    </span>
+                                                            <input type="text" class="form-control"
+                                                                   placeholder="•• / ••"
+                                                                   id="expiry">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Cobrar en*</span>
+                                                    </span>
+                                                            <select class="form-control" id="moneda-cobro">
+                                                                <option value="USD">Dólares</option>
+                                                                <option value="NIO">Córdobas</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Banco emisor*</span>
+                                                    </span>
+                                                            <select class="form-control" id="banco-emisor">
+                                                                <option value="BANPRO">BANPRO</option>
+                                                                <option value="BAC">BAC</option>
+                                                                <option value="BDF">BDF</option>
+                                                                <option value="BANCENTRO">BANCENTRO</option>
+                                                                <option value="FICOHSA">FICOHSA</option>
+                                                                <option value="OTROS">OTROS</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                        <div class="col-md-6 col-xs-12">
+                                            <div class="card-widget" style="margin-top: 30px"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row zona-deduccion" style="min-height: 200px">
+                                    </div>
+
+                                    <div class="row zona-deposito" style="display: none;">
+                                        <div class="container"
+                                             style="margin-top: 50px; padding: 5%; text-align: center">
+                                            <p>Enviar cheque a ASSA compañia de seguros a realizar pagos directo a
+                                                caja.</p>
+                                            <p>Efectuar sus pagos, depositando en las cuentas bancaras de cualquier
+                                                sucursal
+                                                de los siguientes bancos:</p>
+                                            <table id="table-cuentas-bancarias">
+                                                <thead>
+                                                <tr>
+                                                    <th>BANCO</th>
+                                                    <th>CUENTA DÓLARES</th>
+                                                    <th>CUENTA CÓRDOBAS</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>Banco de Finanzas</td>
+                                                    <td>203-3018226</td>
+                                                    <td>202-3016497</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Banco de America Central</td>
+                                                    <td>012-065900</td>
+                                                    <td>012-065892</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Banco de la Produción</td>
+                                                    <td>1002-0010313835</td>
+                                                    <td>1002-0009712379</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Ficohsa Nicaragua</td>
+                                                    <td>1560176-23-001</td>
+                                                    <td>1560176-21-002</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <p>(Si el pago es realizado mediante una de las cuentas aquí detalladas,
+                                                favor indicar al cajero que detalle en el concepto el Número de
+                                                Póliza)</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="container" style="text-align: center">
+                                                <div class="form-group form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           id="responsabilidad" required>
+                                                    <label class="form-check-label" for="responsabilidad">
+                                                        <b>Doy fe de que toda la información introducida en este
+                                                            formulario es verdadera.</b>
+                                                    </label>
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+
+                                                <div class="form-group form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           id="autoriza-assa" required>
+                                                    <label class="form-check-label" for="autoriza-assa">
+                                                        <b>Autorizo a ASSA enviar por correo electronico mi póliza,
+                                                            incluyendo
+                                                            renovacion y/o adendas que se realicen.</b>
+                                                    </label>
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+
+
+                                                <div class="form-group form-check" id="group-autoriza-banpro"
+                                                     style="display: none;">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           id="autoriza-banpro" required>
+                                                    <label class="form-check-label" for="responsabilidad">
+                                                        <b>Por este medio autorizo a banpro a debitar de mi planilla las
+                                                            cuotas de esta póliza por el monto de
+                                                            <span class="money"></span> quincenales.</b>
+                                                    </label>
+                                                    <div class="help-block with-errors"></div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <p class="restriccion">Únicamente se podrá asegurar vehículos de uso particular, no se puede
+                        asegurar taxis o de ningún tipo de transporte colectivo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-manual" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <form id="form-manual" method="post" action="{% url 'cotizador:cotizacion_manual' %}"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h2 class="modal-title" id="exampleModalCenterTitle">Seguro de vehículo</h2>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label for="marca">Marca</label>
+                                        <input type="text" class="form-control" name="marca"
+                                               id="marca" placeholder="Marca" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="modelo">Modelo</label>
+                                        <input type="text" class="form-control" name="modelo"
+                                               id="modelo" placeholder="Modelo" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="anno">Año</label>
+                                        <input type="text" class="form-control" name="anno"
+                                               id="anno" placeholder="Año" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="placa">No. de placa</label>
+                                        <input type="text" class="form-control" name="placa"
+                                               id="placa" placeholder="No de Placa">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="exampleFormControlFile1">Circulación</label>
+                                        <input type="file" class="form-control"
+                                               id="file-circulacion" name="file_circulacion" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <div class="form-group">
+                                        <label for="chasis">No. de chasis</label>
+                                        <input type="text" class="form-control" name="chasis"
+                                               id="chasis" placeholder="No de Chasis" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="motor">No. de motor</label>
+                                        <input type="text" class="form-control" name="motor"
+                                               id="motor" placeholder="No de Motor" required>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="color">Color</label>
+                                        <select type="text" class="form-control" name="color" id="color">
+                                            <option value="BLANCO">BLANCO</option>
+                                            <option value="ROJO">ROJO</option>
+                                            <option value="AZUL">AZUL</option>
+                                            <option value="NEGRO">NEGRO</option>
+                                            <option value="GRIS">GRIS</option>
+                                            <option value="COBRE">COBRE</option>
+                                            <option value="PLATEADO">PLATEADO</option>
+                                            <option value="VERDE">VERDE</option>
+                                            <option value="AMARILLO">AMARILLO</option>
+                                            <option value="DORADO">DORADO</option>
+                                            <option value="OTRO">OTRO</option>
+                                        </select>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="uso">Uso del vehículo</label>
+                                        <select type="text" class="form-control" name="uso"
+                                                id="uso" required>
+                                            <option value="PARTICULAR">PARTICULAR</option>
+                                            <option value="COMERCIAL">COMERCIAL</option>
+                                        </select>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </fieldset>
+                        <input class="btn btn-primary float-right" type="submit" value="Enviar">
+                    </div>
+
+                    <div class="modal-footer">
+                        <p class="restriccion">Únicamente se podrá asegurar vehículos de uso particular, no se puede
+                            asegurar taxis o de ningún tipo de transporte colectivo.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-sepelio" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalCenterTitle">Seguro colectivo de sepelio</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="smartwizard-sepelio">
+
+                        <ul>
+                            <li>
+                                <a href="#step-0">Paso 1<br/>
+                                    <small>Datos del asegurado</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-1">Paso 2<br/>
+                                    <small>Evaluar cotización</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-2">Paso 3<br/>
+                                    <small>Emitir póliza</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-3">Paso 4<br/>
+                                    <small>Forma de pago</small>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div>
+
+                            <div id="step-0">
+                                <div id="form-sepelio-step-0" role="form" data-toggle="validator">
+                                    <button class="btn btn-trust" id="btn-add-dependiente-sepelio">
+                                        <span class="fa fa-plus"></span>
+                                        Agregar otro dependiente
+                                    </button>
+                                    <table class="table table-bordered table-striped table-bordered"
+                                           id="table-dependientes-sepelio">
+                                        <thead>
+                                        <tr>
+                                            <th>Primer nombre</th>
+                                            <th>Segundo nombre</th>
+                                            <th>Primer apellido</th>
+                                            <th>Segundo apellido</th>
+                                            <th>Parentesco</th>
+                                            <th>Fecha nacimiento</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div id="step-1">
+                                <div id="form-sepelio-step-1" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+
+                                            <div class="row header-cotizacion-sepelio">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Cotización seguro de sepelio (Gastos Funerarios)</h2>
+                                            </div>
+
+                                            <div class="row">
+                                                <table id="table-cotizacion-sepelio">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nombre asegurado</th>
+                                                        <th>Cobertura</th>
+                                                        <th>Suma asegurada</th>
+                                                        <th>Prima por vigencia</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr class="total">
+                                                        <td colspan="2"></td>
+                                                        <td>
+                                                            <span id="span-suma-asegurada-cotizacion-sepelio"
+                                                                  class="dollar">
+                                                                1,000.0
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="span-total-cotizacion-sepelio" class="dollar">
+                                                                3.75
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <img src="{% static config.LOGO_SEPELIO %}"
+                                                         class="logo-aseguradora-sepelio">
+                                                </div>
+                                                <div class="col" style="text-align: right">
+                                                    <p class="vigencia-sepelio">Vigencia de cobertura hasta:
+                                                        31/12/{{ anno_actual }}</p>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="step-2">
+
+                                <div id="form-sepelio-step-2" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+
+                                            <div class="row header-cotizacion-sepelio">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Adjuntar documentos requeridos</h2>
+                                            </div>
+
+                                            <div class="row">
+                                                <table id="table-documentos-sepelio">
+                                                    <thead>
+                                                    <th>Nombre del asegurado</th>
+                                                    <th>Tipo de identificación</th>
+                                                    <th>Archivo adjunto</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div id="step-3">
+
+                                <div id="form-sepelio-step-3" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+                                            <input type="hidden" id="total-sepelio" value="0.0">
+                                            <div class="row header-cotizacion-sepelio">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Eliga su forma de pago</h2>
+                                            </div>
+
+                                            <br><label><b>Forma de pago</b></label><br>
+                                            <p>Elige entre las formas de pago disponibles.</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="pago-anual-sepelio"
+                                                               value="anual" name="forma-pago-sepelio" checked>
+                                                        <label class="custom-control-label" for="pago-anual-sepelio">
+                                                            <b>1 PAGO</b> ANUAL TOTAL DE<br>
+                                                            <h2 id="h2-anual-sepelio" class="dollar"></h2>
+                                                        </label><br>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="custom-control custom-radio custom-control-inline"
+                                                         id="custom-radio-pago-mensual-sepelio">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="pago-mensual-sepelio"
+                                                               name="forma-pago-sepelio" value="mensual">
+                                                        <label class="custom-control-label" for="pago-mensual-sepelio">
+                                                            <b>En cuotas</b><br>
+
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <select name="cantidad_cuotas_sepelio"
+                                                                            id="cantidad_cuotas_sepelio"
+                                                                            class="form-control"
+                                                                            style="width: auto !important;">
+                                                                        <option value="2">2</option>
+                                                                        <option value="3">3</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <input type="hidden" id="valor-cuota-sepelio"
+                                                                           name="valor_cuota_sepelio"
+                                                                           value="0.0">
+                                                                    <h2 id="h2-mensual-sepelio" class="dollar"
+                                                                        style="display: flex"></h2>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </label><br>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <br><label><b>Medio de pago</b></label><br>
+                                            <p>Usa el medio de pago de tu preferencia.</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="deduccion-nomina-sepelio"
+                                                               name="medio-pago" value="deduccion_nomina_sepelio"
+                                                               checked>
+                                                        <label class="custom-control-label"
+                                                               for="deduccion-nomina-sepelio">
+                                                            Deducción por nómina<br>
+                                                        </label><br>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row zona-deduccion" style="min-height: 200px"></div>
+
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="container" style="text-align: center">
+                                                        <div class="form-group form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                   id="responsabilidad" required>
+                                                            <label class="form-check-label" for="responsabilidad">
+                                                                <b>Doy fe de que toda la información introducida en este
+                                                                    formulario es verdadera.</b>
+                                                            </label>
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                        <div class="form-group form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                   id="responsabilidad" required>
+                                                            <label class="form-check-label" for="responsabilidad">
+                                                                <b>Autorizo a Seguros America enviar por correo
+                                                                    electronico mi póliza, incluyendo
+                                                                    renovacion y/o adendas que se realicen.</b>
+                                                            </label>
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-accidente" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Seguro colectivo de accidente</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="smartwizard-accidente">
+
+                        <ul>
+                            <li>
+                                <a href="#step-0">Paso 1<br/>
+                                    <small>Datos del asegurado</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-1">Paso 2<br/>
+                                    <small>Evaluar cotización</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-2">Paso 3<br/>
+                                    <small>Emitir póliza</small>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#step-3">Paso 4<br/>
+                                    <small>Forma de pago</small>
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div>
+
+                            <div id="step-0">
+                                <div id="form-accidente-step-0" role="form" data-toggle="validator">
+
+                                    <button class="btn btn-trust" id="btn-add-dependiente-accidente">
+                                        <span class="fa fa-plus"></span>
+                                        Agregar otro dependiente
+                                    </button>
+
+                                    <table class="table table-bordered table-striped table-bordered"
+                                           id="table-dependientes-accidente">
+                                        <thead>
+                                        <tr>
+                                            <th>Primer nombre</th>
+                                            <th>Segundo nombre</th>
+                                            <th>Primer apellido</th>
+                                            <th>Segundo apellido</th>
+                                            <th>Parentesco</th>
+                                            <th>Fecha nacimiento</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+
+                            <div id="step-1">
+                                <div id="form-accidente-step-1" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+
+                                            <div class="row header-cotizacion-accidente">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Cotización seguro de accidente</h2>
+                                            </div>
+
+                                            <div class="row">
+                                                <table id="table-cotizacion-accidente">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Nombre asegurado</th>
+                                                        <th>Cobertura</th>
+                                                        <th>Suma asegurada</th>
+                                                        <th>Prima por vigencia</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr class="total">
+                                                        <td colspan="2"></td>
+                                                        <td>
+                                                            <span id="span-suma-asegurada-cotizacion-accidente"
+                                                                  class="dollar">
+                                                                1,000.0
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <span id="span-total-cotizacion-accidente" class="dollar">
+                                                                3.75
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col">
+                                                    <img src="{% static config.LOGO_ACCIDENTE %}"
+                                                         class="logo-aseguradora-accidente">
+                                                </div>
+                                                <div class="col">
+                                                    <p class="vigencia-accidente">Vigencia de cobertura hasta:
+                                                        31/12/{{ anno_actual }}</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="step-2">
+                                <div id="form-accidente-step-2" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+
+                                            <div class="row header-cotizacion-accidente">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Adjuntar documentos requeridos</h2>
+                                            </div>
+
+                                            <div class="row">
+                                                <table id="table-documentos-accidente">
+                                                    <thead>
+                                                    <th>Nombre del asegurado</th>
+                                                    <th>Tipo de identificación</th>
+                                                    <th>Archivo adjunto</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="step-3">
+                                <div id="form-accidente-step-3" role="form" data-toggle="validator">
+
+                                    <div class="card" style="padding: 20px">
+                                        <div class="container">
+                                            <input type="hidden" id="total-accidente">
+
+                                            <div class="row header-cotizacion-sepelio">
+                                                <figure>
+                                                    <img src="{% static 'cotizador/images/logo.gif' %}">
+                                                </figure>
+
+                                                <h2>Eliga su forma de pago</h2>
+                                            </div>
+
+                                            <br><label><b>Forma de pago</b></label><br>
+                                            <p>Elige entre las formas de pago disponibles.</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="pago-anual-accidente"
+                                                               value="anual" name="forma-pago-accidente" checked>
+                                                        <label class="custom-control-label" for="pago-anual-accidente">
+                                                            <b>1 PAGO</b> ANUAL TOTAL DE<br>
+                                                            <h2 id="h2-anual-accidente" class="dollar"></h2>
+                                                        </label><br>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="custom-control custom-radio custom-control-inline"
+                                                         id="custom-radio-pago-mensual-accidente">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="pago-mensual-accidente"
+                                                               name="forma-pago-accidente" value="mensual">
+                                                        <label class="custom-control-label"
+                                                               for="pago-mensual-accidente">
+                                                            <b>En cuotas</b><br>
+
+
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <select name="cantidad_cuotas_accidente"
+                                                                            id="cantidad_cuotas_accidente"
+                                                                            class="form-control">
+                                                                        <option value="2">2</option>
+                                                                        <option value="3">3</option>
+                                                                        <option value="4">4</option>
+                                                                        <option value="5">5</option>
+                                                                        <option value="6">6</option>
+                                                                        <option value="7">7</option>
+                                                                        <option value="8">8</option>
+                                                                        <option value="9">9</option>
+                                                                        <option value="10">10</option>
+                                                                        <option value="11">11</option>
+                                                                        <option value="12">12</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <input type="hidden" id="valor-cuota-accidente"
+                                                                           name="valor_cuota_sepelio"
+                                                                           value="0.0">
+                                                                    <h2 id="h2-mensual-accidente" class="dollar"
+                                                                        style="display: flex"></h2>
+                                                                </div>
+
+                                                            </div>
+
+                                                        </label><br>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <br><label><b>Medio de pago</b></label><br>
+                                            <p>Usa el medio de pago de tu preferencia.</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input type="radio" class="custom-control-input"
+                                                               id="deduccion-nomina-accidente"
+                                                               name="medio-pago" value="deduccion_nomina_accidente"
+                                                               checked>
+                                                        <label class="custom-control-label"
+                                                               for="deduccion-nomina-accidente">
+                                                            Deducción por nómina<br>
+                                                        </label><br>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row zona-deduccion" style="min-height: 200px"></div>
+
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="container" style="text-align: center">
+                                                        <div class="form-group form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                   id="responsabilidad" required>
+                                                            <label class="form-check-label" for="responsabilidad">
+                                                                <b>Doy fe de que toda la información introducida en este
+                                                                    formulario es verdadera.</b>
+                                                            </label>
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                        <div class="form-group form-check">
+                                                            <input type="checkbox" class="form-check-input"
+                                                                   id="responsabilidad" required>
+                                                            <label class="form-check-label" for="responsabilidad">
+                                                                <b>Autorizo a Mapfre enviar por correo electronico mi
+                                                                    póliza, incluyendo
+                                                                    renovacion y/o adendas que se realicen.</b>
+                                                            </label>
+                                                            <div class="help-block with-errors"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    {{ block.super }}
+
+    <script src="{% static 'moment/min/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'bootstrap-validator/dist/validator.min.js' %}"></script>
+    <script src="{% static 'cotizador/wizard/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'sweetalert2/dist/sweetalert2.js' %}"></script>
+    <script src="{% static 'empleados/card/dist/jquery.card.js' %}"></script>
+    <script src="{% static 'tipsy/src/javascripts/jquery.tipsy.js' %}"></script>
+    <script src="{% static 'ajax/token.js' %}"></script>
+
+{% endblock %}
+
+
+{% block scripts-custom %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% url 'cotizador:javascript' 'cotizador.auto.js' %}"></script>
+
+    <script type="text/javascript" src="{% url 'cotizador:javascript' 'cotizador.sepelio.js' %}"></script>
+
+    <script type="text/javascript" src="{% url 'cotizador:javascript' 'cotizador.accidente.js' %}"></script>
+
+{% endblock %}

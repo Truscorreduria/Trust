@@ -1,0 +1,431 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 0.3cm 1.5cm 0 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .pull-right {
+            text-align: right;
+        }
+
+        table#datos-auto {
+            padding: 0;
+        }
+
+        table#datos-auto tr {
+            margin: 5px 0;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
+                         style="height: 65px"/>
+                </figure>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block content %}
+    <p style="width: 100%; font-weight: 900; text-align: center; padding: 0; font-size: 1.5em">
+        ORDEN DE TRABAJO</p>
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="2">
+                <p style="margin: 0; padding: 0;">No de Orden de Trabajo: {{ poliza.code }}</p>
+                <p style="margin: 0; padding: 0;">Fecha de Solicitud: {{ poliza.created }}</p>
+                <p style="margin: 0; padding: 0;">Plan: SEGURO DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">Moneda: DOLARES</p>
+                <p style="margin: 0; padding: 0;">Nombre de Aseguradora: ASSA</p>
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
+                border-bottom: 0.1px solid black; line-height: 0; background-color: #b9ffc1;
+                font-size: 11pt">Asegurado/Contratante: codigo-pendiente
+                {{ poliza.nombres }} {{ poliza.apellidos }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="2" style="padding-top: 3px;"><b>Datos:</b></td>
+            <td colspan="3" style="padding-top: 3px;"><b>Vigencia de la póliza:</b> 365
+                días
+            </td>
+        </tr>
+        <tr>
+            <td>Cédula o RUC:</td>
+            <td>{{ poliza.cedula }}</td>
+            <td>Desde:</td>
+            <td style="color: blue">{{ poliza.fecha_emision|date:'j' }} de {{ poliza.fecha_emision|date:'F' }}
+                de {{ poliza.fecha_emision|date:'Y' }}</td>
+            <td>({{ poliza.fecha_emision|date:'H' }}:{{ poliza.fecha_emision|date:'i' }} Horas)</td>
+        </tr>
+        <tr>
+            <td>Teléfono:</td>
+            <td>{{ poliza.telefono }}</td>
+            <td>Hasta:</td>
+            <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
+            <td>(24:00 Horas)</td>
+        </tr>
+        <tr>
+            <td>Celular:</td>
+            <td>{{ poliza.user.profile.celular }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            {% if not poliza.cesion_derecho %}
+                <td></td>
+                <td></td>
+                <td></td>
+            {% else %}
+                <td>Acreedor/Beneficiario</td>
+                <td colspan="2">{{ poliza.beneficiario.name }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ poliza.user.email }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black;">Dirección:</td>
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="4" style="padding-top: 3px; background-color: #b9ffc1; font-size: 11pt;
+            border-top: 1px solid black; border-bottom: 1px solid black">
+                <b>Detalle del Vehículo
+                    asegurado</b></td>
+        </tr>
+        <tr>
+            <td>Certificado No:</td>
+            <td></td>
+            <td>Uso:</td>
+            <td>{{ poliza.uso }}</td>
+        </tr>
+        <tr>
+            <td>Marca:</td>
+            <td>{{ poliza.marca }}</td>
+            <td>No. Motor:</td>
+            <td>{{ poliza.motor }}</td>
+        </tr>
+        <tr>
+            <td>Modelo:</td>
+            <td>{{ poliza.modelo }}</td>
+            <td>No. VIN:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Año:</td>
+            <td>{{ poliza.anno }}</td>
+            <td>Capacidad:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Placa:</td>
+            <td>{{ poliza.placa }}</td>
+            <td>No. Chasis:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Suma Asegurada:</td>
+            <td><b>U$ {{ poliza.suma_asegurada|floatformat:2|intcomma }}</b></td>
+            <td>Color:</td>
+            <td>{{ poliza.color }}</td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">Toneladas:</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">0.00</td>
+        </tr>
+    </table>
+
+    <table style="margin: 0; padding: 0; line-height: 3px; ">
+        <thead>
+        <tr>
+            <th colspan="4"
+                style="text-align: left; background-color: #b9ffc1; font-size: 11pt;
+                border-bottom: 1px solid black; border-top: 1px solid black; padding: 2px 0">
+                Detalle de Coberturas
+            </th>
+            <th style="background-color: #b9ffc1; font-size: 8pt; border-bottom: 1px solid black;
+            border-top: 1px solid black">
+                Suma Asegurada
+            </th>
+            <th style="background-color: #b9ffc1; font-size: 8pt; border-bottom: 1px solid black;
+            border-top: 1px solid black"
+                colspan="2">Deducible
+            </th>
+            <th style="text-align: right; background-color: #b9ffc1; font-size: 8pt; border-bottom:
+            1px solid black; border-top: 1px solid black">
+                Prima
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% ifequal poliza.tipo_cobertura 'amplia' %}
+            {% if poliza.monto_exceso %}
+                {% ifnotequal poliza.monto_exceso '0.00' %}
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Muerte
+                            O
+                            Lesiones
+                            Causadas A Una Persona
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.costo_exceso|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Muerte
+                            O
+                            Lesiones
+                            Causadas A Dos O Mas Personas
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso_ampliado|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Daños
+                            Materiales
+                            Causados A Terceras Personas
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+                    </tr>
+                {% endifnotequal %}
+            {% endif %}
+            <tr>
+                <td style="background-color: rgba(243,243,245,0.84)" colspan="4">Responsabilidad Civil Del Conductor Por
+                    Muerte O Lesiones A Pasajeros
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$10,000.00</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+            </tr>
+
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Colisiones Mas Robo Total O Parcial A
+                    Consecuencia De Robo Total (1)
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                    ${{ poliza.suma_asegurada|floatformat:2|intcomma }}</td>
+                <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">
+                    {{ poliza.deducible }}
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                    ${{ poliza.valor_prima|floatformat:2|intcomma }}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Rotura De Vidrios</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                    ${{ poliza.rotura_vidrios|floatformat:2|intcomma }}</td>
+                <td colspan="2"
+                    style="text-align: center; background-color: rgba(243,243,245,0.84)">
+                    U${{ poliza.deducible_rotura_vidrios|floatformat:2|intcomma }}</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Desordenes Publicos</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                    ${{ poliza.suma_asegurada|floatformat:2|intcomma }}</td>
+                <td colspan="2"
+                    style="text-align: center; background-color: rgba(243,243,245,0.84)">{{ poliza.deducible }}
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Riesgos Catastroficos</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                    ${{ poliza.suma_asegurada|floatformat:2|intcomma }}</td>
+                <td colspan="2"
+                    style="text-align: center; background-color: rgba(243,243,245,0.84)">{{ poliza.deducible }}
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Extension Territorial</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">Sin limite de evento</td>
+                <td colspan="2"
+                    style="text-align: center; background-color: rgba(243,243,245,0.84)">{{ poliza.deducible_extension }}
+                </td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+            </tr>
+        {% endifequal %}
+
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Muerte O Lesiones
+                Causadas A Una Persona
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                {% ifequal poliza.tipo_cobertura 'basica' %}
+                    ${{ soa_descontado|floatformat:2|intcomma }}
+                {% else %}
+                    ${{ config.SOA_AUTOMOVIL|floatformat:2|intcomma }}
+                {% endifequal %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Muerte O Lesiones
+                Causadas A Dos O Mas Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$5,000.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">R. Civil Obligatoria X Daños Materiales
+                Causados A Terceras Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+    <table style="margin-top: 20px">
+        <tr>
+            <td>
+                {% ifequal poliza.tipo_cobertura 'amplia' %}
+                    <table>
+                        <tr>
+                            <td>Gastos de salvamento (US$ 150.00)</td>
+                        </tr>
+                        <tr>
+                            <td>(1)Se aplicará deducible del 30%</td>
+                        </tr>
+                    </table>
+                {% endifequal %}
+            </td>
+            <td>
+                <table>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">U$ {{ poliza.subtotal|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Derecho emisión</td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right">U$ {{ poliza.emision|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>I.V.A.</td>
+                        <td> 15%</td>
+                        <td></td>
+                        <td style="text-align: right">U$ {{ poliza.iva|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Total a Pagar:</b></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align: right"><b>U$ {{ poliza.total|floatformat:2|intcomma }}</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
+                border-bottom: 0.1px solid black; line-height: 0; background-color: #b9ffc1;
+                font-size: 11pt">Forma de Pago
+            </td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 15px; border-left: 3px solid silver; padding-left: 3px;">
+        <tr style="padding-top: 3px">
+            <td>Frecuencia de Pago</td>
+            <td>Forma de Pago</td>
+            <td>Día de Pago</td>
+            <td>Monto / Cuota</td>
+        </tr>
+        <tr>
+            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas }}) {% ifequal poliza.cuotas 1 %}Pago{% else %}
+                Pagos{% endifequal %}</td>
+            <td>
+                {% ifequal poliza.medio_pago 'deduccion_nomina' %}Dedución por Nómina{% endifequal %}
+                {% ifequal poliza.medio_pago 'debito_automatico' %}Débito Automático{% endifequal %}
+                {% ifequal poliza.medio_pago 'deposito_referenciado' %}Depósito Referenciado{% endifequal %}
+            </td>
+            <td>{{ poliza.fecha_pago.day }} del mes correspondiente</td>
+            <td>U$ {{ poliza.monto_cuota|floatformat:2|intcomma }}</td>
+        </tr>
+    </table>
+
+    <p style="font-size: 1.1em; text-align: justify; margin: 0; padding: 0; margin-top: 20mm">Recibirá un correo de
+        notificación cuando su
+        póliza este lista.</p>
+
+    <p style="font-size: 1.1em; text-align: justify; margin: 0; padding: 0;">Podrá retirar su carnet en las próximas 24
+        horas hábiles.</p>
+
+    <p style="font-size: 1.1em; text-align: justify; margin: 0; padding: 0;">Cualquier duda contactarse al 2251
+        0108.</p>
+
+    <p style="font-size: 1.1em; text-align: justify; margin: 0; padding: 0;">Esta orden puede estar sujeta a cambios por
+        parte de la compañía de
+        Seguros.</p>
+
+    <p style="font-size: 1.1em; text-align: justify; margin: 0; padding: 0;">Este documento es un Orden de Trabajo. Para
+        efectos de siniestro
+        deberá presentar su póliza.</p>
+
+{% endblock %}
+

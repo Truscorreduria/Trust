@@ -1,0 +1,401 @@
+{% extends 'cotizador/base.html' %}
+
+{% load static %}
+
+{% block extra-style %}
+    {{ block.super }}
+    <style type="text/css">
+        span.bold {
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content-section %}
+    <section id="inicio-section">
+
+        <div class="title">
+            <figure>
+                <img src="{% static 'cotizador/images/inicio/siniestro.blanco.png' %}" alt="siniestros">
+            </figure>
+            <p>
+                Siniestros
+            </p>
+        </div>
+
+        <div id="links">
+            <a href="#" class="link" id="call-modal-siniestro-auto">
+                <img src="{% static 'cotizador/images/auto.png' %}">
+                <div class="link-description">
+                    <span class="action">Automovil</span>
+                </div>
+            </a>
+            <a href="#" class="link" id="call-modal-siniestro-sepelio">
+                <img src="{% static 'cotizador/images/funerarios.png' %}">
+                <div class="link-description">
+                    <span class="action">Sepelio</span>
+                </div>
+            </a>
+            <a href="#" class="link" id="call-modal-siniestro-accidente">
+                <img src="{% static 'cotizador/images/accidente.png' %}">
+                <div class="link-description">
+                    <span class="action">Accidente</span>
+                </div>
+            </a>
+            <a href="#" class="link" id="call-modal-siniestro-vida">
+                <img src="{% static 'cotizador/images/vida.png' %}">
+                <div class="link-description">
+                    <span class="action">Vida</span>
+                </div>
+            </a>
+        </div>
+
+    </section>
+{% endblock %}
+
+
+{% block modales %}
+    <div class="modal fade" id="modal-siniestro-auto" tabindex="-1" role="dialog"
+         aria-labelledby="modal-siniestro-auto-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modal-siniestro-auto-title">
+                        ¿Qué hacer en caso de reclamo de automóvil?
+                    </h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col" style="text-align: justify; font-weight: 200">
+                                <ol>
+                                    <li>Dar aviso a <span class="bold">ASSA</span> tan pronto como tenga conocimiento
+                                        del accidente, a más tardar
+                                        dentro de
+                                        los tres <span class="bold">3 días</span> siguientes del hecho, reportando al
+                                        numero <span class="bold">1-800-9911</span> o
+                                        presentándose a las
+                                        oficinas de ASSA compañía de seguros.
+                                    </li>
+                                    <li>Presentar formal denuncia antes las autoridades competentes, al momento del
+                                        accidente, y
+                                        entregar a ASSA el <span
+                                                class="bold">certificado de la policía de tránsito</span>
+                                        correspondiente tan
+                                        pronto como sea
+                                        posible.
+                                    </li>
+                                    <li>Llenar <span class="bold">Formato de aviso de accidente</span> y presentar la
+                                        documentación requerida para
+                                        la apertura
+                                        de su reclamo: 
+
+                                        <ul>
+                                            <li><span class="bold">Copia de tarjeta de circulación</span></li>
+                                            <li><span class="bold">Copia de licencia de conducir</span></li>
+                                            <li><span class="bold">Copia de carnet de su póliza</span></li>
+                                            <li><span class="bold">Certificado de tránsito original (en caso que aplique)</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>La compañía debe realizar inspección de su vehículo.</li>
+                                    <li>Entregar presupuesto de los daños según indicación del personal de reclamos.
+                                    </li>
+
+                                    <li>Realizar pago de deducible o co aseguro.</li>
+                                </ol>
+                                <p>Recuerde:</p>
+                                <ol>
+                                    <li>Tomar medidas de salvaguarda para proteger su vehículo.</li>
+                                    <li>No proceda a la modificación o reparación del vehículo sin la previa inspección
+                                        y
+                                        autorización de la compañía.
+                                    </li>
+                                    <li>No admitir responsabilidad alguna, ni transar o hacer promesas de pago sin el
+                                        consentimiento
+                                        previo de la compañía.
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div class="col">
+                                <p>Formatos necesarios</p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=auto_Informe_de_Accidentes_ASSA.pdf">Informe
+                                        de accidente.pdf</a>
+                                </p>
+
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=auto_TALLERES_AUTORIZADOS_ASSA.pdf">Talleres
+                                        autorizados.pdf</a>
+                                </p>
+                                <a class="btn-trust" href="{% url 'cotizador:contactanos' %}#reclamoauto">Aperturar reclamo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-siniestro-sepelio" tabindex="-1" role="dialog"
+         aria-labelledby="modal-siniestro-sepelio-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modal-siniestro-sepelio-title">
+                        ¿Qué hacer en caso de reclamo de sepelio(gastos funerales)?
+                    </h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row" style="text-align: justify; font-weight: 200">
+                            <div class="col">
+                                <p>Requisitos por fallecimiento de dependientes:</p>
+                                <ol>
+                                    <li>Llenar formulario suministrado por Seguros America.</li>
+                                    <li>Fotocopia de cédula de identidad o copia de partida de nacimiento (fallecido).
+                                    </li>
+                                    <li>Acta de defunción del Minsa.</li>
+                                    <li>Constancia de defunción de la Alcaldía.</li>
+                                    <li>Fotocopia de cédula de identidad del beneficiario.</li>
+                                    <li>Copia del contrato laboral del empleado.</li>
+                                    <li>Copia de la última colilla del INSS (proporcionado por RRHH).</li>
+                                </ol>
+                            </div>
+                            <div class="col">
+                                <p>Formatos necesarios:</p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=sepelio_Aviso_de_declaracion_por_muerte.pdf">
+                                        Aviso de declaracion por muerte.pdf
+                                    </a>
+                                </p>
+                                <a class="btn-trust" href="{% url 'cotizador:contactanos' %}#reclamosepelio">Aperturar reclamo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-siniestro-accidente" tabindex="-1" role="dialog"
+         aria-labelledby="modal-siniestro-accidente-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modal-siniestro-accidente-title">
+                        ¿Qué hacer en caso de reclamo de accidentes?
+                    </h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row" style="text-align: justify; font-weight: 200">
+                            <div class="col">
+
+                                <p><span class="bold">En caso de accidente (Lesiones):</span></p>
+
+                                <ol>
+                                    <li>Completar formato de declaración de accidente, por el asegurado.
+                                    </li>
+                                    <li>Dar aviso a la compañía a más tardar 5 días después de ocurrido el accidente.</li>
+                                    <li>Completar formato de asistencia médica por primera vez, por el médico tratante.</li>
+                                    <li>Completar formato de asistencia médica subsecuente, por el médico tratante, por
+                                        cada consulta médica subsiguiente que llegara a presentar.
+                                    </li>
+                                    <li>Epicrisis médica y resumen clínico actualizado del centro donde recibió la atención médica.</li>
+                                    <li>Originales de recetas y facturas de los medicamentos.</li>
+                                    <li>Facturas o recibos originales de honorarios médicos. </li>
+                                    <li>Resultados de radiografías u otros exámenes complementarios, con sus conclusivos,
+                                        indicación médica y factura.</li>
+                                    <li>Fotocopia de la cédula de identidad del asegurado. </li>
+                                    <li>En caso de accidente de tránsito, certificado de las autoridades policiales y
+                                        dictamen médico legal.
+                                    </li>
+                                    <li>Cualquier otro documento adicional solicitado por la compañía. </li>
+                                </ol>
+
+                                <p><span class="bold">Atenciones de emergencias por accidente:</span></p>
+
+                                <ol>
+                                    <li>Presentarse a la admisión del privado o área de registro y admisión en el
+                                        hospital de la red, debidamente identificado (carnet de seguro y cédula).
+                                    </li>
+                                    <li>El hospital debe notificar a MAPFRE Nicaragua y solicitar la autorización
+                                        hasta el límite de gastos médicos establecido en la póliza.</li>
+                                    <li>El asegurado deberá llenar la hoja de reclamos y carta de responsabilidad
+                                        que será proporcionada en dicha unidad hospitalaria.</li>
+                                    <li>El asegurado es responsable de cancelar cualquier gasto no amparado
+                                        por la póliza. </li>
+                                </ol>
+
+                            </div>
+                            <div class="col">
+                                <p>Formatos necesarios:</p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Adenda_de_pagos_vía_transferencia_electrónica.pdf">
+                                        Adenda de pagos vía transferencia electrónica.pdf</a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Asistencia_medica_por_accidente.pdf">
+                                        Asistencia medica por accidente.pdf
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Asistencia_medica_subsecuente.pdf">
+                                        Asistencia medica subsecuente.pdf
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Declaracion_de_Accidente.pdf">
+                                        Declaracion de accidente.pdf
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Red_de_Proveedores_Medicos.pdf">
+                                        Red de proveedores medicos.pdf
+                                    </a>
+                                </p>
+                                <a class="btn-trust" href="{% url 'cotizador:contactanos' %}#reclamoaccidente">Aperturar reclamo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-siniestro-vida" tabindex="-1" role="dialog"
+         aria-labelledby="modal-siniestro-vida-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modal-siniestro-vida-title">
+                        ¿Qué hacer en caso de muerte?
+                    </h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row" style="text-align: justify; font-weight: 200">
+                            <div class="col">
+
+                                <p>En caso de muerte, deberá presentar los siguientes documentos: </p>
+
+                                <ol>
+                                    <li>Carta de parte de la empresa notificando el fallecimiento del asegurado,
+                                        indicando
+                                        la fecha
+                                        y número de póliza.
+                                    </li>
+                                    <li>Fotocopia de la cédula de identidad del asegurado fallecido.</li>
+                                    <li>Fotocopia de colilla de pago donde aparezca incluido el asegurado (última
+                                        colilla).
+                                    </li>
+                                    <li>Fotocopia de cédula de identidad de los beneficiarios mayores de 21 años de
+                                        edad. Si
+                                        son
+                                        menores de edad fotocopia del certificado de nacimiento.
+                                    </li>
+                                    <li>Formularios <span class="bold">Anexo A</span>, este formulario es facilitado por INISER, que deberá ser
+                                        completado por
+                                        el contratante de la póliza y los beneficiarios que designó el asegurado
+                                        fallecido.
+                                    </li>
+                                    <li>INISER podrá solicitar documentos adicionales de ser necesarios para el análisis
+                                        del
+                                        reclamo.
+                                    </li>
+                                </ol>
+
+                                <p>En caso de incapacidad total y permanente:</p>
+                                <ol>
+                                    <li>Carta de parte de la empresa notificando la incapacidad del asegurado y número
+                                        de la
+                                        póliza.
+                                    </li>
+                                    <li>Fotocopia de cédula de identidad del asegurado incapacitado.</li>
+                                    <li>Fotocopia de colilla de pago donde aparezca incluido el asegurado (última
+                                        colilla).
+                                    </li>
+                                    <li>Epicrisis médicas, extendidas por los médicos que han atendido al asegurado
+                                        incapacitado.
+                                    </li>
+                                    <li>Resolución de pensión del INSS.</li>
+                                    <li>Carta de cesantía (ésta carta es emitida por la empresa cuando deja de ser
+                                        empleado
+                                        activo
+                                        de la empresa).
+                                    </li>
+                                    <li>Formulario  <span class="bold">Hoja de reclamo INI-158</span> este formulario es facilitado por INISER, que
+                                        deberá ser
+                                        completado por el contratante de la póliza, asegurado y el médico tratante.
+                                    </li>
+                                    <li>Resultados de todos los exámenes realizados.</li>
+                                    <li>INISER podrá solicitar documentos adicionales de ser necesario para el análisis
+                                        del
+                                        reclamo.
+                                    </li>
+                                </ol>
+                            </div>
+                            <div class="col">
+                                <p>Formatos necesarios:</p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=vida_PERFIL_2019.pdf">
+                                        PERFIL.pdf
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=vida_INI_158-HOJA_DE_RECLAMO.pdf">
+                                        INI 158 - HOJA DE RECLAMO.pdf
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href="{% url 'cotizador:download' %}?file_name=vida_ANEXO A.pdf">
+                                        ANEXO A.pdf
+                                    </a>
+                                </p>
+                                <a class="btn-trust" href="{% url 'cotizador:contactanos' %}#reclamovida">Aperturar reclamo</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#call-modal-siniestro-auto').on('click', function () {
+                $('#modal-siniestro-auto').modal('show');
+            });
+            $('#call-modal-siniestro-sepelio').on('click', function () {
+                $('#modal-siniestro-sepelio').modal('show');
+            });
+            $('#call-modal-siniestro-accidente').on('click', function () {
+                $('#modal-siniestro-accidente').modal('show');
+            });
+            $('#call-modal-siniestro-vida').on('click', function () {
+                $('#modal-siniestro-vida').modal('show');
+            });
+        })
+    </script>
+{% endblock %}

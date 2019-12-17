@@ -1,0 +1,395 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+
+{% block extra_style %}
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 0.3cm 1.5cm 0 1.5cm;
+        }
+
+        body {
+            position: relative;
+        }
+
+        body:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='1400px' width='1000px'><text x='500' y='400' fill='GREY' font-size='120pt' font-family='Arial' transform='rotate(30 20,40)'>DRAFT</text></svg>");
+            background-repeat: repeat-y;
+            background-position: left center;
+            background-attachment: fixed;
+            background-size: 100%;
+            opacity: 0.5;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .pull-right {
+            text-align: right;
+        }
+
+        table#datos-auto {
+            padding: 0;
+        }
+
+        table#datos-auto tr {
+            margin: 5px 0;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table style="width: 100%; margin: 0; padding: 0">
+        <tr>
+            <td colspan="2">
+                <figure id="assa">
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}"/>
+                </figure>
+            </td>
+            <td style="padding: 0 0 0 30px">
+                <p style="margin: 0; font-size: 0.90em">Edificio Corporativo ASSA</p>
+                <p style="margin: 0; font-size: 0.90em">Pista Jean Paul Genie</p>
+                <p style="margin: 0; font-size: 0.90em">Costado Oeste Edificio BID</p>
+                <p style="margin: 0; font-size: 0.90em">Managua, Nicaragua.</p>
+            </td>
+            <td style="padding: -15px 0 0 30px;">
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Teléfono (505) 2276-9000</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Fax (505) 2276-9003</p>
+                <p style="margin: 0; padding: 0; font-size: 0.90em">Apartado MR-67</p>
+            </td>
+        </tr>
+        <tr style="margin-top: 0">
+            <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
+        </tr>
+    </table>
+{% endblock %}
+
+
+{% block content %}
+    <p style="width: 100%; color: red; font-weight: 900; text-align: right;
+    margin: 0 180px 0 0; padding: 0; font-size: 1.3em">
+        Póliza: PENDIENTE</p>
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="2">
+                <p style="margin: 0; padding: 0;">CONDICIONES PARTICULARES</p>
+                <p style="margin: 0; padding: 0;">POLIZA NUEVA DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">Fecha de Emisión: {{ poliza.fecha_emision }}</p>
+                <p style="margin: 0; padding: 0;">Plan: SEGURO DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">Moneda: DOLARES</p>
+            </td>
+            <td style="text-align: right;">
+                Grupo Cob: EMPBR
+            </td>
+            <td style="text-align: right;">
+                Grupo Pol: BPRO
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-weight: 900; font-size: 1.2em">
+        <tr>
+            <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
+            border-bottom: 0.1px solid black; line-height: 0">Asegurado/Contratante: codigo-pendiente
+                {{ poliza.nombres }} {{ poliza.apellidos }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="2" style="padding-top: 3px;"><b>Datos:</b></td>
+            <td colspan="3" style="padding-top: 3px;"><b>Vigencia de la póliza:</b> 366
+                días
+            </td>
+        </tr>
+        <tr>
+            <td>Cédula o RUC:</td>
+            <td>{{ poliza.cedula }}</td>
+            <td>Desde:</td>
+            <td style="color: blue">{{ poliza.fecha_emision }}</td>
+            <td>(00:01 Horas)</td>
+        </tr>
+        <tr>
+            <td>Teléfono:</td>
+            <td>{{ poliza.telefono }}</td>
+            <td>Hasta:</td>
+            <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
+            <td>(24:00 Horas)</td>
+        </tr>
+        <tr>
+            <td>Celular:</td>
+            <td>Por reportar</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Apdo.:</td>
+            <td>Por reportar</td>
+            {% if not poliza.cesion_derecho %}
+                <td></td>
+                <td></td>
+                <td></td>
+            {% else %}
+                <td>Acreedor/Beneficiario</td>
+                <td colspan="2">{{ poliza.beneficiario.name }}</td>
+            {% endif %}
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ poliza.email }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black;">Dirección:</td>
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            </td>
+        </tr>
+    </table>
+
+    <table style="font-size: 1.2em; line-height: 16px">
+        <tr>
+            <td colspan="4" style="padding-top: 3px"><b>Detalle del Vehículo
+                asegurado</b></td>
+        </tr>
+        <tr>
+            <td>Certificado No:</td>
+            <td></td>
+            <td>Uso:</td>
+            <td>{{ poliza.uso }}</td>
+        </tr>
+        <tr>
+            <td>Marca:</td>
+            <td>{{ poliza.marca }}</td>
+            <td>No. Motor:</td>
+            <td>{{ poliza.motor }}</td>
+        </tr>
+        <tr>
+            <td>Modelo:</td>
+            <td>{{ poliza.modelo }}</td>
+            <td>No. VIN:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Año:</td>
+            <td>{{ poliza.anno }}</td>
+            <td>Capacidad:</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Placa:</td>
+            <td>{{ poliza.placa }}</td>
+            <td>No. Chasis:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Suma Asegurada:</td>
+            <td><b>U$ {{ poliza.suma_asegurada|intcomma }}</b></td>
+            <td>Color:</td>
+            <td>{{ poliza.color }}</td>
+        </tr>
+        <tr>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">Depreciacion Mes:</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">1.00%</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">Toneladas:</td>
+            <td style="border-bottom: 1px solid black; padding-bottom: 3px">0.00</td>
+        </tr>
+    </table>
+
+    <table style="margin: 0; padding: 0; line-height: 3px; ">
+        <thead>
+        <tr>
+            <th colspan="4" style="text-align: left">Detalle de Coberturas</th>
+            <th>Suma Asegurada</th>
+            <th colspan="2">Deducible</th>
+            <th style="text-align: right">Prima</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Muerte O Lesiones Causadas A Una Persona
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">config.SOA_AUTOMOVIL</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Muerte O Lesiones Causadas A Dos O Mas
+                Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> 5,000.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+        </tr>
+        <tr>
+            <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Daños Materiales Causados A Terceras
+                Personas
+            </td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)"> 2,500.00</td>
+            <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+            <td style="text-align: right; background-color: rgba(243,243,245,0.84)">0.00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table style="margin-top: 20px">
+        <tr>
+            <td></td>
+            <td>
+                <table>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td style="text-align: right">55.00</td>
+                    </tr>
+                    <tr>
+                        <td><b>Total a Pagar:</b></td>
+                        <td></td>
+                        <td>U$</td>
+                        <td style="text-align: right"><b>55.00</b></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 15px; border-left: 3px solid silver; padding-left: 3px;">
+        <tr style="padding-top: 3px">
+            <td>Frecuencia de Pago</td>
+            <td>Forma de Pago</td>
+            <td>Día de Pago</td>
+            <td>Monto / Cuota</td>
+        </tr>
+        <tr>
+            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas }}) {% ifequal poliza.cuotas 1 %}Pago{% else %}
+                Pagos{% endifequal %}</td>
+            <td>Directo En Caja</td>
+            <td>{{ poliza.fecha_pago.day }} del mes correspondiente</td>
+            <td>U$ {{ poliza.monto_cuota }}</td>
+        </tr>
+    </table>
+
+    <p>Queda entendido que el Asegurado y ASSA Compañía de Seguros, S.A., han convenido en celebrar el presente Contrato
+        de Seguro, conforme la Solicitud de Aseguramiento, Condiciones Generales de esta Póliza, Condiciones
+        Particulares, Adenda y demás documentos que forman parte de esta Póliza</p>
+
+    <p>En caso que surjan polémicas futuras en relación al Contrato de Seguros, ¿Usted está dispuesto voluntariamente a
+        someterse al Proceso Arbitral Institucional conforme a los términos establecidos en el Reglamento del Centro de
+        Mediación y Arbitraje "Antonio Leiva Pérez" de la Cámara de Comercio de Nicaragua? Si( ) No( ), de ser negativa
+        su respuesta queda expresamente entendido que toda controversia que surgiere está sujeta a las normas
+        establecidas en las Leyes de la República.</p>
+
+    <p>En fe de lo cual se firman las presentes Condiciones Particulares en la ciudad de Managua, Nicaragua, a los 16
+        días del mes de Abril del año 2013</p>
+
+
+    <table style="width: 100%">
+        <tr>
+            <td></td>
+            <td style="border-top: 1px solid black; text-align: center"><b>Firma Autorizada</b></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <p style="padding: 0; margin: 0; text-align: center"><b>Aprobado por la SIBOIF con Resolución SIB-OIF-XXIII-333-2015
+        del 7 de Septiembre de 2015</b></p>
+
+
+
+    <table>
+        <tr>
+            <td style="border: 1px solid black; background-size: cover; padding: 7px; position: relative">
+                <img style="position: absolute; top: 0; z-index: 0"
+                     src='{% static "cotizador/images/fondo.carne.png" %}' alt="">
+                <table style="font-weight: 900; padding: 0; margin: 0; position: relative; z-index: 2;">
+                    <tr>
+                        <td colspan="4" style="text-align: center; font-size: 1.3em">Seguro Obligatorio de
+                            Responsabilidad Civil Legal de Automóvil
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Vencimiento:</td>
+                        <td>15/04/2014</td>
+                        <td colspan="2" style="text-align: right; color: red; font-size: 1.1em">Póliza No. 02BR 41192
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            Asegurado: {{ poliza.nombres }} {{ poliza.apellidos }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            Dirección: {{ poliza.domicilio }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            Cédula Identidad: {{ poliza.cedula }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Marca: {{ poliza.marca }}</td>
+                        <td colspan="2">Placa: {{ poliza.placa }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            Chasis: {{ poliza.chasis }}
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="3" style="text-decoration: underline">Coberturas</td>
+                        <td style="text-decoration: underline; text-align: right">Suma Asegurada</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Muerte O Lesiones Causadas A Una Persona</td>
+                        <td style="text-align: right">US$ 2,500.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Muerte O Lesiones Causadas A Dos O Mas Personas</td>
+                        <td style="text-align: right">US$ 5,000.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">Daños Materiales Causados A Terceras Personas</td>
+                        <td style="text-align: right">US$ 2,500.00</td>
+                    </tr>
+                </table>
+            </td>
+
+            <td style="border: 1px solid black; padding: 7px; text-align: center; font-weight: 900">
+                <p style="margin: 0; padding: 0;">SEGURO OBLIGATORIO DE RESPONSABILIDAD CIVIL LEGAL DE AUTOMOVIL</p>
+                <p style="margin: 0; padding: 0;">AVISO DE ACCIDENTES</p>
+                <p style="text-align: justify">El asegurado debe avisar a la compañia el siniestro Dentro de los tres
+                    días hábiles
+                    siguientes al accidente, Si el reclamo es presentado por el tercero perjudicado deberá
+                    realizarlo en un plazo máximo de 72 horas, contadas a partir de la última notificación
+                    de la resolución por la autoridad de Tránsito respectiva, a través de los formularios
+                    que la Compañía tiene para este efecto. La falta de presentación del reclamo en los
+                    plazos citados liberará de toda responsabilidad a la Compañía.</p>
+                <p style="border-top: 1px solid black; padding: 0; padding-top: 3px">Firma Autorizada</p>
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+

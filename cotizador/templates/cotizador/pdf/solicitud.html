@@ -1,0 +1,445 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .titulo {
+            text-align: center;
+        }
+
+        .titulo p {
+            margin: 0;
+        }
+
+        #detalle th, #detalle td{
+            margin: 50px;
+        }
+        .celda{
+            margin: 10px;
+            min-width: 25px;
+            min-height: 8px;
+            border: 1px solid black;
+        }
+
+        .border-rounded {
+            border: 1px solid black;
+        }
+
+        .indice {
+            width: 10px;
+            max-width: 10px;
+            background-color: red;
+        }
+
+        .desc {
+            width: 200px;
+            min-width: 200px;
+            background-color: blue;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table>
+        <tr>
+            <td colspan="4">
+                <figure>
+                    <img src="" alt="">
+                </figure>
+
+                <p>Dirección: Edificio el Centro, S.A. Rotonda el pediodista 400 mts. al Norte. Managua, Nicaragua.</p>
+
+                <p>Teléfono: (505) 2276-9000 - Fax: (505) 2276-9001</p>
+
+                <p>MR-67 - Página web: www.assanet.com.ni</p>
+
+                <p>RUC: J0310000003831</p>
+            </td>
+            <td colspan="4">
+                <p></p>
+            </td>
+            <td colspan="4">
+
+
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="row">
+        <div class="titulo">
+            <p>SOLICITUD DE SEGUROS DE AUTOMOVIL E INSPECCION</p>
+            <p>Aprovado por la Super Intendencia de Bancos y Otras Instituciones Financieras (SIBOIF)</p>
+            <p>Resolución SIB-OIF-XIX-072-2011, del 12 de Marzo 2011</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <p>PERSONA NATURAL</p>
+            <p>Nombre del Asegurado:</p>
+            <table>
+                <tr>
+                    <td>Cédula / Cédula de Recidencia:</td>
+                    <td>N° de Pasaporte:</td>
+                </tr>
+            </table>
+            <p>Domicilio:</p>
+            <table>
+                <tr>
+                    <td>Teléfono:</td>
+                    <td>Celular:</td>
+                    <td>Correo Electrónico:</td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Empleado</td>
+                    <td>Estudiante</td>
+                    <td>Ama de Casa</td>
+                    <td>Otro</td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Lugar de Trabajo:</td>
+                    <td>Ocupación:</td>
+                </tr>
+            </table>
+            <p>Dirección:</p>
+            <table>
+                <tr>
+                    <td>Teléfono:</td>
+                    <td>Fax:</td>
+                    <td>Actividad de la Empresa:</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <p>PERSONA JURIDICA</p>
+            <P>Nombre de la Empresa:</P>
+            <p>N° RUC:</p>
+            <p>Nombre del Representante Legal, Apoderado o Solicitante:</p>
+            <p>Dirección de la Empresa:</p>
+            <table>
+                <tr>
+                    <td>Teléfono:</td>
+                    <td>Celular:</td>
+                    <td>Fax:</td>
+                    <td>Correo ELectrónico:</td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td>Actividad del Negocio:</td>
+                    <td>Industria:</td>
+                    <td>Servicio:</td>
+                    <td>Agricola:</td>
+                    <td>Comercio</td>
+                    <td>Otro:</td>
+                </tr>
+            </table>
+            <p>Explicar:</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <p>Yo,</p>
+        <table>
+            <tr>
+                <td>solicito en mi calidad de:</td>
+                <td>Dueño( )</td>
+                <td>Acreedor( )</td>
+                <td>Beneficiario( )</td>
+                <td>Representante Legal( )</td>
+            </tr>
+        </table>
+        <p>Emitir Póliza a nombre de:</p>
+        <p>Dirección de Cobro:</p>
+        <table>
+            <tr>
+                <td>Plazo de Vigencia Solicitado:</td>
+                <td>Forma de Pago de la Prima:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Elaborar Cesión de Derecho a favor de:</td>
+                <td>Monto:</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row">
+        <p>DESCIRPCION DEL VEHICULO</p>
+        <table>
+            <tr>
+                <td>Marca:</td>
+                <td>Tipo:</td>
+                <td>Año:</td>
+                <td>Placa:</td>
+                <td>Modelo:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Número de Motor:</td>
+                <td>Número de Chasis:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>N°. Cilindros:</td>
+                <td>Número de Pasajeros:</td>
+                <td>A/AC:</td>
+                <td>Color:</td>
+                <td>N°. de Velocidades:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Automático:</td>
+                <td>Mecánico:</td>
+                <td>Sistema Eléctrico:</td>
+                <td>Combustible:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Kilometraje:</td>
+                <td>Radio:</td>
+                <td>Radio Cassete:</td>
+                <td>Disco Compacto:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Uso del Vehículo:</td>
+                <td>Tonelaje:</td>
+                <td>Pasajero Privado:</td>
+                <td>Pasajero Comercial:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Privado:</td>
+                <td>Pasajero Comercial:</td>
+                <td>Tonelaje:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Transporte Carga Propia:</td>
+                <td>Transporte Carga Comercial:</td>
+                <td>Otros Especificar:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Fecha de Compra:</td>
+                <td>Nuevo:</td>
+                <td>Usado:</td>
+                <td>Valor CIF:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>Impuestos:</td>
+                <td>Valor Total:</td>
+                <td>Sistema de Seguridad: Alarma:</td>
+        </table>
+        <table>
+            <tr>
+                <td>Bastón de Seguridad para el timón:</td>
+                <td>Mult-T-Lock:</td>
+                <td>Inmobilaizer:</td>
+                <td>Otras Medidas de Seguridad:</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>¿Permanece el Vehículo en un garage cerrado por la noche?</td>
+                <td>Si</td>
+                <td>No</td>
+                <td>¿Manejará el Vehículo un menor de edad?</td>
+                <td>Si</td>
+                <td>No</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-sm">MONEDA DE CONTRATACION</div>
+        <div class="col-sm">CÓRDOBAS</div>
+        <div class="col-sm">DÓLARES</div>
+        <div class="col-sm"></div>
+    </div>
+
+    <div class="row">
+        <p>ESPECIFICACIONES DE COBERTURA Y SUMAS ASEGURADAS SOLICITADAS</p>
+    </div>
+
+    <table id="detalle">
+        <thead>
+        <tr>
+            <th></th>
+            <th colspan="4"></th>
+            <th>SUMA ASEGURADA</th>
+            <th>PRIMAS</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="1">A.1</td>
+            <td colspan="4">Responsabilidad Civil</td>
+            <td class="celda"><span></span></td>
+            <td class="celda"><span></span></td>
+        </tr>
+        {% comment %}<tr>
+            <td class="indice"></td>
+            <td>a) Muerte o Lesiones a una Persona</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice"></td>
+            <td>b) Muerte o Lesiones a dos o mas Personas</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice"></td>
+            <td>c) Daños a la Propiedad Ajena</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">A.2</td>
+            <td>Responsabilidad Civil del Conductor por Muerte o Lesiones a Pasajeros</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">A.3</td>
+            <td>Gastos Médicos</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">A.3</td>
+            <td>Responsabilidad Civil en Exceso</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">A.4</td>
+            <td>Responsabilidad Civil en Exceso</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">B.1</td>
+            <td>Colisiones, Autoignición, Incendio, Rayo y/o Explosion</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">B.2</td>
+            <td>Pérdida Total Solamente</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">B.3</td>
+            <td>Robo Total o Parcial a Concecuencia de Robo Total</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">B.4</td>
+            <td>Colisiones, Autoignición, Incendio, Rayo y/o Explosion</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">B.5</td>
+            <td>Robo Total o Parcial a Concecuencia de Robo Total (B1 + B2)</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+
+        <tr>
+            <td class="indice">C.1</td>
+            <td>Perdida Total + Robo o parcial a consecuencia de Robo Total (B.2 + B.3)</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.2</td>
+            <td>Rotura de Vidrios</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.3</td>
+            <td>Desórdenes Públicos</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.4</td>
+            <td>Robo de Equipo</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.5</td>
+            <td>Extención Territorial</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.6</td>
+            <td>Renta de Vehículo</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.7</td>
+            <td>Taller Elegido para Vehículos Nuevos</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>
+        <tr>
+            <td class="indice">C.8</td>
+            <td>Pérdida Total para Equipos Nuevos</td>
+            <td><span class="celda"></span></td>
+            <td><span class="celda"></span></td>
+        </tr>{% endcomment %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

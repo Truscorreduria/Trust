@@ -1,0 +1,70 @@
+-   model: cotizador.aseguradora
+    pk: 1
+    fields: {code: '0001', name: ASSA, active: true, logo: '', cropping: '', phone: null,
+        address: '', emision: 2.0}
+-   model: cotizador.depreciacion
+    pk: 1
+    fields: {aseguradora: 1}
+-   model: cotizador.anno
+    pk: 1
+    fields: {depreciacion: 1, antiguedad: 0, factor: 1.0}
+-   model: cotizador.anno
+    pk: 2
+    fields: {depreciacion: 1, antiguedad: 1, factor: 0.85}
+-   model: cotizador.anno
+    pk: 3
+    fields: {depreciacion: 1, antiguedad: 2, factor: 0.748}
+-   model: cotizador.anno
+    pk: 4
+    fields: {depreciacion: 1, antiguedad: 3, factor: 0.6732}
+-   model: cotizador.anno
+    pk: 5
+    fields: {depreciacion: 1, antiguedad: 4, factor: 0.6059}
+-   model: cotizador.anno
+    pk: 6
+    fields: {depreciacion: 1, antiguedad: 5, factor: 0.5574}
+-   model: cotizador.anno
+    pk: 7
+    fields: {depreciacion: 1, antiguedad: 6, factor: 0.5128}
+-   model: cotizador.anno
+    pk: 8
+    fields: {depreciacion: 1, antiguedad: 7, factor: 0.4718}
+-   model: cotizador.anno
+    pk: 9
+    fields: {depreciacion: 1, antiguedad: 8, factor: 0.4341}
+-   model: cotizador.anno
+    pk: 10
+    fields: {depreciacion: 1, antiguedad: 9, factor: 0.3993}
+-   model: cotizador.anno
+    pk: 11
+    fields: {depreciacion: 1, antiguedad: 10, factor: 0.3674}
+-   model: cotizador.anno
+    pk: 12
+    fields: {depreciacion: 1, antiguedad: 11, factor: 0.338}
+-   model: cotizador.anno
+    pk: 13
+    fields: {depreciacion: 1, antiguedad: 12, factor: 0.311}
+-   model: cotizador.anno
+    pk: 14
+    fields: {depreciacion: 1, antiguedad: 13, factor: 0.2861}
+-   model: cotizador.anno
+    pk: 15
+    fields: {depreciacion: 1, antiguedad: 14, factor: 0.2632}
+-   model: cotizador.anno
+    pk: 16
+    fields: {depreciacion: 1, antiguedad: 15, factor: 0.2421}
+-   model: cotizador.anno
+    pk: 17
+    fields: {depreciacion: 1, antiguedad: 16, factor: 0.0}
+-   model: cotizador.anno
+    pk: 18
+    fields: {depreciacion: 1, antiguedad: 17, factor: 0.0}
+-   model: cotizador.anno
+    pk: 19
+    fields: {depreciacion: 1, antiguedad: 18, factor: 0.0}
+-   model: cotizador.anno
+    pk: 20
+    fields: {depreciacion: 1, antiguedad: 19, factor: 0.0}
+-   model: cotizador.anno
+    pk: 21
+    fields: {depreciacion: 1, antiguedad: 20, factor: 0.0}

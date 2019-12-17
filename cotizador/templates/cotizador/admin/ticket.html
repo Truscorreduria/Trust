@@ -1,0 +1,42 @@
+{% extends 'admin/change_form.html' %}
+
+
+
+{% block extrahead %}
+
+    {{ block.super }}
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                var soa = 55.0;
+                var tarifa = 10.4;
+                var emision = 0.02;
+                var depreciar = function () {
+                    anno = parseInt($('#id_anno').val());
+                    valor_nuevo = parseFloat($('#id_valor_nuevo').val());
+                    $.ajax("{% url 'ajax_objectExecute' %}", {
+                        method: "POST",
+                        data: {
+                            anno: anno, valor_nuevo: valor_nuevo,
+                            app_label: 'cotizador', model: 'aseguradora', id: {{ aseguradora.id }},
+                            view: 'depreciar_post'
+                        },
+                        success: function (response) {
+                            $('#id_suma_asegurada').val(response);
+                            prima = (valor_nuevo * tarifa)/1000;
+                            $('#id_subtotal').val((prima + soa).toFixed(2));
+                            emision = prima * emision;
+                            $('#id_emision').val(emision.toFixed(2));
+                            iva = (prima + emision) * 0.15;
+                            $('#id_iva').val(iva.toFixed(2));
+                            $('#id_total').val((prima + soa + emision + iva).toFixed(2));
+                        }
+                    });
+                };
+                $('#id_valor_nuevo').on('change', depreciar);
+            });
+        })(grp.jQuery)
+
+    </script>
+{% endblock %}

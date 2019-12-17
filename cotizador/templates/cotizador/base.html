@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+{% load static crispy_forms_tags cropping %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>Trust Correduría de Seguros</title>
+
+    {% block styles %}
+        <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'cotizador/css/bootstrap.trust.css' %}">
+        <link rel="stylesheet" href="{% static 'flexslider/flexslider.css' %}">
+        <link rel="stylesheet" href="{% static 'cotizador/fonts/stylesheet.css' %}">
+        <link rel="stylesheet" href="{% static 'fontAwesome/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'cotizador/css/main.css' %}">
+        <link rel="stylesheet" href="{% static 'cotizador/css/responsive.css' %}">
+    {% endblock %}
+
+    {% block extra-style %}
+        <style>
+            t {
+                color: lightskyblue;
+            }
+        </style>
+    {% endblock %}
+
+</head>
+<body>
+
+{% block header %}
+    <header>
+
+        <div class="header-principal">
+
+            {% block header-principal %}
+                <a href="{% url 'cotizador:inicio' %}">
+                    <img class="header-logo" src="{% static 'cotizador/images/logo-blanco.png' %}"
+                         alt="Trust Correduría de Seguros">
+                </a>
+            {% endblock %}
+
+            <div class="header-user-options">
+                {% block header-user-options %}
+                    <a href="{% url 'cotizador:perfil' %}" class="header-user-name">{{ user.profile.full_name }}</a>
+
+                    {% if user.profile.foto %}
+                        <a href="{% url 'cotizador:perfil' %}">
+                            <img class="user-photo" src="{{ user.profile.foto_perfil }}" alt="Foto de Perfil">
+                        </a>
+                    {% endif %}
+
+                    <div class="user-options">
+                        {% block user-options %}
+                            {% comment %}
+                                <a href="{% url 'cotizador:perfil' %}">
+                                    <img src="{% static 'cotizador/images/configurar-blanco.png' %}" alt="">
+                                    <p>configurar</p>
+                                </a>
+                            {% endcomment %}
+                            <a href="{% url 'cotizador:logout' %}">
+                                <img src="{% static 'cotizador/images/salir-blanco.png' %}" alt="">
+                                <p>SALIR</p>
+                            </a>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+            </div>
+
+        </div>
+
+
+        <nav class="menu-nav">
+            <div class="menu-button">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </div>
+            <ul class="menu-ul collapse">
+                {% block menu %}
+                    <li>
+                        {% url 'cotizador:inicio' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/menu/inicio.png' %}" alt="Inicio">
+                                <span>INICIO</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                    <li>
+                        {% url 'cotizador:cotizar' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/menu/cotizar.png' %}" alt="Cotizar">
+                                <span>COTIZAR</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                    <li>
+                        {% url 'cotizador:misseguros' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/menu/misseguros.png' %}" alt="Mis Seguros">
+                                <span>MIS SEGUROS</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                    <li>
+                        {% url 'cotizador:referenciados' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/siniestro.png' %}" alt="Siniestros">
+                                <span>SINIESTROS</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                    <li>
+                        {% url 'cotizador:contactanos' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/menu/contacto.png' %}" alt="Contacto">
+                                <span>CONTACTO</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                {% endblock %}
+            </ul>
+        </nav>
+
+
+        <nav class="user-menu-mobil">
+            <ul>
+                {% block user-menu-mobil %}
+                    <li><a href="" class="user-menu-mobil-name">César Abel Ramírez</a></li>
+                    <li>
+                        <a href="{% url 'cotizador:perfil' %}">
+                            <img src="{% static 'cotizador/images/configurar.png' %}" alt="configurar">
+                            <p>configurar</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'cotizador:logout' %}">
+                            <img src="{% static 'cotizador/images/salir.png' %}" alt="salir">
+                            <p>salir</p>
+                        </a>
+                    </li>
+                {% endblock %}
+            </ul>
+        </nav>
+
+    </header>
+{% endblock %}
+
+{% block content %}
+    <div id="content">
+
+        <div id="section-container">
+            {% block content-section %}
+                <section id="inicio-section">
+
+                    <div>
+                        <p class="lead lead-main">Bienvenido a tu portal de seguros</p>
+                        <p class="lead">¿Qué deseas hacer?</p>
+                    </div>
+
+                    <div id="links">
+                        <a href="{% url 'cotizador:cotizar' %}" class="link-cotizar">
+                            <img src="{% static 'cotizador/images/inicio/cotizar.blanco.png' %}">
+                            <div class="link-description">
+                                <span class="action">COTIZAR</span>
+                                <span class="message">Quiero una nueva poliza</span>
+                            </div>
+                        </a>
+                        <a href="{% url 'cotizador:misseguros' %}" class="link-mis-seguros">
+                            <img src="{% static 'cotizador/images/inicio/misseguros.blanco.png' %}">
+                            <div class="link-description">
+                                <span class="action">MIS SEGUROS</span>
+                                <span class="message">Ver lista de seguros</span>
+                            </div>
+                        </a>
+                        <a href="{% url 'cotizador:contactanos' %}" class="link-contactanos">
+                            <img src="{% static 'cotizador/images/inicio/contact.blanco.png' %}">
+                            <div class="link-description">
+                                <span class="action">CONTÁCTENOS</span>
+                                <span class="message">Comentanos tus dudas</span>
+                            </div>
+                        </a>
+                        <a href="{% url 'cotizador:referenciados' %}" class="link-siniestro">
+                            <img src="{% static 'cotizador/images/inicio/siniestro.blanco.png' %}">
+                            <div class="link-description">
+                                <span class="action">SINIESTROS</span>
+                                <span class="message">¿Qué hacer en caso de siniestro?</span>
+                            </div>
+                        </a>
+                    </div>
+
+                </section>
+            {% endblock %}
+        </div>
+
+        <aside>
+            {% comment %}<div class="flexslider">
+                <ul class="slides">
+                    {% for img in publicidad %}
+                        <li>
+                            <img class="image-responsive"
+                                 src="{% cropped_thumbnail img "cropping" max_size="400x800" %}">
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>{% endcomment %}
+
+            {% with publicidad.0 as img %}
+
+                <img src="{% cropped_thumbnail img "cropping" max_size="400x800" %}" alt=""
+                     style="width: 100%">
+
+            {% endwith %}
+        </aside>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <footer>
+
+        <div class="info">
+
+
+            <div class="info-nosotros">
+                <h4>¡Sobre nosotros!</h4>
+                <div>
+                    <p style="text-align: justify;">
+                        TRUST CORREDURIA fue creada para llevar a nuestros clientes las mejores soluciones de seguros
+                        que les permitan gestionar proactivamente sus riesgos.</p>
+                </div>
+            </div>
+            <div class="info-mapa">
+                <div>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d975.1493478592283!2d-86.2667119!3d12.1396759!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDA4JzIyLjUiTiA4NsKwMTUnNTkuMSJX!5e0!3m2!1ses!2sni!4v1527785926027"
+                            width="auto" height="220" frameborder="0" style="border:0"
+                            allowfullscreen>
+
+                    </iframe>
+                </div>
+            </div>
+            <div class="info-contacto">
+
+                <div>
+                    <div>
+                        <div>
+                            <div>
+                                <img
+                                        src="{% static 'seguros/wp-content/uploads/2018/05/logo-footer.png' %}"
+                                        alt="logo-footer" title="logo-footer"
+                                        width="150"
+                                        height="122"/>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <div>
+                            <p style="text-align: center">+505 2251 0108
+                                <br/>
+                                <a href="#">ventas@trustcorreduria.com</a></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="copyright">
+            © 2019 TRUST CORREDURÍA. Todos los derechos reservados.
+        </div>
+    </footer>
+{% endblock %}
+
+{% block modales %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'flexslider/jquery.flexslider-min.js' %}"></script>
+    <script src="{% static 'jquery-mask-plugin/dist/jquery.mask.min.js' %}"></script>
+    <script src="{% static 'inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
+    <script src="{% static 'cotizador/js/main.js' %}"></script>
+    <script src="{% static 'cotizador/js/mask.js' %}"></script>
+{% endblock %}
+
+{% block spinner %}
+    <div id="spinner" style="width: 100%; left: 0;
+    top: 30%; text-align: center; position: fixed;
+    z-index: 999999; display: none">
+        <img src="{% static 'cotizador/images/spinner.gif' %}" style="width: 400px">
+    </div>
+{% endblock %}
+
+{% block scripts-custom %}{% endblock %}
+
+</body>
+</html>

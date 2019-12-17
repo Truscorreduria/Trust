@@ -1,0 +1,353 @@
+{% extends 'cotizador/base.html' %}
+{% load static %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'datatables/media/css/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'datatables/media/css/dataTables.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}">
+{% endblock %}
+
+
+{% block content-section %}
+    <section id="contactos-section">
+        <div class="title">
+            <figure>
+                <img src="{% static 'cotizador/images/inicio/contact.blanco.png' %}" alt="cotizar">
+            </figure>
+            <p>
+                Contacto
+            </p>
+        </div>
+
+        <div class="buttons">
+            <button id="button-ticket">
+                <span class="fa fa-plus-circle" style="margin-right: 10px"></span>
+                Nuevo ticket
+            </button>
+        </div>
+
+        <div class="table-container">
+            <div>
+                <h2>¿Qué puedo hacer desde esta sección?</h2>
+            </div>
+
+            <p>
+                A traves de esta sección, podrás contactar al ejecutivo responsable de la operación de la cuenta
+                (Gabriela Carrión) para que puedas aclarar cualquier duda que tengas sobre las pólizas, condiciones,
+                costos, beneficios, siniestros, exclusiones, etc. De igual manera podrás enviar quejas y
+                sugerencias.</p>
+            <p>Todas tus inquietudes serán atendidas a la
+                brevedad.</p>
+
+        <div>
+                <h2>Tickets pendientes</h2>
+            </div>
+
+            <div class="card">
+                <div class="">
+                    <table class="table table-bordered table-striped table-hover"
+                           id="table-tickets">
+                        <thead>
+                        <tr>
+                            <th>No. ticket</th>
+                            <th>Estado</th>
+                            <th>Fecha de solicitud</th>
+                            <th>Descripción</th>
+                            <th>Responsable</th>
+                            <th>Tiempo de respuesta</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for t in user.ticketes.all %}
+                            <tr>
+                                <td>{{ t.code }}</td>
+                                <td>{{ t.estado }}</td>
+                                <td>{{ t.created|date:'d/m/Y' }}</td>
+                                <td>{{ t.descripcion }}</td>
+                                <td>Gabriela Carrión</td>
+                                <td class="vence">{{ t.get_vence|safe }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block modales %}
+    <div class="modal fade" id="modal-ticket" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalCenterTitle">Nuevo Ticket</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="." method="post" id="ticket-form">
+
+                        <div class="errors">
+                            {% if perfil_form.errors %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in perfil_form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% csrf_token %}
+                        </div>
+
+                        <fieldset class="container left">
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="nombres">Nombres</label>
+                                        <input type="text" class="form-control"
+                                               id="nombres" name="nombres"
+                                               value="{{ user.profile.nombres }}">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="apellidos">Apellidos</label>
+                                        <input type="text" class="form-control"
+                                               id="apellidos" name="apellidos"
+                                               value="{{ user.profile.apellidos }}">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="last_name">Correo electrónico</label>
+                                        <input type="email" class="form-control"
+                                               id="email" name="email"
+                                               value="{{ user.email }}">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="telefono">Teléfono</label>
+                                        <input type="text" class="form-control mask-celular"
+                                               id="telefono" name="telefono"
+                                               value="{{ user.profile.celular }}">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="movimiento">¿Que desea hacer?</label>
+                                        <select class="form-control" name="movimiento" id="movimiento" required>
+                                            <option value="1"> Solicitar cambios en la póliza</option>
+                                            <option value="2"> Dar de baja</option>
+                                            <option value="3"> Problemas de cobranza</option>
+                                            <option value="4"> Quiero asesoría</option>
+                                            <option value="5"> Aperturar un reclamo</option>
+                                            <option value="7"> Error en la página</option>
+                                            <option value="8"> No encuentro mi seguro</option>
+                                            <option value="8"> Reimprimir carnet</option>
+                                            <option value="9"> Otros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="referente">Referente a:</label>
+                                        <select class="form-control" name="referente" id="referente" required>
+                                            <option value="auto"> Auto</option>
+                                            <option value="sepelio"> Sepelio</option>
+                                            <option value="accidente"> Accidente</option>
+                                            <option value="vida"> Vida</option>
+                                            <option value="otro"> Otro</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <fieldset class="container right">
+
+                            <div class="row" id="row-poliza">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="no_poliza">Número de póliza:</label>
+                                        <select class="form-control" name="no_poliza" id="no_poliza">
+                                            <option value="">---</option>
+                                            {% for p in user.profile.polizas_activas %}
+                                                <option value="auto"> {{ p.no_poliza }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="row-motivo" style="display: none">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="motivo">Motivo de cancelación de seguro</label>
+                                        <select class="form-control" name="motivo" id="motivo" required>
+                                            <option value="1"> Por venta</option>
+                                            <option value="2"> Ya no quiero mi seguro</option>
+                                            <option value="3"> Cancelación de prestamo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% comment %}<div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="celular">Número de Empleado</label>
+                                        <input type="text" class="form-control"
+                                               id="codigo_empleado" name="codigo_empleado"
+                                               value="{{ user.profile.codigo_empleado }}">
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>{% endcomment %}
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="comentarios">Comentarios</label>
+                                        <textarea name="comentarios" id="comentarios" cols="30" rows="4"
+                                                  class="form-control"></textarea>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="row-auto" style="display: none">
+                                <div class="col-12">
+                                    <a href="{% url 'cotizador:download' %}?file_name=auto_Informe_de_Accidentes_ASSA.pdf">Informe
+                                        de Accidente.pdf</a>
+                                </div>
+                                <div class="col-12">
+                                    <a href="{% url 'cotizador:download' %}?file_name=auto_TALLERES_AUTORIZADOS_ASSA.pdf">Talleres
+                                        Autorizados.pdf</a>
+                                </div>
+                            </div>
+
+                            <div class="row" id="row-sepelio" style="display: none">
+                                <div class="col">
+                                    <a href="{% url 'cotizador:download' %}?file_name=sepelio_Aviso_de_declaracion_por_muerte.pdf">
+                                        Aviso de declaracion por muerte.pdf
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="row" id="row-accidente" style="display: none">
+                                <div class="col-12">
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Asistencia_medica_subsecuente.pdf">Declaración
+                                        de Accidente.pdf</a>
+                                </div>
+                                <div class="col-12">
+                                    <a href="{% url 'cotizador:download' %}?file_name=accidente_Declaracion_de_Accidente.pdf">Asistencia
+                                        Médica Subsecuente.pdf</a>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <div class="buttons container">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="submit" value="Grabar" class="btn btn-primary float-right">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal-contacto-directo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalCenterTitle">Contacto Directo</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="." method="post" id="contacto-directo-form">
+                        {% csrf_token %}
+                        <fieldset class="container">
+                            <input type="hidden" id="contacto-ticket">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="comentarios">El ejecutivo de seguros le atendera en la brevedad
+                                            posible, por favor escriba una descripcion del problema o inquietud.</label>
+                                        <textarea name="comentarios-contacto-directo" id="comentarios-contacto-directo" cols="30" rows="4"
+                                                  class="form-control"></textarea>
+                                        <div class="help-block with-errors"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </fieldset>
+
+                        <div class="buttons container">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="submit" value="Enviar" class="btn btn-primary float-right">
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
+    <script src="{% static 'ajax/token.js' %}"></script>
+{% endblock %}
+
+
+{% block scripts-custom %}
+    {{ block.super }}
+    <script src="{% static 'ajax/token.js' %}"></script>
+    <script src="{% url 'cotizador:javascript' 'contacto.js' %}"></script>
+{% endblock %}

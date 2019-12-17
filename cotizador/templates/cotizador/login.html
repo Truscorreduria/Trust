@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trust Correduría de Seguros</title>
+
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}">
+    <style type="text/css">
+
+        body {
+            background-image: url({% static 'cotizador/images/bg_login.jpg' %});
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: 0;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: flex-end;
+            height: 100vh;
+        }
+
+        #login-form-container {
+            background-color: rgba(255, 255, 255, 255);
+            height: 100%;
+            width: 33%;
+            padding: 5%;
+            display: flex;
+            flex-direction: column;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-self: stretch;
+        }
+
+        img {
+            width: 75%;
+            margin-left: 2.5%;
+        }
+
+        .btn-facebook {
+            color: white;
+            background-image: linear-gradient(#4267b2, #4267b2);
+            border: 1px solid #4267b2;
+            position: relative;
+        }
+
+        .btn-facebook:hover {
+            color: lightgrey;
+        }
+
+        .btn-facebook:before {
+            font-family: "FontAwesome";
+            font-weight: 900;
+            content: "\f082";
+            position: relative;
+            left: -10px;
+        }
+    </style>
+</head>
+<body>
+<div id="login-form-container">
+
+    <figure>
+        <img src="{% static 'cotizador/images/logo.gif' %}" alt="Trust Correduría de Seguros">
+    </figure>
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleInputEmail1">Usuario</label>
+            <input type="text" class="form-control" id="username" aria-describedby="emailHelp"
+                   placeholder="username" name="username">
+            <small id="emailHelp" class="form-text text-muted">Por favor no compartas tu usuario con ninguna persona.
+            </small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Contraseña</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1"
+                   placeholder="Password">
+        </div>
+
+        <div class="form-group">
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="btn btn-primary">Ingresar</button>
+        </div>
+
+    </form>
+
+    <p>
+        <a href="#" class="lost">¿Olvidaste tu contraseña?</a>
+    </p>
+
+</div>
+
+<div class="modal fade" id="modal-lost" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <form id="form-lost" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h2 class="modal-title" id="exampleModalCenterTitle">Restablecer contraseña</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="email_personal">Correo electrónico</label>
+                                    <input type="text"
+                                           class="form-control is-invalid"
+                                           id="email" name="email">
+                                    <div class="help-block with-errors"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <input class="btn btn-primary float-right" type="submit" value="Enviar">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <p class="restriccion">En breve recibirás un correo con tu nueva contraseña</p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% load static %}
+<script type="text/javascript" src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#username').on('keyup', function () {
+            const _this = $(this);
+            _this.val(_this.val().toLowerCase());
+        });
+
+        $('.lost').on('click', function () {
+            $('#modal-lost').modal('show');
+        });
+        $('#form-lost').on('submit', function (e) {
+            e.preventDefault();
+            let data = new FormData(this);
+            $.ajax("{% url 'cotizador:restablecer_password' %}", {
+                type: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('#modal-lost').modal('hide');
+                    if (response.result === "error") {
+                        swal({
+                                title: 'Ooops Ha ocurrido un Error!',
+                                text: response.message,
+                                imageUrl: "{% static 'cotizador/images/trusty/error.png' %}"
+                            }
+                        )
+                    }
+                    if (response.result === "success") {
+                        swal({
+                                title: 'Éxito!',
+                                text: response.message,
+                                imageUrl: "{% static 'cotizador/images/trusty/exito.png' %}"
+                            }
+                        )
+                    }
+                }
+            })
+        });
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+{% extends 'home/index.html' %}
+
+{% load static %}
+
+{% block extra-style %}
+    <style type="text/css" data-type="vc_custom-css">
+        #Subheader {
+            background-image: url("{% static 'seguros/wp-content/uploads/2018/05/negocio-subheader.jpg' %}");
+            background-position: center;
+        }
+
+        .acceder {
+            text-decoration: none;
+            background-color: #5dcc5d;
+            color: white;
+            padding: 5px 20px;
+            border-radius: 7px;
+        }
+
+        .acceder:hover {
+            text-decoration: none;
+            color: white;
+        }
+    </style>
+    {{ block.super }}
+{% endblock %}
+
+{% block header-slider %}
+
+{% endblock %}
+
+{% block sub-header %}
+    <div id="Subheader" style="padding:230px 0 50px;">
+        <div class="container">
+            <div class="column one"><h1 class="title">PLATAFORMAS</h1></div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div id="Content">
+        <div class="content_wrapper clearfix">
+
+            <!-- .sections_group -->
+            <div class="sections_group">
+
+                <div class="entry-content" itemprop="mainContentOfPage">
+
+                    <div class="section mcb-section" style="padding-top:60px; padding-bottom:0;">
+                        <div class="section_wrapper mcb-section-inner">
+                            <div class="wrap mcb-wrap one  valign-top clearfix" style="">
+                                <div class="mcb-wrap-inner">
+                                    <div class="column mcb-column one column_column ">
+                                        <div class="column_attr clearfix align_left" style=""><p>Nuestras plataformas de
+                                            negocios están conceptualizadas para hacer más eficiente la gestión y
+                                            administración de las pólizas de seguros de nuestros clientes personales y
+                                            empresariales.</p>
+                                            <p>Simplificamos los mecanismos de cotización, cobranza, renovación y
+                                                seguimiento a siniestros sustentando nuestros servicios con los mejores
+                                                sistemas y tecnologías.</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section mcb-section   "
+                         style="padding-top:0; padding-bottom:0; background-image:url({% static 'seguros/wp-content/uploads/2018/05/fondo-footer.jpg' %}); background-repeat:no-repeat; background-position:left top; background-attachment:; background-size:; -webkit-background-size:">
+                        <div class="section_wrapper mcb-section-inner">
+                            <div class="wrap mcb-wrap one-second  valign-top clearfix" style="padding:0 0 0 5%">
+                                <div class="mcb-wrap-inner">
+                                    <div class="column mcb-column one column_column ">
+                                        <div class="column_attr clearfix"
+                                             style=" padding:50px 50px 35px; box-shadow: 0px 20px 35px rgba(27,48,77,.07);">
+                                            <h2 style="color:#5dcc5d;">PLATAFORMA PERSONAL</h2><br/>
+                                            <p style="color:#e2e2e2;">Nuestros clientes corporativos cuentan con acceso
+                                                a nuestra plataforma web, para administrar personalmente todas sus
+                                                pólizas.</p><br/>
+
+                                            <p style="color:#e2e2e2;">COTIZA, COMPARA y CONTRATA en nuestra plataforma
+                                                de forma sencilla tus pólizas y reporta siniestros. Además de contar con
+                                                el soporte personalizado del equipo de TRUST Seguros.</p>
+                                            <a href="{% url 'cotizador:inicio' %}" class="acceder"> Acceder</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="wrap mcb-wrap one-second  valign-top clearfix" style="">
+                                <div class="mcb-wrap-inner">
+                                    <div class="column mcb-column one column_column ">
+                                        <div class="column_attr clearfix"
+                                             style=" padding:50px 50px 35px; box-shadow: 0px 20px 35px rgba(27,48,77,.07);">
+                                            <h2 style="color:#5dcc5d;">PLATAFORMA EMPRESARIAL</h2><br/>
+                                            <p style="color:#e2e2e2;">Nuestros clientes empresariales pueden acceder a
+                                                nuestra plataforma a través de los equipos de trabajo asignados, o bien,
+                                                a través de nuestra página electrónica, desde donde pueden cotizar
+                                                pólizas, manejar altas y bajas, y reportar siniestros.</p><br/>
+                                            <p style="color:#e2e2e2;">Adicionalmente, la plataforma de TRUST Seguros
+                                                permite a nuestros clientes una total visibilidad de las tareas que se
+                                                están realizando en su cuenta, así como dar seguimiento puntual a los
+                                                siniestros reportados y atendidos.</p>
+                                            <a href="{% url 'banca:index' %}" class="acceder"> Acceder</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section the_content no_content">
+                        <div class="section_wrapper">
+                            <div class="the_content_wrapper"></div>
+                        </div>
+                    </div>
+                    <div class="section section-page-footer">
+                        <div class="section_wrapper clearfix">
+
+                            <div class="column one page-pager">
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <!-- .four-columns - sidebar -->
+
+        </div>
+    </div>
+{% endblock %}
+

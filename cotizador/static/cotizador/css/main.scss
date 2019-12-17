@@ -1,0 +1,578 @@
+@import "colores";
+@import "botones";
+@import "header";
+@import "menu";
+@import "table";
+@import "help-modal";
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #e9e9e9;
+  font-family: "Museo Sans";
+  color: #000000;
+  font-weight: 900;
+  overflow-x: hidden;
+}
+
+.dollar:before {
+  content: 'U$ ';
+}
+
+.help {
+  padding-left: 1.5em !important;
+}
+
+.help:after {
+  content: '?';
+  text-align: center;
+  color: white;
+  font-weight: 900;
+  font-size: 0.8em;
+  background-color: $linkAzul;
+  border-radius: 50%;
+  padding: 0 0.3em;
+}
+
+.user-menu-mobil {
+  width: 90vw;
+  margin-top: 15px;
+  ul {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: $blanco;
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    -webkit-padding-start: 0;
+    li {
+      list-style: none;
+      text-align: center;
+      font-size: 8pt;
+      a {
+        text-transform: uppercase;
+        color: $verde;
+        img {
+          height: 30px;
+        }
+      }
+    }
+    .user-menu-mobil-name {
+      font-size: 1.4em;
+    }
+  }
+}
+
+#content {
+  margin-top: 20px;
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  aside {
+    display: none;
+  }
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+
+  .title {
+    display: grid;
+    grid-template: 1fr / 15vw 85px auto;
+    grid-template-areas: "logo space title";
+    background-color: $verde;
+    color: white;
+    font-family: "Museo Sans", Arial, Baskerville, monospace;
+    font-size: 1.2em;
+    font-weight: 900;
+    margin-bottom: 20px;
+    height: 85px;
+    align-items: center;
+    figure {
+      grid-area: logo;
+      width: 100%;
+      text-align: right;
+      img {
+        height: 50px;
+      }
+    }
+
+    p {
+      grid-area: title;
+    }
+
+  }
+
+  .options {
+    display: flex;
+    padding: 3% 0;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+    background-color: $blanco;
+    border-radius: 5px;
+    box-shadow: $verde 12px 10px 31px 0;
+    a {
+      text-align: center;
+      cursor: pointer;
+      img {
+        height: 100px;
+      }
+      &:active{
+        transform: scale(.9);
+      }
+    }
+    p {
+      font-size: 2em;
+      font-weight: 900;
+      color: $gris;
+    }
+  }
+
+  form {
+    background-color: $blanco;
+    display: grid;
+    grid-template: 1fr / auto;
+    grid-template-areas: 'errors' 'left' 'right' 'buttons';
+    grid-gap: 20px;
+    justify-items: center;
+    padding: 40px 0;
+
+    .errors {
+      grid-area: errors;
+    }
+
+    .left {
+      grid-area: left;
+    }
+
+    .right {
+      grid-area: right;
+    }
+
+    .buttons {
+      grid-area: buttons;
+    }
+
+    textarea {
+      height: 128px !important;
+    }
+  }
+
+  .buttons {
+    background-color: $blanco;
+    display: flex;
+    justify-content: flex-end;
+    button {
+      position: relative;
+      cursor: pointer;
+      margin: 20px;
+      padding: 5px 20px;
+      border-width: 0;
+      outline: none;
+      border-radius: 5px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+      background-color: $verde;
+      color: $blanco;
+      transition: background-color .3s;
+      font-size: 1.2em;
+      &:hover, &:focus {
+        background-color: #27ae60;
+      }
+
+      &:before {
+        content: "";
+
+        position: absolute;
+        top: 50%;
+        left: 50%;
+
+        display: block;
+        width: 0;
+        padding-top: 0;
+
+        border-radius: 100%;
+
+        background-color: rgba(236, 240, 241, .3);
+
+        -webkit-transform: translate(-50%, -50%);
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+      }
+
+      &:active:before {
+        width: 120%;
+        padding-top: 120%;
+
+        transition: width .2s ease-out, padding-top .2s ease-out;
+      }
+    }
+  }
+
+  .table-container {
+    background-color: white;
+    padding: 2%;
+    border-radius: 5px;
+    box-shadow: $verde 12px 10px 31px 0;
+    max-width: 100%;
+    overflow-x: auto;
+    p {
+      font-size: .8em;
+    }
+    .table-title {
+      display: grid;
+      grid-template: 1fr / .8fr .2fr;
+      h2 {
+        text-align: left;
+        font-size: 1em;
+      }
+      img {
+        height: 30px;
+      }
+    }
+    table {
+      width: 100%;
+      thead tr {
+        border-bottom: 1px solid black;
+        th {
+          text-align: left;
+          font-size: .8em;
+        }
+      }
+      tbody tr td {
+        font-size: .7em;
+        text-align: left;
+        &.td-buttons {
+          text-align: right;
+        }
+      }
+      tbody tr td.descripcion {
+        font-size: .7em;
+      }
+    }
+  }
+
+  .products-list {
+    margin-top: 100px;
+    display: flex;
+    justify-content: space-evenly;
+    a {
+      text-align: center;
+      cursor: pointer;
+      img {
+        height: 100px;
+      }
+    }
+    a:active{
+      transform: scale(.9);
+    }
+    p {
+      font-size: 2em;
+      font-weight: 900;
+      color: $gris;
+    }
+  }
+}
+
+.vence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lead {
+  margin: 0;
+  background-color: $verde;
+  color: $blanco;
+  width: 100%;
+  text-align: center;
+  padding: 1% 5%;
+  border: 1px solid white;
+  font-size: 1em;
+  font-family: "Museo Sans", Arial, Baskerville, monospace;
+
+  &-main {
+    font-family: "Museo Sans", Arial, Baskerville, monospace;
+    font-size: 1em;
+    font-weight: 900;
+  }
+}
+
+#links {
+  margin-top: 20px;
+  display: grid;
+  grid-template: 1fr / 1fr;
+  grid-gap: 10px;
+  font-weight: 900;
+  font-size: 1.5em;
+  font-family: "Museo Sans", Arial, monospace;
+  img {
+    height: 45px;
+    margin-right: 10%;
+    margin-left: 10%;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    color: $blanco;
+    min-height: 100px;
+    border-radius: 5px;
+    box-shadow: $verde 12px 10px 31px 0;
+    .link-description {
+      display: flex;
+      flex-direction: column;
+      .action {
+        font-size: 1em;
+      }
+      .message {
+        font-size: .8em;
+      }
+    }
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  a:active {
+    transform: scale(.9);
+  }
+  .link {
+    background-color: $blanco;
+    color: $negro;
+    border: 1px solid $verde;
+  }
+  .link-cotizar {
+    background-color: $cotizar;
+  }
+  .link-mis-seguros {
+    background-color: $misseguros;
+  }
+  .link-siniestro {
+    background-color: $siniestro;
+  }
+  .link-contactanos {
+    background-color: $contactanos;
+  }
+
+}
+
+.nav-tabs .nav-link.active {
+  color: #495057;
+  background-color: #ededed;
+  border-color: #1e466e #2973bd #76bae6;
+}
+
+.p-total {
+  font-family: SansSerif;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.modal-lg {
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 0;
+}
+
+.restriccion {
+  text-align: justify;
+  padding: 0 5px;
+  font-size: small;
+  color: #6b6b6b;
+}
+
+.sin-registro {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.total-elegido {
+  background-color: #f8f9fa !important
+}
+
+.with-errors {
+  color: rosybrown;
+}
+
+#coberturas-adicionales input[type="text"] {
+  height: 30px;
+  width: 80%;
+  margin: auto;
+  padding: 3px;
+  font-size: 10px;
+}
+
+footer {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid white;
+  .info {
+    display: grid;
+    grid-template: repeat(3, auto)/1fr;
+    grid-template-areas: "nosotros" "contacto" "mapa";
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 5%;
+    }
+    &-nosotros {
+      grid-area: nosotros;
+    }
+    &-contacto {
+      grid-area: contacto;
+    }
+    &-mapa {
+      grid-area: mapa;
+    }
+  }
+  .copyright {
+    border-top: 1px solid white;
+    padding-top: 5px;
+    font-size: .6em;
+    text-align: center;
+  }
+}
+
+.datos-vehiculo {
+  font-size: .5em;
+  width: 100%;
+  #btn-cotizacion, #btn-cotizacion-basica {
+    width: 100%;
+    color: white;
+    font-size: .8em;
+    text-align: center;
+    max-width: 165px;
+  }
+}
+
+.cotizador-table-auto-basica, .cotizador-table-auto-amplia {
+  font-size: 7pt;
+  margin-top: 15px;
+  width: 100%
+}
+
+.cotizador-table-total-amplia {
+  width: 100%;
+  font-size: 8pt;
+}
+
+.cotizador-notas-amplia {
+  font-size: 8pt;
+}
+
+.p-upgrades-notes {
+  font-size: 10pt;
+  width: 100%;
+  text-align: center;
+  margin: 2px 0;
+}
+
+.p-info-notes {
+  font-size: 10pt;
+  width: 100%;
+  text-align: center;
+  color: red;
+  margin: 2px 0;
+}
+
+/* Correcciones al tema de puntos del plugin wizard*/
+.sw-theme-dots > ul.step-anchor > li.active > a:after {
+  background: $linkAzul !important;
+}
+
+.sw-theme-dots > ul.step-anchor > li.active > a {
+  color: $linkAzul !important;
+}
+
+.row.header-cotizacion-sepelio, .row.header-cotizacion-accidente {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row.header-cotizacion-sepelio img, .row.header-cotizacion-accidente img {
+  height: 50px;
+  margin-right: 20px;
+}
+
+#table-cotizacion-sepelio, #table-documentos-sepelio,
+#table-cotizacion-accidente, #table-documentos-accidente {
+  width: 98%;
+  margin-right: auto;
+  margin-left: auto;
+  font-weight: 200;
+  font-size: .8em;
+}
+
+#table-documentos-sepelio tr, #table-documentos-accidente tr {
+  border-bottom: 1px solid black;
+}
+
+#table-documentos-accidente td, #table-documentos-accidente td {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+#table-cotizacion-sepelio th, #table-cotizacion-sepelio td,
+#table-cotizacion-accidente th, #table-cotizacion-accidente td {
+  text-align: left;
+}
+
+#table-cotizacion-sepelio tr.total, #table-cotizacion-accidente tr.total {
+  border-top: 1px solid black;
+  font-weight: bold;
+}
+
+.logo-aseguradora-sepelio, .logo-aseguradora-accidente {
+  height: 50px;
+}
+
+.vigencia-sepelio, .vigencia-accidente {
+  font-size: .8em;
+}
+
+#clothing-nav a.nav-link {
+  color: black !important;
+  background-color: #cccccc !important;
+  &.active {
+    color: #007bff !important;
+    background-color: #ffffff !important;
+    border-bottom: 2px solid white;
+  }
+}
+
+#smartwizard #step-1 {
+  position: relative;
+  background: url("../images/logo.gif") no-repeat center;
+  background-size: 200px;
+  min-height: 600px;
+  .layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffffffc7;
+    z-index: 100;
+  }
+  #form-step-1 {
+    position: relative;
+    z-index: 1000;
+  }
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+  width: 38em !important;
+}

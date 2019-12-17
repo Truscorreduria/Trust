@@ -1,0 +1,277 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table>
+        <tbody>
+        <tr>
+            <td colspan="2">
+                <figure>
+                    <img src="{{ poliza.aseguradora.logo.url }}" alt="{{ poliza.aseguradora.name }}">
+                </figure>
+            </td>
+            <td colspan="4">
+                <p>{{ poliza.aseguradora.address }}</p>
+            </td>
+            <td colspan="4">
+                <p>Teléfono: {{ poliza.aseguradora.telefono }}</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <div class="condiciones-particulares">
+                    <p><strong>CONDICIONES PARTICULARES</strong></p>
+                    <p>POLIZA NUEVA DE AUTOMOVIL</p>
+                    <p>Fecha de Emisión: {{ poliza.created }}</p>
+                    <p>Plan: SEGURO DE AUTOMOVIL</p>
+                    <p>Moneda: DOLARES</p>
+                </div>
+            </td>
+            <td>
+                <div class="numero-poliza">
+                    <p>Póliza: {{ poliza.numero }}</p>
+                </div>
+            </td>
+            <td>
+                <div class="grupo-cob">
+                    <p>Grupo Cob: </p>
+                </div>
+            </td>
+            <td>
+                <div class="grupo-cob">
+                    <p>Grupo Pol: </p>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+{% endblock %}
+
+
+{% block content %}
+    <table id="asegurado">
+        <thead>
+        <tr>
+            <th colspan="5">Asegurado / Contratante: {{ poliza.nombres }} {{ poliza.apellidos }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td colspan="2">Datos:</td>
+            <td colspan="3">Vigencia de Póliza: 365 días</td>
+        </tr>
+        <tr>
+            <td>Cédula o Ruc:</td>
+            <td>{{ poliza.cedula }}</td>
+            <td>Desde</td>
+            <td>{{ poliza.desde|date:"d/m/Y" }} (00:00 Horas)</td>
+        </tr>
+        <tr>
+            <td>Celular:</td>
+            <td>{{ poliza.celular }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Teléfono:</td>
+            <td>{{ poliza.celular }}</td>
+            <td>Hasta:</td>
+            <td>{{ poliza.hasta|date:"d/m/Y" }} (23:59 Horas)</td>
+        </tr>
+        <tr>
+            <td>Apdo:</td>
+            <td>{{ poiza.apdo }}</td>
+            <td>Acrededor/Beneficiario:</td>
+            <td>BANCO DE LA PRODUCCIÓN S.A.</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ poiza.email }}</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Dirección:</td>
+            <td colspan="3"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table id="vehiculo">
+        <thead>
+        <tr>
+            <th colspan="5">Detalle del Vehículo Asegurado</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>Certificado No.:</td>
+            <td>{{ poliza.certificado }}</td>
+            <td>Uso:</td>
+            <td>{{ poliza.uso }}</td>
+        </tr>
+        <tr>
+            <td>Marca:</td>
+            <td>{{ poliza.marca }}</td>
+            <td>No. Motor:</td>
+            <td>{{ poliza.motor }}</td>
+        </tr>
+        <tr>
+            <td>Modelo:</td>
+            <td>{{ poliza.modelo }}</td>
+            <td>No. VIN:</td>
+            <td>{{ poliza.vin }}</td>
+        </tr>
+        <tr>
+            <td>Año:</td>
+            <td>{{ poliza.anno }}</td>
+            <td>Capacidad:</td>
+            <td>{{ poliza.capacidad }}</td>
+        </tr>
+        <tr>
+            <td>Placa:</td>
+            <td>{{ poliza.placa }}</td>
+            <td>No. Chasis:</td>
+            <td>{{ poliza.chasis }}</td>
+        </tr>
+        <tr>
+            <td>Suma Asegurada:</td>
+            <td>U$ {{ poliza.valor_depreciado|intcomma }}</td>
+            <td>Color:</td>
+            <td>{{ poliza.color }}</td>
+        </tr>
+        <tr>
+            <td>Depreciación Mes:</td>
+            <td></td>
+            <td>Toneladas:</td>
+            <td>{{ poliza.tonelaje }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table id="coberturas">
+        <thead>
+        <tr>
+            <th>Detalle de Coberturas</th>
+            <th>Suma Asegurada</th>
+            <th>Deducible</th>
+            <th>Prima</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for beneficio in poliza.beneficios.all %}
+            <tr>
+                <td>{{ beneficio.name }}</td>
+                <td>{{ beneficio.monto }}</td>
+                <td>{{ beneficio.deducible }}</td>
+                <td>{{ beneficio.prima }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="totales">
+        <tbody>
+        <tr>
+            <td>
+                <p>Gastos de Salvamento (US$150.00).</p>
+                <p>(1) Se aplicará deducible de 30% en caso de Robo.</p>
+            </td>
+            <td>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td>242.10</td>
+                    </tr>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td>242.10</td>
+                    </tr>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td>242.10</td>
+                    </tr>
+                    <tr>
+                        <td>Prima</td>
+                        <td></td>
+                        <td>U$</td>
+                        <td>242.10</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table id="pago">
+        <tr>
+            <td>Frecuencia de Pago</td>
+            <td>Forma de Pago</td>
+            <td>Día de Pago</td>
+            <td>Monto / Cuota</td>
+        </tr>
+        <tr>
+            <td>Un (1) Pago</td>
+            <td>Depósito referenciado</td>
+            <td></td>
+            <td>U$</td>
+        </tr>
+    </table>
+
+    <p>LIMITE DE RESPONSABILIDAS: La cantidad máxima a que ascenderá la indemnización en caso de siniestro,
+        queda limitada a la suma máxima aquí asegurada, de manera que los pagos que tuviera que hacer la
+        Compañía de seguros por uno o varios siniestros originados por los riesgos cubiertos, no excederán
+        la suma máxima estipulada en cada cobertura. En toda pérdida amparada por la cobertura de esta
+        Póliza se aplicarán los deducibles y coaseguros estipulados para cada riesgo contratado por el Asegurado.</p>
+
+    <p>Queda contenido que el Asegurado y ASSA Compañia de Seguros, S. A., han convenido en celebrar el presente
+        Contrato de Seguro, conforme la Solicitud de Aseguramiento, Condiciones Generales de esta Póliza, Condiciones
+        Particulares, Adenda y demás documentos que forman parte de esta Póliza.</p>
+
+    <p>En fe de lo cual se firman las presentes Condiciones Particulares en la ciudad de Managua, Nicaragua a los
+        días del mes de del año </p>
+
+    <table>
+        <tr>
+            <td>firma digital</td>
+            <td>Firma Autorizada</td>
+            <td>Original</td>
+        </tr>
+    </table>
+{% endblock %}
