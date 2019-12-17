@@ -156,7 +156,7 @@
                         <div class="form-group">
                             <label for="email_personal">Correo electrónico personal</label>
                             <input type="text"
-                                   class="form-control {% if not user.email_personal %}is-invalid{% endif %}"
+                                   class="form-control {% if not user.profile.email_personal %}is-invalid{% endif %}"
                                    id="email_personal" name="email_personal"
                                     {% if user.profile.email_personal %}
                                    value="{{ user.profile.email_personal }}" {% endif %}>
