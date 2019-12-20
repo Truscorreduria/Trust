@@ -82,7 +82,7 @@ class PolizaAdmin(ImportExportModelAdmin):
     date_hierarchy = 'fecha_emision'
     list_display = ('print_code', 'fecha_emision', 'marca', 'modelo', 'anno', 'user', 'chasis', 'valor_nuevo',
                     'suma_asegurada', 'subtotal', 'emision', 'iva', 'total', 'medio_pago', 'fecha_vence')
-    search_fields = ('code', 'nombres', 'apellidos', 'marca', 'modelo', 'chasis')
+    search_fields = ('code', 'nombres', 'apellidos', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
 
