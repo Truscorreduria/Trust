@@ -24,6 +24,7 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/ajax/', include('grappelli_extras.ajax_urls')),
     path('cotizador/', include('cotizador.urls')),
+    path('migracion/', include('migracion.urls')),
     path('reportes/', include('reportes.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
