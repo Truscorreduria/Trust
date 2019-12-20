@@ -1,0 +1,26 @@
+<table class="grp-table">
+    <thead>
+    <tr>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Año</th>
+        <th>Placa</th>
+        <th>Chasis</th>
+        <th>Suma Asegurada</th>
+        <th>Vence</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for auto in widget.value.automoviles.all %}
+        <tr>
+            <td>{{ auto.marca }}</td>
+            <td>{{ auto.modelo }}</td>
+            <td>{{ auto.anno }}</td>
+            <td>{{ auto.placa }}</td>
+            <td>{{ auto.chasis }}</td>
+            <td>{{ auto.suma }}</td>
+            <td>{{ auto.fin }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

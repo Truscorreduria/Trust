@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'utils',
     'cotizador',
     'reportes',
+    'migracion',
 
     'django_user_agents',
     'constance',

@@ -1,0 +1,24 @@
+{% extends 'admin/change_list.html' %}
+
+
+{% block javascripts %}
+    {{ block.super }}
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                $('a.sugerencia').on('click', function () {
+                    let id = $(this).data('id');
+                    let em = $(this).data('em');
+                    $.ajax("{% url 'ajax_objectExecute' %}", {
+                        method: "POST",
+                        data: {app_label: 'migracion', model: 'auto', id: id,
+                        view: 'asignar', em: em},
+                        success: function (response) {
+                            location.reload()
+                        }
+                    })
+                })
+            })
+        })(grp.jQuery)
+    </script>
+{% endblock %}
