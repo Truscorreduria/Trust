@@ -214,7 +214,6 @@ def get_data(request):
     modelo = request.POST.get('modelo')
     anno = request.POST.get('anno')
     chasis = request.POST.get('chasis', None)
-    print(chasis)
     exceso = float(request.POST.get('exceso'))
     chasis_encontrado = False
 
@@ -1023,6 +1022,16 @@ def enviar_contacto(request):
 def javascript(request, file):
     return render(request, 'cotizador/js/' + file)
 
+
+
+def autorenovar_polizas():
+    hoy = datetime.now()
+    aseguradora = Aseguradora.objects.get(name='ASSA')
+    for p in Poliza.objects.all():
+        vence = datetime(year=p.fecha_vencimiento().year, month=p.fecha_vencimiento().month, day=p.fecha_vencimiento().day)
+        if vence <= hoy:
+            suma_asegurada = aseguradora.depreciar(p.valor_nuevo, p.anno)
+            print('valor de nuevo:', p.valor_nuevo, p.suma_asegurada, suma_asegurada)
 
 
 # from migracion.models import Auto

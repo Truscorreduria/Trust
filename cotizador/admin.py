@@ -180,6 +180,7 @@ class PerfilEmpleadoAdmin(ImageCroppingMixin, admin.ModelAdmin):
     list_filter = ('entidad',)
 
     inlines = [beneficiarios_sepelio, beneficiarios_accidente]
+    change_form_template = 'cotizador/admin/perfil.html'
 
 
 class beneficiarios_sepelio_tabular(admin.TabularInline):
