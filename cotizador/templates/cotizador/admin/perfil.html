@@ -3,7 +3,35 @@
 
 {% block object-tools-items %}
     <li>
-        <a href="">Dar de baja</a>
+        <a href="#" id="btn-baja">Dar de baja</a>
     </li>
     {{ block.super }}
+{% endblock %}
+
+
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                $('#btn-baja').on('click', function(){
+                    $.ajax("{% url 'ajax_objectExecute' %}", {
+                        method: "POST",
+                        data: {
+                            app_label: 'cotizador',
+                            model: 'perfilempleado',
+                            id: '{{ original.id }}',
+                            view: 'dar_de_baja',
+                        },
+                        success: function(response){
+                            location.reload();
+                        }
+                    })
+                })
+            })
+        })(grp.jQuery)
+
+    </script>
 {% endblock %}

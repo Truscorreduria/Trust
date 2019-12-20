@@ -7,6 +7,7 @@ from image_cropping import ImageRatioField
 from constance import config
 from datetime import date
 from utils.models import Departamento, Municipio
+from django.contrib import messages
 
 
 def get_profile(user):
@@ -239,6 +240,12 @@ class PerfilEmpleado(base):
     def delete(self, *args, **kwargs):
         self.user.delete()
         super().delete(args, kwargs)
+
+    def dar_de_baja(self, request):
+        u = self.user
+        u.is_active = False
+        u.save()
+        messages.info(request, 'Usuario inactivado con éxito')
 
 
 class Poliza(base):
