@@ -1027,11 +1027,17 @@ def javascript(request, file):
 def autorenovar_polizas():
     hoy = datetime.now()
     aseguradora = Aseguradora.objects.get(name='ASSA')
-    for p in Poliza.objects.all():
+    for p in Poliza.objects.filter(valor_nuevo__gt=0):
         vence = datetime(year=p.fecha_vencimiento().year, month=p.fecha_vencimiento().month, day=p.fecha_vencimiento().day)
+        print(vence)
         if vence <= hoy:
-            suma_asegurada = aseguradora.depreciar(p.valor_nuevo, p.anno)
-            print('valor de nuevo:', p.valor_nuevo, p.suma_asegurada, suma_asegurada)
+            p.suma_asegurada = aseguradora.depreciar(p.valor_nuevo, p.anno)
+            emision = datetime(year=p.fecha_emision.year, month=p.fecha_emision.month, day=p.fecha_emision.day)
+            p.fecha_emision = emision+ timedelta(days=365)
+            p.fecha_vence = emision + timedelta(days=730)
+            p.save()
+            print(p.fecha_vence)
+
 
 
 # from migracion.models import Auto
