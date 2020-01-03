@@ -1,0 +1,9 @@
+{% extends 'admin/change_form.html' %}
+
+
+{% block object-tools-items %}
+    <li><a href="#" data-url="{% url 'trustseguros:documentos' %}?app_label={{ opts.app_label }}&model={{ opts.model_name }}&id={{ original.id }}" data-name="ArchivosAdjuntos" class="show-info">Archivos
+        Adjuntos</a></li>
+    {{ block.super }}
+
+{% endblock %}

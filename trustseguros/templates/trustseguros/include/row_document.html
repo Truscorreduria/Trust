@@ -1,0 +1,43 @@
+<tr id="{{ archivo.id }}">
+    <td style="text-align: center">
+        <a href="{{ archivo.archivo.url }}" target="_self" style="font-size: 2em">
+            <span class="glyphicon glyphicon-download"></span>
+        </a>
+    </td>
+    <td>
+        <input type="text" class="form-control" placeholder="Nombre del Documento"
+               name="nombre_archivo" data-id="{{ archivo.id }}"
+                {% if archivo.nombre %} value="{{ archivo.nombre }}{% endif %}">
+    </td>
+    <td>
+        <select name="catalogo_archivo" data-id="{{ archivo.id }}"
+                class="form-control" style="min-width: 150px">
+            <option>------</option>
+            {% for catalogo in catalogos %}
+                <option value="{{ catalogo.id }}"
+                        {% ifequal catalogo archivo.catalogo %}
+                        selected{% endifequal %}>{{ catalogo.nombre }}</option>
+            {% endfor %}
+        </select>
+    </td>
+    <td style="max-width: 200px">
+        <div class="form-group">
+            <div class='input-group date fecha_vencimiento' data-id="{{ archivo.id }}">
+                <input type='text' class="form-control"
+                        {% if archivo.fecha_caducidad %}
+                       value="{{ archivo.fecha_caducidad|date:'Y-m-d' }}"
+                        {% endif %}
+                       name="fecha_vencimiento" required/>
+                <span class="input-group-append input-group-addon">
+                                        <span class="input-group-text glyphicon glyphicon-calendar"></span>
+                                    </span>
+            </div>
+            <div class="help-block with-errors"></div>
+        </div>
+    </td>
+    <td style="text-align: center;">
+        <button class="btn btn-danger btn-borrar" data-id="{{ archivo.id }}">
+            <span class="fa fa-trash"></span>
+        </button>
+    </td>
+</tr>

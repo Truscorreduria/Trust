@@ -1,0 +1,42 @@
+{% extends 'trustseguros/media_mixin.html' %}
+
+
+{% block object-tools-items %}
+    {% ifequal original.tipo 2 %}
+        <li><a href="{% url 'trustseguros:certificados' %}?poliza={{ original.id }}" target="_blank">Certificados</a>
+        </li>
+    {% endifequal %}
+    {{ block.super }}
+{% endblock %}
+
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                const $primaneta = $('#id_prima_neta');
+                const $porcentajecomision = $('#id_porcentaje_comision');
+                const $comisionagencia = $('#id_comision_agencia');
+
+                const $montocomision = $('#id_monto_comision');
+                const $montoagencia = $('#id_monto_agencia');
+
+                const calcular = function () {
+                    primaneta = parseFloat($primaneta.val());
+                    porcentajecomision = parseFloat($porcentajecomision.val());
+                    comisionagencia = parseFloat($comisionagencia.val());
+                    montocomision = primaneta * porcentajecomision / 100;
+                    montoagencia = primaneta * comisionagencia / 100;
+                    $montocomision.val(montocomision.toFixed(2));
+                    $montoagencia.val(montoagencia.toFixed(2));
+                };
+
+                $primaneta.on('change', calcular);
+                $porcentajecomision.on('change', calcular);
+                $comisionagencia.on('change', calcular);
+            })
+        })(grp.jQuery)
+    </script>
+{% endblock %}

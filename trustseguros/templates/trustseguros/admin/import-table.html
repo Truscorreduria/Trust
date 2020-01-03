@@ -1,0 +1,33 @@
+{% load crispy_forms_field datatables %}
+
+<table id="result_list" cellspacing="0" class="grp-table grp-sortable">
+    <thead>
+    <tr>
+        <th scope="col"></th>
+        {% for field in fields %}
+            <th scope="col">
+                <div class="grp-text">
+                    <span>{{ form|datatables_label:field }}</span>
+                </div>
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for form in forms %}
+        <tr class="grp-row grp-row-even">
+            <td style="min-width: 40px; text-align: center">
+                <button type="button" class="button-state-blue icons-sprite borrar"></button>
+            </td>
+            {% for name_field in fields %}
+                {% with form|datatables_field:name_field as field %}
+                    <th {% if field.errors %}class="grp-errors"{% endif %}>
+                        {% crispy_field field %}
+                        {{ field.errors }}
+                    </th>
+                {% endwith %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

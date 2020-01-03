@@ -1,0 +1,47 @@
+@import "colors";
+
+.dataTables_wrapper {
+  tbody tr {
+    cursor: pointer;
+  }
+  .table-bordered td, .table-bordered th {
+    border: 1px solid $dark-green;
+  }
+  .table-hover tbody tr:hover {
+    background-color: $green-semi2;
+  }
+  .page-item {
+    .page-link {
+      color: $dark-green !important;
+      border-color: $dark-green !important;
+      &:focus {
+        color: $dark-green !important;
+        background-color: $green-semi !important;
+        border-color: $dark-green !important;
+        box-shadow: 0 0 0 0.2rem $green-semi;
+      }
+      &:hover {
+        background-color: $green-semi !important;
+      }
+    }
+    &.active {
+      .page-link {
+        background-color: $green-semi;
+        border-color: $dark-green;
+      }
+    }
+  }
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem $green-semi !important;
+  border-color: $dark-green !important;
+}
+
+option:checked {
+  background-color: $green-semi !important;
+}
+
+option:not(:checked) {
+  background-color: $green-semi2 !important;
+}

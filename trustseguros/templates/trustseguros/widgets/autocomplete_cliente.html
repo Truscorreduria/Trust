@@ -1,0 +1,140 @@
+<style type="text/css">
+    .border-less {
+        border: none !important;
+    }
+</style>
+{% if widget.value != None %}
+    {% with widget.value as cliente %}
+        <div class="grp-module">
+            <table class="grp-table">
+                <tr>
+                    <td>Nombre del cliente:
+                        <div class="grp-readonly border-less">{{ cliente.full_name }}</div>
+                    </td>
+                    <td>Tipo:
+                        <div class="grp-readonly border-less">{{ cliente.tipo }}</div>
+                    </td>
+                    <td style="text-align: right;padding: 0">
+                        <button type="button" class="button-state-blue icons-sprite borrar"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Teléfono:
+                        <div class="grp-readonly border-less">{{ cliente.telefono }}</div>
+                    </td>
+                    <td>Celular:
+                        <div class="grp-readonly border-less">{{ cliente.celular }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> Dirección:
+                        <div class="grp-readonly border-less"> {{ cliente.direccion }}</div>
+                    </td>
+                </tr>
+            </table>
+
+
+            <input type="hidden" id="id_{{ widget.name }}" name="{{ widget.name }}"
+                    {% if widget.required %} required {% endif %}
+                    {% if widget.value != None %} value="{{ widget.value.id }}"{% endif %}/>
+
+        </div>
+    {% endwith %}
+{% else %}
+    <div class="grp-module" style="display: none"></div>
+    <input type="text" class="vTextField {{ widget.name }}_autocomplete"
+            {% if widget.value != None %} value="{{ widget.value.full_name }}" {% endif %}/>
+    <input type="hidden" id="id_{{ widget.name }}" name="{{ widget.name }}"
+            {% if widget.required %} required {% endif %}
+            {% if widget.value != None %} value="{{ widget.value.id }}"{% endif %}/>
+    <style type="text/css">
+        .borrar {
+            background-position-y: -1284px;
+        }
+    </style>
+    <script type="text/javascript">
+        function autoTemplate(cliente) {
+
+            return (`
+                <table class="grp-table">
+                <tr>
+                    <td>Nombre del cliente:
+                        <div class="grp-readonly border-less">${ cliente.full_name }</div>
+                    </td>
+                    <td>Tipo:
+                        <div class="grp-readonly border-less">${ cliente.tipo }</div>
+                    </td>
+                    <td style="text-align: right;padding: 0">
+                        <button type="button" class="button-state-blue icons-sprite borrar"></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Teléfono:
+                        <div class="grp-readonly border-less">${ cliente.telefono }</div>
+                    </td>
+                    <td>Celular:
+                        <div class="grp-readonly border-less">${ cliente.celular }</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2"> Dirección:
+                        <div class="grp-readonly border-less"> ${ cliente.direccion }</div>
+                    </td>
+                </tr>
+            </table>`
+            )
+
+        }
+
+        function itemCliente(cliente) {
+            return (`
+            <div style='border: 1px solid #ccc; padding: 5px;'>
+                Cliente: ${cliente.obj.full_name}
+                <br>Tipo: ${cliente.obj.tipo}
+                <br>Teléfono: ${cliente.obj.telefono}
+                <br>Email: ${cliente.obj.email}
+                <br>Dirección: ${cliente.obj.direccion}
+            </div>
+            `)
+        }
+
+        (function ($) {
+            $(document).ready(function () {
+                const autocomplete_contribuyente = function () {
+                    $(this).autocomplete({
+                        minLength: 2,
+                        source: "{% url 'ajax_autocomplete' %}?app_label=trustseguros&model=cliente&column_name=primer_nombre,primer_apellido,razon_social&column_value=full_name",
+                        select: function (i, o) {
+                            data = o.item.obj;
+                            c = $('#id_{{ widget.name }}');
+                            mod = $(c).parent().find('.grp-module').empty();
+                            $(mod).append(autoTemplate(data));
+                            $(mod).css('display', 'block');
+                            $('.{{ widget.name }}_autocomplete').css('display', 'none');
+                            $(c).val(data.id);
+                            $(c).trigger('change');
+                        }
+                    }).autocomplete("instance")._renderItem = function (ul, item) {
+                        return $("<li>")
+                            .append(itemCliente(item))
+                            .appendTo(ul);
+                    };
+                };
+                $('.{{ widget.name }}_autocomplete').on('keyup', autocomplete_contribuyente);
+                const borrar = function () {
+                    let c = $('#id_{{ widget.name }}');
+                    $(c).val('');
+                    let mod = $(c).parent().find('.grp-module').empty();
+                    $(mod).css('display', 'none');
+                    $('.{{ widget.name }}_autocomplete').val('');
+                    $('.{{ widget.name }}_autocomplete').css('display', 'block');
+                    $(c).trigger('change');
+                };
+                $(document).on('click', '.borrar', borrar);
+            });
+        })(grp.jQuery)
+    </script>
+{% endif %}
+
+
+

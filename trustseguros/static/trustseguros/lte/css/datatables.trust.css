@@ -1,0 +1,41 @@
+.dataTables_wrapper tbody tr {
+  cursor: pointer;
+}
+.dataTables_wrapper .table-bordered td, .dataTables_wrapper .table-bordered th {
+  border: 1px solid #326634;
+}
+.dataTables_wrapper .table-hover tbody tr:hover {
+  background-color: #51972d14;
+}
+.dataTables_wrapper .page-item .page-link {
+  color: #326634 !important;
+  border-color: #326634 !important;
+}
+.dataTables_wrapper .page-item .page-link:focus {
+  color: #326634 !important;
+  background-color: #51972d44 !important;
+  border-color: #326634 !important;
+  box-shadow: 0 0 0 0.2rem #51972d44;
+}
+.dataTables_wrapper .page-item .page-link:hover {
+  background-color: #51972d44 !important;
+}
+.dataTables_wrapper .page-item.active .page-link {
+  background-color: #51972d44;
+  border-color: #326634;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem #51972d44 !important;
+  border-color: #326634 !important;
+}
+
+option:checked {
+  background-color: #51972d44 !important;
+}
+
+option:not(:checked) {
+  background-color: #51972d14 !important;
+}
+
+/*# sourceMappingURL=datatables.trust.css.map */

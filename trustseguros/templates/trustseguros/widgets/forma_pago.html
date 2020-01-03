@@ -1,0 +1,133 @@
+{% with widget.value as object %}
+
+
+    <div class="form-row grp-row grp-cells-2">
+        <div class="field-box grp-cell l-2c-fluid l-d-4">
+            <div class="c-1"><label class="inline" for="id_forma_pago">Forma de pago</label></div>
+            <div class="c-2">
+                <select name="forma_pago" id="id_forma_pago">
+                    <option value="">---------</option>
+                    <option value="contado"
+                            {% ifequal object.forma_pago 'contado' %}
+                            selected=""{% endifequal %}
+                    >De contado
+                    </option>
+                    <option value="cuotas"
+                            {% ifequal object.forma_pago 'cuotas' %}
+                            selected=""{% endifequal %}>En cuotas</option>
+                </select></div>
+        </div>
+
+        <div class="field-box grp-cell l-2c-fluid l-d-4" id="row-cuotas" style="display: none">
+            <div class="c-1"><label class="inline" for="id_select-cuotas">Cantidad de cuotas</label></div>
+            <div class="c-2">
+                <select id="id_select-cuotas" name="select-cuotas">
+                    <option value="">---------</option>
+                    <option value="2"{% ifequal object.cuotas '2' %}
+                            selected=""{% endifequal %}>Dos</option>
+                    <option value="3"{% ifequal object.cuotas '3' %}
+                            selected=""{% endifequal %}>Tres</option>
+                    <option value="4"{% ifequal object.cuotas '4' %}
+                            selected=""{% endifequal %}>Cuatro</option>
+                    <option value="5"{% ifequal object.cuotas '5' %}
+                            selected=""{% endifequal %}>Cinco</option>
+                    <option value="6"{% ifequal object.cuotas '6' %}
+                            selected=""{% endifequal %}>Seis</option>
+                    <option value="7"{% ifequal object.cuotas '7' %}
+                            selected=""{% endifequal %}>Siete</option>
+                    <option value="8"{% ifequal object.cuotas '8' %}
+                            selected=""{% endifequal %}>Ocho</option>
+                    <option value="9"{% ifequal object.cuotas '9' %}
+                            selected=""{% endifequal %}>Nueve</option>
+                    <option value="10"{% ifequal object.cuotas '10' %}
+                            selected=""{% endifequal %}>Diez</option>
+                    <option value="11"{% ifequal object.cuotas '11' %}
+                            selected=""{% endifequal %}>Once</option>
+                    <option value="12"{% ifequal object.cuotas '12' %}
+                            selected=""{% endifequal %}>Doce</option>
+                </select></div>
+        </div>
+
+    </div>
+
+
+    <div class="form-row grp-row grp-cells-1">
+        <table id="id_tabla_pagos" class="grp-table" style="display: none;">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Monto</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+
+                const elcuotas = $('#id_cuotas');
+                const elfomapago = $('#id_forma_pago');
+                const selcuotas = $('#id_select-cuotas');
+                selcuotas.val(elcuotas.val());
+                const elfechaemision = $('#id_fecha_emision');
+                const elprimatotal = $('#id_prima_total');
+                const rowcuotas = $('#row-cuotas');
+
+                function row_cuota(date, amount) {
+                    return (`<tr>
+                                <td><input type="text" value="${date}" readonly></td>
+                                <td><input type="text" value="${amount}" readonly></td>
+                            </tr>`)
+                }
+
+                function siguiente_mes(date) {
+                    if (date.getMonth() === 11) {
+                        return new Date(date.getFullYear() + 1, 0, date.getDate());
+                    } else {
+                        return new Date(date.getFullYear(), date.getMonth() + 1, date.getDate());
+                    }
+                }
+
+                const calc_forma_pago = function () {
+                    let fpago = elfomapago.val();
+                    let table = $('#id_tabla_pagos');
+                    table.find('tbody').empty();
+                    if (fpago === 'cuotas') {
+                        table.css('display', 'table');
+                        rowcuotas.css('display', 'block');
+                        cuotas = parseInt(selcuotas.val());
+                        elcuotas.val(cuotas);
+                        amount = parseFloat(elprimatotal.val()) / cuotas;
+                        dia = parseInt(elfechaemision.val().split('/')[0]);
+                        mes = parseInt(elfechaemision.val().split('/')[1]);
+                        ano = parseInt(elfechaemision.val().split('/')[2]);
+                        fecha = new Date(ano, mes - 1, dia);
+                        for (let i = 0; i < cuotas; i++) {
+                            $(table.find('tbody')).append(row_cuota(fecha.toLocaleDateString('es-NI'), amount));
+                            fecha = siguiente_mes(fecha);
+                        }
+                    } else {
+                        table.css('display', 'none');
+                        rowcuotas.css('display', 'none');
+                    }
+
+                };
+
+                elfomapago.on('change', calc_forma_pago);
+                selcuotas.on('change', calc_forma_pago);
+                elfechaemision.on('change', calc_forma_pago);
+                elprimatotal.on('change', calc_forma_pago);
+                calc_forma_pago();
+
+            })
+        })(grp.jQuery)
+    </script>
+
+
+{% endwith %}

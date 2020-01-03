@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'simple_history',
+    'mathfilters',
 
     'crispy_forms',
     'djangobower',
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'cotizador',
     'reportes',
     'migracion',
+    'trustseguros',
 
     'django_user_agents',
     'constance',
@@ -179,6 +181,9 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'trustseguros.middleware.PutParsingMiddleware',
+    'trustseguros.middleware.DeleteParsingMiddleware',
+    'trustseguros.middleware.JSONParsingMiddleware',
 ]
 
 ROOT_URLCONF = 'webtrust.urls'
@@ -299,9 +304,10 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 # BOWER_PATH = '/usr/local/bin/bower'
 
 BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
+ 'bootstrap-select#1.13.12',
  'bootstrap-validator#0.11.9',
  'datatables#1.10.19',
- 'datatables.net#1.10.19',
+ 'datatables.net#1.10.20',
  'datatables.net-bs#2.1.1',
  'datatables.net-bs4#3.2.2',
  'datatables.net-buttons#1.5.4',
@@ -312,9 +318,10 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
  'fontAwesome#5.7.0',
  'fullcalendar#3.10.0',
  'glyphicons#0.0.2',
+ 'growl#1.3.5',
  'inputmask#4.0.8',
  'izimodal#1.5.1',
- 'jquery#3.3.1',
+ 'jquery#3.4.1',
  'jquery-mask-plugin#1.14.15',
  'mocha#1.17.1',
  'moment#2.24.0',
@@ -322,8 +329,10 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
  'mustache.js#3.0.1',
  'raphael#2.2.7',
  'smartwizard#4.3.1',
- 'sweetalert2#7.29.1',
+ 'sweetalert2#7.33.1',
  'tipsy#0.1.7']
+
+
 
 
 # GRAPH_MODELS = {

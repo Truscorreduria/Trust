@@ -1,0 +1,16 @@
+.primer_nombre input,
+.segundo_nombre input,
+.primer_apellido input,
+.puesto input,
+.email_principal input,
+.segundo_apellido input
+{
+    max-width: 150px !important;
+}
+
+
+
+.telefono input
+{
+    max-width: 100px !important;
+}

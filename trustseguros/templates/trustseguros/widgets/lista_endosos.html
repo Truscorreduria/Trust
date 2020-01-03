@@ -1,0 +1,21 @@
+<div class="form-row grp-row grp-cells-1">
+    <table id="id_tabla_endosos" class="grp-table">
+        <thead>
+        <tr>
+            <th>Número</th>
+            <th>Aseguradora</th>
+            <th>Prima total</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for e in widget.value.endosos %}
+                <tr>
+                    <td><a href="{% url 'admin:trustseguros_endoso_change' e.id %}" target="_blank">{{ e.recibo_prima }}</a></td>
+                    <td><input type="text" readonly value="{{ e.descripcion }}"></td>
+                    <td><input type="text" readonly value="{{ e.prima_total }}"
+                    style="text-align: right"></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

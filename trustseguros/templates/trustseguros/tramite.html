@@ -1,0 +1,45 @@
+{% extends 'trustseguros/media_mixin.html' %}
+
+
+{% block extrahead %}
+    <style type="text/css">
+        select {
+            min-width: 278px !important;
+        }
+
+        select#id_cliente, select#id_empresa, select#id_aseguradora,
+        select#id_poliza {
+            min-width: 250px !important;
+        }
+    </style>
+    {{ block.super }}
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                const rowCliente = $('div.field-box.cliente');
+                const rowEmpresa = $('div.field-box.empresa');
+                rowCliente.css('display', 'none');
+                rowEmpresa.css('display', 'none');
+                {% if original %}
+                    {% ifequal original.tipo_cliente 'natural' %}
+                        rowCliente.css('display', 'table-cell');
+                    {% endifequal %}
+                    {% ifequal original.tipo_cliente 'juridica' %}
+                        rowEmpresa.css('display', 'table-cell');
+                    {% endifequal %}
+                {% endif %}
+                $('#id_tipo_cliente').on('change', function () {
+                    tipo = $(this).val();
+                    if (tipo === "natural") {
+                        rowEmpresa.css('display', 'none');
+                        rowCliente.css('display', 'table-cell');
+                    }
+                    if (tipo === "juridica") {
+                        rowCliente.css('display', 'none');
+                        rowEmpresa.css('display', 'table-cell');
+                    }
+                });
+            })
+        })(grp.jQuery)
+    </script>
+{% endblock %}

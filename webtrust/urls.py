@@ -26,6 +26,7 @@ urlpatterns = [
     path('cotizador/', include('cotizador.urls')),
     path('migracion/', include('migracion.urls')),
     path('reportes/', include('reportes.urls')),
+    path('trustseguros/', include('trustseguros.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 

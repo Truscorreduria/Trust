@@ -1,0 +1,12 @@
+{% extends 'admin/change_list.html' %}
+{% load static %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="{% url 'trustseguros:import_person' %}">Importar personas</a>
+    </li>
+    <li>
+        <a href="{% url 'trustseguros:import_company' %}">Importar empresas</a>
+    </li>
+    {{ block.super }}
+{% endblock %}

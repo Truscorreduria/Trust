@@ -1,0 +1,9 @@
+.tipo_beneficiario input,
+.primer_nombre input,
+.segundo_nombre input,
+.primer_apellido input,
+.segundo_apellido input,
+.tipo_identificacion input,
+.numero_identificacion input {
+    max-width: 100px;
+}

@@ -1,0 +1,124 @@
+{% extends 'admin/change_form.html' %}
+{% load static datatables %}
+
+{% block pretitle %}{% endblock %}
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+{% block content_title %}
+    <header id="grp-content-title">
+
+
+        <h1>{{ title }}</h1>
+
+
+        <ul class="grp-object-tools">
+            <li class="li-import">
+                <label for="file-import" class="custom-file-upload">
+                    <i class="fa fa-cloud-upload"></i> Cargar archivo
+                </label>
+                <input id="file-import" type="file">
+            </li>
+
+            <li>
+                <a href="{% url 'trustseguros:download' %}?file_name={{ template }}" class="grp-state-focus">Descargar plantilla</a>
+            </li>
+        </ul>
+
+    </header>
+{% endblock %}
+
+
+{% block content %}
+
+
+    <form id="grp-changelist-form" action="." method="post">
+        {% csrf_token %}
+        <section id="grp-changelist" class="">
+
+            <div class="grp-module grp-changelist-results">
+                {% include 'trustseguros/admin/import-table.html' %}
+            </div>
+
+        </section>
+
+        <footer id="submit" class="grp-module grp-submit-row grp-fixed-footer">
+
+            <input type="hidden" name="apply" value="yes">
+            <ul>
+                <li class="grp-float-left"><a href="." class="grp-button grp-cancel-link">Cancel</a></li>
+                <li><input type="submit" value="Confirmar importación" class="grp-button grp-default"></li>
+            </ul>
+        </footer>
+
+    </form>
+{% endblock %}
+
+
+
+{% block extrahead %}
+    {{ block.super }}
+    <style type="text/css">
+
+        .grp-object-tools li.li-import {
+            margin: 0 10px;
+        }
+
+        .grp-object-tools li.li-import input[type=file] {
+            position: relative;
+            width: 150px;
+            height: 40px;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .grp-object-tools li.li-import label {
+            position: absolute;
+            background: linear-gradient(#999999, #888888);
+            color: #fff;
+            padding: 4px;
+            border-radius: 30px;
+            width: 150px;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .borrar {
+            background-position-y: -1284px;
+        }
+
+    </style>
+
+    <script type="text/javascript" src="{% static 'ajax/grp-token.js' %}"></script>
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+
+                $('#file-import').on('change', function () {
+                    $.each(this.files, function (i, file) {
+                        const data = new FormData();
+                        data.append('file', file);
+                        $.ajax(".", {
+                            type: "POST",
+                            data: data,
+                            processData: false,
+                            contentType: false,
+                            success: function (response) {
+                                $('.grp-changelist-results').html(response);
+                            },
+                            error: function (err) {
+                                console.log(err)
+                            }
+                        })
+                    })
+                });
+
+                $(document).on('click', '.borrar', function () {
+                    $(this).parents('tr').remove()
+                })
+
+            })
+        })(grp.jQuery)
+    </script>
+
+{% endblock %}

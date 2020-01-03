@@ -1,0 +1,41 @@
+{% extends 'admin/change_form.html' %}
+
+
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript">
+        (function($){
+            $(document).ready(function () {
+                $('#id_cliente').on('change', function () {
+                    const _this = $(this);
+                    $.ajax("{% url 'ajax_getCollection' %}", {
+                        method: "post",
+                        data: {app_label: 'trustseguros', model: 'tramite',
+                        filters: `{'cliente_id': ${_this.val()} }`},
+                        success: function (response) {
+                            const $tramite = $('#id_tramite').empty();
+                            $tramite.append(`<option>---------</option>`)
+                            $.each(response, function (i, o) {
+                                $tramite.append(`<option value="${o.id}" data-poliza="${o.poliza}">${o.code}</option>`)
+                            });
+                            $('#id_descripcion').val();
+                        }
+                    })
+                });
+
+                $('#id_tramite').on('change', function () {
+                    const _this = $(this);
+                    $.ajax("{% url 'ajax_getObject' %}", {
+                        method: "post",
+                        data: {app_label: 'trustseguros', model: 'tramite',
+                        id: _this.val()},
+                        success: function (response) {
+                            $('#id_poliza').val(response.poliza);
+                            $('#id_descripcion').val(response.descripcion);
+                        }
+                    })
+                })
+            })
+        })(grp.jQuery)
+    </script>
+{% endblock %}

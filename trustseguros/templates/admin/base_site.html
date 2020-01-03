@@ -1,0 +1,49 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+
+{% block extrahead %}
+
+    <link rel="stylesheet" href="{% static 'seguros/modal/css/iziModal.min.css' %}">
+    <script type="text/javascript" src="{% static 'seguros/modal/js/iziModal.min.js' %}"></script>
+
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                function activar_spinner() {
+                    $('#spinner').css('display', 'block');
+                }
+
+                function desactivar_spinner() {
+                    $('#spinner').css('display', 'none');
+                }
+
+                $(document)
+                    .ajaxStart(function () {
+                        activar_spinner();
+                    })
+                    .ajaxStop(function () {
+                        desactivar_spinner();
+                    });
+
+                const atachments_info = function (e) {
+                    e.preventDefault();
+                    window.open(
+                        $(this).data('url'),
+                        $(this).data('name'),
+                        "width=1200mm, height=500mm,  status=no, menubar=no, location=no");
+                };
+
+                $('.show-info').on('click', atachments_info);
+            })
+        })(grp.jQuery)
+    </script>
+{% endblock %}
+
+
+{% block footer %}
+    <div id="spinner" style="width: 100%;
+    top: 40%; text-align: center; position: fixed;
+    z-index: 999999; display: none">
+        <img src="{% static 'seguros/images/Spinner.gif' %}">
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<div class="form-row grp-row grp-cells-1">
+    <table id="id_tabla_polizas" class="grp-table">
+        <thead>
+        <tr>
+            <th>Número</th>
+            <th>Fecha Inicial</th>
+            <th>Fecha Final</th>
+            <th>Cliente</th>
+            <th>Aseguradora</th>
+            <th>Primer cesionario</th>
+            <th>Prima total</th>
+        </tr>
+        </thead>
+        <tbody>
+            {% for p in widget.value.polizas %}
+                <tr>
+                    <td><a href="{% url 'admin:trustseguros_poliza_change' p.id %}" target="_blank">{{ p.numero_poliza }}</a></td>
+                    <td><input type="text" readonly value="{{ p.fecha_inicio }}"></td>
+                    <td><input type="text" readonly value="{{ p.fecha_fin }}"></td>
+                    <td><input type="text" readonly value="{{ p.cliente }}"></td>
+                    <td><input type="text" readonly value="{{ p.aseguradora }}"></td>
+                    <td><input type="text" readonly value="{{ p.primer_cesionario }}"></td>
+                    <td><input type="text" readonly value="{{ p.prima_total }}"
+                    style="text-align: right"></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
