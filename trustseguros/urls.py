@@ -31,4 +31,10 @@ urlpatterns = [
     path('tramites/', Tramites.as_view(), name="tramites"),
     path('endosos/', Endosos.as_view(), name="endosos"),
 
+
+    path('usuarios/', Usuarios.as_view(), name="usuarios"),
+    path('sepelio/', DependientesSepelio.as_view(), name="sepelio"),
+    path('accidente/', DependientesAccidente.as_view(), name="accidente"),
+    path('automovil/', PolizasAutomovil.as_view(), name="automovil"),
+
 ]

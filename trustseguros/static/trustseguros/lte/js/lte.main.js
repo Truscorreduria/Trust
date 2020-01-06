@@ -14,6 +14,22 @@ function intcommas(x) {
     return x;
 }
 
+const enter2tab = function (e) {
+    let self = $(this)
+        , form = self.parents('form')
+        , focusable
+        , next
+    ;
+    if (e.keyCode == 13) {
+        focusable = form.find('input').filter(':visible');
+        next = focusable.eq(focusable.index(this) + 1);
+        if (next.length) {
+            next.focus();
+        }
+        return false;
+    }
+};
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

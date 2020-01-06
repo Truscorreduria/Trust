@@ -560,7 +560,16 @@ class benAbstract(base):
                               related_name="orden_%(class)s")
     empleado = models.ForeignKey(PerfilEmpleado, on_delete=models.CASCADE,
                                  related_name="beneficiarios_%(class)s")
-    parentesco = models.CharField(max_length=65, null=True, blank=True)
+    parentesco = models.CharField(max_length=65, null=True, blank=True,
+                                  choices=(
+                                      ('PADRE', 'Padre'),
+                                      ('MADRE', 'Madre'),
+                                      ('HERMANO', 'Hermano'),
+                                      ('HERMANA', 'Hermana'),
+                                      ('CONYUGE', 'Cónyuge'),
+                                      ('HIJO', 'Hijo'),
+                                      ('HIJA', 'Hija'),
+                                  ))
     primer_nombre = models.CharField(max_length=125, null=True, blank=True)
     segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
     apellido_paterno = models.CharField(max_length=125, null=True, blank=True)

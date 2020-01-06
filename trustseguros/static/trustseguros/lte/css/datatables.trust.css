@@ -25,6 +25,11 @@
   border-color: #326634;
 }
 
+.form-control {
+  color: #326634 !important;
+  font-weight: 700;
+}
+
 .form-control:focus {
   box-shadow: 0 0 0 0.2rem #51972d44 !important;
   border-color: #326634 !important;
@@ -36,6 +41,60 @@ option:checked {
 
 option:not(:checked) {
   background-color: #51972d14 !important;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  border-color: #51972d #51972d #ffffff !important;
+  background-color: #51972d14;
+  color: #326634 !important;
+}
+
+.card-trust {
+  box-shadow: 0 0 1px #326634, 0 1px 3px #326634;
+  background-color: #51972d14;
+}
+
+@keyframes hideFilters {
+  from {
+    height: 300px;
+  }
+  to {
+    height: 0;
+    padding: 0;
+  }
+}
+@keyframes showFilters {
+  from {
+    height: 0;
+    padding: 0;
+  }
+  to {
+    height: 300px;
+    padding: 1%;
+  }
+}
+.dataTables_filter {
+  position: relative;
+}
+.dataTables_filter .datatables-filters-group {
+  width: 300px;
+  overflow: hidden;
+  position: fixed;
+  right: 17px;
+  background-color: whitesmoke;
+  z-index: 100;
+  padding: 0;
+  height: 0;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.filter-close {
+  animation: hideFilters 1s forwards;
+}
+
+.filter-open {
+  animation: showFilters 1s forwards;
 }
 
 /*# sourceMappingURL=datatables.trust.css.map */

@@ -1,0 +1,13 @@
+<div class="form-group">
+    <label>{{ label|capfirst }}</label>
+    <div class="input-group">
+        <select name="filter_{{ field_name }}" id="filter_{{ field_name }}"
+                class="form-control filter-table"
+                data-option="{{ option }}" data-name="{{ field_name }}_id">
+            <option value="">---------</option>
+            {% for choice in choices %}
+                <option value="{{ choice.value }}">{{ choice.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

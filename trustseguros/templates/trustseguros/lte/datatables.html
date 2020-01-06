@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'trustseguros/lte/css/datatables.trust.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/css/buttons.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-select/dist/css/bootstrap-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'growl/stylesheets/jquery.growl.css' %}">
     {% for link in media.css %}
         <link rel="stylesheet" href="{% static link %}">
     {% endfor %}
@@ -33,6 +35,7 @@
     </table>
 
     {% include form_template %}
+
 {% endblock %}
 
 
@@ -65,7 +68,6 @@
 
         const form_submit = function (e) {
             e.preventDefault();
-            //$('.table-template').remove();
             const data = new FormData(this);
             const _this = $(this);
             data.append('save', 'save');
@@ -100,7 +102,7 @@
                     $.each(response.errors, function (n, error) {
                         $.growl.error({
                             message: `<p>${error.key}</p>
-                                                 <ul>${li_errors(error.errors)}</ul>`
+                                      <ul>${li_errors(error.errors)}</ul>`
                         });
                     });
                 },
@@ -137,6 +139,14 @@
             });
         };
 
+        const buildFilters = function(){
+            if($('#table-filters')){
+                return $('#table-filters').val()
+            } else{
+                return ""
+            }
+        };
+
         const table = $('#{{ opts.model_name }}-table').DataTable({
             dom: 'Bfrtip',
             language: ES_ni,
@@ -145,7 +155,7 @@
             ajax: {
                 url: ".",
                 type: 'POST',
-                data: {'list': 'list'}
+                data: {'list': 'list', 'filters': buildFilters}
             },
             columns: [
                 {% for field in list_display %}
@@ -213,6 +223,35 @@
             });
         };
 
+        const delete_row = function () {
+            const _this = $(this);
+            $.ajax("{% url 'ajax_objectExecute' %}", {
+                method: "POST",
+                data: {
+                    app_label: _this.data('app'),
+                    model: _this.data('model'),
+                    id: _this.data('id'),
+                    view: 'delete'
+                }
+            })
+            $(this).parents('tr').remove()
+        };
+
+        const filters = function () {
+            return (`<button type="button" id="btn-table-filter">
+                        <a href="#"><i class="fas fa-cog"></i></a>
+                    </button>
+                    <input type="hidden" id="table-filters" value="">
+                    <div class="datatables-filters-group elevation-4 filter-close">
+                    <h3>Filtros</h3>
+                    <div class="filters-container">
+                        {% for filter in list_filter %}
+                            {{ filter.render }}
+                        {% endfor %}
+                    </div>
+                </div>`);
+        };
+
         $(document).ready(function () {
             $(document)
                 .ajaxStart(function () {
@@ -230,6 +269,46 @@
             $(document).on('click', '#btn-save', function () {
                 $('#{{ opts.model_name }}-form').trigger('submit')
             });
+
+            $(document).on('click', '.btn-table-add', add_row);
+
+            $(document).on('click', '.btn-table-delete', delete_row);
+
+            $(document).on('keydown', 'input', enter2tab);
+
+            $('#{{ opts.model_name }}-table_filter').append(filters());
+
+            $(document).on('click', '#btn-table-filter', function () {
+                let filters = $('.datatables-filters-group');
+                if (filters.hasClass('filter-close')) {
+                    filters.removeClass('filter-close').addClass('filter-open')
+                } else {
+                    if (filters.hasClass('filter-open')) {
+                        filters.removeClass('filter-open').addClass('filter-close')
+                    }
+                }
+            });
+
+            $(document).on('change', '.filter-table', function () {
+                let filters = [];
+                $.each($('.filter-table'), function (i, o) {
+                    if ($(o).val() === "") {
+                        console.log($(o).val() === "");
+                    } else {
+                        filters.push($(o).data('name') + $(o).data('option') + $(o).val())
+                    }
+                });
+                $('#table-filters').val(filters.join('&'));
+
+                table.ajax.reload();
+            });
+
+
+            {% comment %}$(document).on('focusout', 'input', function(){
+                const self = $(this);
+                let text = self.val().toUpperCase();
+                self.val(text);
+            });{% endcomment %}
 
         });
 

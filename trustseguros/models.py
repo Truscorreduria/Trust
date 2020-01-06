@@ -374,9 +374,9 @@ class Poliza(base):
 
     def to_json(self):
         o = super().to_json()
-        o['cliente'] = self.cliente.to_json()
-        o['aseguradora'] = self.aseguradora.to_json()
-        o['sub_ramo'] = self.sub_ramo.to_json()
+        o['cliente'] = try_json(self.cliente, Cliente)
+        o['aseguradora'] = try_json(self.aseguradora, Aseguradora)
+        o['sub_ramo'] = try_json(self.sub_ramo, SubRamo)
         return o
 
 

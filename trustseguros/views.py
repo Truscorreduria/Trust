@@ -19,6 +19,7 @@ from functools import reduce
 import operator
 
 
+
 @staff_member_required
 def documentos(request):
     if request.method == "GET":
@@ -549,6 +550,32 @@ def index(request):
     })
 
 
+class Filter:
+    def __init__(self, field_name, model, option="=",
+                 template_name="trustseguros/lte/filters/select-filter.html"):
+        self.model = model
+        self.field_name = field_name
+        self.option = option
+        self.template_name = template_name
+        self.field = self.get_field()
+
+    def get_field(self):
+        field = getattr(self.model, self.field_name, None)
+        if not field:
+            raise ValueError('field not exist')
+        return field
+
+    def get_choices(self):
+        return [{'value': x.id, 'name': x.name} for x in self.field.get_queryset()]
+
+    def render(self):
+        return render_to_string(self.template_name, context={
+            'field_name': self.field_name,
+            'option': self.option,
+            'choices': self.get_choices(),
+        })
+
+
 class Datatables(View):
     modal_width = 600
     list_template = "trustseguros/lte/datatables.html"
@@ -560,6 +587,7 @@ class Datatables(View):
     media = None
     list_display = ()
     search_fields = ()
+    list_filter = ()
 
     def get_fields(self):
         field_names = []
@@ -582,33 +610,44 @@ class Datatables(View):
                                          'form': form, 'instance': instance},
                                 request=request)
 
+    def get_list_filters(self):
+        return [Filter(x, self.model) for x in self.list_filter]
+
     def get(self, request):
         return render(request, self.list_template, {
             'opts': self.model._meta, 'list_display': self.list_display,
             'form': self.get_form(), 'form_template': self.form_template,
-            'modal_width': self.modal_width, 'media': self.media
+            'modal_width': self.modal_width, 'media': self.media,
+            'list_filter': self.get_list_filters()
+
         })
 
     def save_related(self, instance, data):
         pass
 
-    def get_filters(self, search_value):
+    def get_filters(self, filters):
+        return [Q((field.split('=')[0], field.split('=')[1])) for field in filters.split('&')]
+
+    def search_value(self, search_value):
         return [Q(('{}__icontains'.format(field), search_value)) for field in self.search_fields]
 
-    def get_queryset(self, search_value):
+    def get_queryset(self, filters, search_value):
         queryset = self.model.objects.all()
+        print(filters)
+        if not filters == "":
+            queryset = queryset.filter(reduce(operator.or_, self.get_filters(filters)))
         if search_value:
-            queryset = self.model.objects.filter(reduce(operator.or_, self.get_filters(search_value)))
+            queryset = queryset.filter(reduce(operator.or_, self.search_value(search_value)))
         return queryset
 
-    def get_ordered_queryset(self, search_value, order):
-        queryset = self.get_queryset(search_value)
+    def get_ordered_queryset(self, filters, search_value, order):
+        queryset = self.get_queryset(filters, search_value)
         return queryset.order_by(order)
 
-    def get_data(self, start, per_page, search_value, draw, order=None):
-        queryset = self.get_queryset(search_value)
+    def get_data(self, start, per_page, filters, search_value, draw, order=None):
+        queryset = self.get_queryset(filters, search_value)
         if order:
-            queryset = self.get_ordered_queryset(search_value, order)
+            queryset = self.get_ordered_queryset(filters, search_value, order)
         page = int(start / per_page) + 1
         paginator = Paginator(queryset, per_page)
         data = [x.to_json() for x in paginator.page(page).object_list]
@@ -620,7 +659,6 @@ class Datatables(View):
         }
 
     def post(self, request):
-        print(request.POST)
         status = 200
         errors = []
         instance = None
@@ -631,7 +669,7 @@ class Datatables(View):
             draw = int(request.POST.get('draw', 0))
             per_page = int(request.POST.get('length', 10))
             search_value = request.POST.get('search[value]', None)
-
+            filters = request.POST.get('filters', None)
             order_column = request.POST.get('order[0][column]', None)
             order_dir = request.POST.get('order[0][dir]', None)
 
@@ -641,7 +679,7 @@ class Datatables(View):
                     order += '-'
                 order += self.list_display[int(order_column)].split('.')[0]
 
-            return JsonResponse(self.get_data(start, per_page, search_value, draw, order), encoder=Codec)
+            return JsonResponse(self.get_data(start, per_page, filters, search_value, draw, order), encoder=Codec)
         if 'open' in request.POST:
             instance = self.model.objects.get(id=int(request.POST.get('id')))
             form = self.get_form()(instance=instance)
@@ -653,10 +691,11 @@ class Datatables(View):
             if form.is_valid():
                 form.save()
                 instance = form.instance
-                self.save_related(instance=instance, data=request.POST)
+                self.save_related(instance=instance, data=form.cleaned_data)
             else:
                 errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
                 status = 203
+                print(errors)
 
         return JsonResponse({'instance': instance.to_json(),
                              'form': html_form, 'errors': errors}, encoder=Codec,
@@ -685,14 +724,14 @@ class Datatables(View):
                 # errors.append(dict(e))
 
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
-                             'errors': errors}, status=status)
+                             'errors': errors}, status=status, encoder=Codec)
 
 
 class Aseguradoras(Datatables):
     modal_width = 900
     model = Aseguradora
     list_display = ('nombre', 'ruc', 'email', 'telefono', 'direccion')
-    search_fields = ('nombre', 'ruc', 'email', 'telefono', 'departamento', 'municipio', 'direccion', 'cuenta_bancaria')
+    search_fields = ('nombre', 'ruc', 'email', 'telefono')
     fieldsets = [
         {
             'id': 'info',
@@ -705,9 +744,9 @@ class Aseguradoras(Datatables):
             )
         },
     ]
-
+    list_filter = ('departamento',)
     media = {
-        'js': ['trustseguros/lte/js/municipio.js',]
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/filter-municipio.js',]
     }
 
 
@@ -826,5 +865,223 @@ class Endosos(Datatables):
             )
         },
     ]
+
+
+
+from cotizador.models import PerfilEmpleado ,Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
+    benSepelio, benAccidente
+from django.forms.models import model_to_dict
+from .widgets import TableBordered, TableBorderedInput
+
+
+def user_to_json(user):
+    o = dict(id=user.id, username=user.username, email=user.email,
+             first_name=user.first_name, last_name=user.last_name)
+    o['app_label'] = user._meta.app_label
+    o['model'] = user._meta.object_name.lower()
+    return o
+
+User.add_to_class('to_json', user_to_json)
+
+
+class UsuarioCotizador(User):
+    class Meta:
+        proxy = True
+
+    def to_json(self):
+        o = super().to_json()
+        o['perfil'] = try_json(self.profile(), PerfilEmpleado)
+        return o
+
+
+class UsuarioCotizadorForm(forms.ModelForm):
+    password = forms.CharField(max_length=255, required=False)
+    primer_nombre = forms.CharField(max_length=125, required=False)
+    segundo_nombre = forms.CharField(max_length=125, required=False)
+    apellido_paterno = forms.CharField(max_length=125, required=False)
+    apellido_materno = forms.CharField(max_length=125, required=False)
+    email_personal = forms.EmailField(max_length=255, required=False)
+    cedula = forms.CharField(max_length=14, required=False)
+    celular = forms.CharField(max_length=8, required=False)
+    telefono = forms.CharField(max_length=8, required=False)
+    departamento = forms.ModelChoiceField(queryset=Departamento.objects.all(), required=False)
+    municipio = forms.ModelChoiceField(queryset=Municipio.objects.all(), required=False)
+    domicilio = forms.CharField(max_length=250, required=False)
+    sucursal = forms.CharField(max_length=60, required=False)
+    codigo_empleado = forms.CharField(max_length=14, required=False)
+    cargo = forms.CharField(max_length=60, required=False)
+    cambiar_pass = forms.BooleanField(initial=False, required=False, label="cambio de password",
+                                      help_text="obligar al usuario a cambiar en password en el siguiente inicio de sesión")
+
+    dependientes_sepelio = forms.Field(required=False, label="", widget=TableBordered(
+        attrs={
+            'columns': (('parentesco', 'Parentezco'), ('primer_nombre', 'Primer nombre'),
+                        ('segundo_nombre', 'Segundo nombre'), ('apellido_paterno', 'Apellido materno'),
+                        ('apellido_materno', 'Apellido materno'), ('costo', 'Costo'),
+                        ('suma_asegurada', 'Suma asegurada')
+                        )
+        }
+    ))
+
+    dependientes_accidente = forms.Field(required=False, label="", widget=TableBordered(
+        attrs={
+            'columns': (('parentesco', 'Parentezco'), ('primer_nombre', 'Primer nombre'),
+                        ('segundo_nombre', 'Segundo nombre'), ('apellido_paterno', 'Apellido materno'),
+                        ('apellido_materno', 'Apellido materno'), ('costo', 'Costo'),
+                        ('suma_asegurada', 'Suma asegurada')
+                        )
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            profile = instance.profile()
+            kwargs.update(initial={
+                'primer_nombre': profile.primer_nombre,
+                'segundo_nombre': profile.segundo_nombre,
+                'apellido_paterno': profile.apellido_paterno,
+                'apellido_materno': profile.apellido_materno,
+                'email_personal': profile.email_personal,
+                'cedula': profile.cedula,
+                'celular': profile.celular,
+                'telefono': profile.telefono,
+                'departamento': profile.departamento,
+                'municipio': profile.municipio,
+                'domicilio': profile.domicilio,
+                'sucursal': profile.sucursal,
+                'codigo_empleado': profile.codigo_empleado,
+                'cargo': profile.cargo,
+                'dependientes_sepelio': profile.dependientes_sepelio(),
+                'dependientes_accidente': profile.dependientes_accidente(),
+            })
+        super().__init__(*args, **kwargs)
+
+
+class Usuarios(Datatables):
+    modal_width = 1200
+    model = UsuarioCotizador
+    list_display = ('username', 'email',
+                    ('Primer Nombre', 'perfil.primer_nombre'),
+                    ('Segundo Nombre', 'perfil.segundo_nombre'),
+                    ('Primer Apellido', 'perfil.apellido_paterno'),
+                    ('Segundo Apellido', 'perfil.apellido_materno'),
+                    )
+    search_fields = ('username', 'email')
+    form = UsuarioCotizadorForm
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información General',
+            'fields': (
+                ('username', 'email'),
+                ('primer_nombre', 'segundo_nombre'),
+                ('apellido_paterno', 'apellido_materno'),
+                ('departamento', 'municipio'),
+                ('domicilio',),
+                ('sucursal', 'codigo_empleado', 'cargo'),
+                ('date_joined', 'last_login'),
+                ('cambiar_pass', 'is_active'),
+            )
+        },
+        {
+            'id': 'sepelio',
+            'name': 'Dependientes seguro de sepelio',
+            'fields': (
+                ('dependientes_sepelio',),
+            )
+        },
+        {
+            'id': 'accidentes',
+            'name': 'Dependientes seguro de accidentes',
+            'fields': (
+                ('dependientes_accidente',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/lte/js/municipio.js',]
+    }
+
+    def save_related(self, instance, data):
+        profile = instance.profile()
+        profile.primer_nombre = data['primer_nombre']
+        profile.segundo_nombre = data['segundo_nombre']
+        profile.apellido_paterno = data['apellido_paterno']
+        profile.apellido_materno = data['apellido_materno']
+        profile.email_personal = data['email_personal']
+        profile.cedula = data['cedula']
+        profile.celular = data['celular']
+        profile.telefono = data['telefono']
+        profile.departamento = data['departamento']
+        profile.municipio = data['municipio']
+        profile.domicilio = data['domicilio']
+        profile.sucursal = data['sucursal']
+        profile.codigo_empleado = data['codigo_empleado']
+        profile.cargo = data['cargo']
+        profile.cambiar_pass = data['cambiar_pass']
+        profile.save()
+
+
+class DependientesSepelio(Datatables):
+    model = benSepelio
+    list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    search_fields = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Datos del dependiente',
+            'fields': (
+                ('primer_nombre', 'segundo_nombre'),
+                ('apellido_paterno', 'apellido_materno'),
+                ('empleado', 'parentesco'),
+                ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
+            )
+        },
+    ]
+
+
+class DependientesAccidente(Datatables):
+    model = benAccidente
+    list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    search_fields = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Datos del dependiente',
+            'fields': (
+                ('primer_nombre', 'segundo_nombre'),
+                ('apellido_paterno', 'apellido_materno'),
+                ('empleado', 'parentesco'),
+                ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
+            )
+        },
+    ]
+
+
+class PolizasAutomovil(Datatables):
+    modal_width = 1000
+    model = PolizaAutomovil
+    list_display = ('fecha_emision', 'no_poliza', 'no_recibo', 'nombres', 'apellidos')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': "Datos de la póliza",
+            'fields': (
+                ('fecha_emision', 'fecha_vence', 'fecha_pago'),
+                ('no_poliza', 'no_recibo', 'aseguradora'),
+                ('referencia', 'tipo_cobertura'),
+                ('nombres', 'apellidos'),
+                ('cedula', 'telefono'),
+                ('domicilio', )
+            )
+        }
+    ]
+
+
 
 # endregion
