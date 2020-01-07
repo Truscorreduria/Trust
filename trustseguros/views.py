@@ -18,6 +18,8 @@ from django.db.models import Q
 from functools import reduce
 import operator
 
+from django.db.models.fields.related_descriptors import ForwardManyToOneDescriptor
+from django.db.models.query_utils import DeferredAttribute
 
 
 @staff_member_required
@@ -559,21 +561,60 @@ class Filter:
         self.template_name = template_name
         self.field = self.get_field()
 
+    def get_form(self):
+        return modelform_factory(self.model, fields=(self.field_name,))
+
     def get_field(self):
         field = getattr(self.model, self.field_name, None)
         if not field:
             raise ValueError('field not exist')
         return field
 
-    def get_choices(self):
-        return [{'value': x.id, 'name': x.name} for x in self.field.get_queryset()]
+    def get_model_choices(self):
+        return [{'value': x.id, 'name': str(x)} for x in self.field.get_queryset()]
+
+    def get_value(self, instance):
+        return getattr(instance, self.field_name)
+
+    def get_value_display(self, instance):
+        try:
+            return getattr(instance, 'get_%s_display' % self.field_name)
+        except:
+            return getattr(instance, self.field_name)
+
+    def get_distinct_choices(self):
+        return [{'value': self.get_value(x), 'name': self.get_value_display(x)}
+                for x in self.model.objects.all().distinct(self.field_name).order_by(self.field_name)]
+
+    def get_bool_choices(self):
+        return [{'value': '1', 'name': 'Si'}, {'value': '0', 'name': 'No'}, ]
 
     def render(self):
-        return render_to_string(self.template_name, context={
-            'field_name': self.field_name,
-            'option': self.option,
-            'choices': self.get_choices(),
-        })
+        print(type(self.field))
+        if isinstance(self.field, ForwardManyToOneDescriptor):
+            return render_to_string(self.template_name, context={
+                'field_name': self.field_name,
+                'option': self.option,
+                'choices': self.get_model_choices(),
+                'table_field': '%s_id' % self.field_name,
+                'form': self.get_form(),
+            })
+        if isinstance(self.field, DeferredAttribute):
+            return render_to_string(self.template_name, context={
+                'field_name': self.field_name,
+                'option': '__icontains=',
+                'table_field': self.field_name,
+                'choices': self.get_distinct_choices(),
+                'form': self.get_form(),
+            })
+        if isinstance(self.field, bool):
+            return render_to_string(self.template_name, context={
+                'field_name': self.field_name,
+                'option': self.option,
+                'table_field': self.field_name,
+                'choices': self.get_bool_choices(),
+                'form': self.get_form(),
+            })
 
 
 class Datatables(View):
@@ -629,13 +670,17 @@ class Datatables(View):
         return [Q((field.split('=')[0], field.split('=')[1])) for field in filters.split('&')]
 
     def search_value(self, search_value):
-        return [Q(('{}__icontains'.format(field), search_value)) for field in self.search_fields]
+        return [
+            Q(('{}__icontains'.format(field), word))
+            for word in search_value.split(' ')
+            for field in self.search_fields
+        ]
 
     def get_queryset(self, filters, search_value):
         queryset = self.model.objects.all()
         print(filters)
         if not filters == "":
-            queryset = queryset.filter(reduce(operator.or_, self.get_filters(filters)))
+            queryset = queryset.filter(reduce(operator.and_, self.get_filters(filters)))
         if search_value:
             queryset = queryset.filter(reduce(operator.or_, self.search_value(search_value)))
         return queryset
@@ -744,9 +789,9 @@ class Aseguradoras(Datatables):
             )
         },
     ]
-    list_filter = ('departamento',)
+    list_filter = ('departamento', 'nombre')
     media = {
-        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/filter-municipio.js',]
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/filter-municipio.js', ]
     }
 
 
@@ -772,7 +817,7 @@ class ClientesNaturales(Datatables):
     ]
 
     media = {
-        'js': ['trustseguros/lte/js/municipio.js',]
+        'js': ['trustseguros/lte/js/municipio.js', ]
     }
 
 
@@ -797,7 +842,7 @@ class ClientesJuridicos(Datatables):
     ]
 
     media = {
-        'js': ['trustseguros/lte/js/municipio.js',]
+        'js': ['trustseguros/lte/js/municipio.js', ]
     }
 
 
@@ -823,6 +868,8 @@ class Polizas(Datatables):
          )
          },
     ]
+
+    list_filter = ('tipo',)
 
 
 class Tramites(Datatables):
@@ -867,8 +914,7 @@ class Endosos(Datatables):
     ]
 
 
-
-from cotizador.models import PerfilEmpleado ,Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
+from cotizador.models import PerfilEmpleado, Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
     benSepelio, benAccidente
 from django.forms.models import model_to_dict
 from .widgets import TableBordered, TableBorderedInput
@@ -881,10 +927,20 @@ def user_to_json(user):
     o['model'] = user._meta.object_name.lower()
     return o
 
+
 User.add_to_class('to_json', user_to_json)
 
 
+class UsuarioCotizadorManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(id__in=PerfilEmpleado.objects.all().values_list('user', flat=True))
+
+    def normalize_email(self, email):
+        return email
+
+
 class UsuarioCotizador(User):
+    objects = UsuarioCotizadorManager()
     class Meta:
         proxy = True
 
@@ -971,6 +1027,7 @@ class Usuarios(Datatables):
                     ('Primer Apellido', 'perfil.apellido_paterno'),
                     ('Segundo Apellido', 'perfil.apellido_materno'),
                     )
+    list_filter = ('is_active',)
     search_fields = ('username', 'email')
     form = UsuarioCotizadorForm
     fieldsets = [
@@ -1004,7 +1061,7 @@ class Usuarios(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/lte/js/municipio.js',]
+        'js': ['trustseguros/lte/js/municipio.js', ]
     }
 
     def save_related(self, instance, data):
@@ -1030,7 +1087,8 @@ class Usuarios(Datatables):
 class DependientesSepelio(Datatables):
     model = benSepelio
     list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    search_fields = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
+    list_filter = ('empleado', )
     fieldsets = [
         {
             'id': 'info',
@@ -1038,7 +1096,7 @@ class DependientesSepelio(Datatables):
             'fields': (
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
-                ('empleado', 'parentesco'),
+                ('parentesco',),
                 ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
             )
         },
@@ -1077,11 +1135,9 @@ class PolizasAutomovil(Datatables):
                 ('referencia', 'tipo_cobertura'),
                 ('nombres', 'apellidos'),
                 ('cedula', 'telefono'),
-                ('domicilio', )
+                ('domicilio',)
             )
         }
     ]
-
-
 
 # endregion

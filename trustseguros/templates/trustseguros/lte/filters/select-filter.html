@@ -1,9 +1,10 @@
+{% load datatables %}
 <div class="form-group">
-    <label>{{ label|capfirst }}</label>
+    <label>{{ form|datatables_label:field_name|capfirst }}</label>
     <div class="input-group">
         <select name="filter_{{ field_name }}" id="filter_{{ field_name }}"
                 class="form-control filter-table"
-                data-option="{{ option }}" data-name="{{ field_name }}_id">
+                data-option="{{ option }}" data-name="{{ table_field }}">
             <option value="">---------</option>
             {% for choice in choices %}
                 <option value="{{ choice.value }}">{{ choice.name }}</option>
