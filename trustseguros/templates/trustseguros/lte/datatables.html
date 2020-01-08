@@ -94,11 +94,6 @@
                         $('input[name="id"]').val(response.instance.id);
                     }
 
-                    {% comment %}$('.dateinput').datepicker({
-                        autoclose: true,
-                        format: 'dd/mm/yyyy',
-                    });{% endcomment %}
-
                     $.each(response.errors, function (n, error) {
                         $.growl.error({
                             message: `<p>${error.key}</p>
@@ -129,12 +124,6 @@
                     $('form').data('method', 'put');
 
                     $('input[name="id"]').val('');
-
-                    $('.dateinput').datepicker({
-                        autoclose: true,
-                        format: 'dd/mm/yyyy',
-                    });
-                    $('.selectpicker').selectpicker();
                 }
             });
         };
@@ -259,6 +248,11 @@
                 })
                 .ajaxStop(function () {
                     stopLoader()
+                    $('.dateinput').datepicker({
+                        autoclose: true,
+                        format: 'dd/mm/yyyy',
+                    });
+                    $('.selectpicker').selectpicker();
                 });
 
 
@@ -302,7 +296,6 @@
 
                 table.ajax.reload();
             });
-
 
             {% comment %}$(document).on('focusout', 'input', function(){
                 const self = $(this);

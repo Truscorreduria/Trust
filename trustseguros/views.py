@@ -17,9 +17,9 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from functools import reduce
 import operator
-
 from django.db.models.fields.related_descriptors import ForwardManyToOneDescriptor
 from django.db.models.query_utils import DeferredAttribute
+from django.contrib.auth.decorators import login_required
 
 
 @staff_member_required
@@ -546,6 +546,7 @@ def download(request):
 
 # region lte
 
+@login_required(login_url="/cotizador/login/")
 def index(request):
     return render(request, 'trustseguros/lte/index.html', {
 
@@ -629,6 +630,10 @@ class Datatables(View):
     list_display = ()
     search_fields = ()
     list_filter = ()
+
+    @classmethod
+    def as_view(cls, **initkwars):
+        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
 
     def get_fields(self):
         field_names = []
@@ -1130,14 +1135,34 @@ class PolizasAutomovil(Datatables):
             'id': 'info',
             'name': "Datos de la póliza",
             'fields': (
-                ('fecha_emision', 'fecha_vence', 'fecha_pago'),
-                ('no_poliza', 'no_recibo', 'aseguradora'),
-                ('referencia', 'tipo_cobertura'),
+                ('fecha_emision', 'fecha_vence', 'no_poliza', 'aseguradora'),
                 ('nombres', 'apellidos'),
-                ('cedula', 'telefono'),
+                ('cedula', 'telefono', 'celular'),
                 ('domicilio',)
             )
-        }
+        },
+        {
+            'id': 'cobertura',
+            'name': "Detalles de coberturas",
+            'fields': (
+                ('fecha_pago', 'no_recibo', 'tipo_cobertura'),
+                ('marca', 'modelo', 'anno', 'color'),
+                ('chasis', 'motor', 'circulacion', 'placa'),
+
+                ('minimo_deducible', 'porcentaje_deducible', 'deducible_rotura_vidrios'),
+                ('porcentaje_deducible_extension', 'minimo_deducible_extension'),
+            )
+        },
+        {
+            'id': 'pago',
+            'name': "Método y forma de pago",
+            'fields': (
+                ('costo_exceso', 'monto_exceso', 'valor_nuevo', 'suma_asegurada'),
+                ('subtotal', 'emision', 'iva', 'total'),
+                ('forma_pago', 'cuotas', 'monto_cuota'),
+                ('medio_pago', 'cesion_derecho', 'beneficiario'),
+            )
+        },
     ]
 
 # endregion

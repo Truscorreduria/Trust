@@ -100,12 +100,14 @@ option:not(:checked) {
   }
 }
 
-
-.filter-close{
+.filter-close {
   animation: hideFilters 1s forwards;
 }
 
-.filter-open{
+.filter-open {
   animation: showFilters 1s forwards;
 }
 
+.form-check {
+  padding-top: 45px !important;
+}
