@@ -737,7 +737,7 @@ class Datatables(View):
         if 'save' in request.POST:
             instance = self.model.objects.get(id=int(request.POST.get('id')))
             form = self.get_form()(request.POST, instance=instance)
-            html_form = self.html_form(instance, request, form)
+            html_form = self.html_form(instance, request, form, 'POST')
             if form.is_valid():
                 form.save()
                 instance = form.instance
