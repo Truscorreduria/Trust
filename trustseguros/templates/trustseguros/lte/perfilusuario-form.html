@@ -2,7 +2,6 @@
 
 
 {% block buttons %}
-    {{ block.super }}
     {% if instance.id %}
         <button type="button" class="btn btn-warning" id="btn-cambiar-pass"
         data-id="{{ instance.id }}">
@@ -10,4 +9,5 @@
             Cambiar password
         </button>
     {% endif %}
+    {{ block.super }}
 {% endblock %}
