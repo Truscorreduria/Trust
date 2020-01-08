@@ -2,8 +2,5 @@
   box-shadow: 0 0 0 0.2rem #51972d44 !important;
   border-color: #51972d !important;
 }
-.form-control:focus option {
-  background-color: #00a65a;
-}
 
 /*# sourceMappingURL=bootstrap.trust.css.map */

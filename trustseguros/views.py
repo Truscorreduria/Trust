@@ -650,10 +650,10 @@ class Datatables(View):
         else:
             return self.form
 
-    def html_form(self, instance, request, form):
+    def html_form(self, instance, request, form, method):
         return render_to_string(self.form_template,
                                 context={'opts': self.model._meta, 'fieldsets': self.fieldsets,
-                                         'form': form, 'instance': instance},
+                                         'form': form, 'instance': instance, 'method': method},
                                 request=request)
 
     def get_list_filters(self):
@@ -733,7 +733,7 @@ class Datatables(View):
         if 'open' in request.POST:
             instance = self.model.objects.get(id=int(request.POST.get('id')))
             form = self.get_form()(instance=instance)
-            html_form = self.html_form(instance, request, form)
+            html_form = self.html_form(instance, request, form, 'POST')
         if 'save' in request.POST:
             instance = self.model.objects.get(id=int(request.POST.get('id')))
             form = self.get_form()(request.POST, instance=instance)
@@ -755,7 +755,7 @@ class Datatables(View):
         status = 203
         instance = self.model()
         form = self.get_form()()
-        html_form = self.html_form(instance, request, form)
+        html_form = self.html_form(instance, request, form, 'PUT')
         errors = []
 
         if 'save' in request.PUT:
@@ -768,7 +768,7 @@ class Datatables(View):
                     self.save_related(instance=instance, data=request.PUT)
                 else:
                     errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                    html_form = self.html_form(instance, request, form)
+                    html_form = self.html_form(instance, request, form, "PUT")
             except IntegrityError as e:
                 print(e)
                 # errors.append(dict(e))
@@ -1043,6 +1043,8 @@ class Usuarios(Datatables):
                 ('username', 'email'),
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
+                ('cedula', 'email_personal'),
+                ('telefono', 'celular'),
                 ('departamento', 'municipio'),
                 ('domicilio',),
                 ('sucursal', 'codigo_empleado', 'cargo'),
@@ -1066,10 +1068,11 @@ class Usuarios(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/lte/js/municipio.js', ]
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/cambiar-pass.js', ]
     }
 
     def save_related(self, instance, data):
+        print(data)
         profile = instance.profile()
         profile.primer_nombre = data['primer_nombre']
         profile.segundo_nombre = data['segundo_nombre']
@@ -1079,15 +1082,16 @@ class Usuarios(Datatables):
         profile.cedula = data['cedula']
         profile.celular = data['celular']
         profile.telefono = data['telefono']
-        profile.departamento = data['departamento']
-        profile.municipio = data['municipio']
+        profile.departamento_id = data['departamento']
+        profile.municipio_id = data['municipio']
         profile.domicilio = data['domicilio']
         profile.sucursal = data['sucursal']
         profile.codigo_empleado = data['codigo_empleado']
         profile.cargo = data['cargo']
-        profile.cambiar_pass = data['cambiar_pass']
+        #profile.cambiar_pass = data['cambiar_pass']
         profile.save()
 
+    form_template = "trustseguros/lte/perfilusuario-form.html"
 
 class DependientesSepelio(Datatables):
     model = benSepelio

@@ -43,11 +43,13 @@
         </div>
         <div class="modal-footer">
             <div class="row">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-success" id="btn-save">
-                        <i class="fa fa-save"></i>
-                        Guardar
-                    </button>
+                <div class="col-md-12 form-buttons">
+                    {% block buttons %}
+                        <button type="button" class="btn btn-success" id="btn-save">
+                            <i class="fa fa-save"></i>
+                            Guardar
+                        </button>
+                    {% endblock %}
                 </div>
             </div>
         </div>
