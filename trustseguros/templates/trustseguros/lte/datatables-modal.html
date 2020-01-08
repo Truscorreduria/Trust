@@ -1,6 +1,7 @@
 {% load crispy_forms_tags crispy_forms_filters datatables mathfilters %}
 
-<div class="izimodal" id="{{ opts.model_name }}-modal">
+{% block content %}
+    <div class="izimodal" id="{{ opts.model_name }}-modal">
 
     {% if fieldsets %}
         <div class="modal-body" style="padding: 0">
@@ -84,5 +85,9 @@
     {% endif %}
 
 </div>
+{% endblock %}
+
+{% block extra-content %}
+{% endblock %}
 
 

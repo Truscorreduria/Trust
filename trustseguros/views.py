@@ -1092,6 +1092,8 @@ class Usuarios(Datatables):
         profile.save()
 
     form_template = "trustseguros/lte/perfilusuario-form.html"
+    list_template = "trustseguros/lte/perfilusuario-table.html"
+
 
 class DependientesSepelio(Datatables):
     model = benSepelio

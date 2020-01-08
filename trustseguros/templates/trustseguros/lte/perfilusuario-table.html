@@ -1,0 +1,27 @@
+{% extends 'trustseguros/lte/datatables.html' %}
+
+
+{% block content %}
+    {{ block.super }}
+    <div class="izimodal" id="modal-cambiar-pass" data-iziModal-title="Cambiar contraseña">
+        <div class="modal-body">
+            <form action="">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="">Nueva contraseña</label>
+                            <input type="password" class="form-control" name="password">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Verificar contraseña</label>
+                            <input type="password" class="form-control" name="password_repeat">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button">Aplicar</button>
+        </div>
+    </div>
+{% endblock %}
