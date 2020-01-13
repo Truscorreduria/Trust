@@ -27,6 +27,8 @@ urlpatterns = [
     path('migracion/', include('migracion.urls')),
     path('reportes/', include('reportes.urls')),
     path('trustseguros/', include('trustseguros.urls')),
+    path('api/auth/', include('accounts.urls')),
+    path('api/', include('api.urls')),
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
 

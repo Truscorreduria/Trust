@@ -57,12 +57,26 @@ INSTALLED_APPS = [
     'reportes',
     'migracion',
     'trustseguros',
+    'accounts',
+    'api',
 
     'django_user_agents',
     'constance',
     'constance.backends.database',
+    'rest_framework',
+    'knox',
 
 ]
+
+REST_FRAMEWORK = {  # added
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.AllowAny'
+    # ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'knox.auth.TokenAuthentication',
+    ),
+    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+}
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 

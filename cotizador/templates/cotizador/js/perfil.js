@@ -70,7 +70,7 @@ $(document).ready(function () {
                     if (response.class === 'success') {
                         $('#modal-password').modal('hide');
                         swal('Excelente!',
-                            'Tu cotraseña ha sido actualizada con éxito. Por seguridad inicia sesión nuevamente.',
+                            'Tu cotraseña ha sido actualizada con éxito.',
                             'success').then(function () {
                             location.reload();
                         });

@@ -24,6 +24,7 @@ from django.contrib.contenttypes.models import ContentType
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import update_session_auth_hash
 
 
 @profile_required
@@ -778,6 +779,7 @@ def change_password(request):
             if new_pass == request.POST.get('pass_conf'):
                 user.set_password(new_pass)
                 user.save()
+                update_session_auth_hash(request, user)
                 profile.cambiar_pass = False
                 profile.save()
                 return JsonResponse({'messages': ["Tu password se ha cambiado con exito!", ],
@@ -790,6 +792,7 @@ def change_password(request):
                 if new_pass == request.POST.get('pass_conf'):
                     user.set_password(new_pass)
                     user.save()
+                    update_session_auth_hash(request, user)
                     return JsonResponse({'messages': ["Tu password se ha cambiado con exito!", ],
                                          'class': "success"})
                 else:
