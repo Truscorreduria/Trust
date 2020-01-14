@@ -1157,6 +1157,7 @@ class Tickets(Datatables):
 
 class DependientesSepelio(Datatables):
     model = benSepelio
+    form = LteSepelioForm
     list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     list_filter = ('empleado', )
@@ -1165,9 +1166,9 @@ class DependientesSepelio(Datatables):
             'id': 'info',
             'name': 'Datos del dependiente',
             'fields': (
+                ('parentesco', 'empleado'),
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
-                ('parentesco',),
                 ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
             )
         },
@@ -1176,6 +1177,7 @@ class DependientesSepelio(Datatables):
 
 class DependientesAccidente(Datatables):
     model = benAccidente
+    form = LteAccidentetForm
     list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     search_fields = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     fieldsets = [
@@ -1183,9 +1185,9 @@ class DependientesAccidente(Datatables):
             'id': 'info',
             'name': 'Datos del dependiente',
             'fields': (
+                ('parentesco', 'empleado'),
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
-                ('empleado', 'parentesco'),
                 ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
             )
         },
