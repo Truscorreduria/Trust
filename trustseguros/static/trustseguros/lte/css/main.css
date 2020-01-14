@@ -52,4 +52,8 @@ a {
   outline: 5px auto #326634 !important;
 }
 
+.dropdown-menu {
+  max-width: 100%;
+}
+
 /*# sourceMappingURL=main.css.map */

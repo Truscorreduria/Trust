@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.utils import IntegrityError
 from django.contrib.admin.widgets import AdminDateWidget
 from .widgets import SelectSearch
+from cotizador.models import PerfilEmpleado, Ticket
 
 # region admin
 
@@ -303,6 +304,15 @@ class LtePolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
+        fields = '__all__'
+
+
+class LteTicketForm(forms.ModelForm):
+    cliente = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Cliente',
+                                     required=True, widget=SelectSearch)
+
+    class Meta:
+        model = Ticket
         fields = '__all__'
 
 # endregion

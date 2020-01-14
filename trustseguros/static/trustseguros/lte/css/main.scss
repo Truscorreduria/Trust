@@ -54,6 +54,10 @@ a {
   color: #ffffff !important;
 }
 
-.bootstrap-select button.dropdown-toggle:focus, .bootstrap-select > select.mobile-device:focus+button.dropdown-toggle {
+.bootstrap-select button.dropdown-toggle:focus, .bootstrap-select > select.mobile-device:focus + button.dropdown-toggle {
   outline: 5px auto $dark-green !important;
+}
+
+.dropdown-menu {
+  max-width: 100%;
 }

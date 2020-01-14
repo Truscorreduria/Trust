@@ -62,7 +62,7 @@ class SelectSearch(Select):
     def build_attrs(self, base_attrs, extra_attrs=None):
         extra_attrs.update({
             'class': "selectpicker",
-            'data-live-search': "true"
+            'data-live-search': "true",
         })
         return super().build_attrs(base_attrs, extra_attrs=extra_attrs)
 

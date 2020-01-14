@@ -166,7 +166,14 @@ class Entidad(BaseEntity):
 
 
 class PerfilEmpleado(base):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    '''
+        Esta clase se convertirá en el cliente de trustseguros
+
+    '''
+
+
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     primer_nombre = models.CharField(max_length=125, null=True, blank=True)
     segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
     apellido_paterno = models.CharField(max_length=125, null=True, blank=True)
@@ -187,7 +194,7 @@ class PerfilEmpleado(base):
     cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
 
     def __str__(self):
-        return self.user.username
+        return self.full_name
 
     def perfil_completo(self):
         return (self.primer_nombre and self.apellido_paterno and \
@@ -465,6 +472,7 @@ class Ticket(base):
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes')
+    cliente = models.ForeignKey(PerfilEmpleado, null=True, blank=True, on_delete=models.SET_NULL, related_name='tickets_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_resultante")
     descripcion = models.TextField(max_length=600, null=True, blank=True)
