@@ -317,7 +317,7 @@ class LteTicketForm(forms.ModelForm):
 
 
 class LteAccidentetForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Cliente',
+    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Titular',
                                      required=True, widget=SelectSearch)
 
     class Meta:
@@ -326,7 +326,7 @@ class LteAccidentetForm(forms.ModelForm):
 
 
 class LteSepelioForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Cliente',
+    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Titular',
                                      required=True, widget=SelectSearch)
 
     class Meta:
