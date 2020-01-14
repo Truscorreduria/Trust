@@ -6,7 +6,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0010_auto_20200113_1755'),
         ('trustseguros', '0005_auto_20200102_0526'),
     ]
 
