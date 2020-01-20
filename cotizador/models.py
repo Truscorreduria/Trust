@@ -10,6 +10,13 @@ from utils.models import Departamento, Municipio
 from django.contrib import messages
 
 
+def get_media_url(model, filename):
+    clase = model.__class__.__name__
+    code = str(model.id)
+    filename = filename.encode('utf-8')
+    return '%s/%s/%s' % (clase, code, filename)
+
+
 def get_profile(user):
     try:
         p, created = PerfilEmpleado.objects.get_or_create(user=user)
@@ -325,9 +332,9 @@ class Poliza(base):
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
 
-    file_circulacion = models.FileField(upload_to='circulaciones', null=True, blank=True)
-    file_cedula = models.FileField(upload_to='cedulas', null=True, blank=True)
-    file_carta = models.FileField(upload_to='cartas', null=True, blank=True)
+    file_circulacion = models.FileField(upload_to=get_media_url, null=True, blank=True)
+    file_cedula = models.FileField(upload_to=get_media_url, null=True, blank=True)
+    file_carta = models.FileField(upload_to=get_media_url, null=True, blank=True)
 
     ticket = models.ForeignKey('Ticket', null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="ticket_de_baja")
