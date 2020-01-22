@@ -7,7 +7,8 @@ app_name = "trustseguros"
 
 urlpatterns = [
     path('', index, name="index"),
-    path('usuarios/', Usuarios.as_view(), name="usuarios"),
+    path('persona_natural/', PersonaNatural.as_view(), name="persona_natural"),
+    path('persona_juridica/', PersonaJuridica.as_view(), name="persona_juridica"),
     path('sepelio/', DependientesSepelio.as_view(), name="sepelio"),
     path('accidente/', DependientesAccidente.as_view(), name="accidente"),
     path('automovil/', PolizasAutomovil.as_view(), name="automovil"),

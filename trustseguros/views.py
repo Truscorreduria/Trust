@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from .generics import Datatables
 from django.contrib.auth.decorators import login_required
-from cotizador.models import Cliente, Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
-    benSepelio, benAccidente
+from cotizador.forms import *
 from .forms import *
 from .widgets import TableBordered, TableBorderedInput
 
@@ -531,12 +530,13 @@ def index(request):
     })
 
 
-class Usuarios(Datatables):
+class PersonaNatural(Datatables):
     modal_width = 1200
-    model = Cliente
+    model = ClienteNatural
+    form = NaturalForm
     list_display = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
-
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
+    list_filter = ('departamento', )
     fieldsets = [
         {
             'id': 'info',
@@ -551,10 +551,18 @@ class Usuarios(Datatables):
             )
         },
         {
-            'id': 'banpro',
-            'name': 'Información de empleado',
+            'id': 'empleo',
+            'name': 'Información laboral',
             'fields': (
-                ('sucursal', 'codigo_empleado', 'cargo'),
+                ('empresa', 'sucursal'),
+                ('codigo_empleado', 'cargo'),
+                ('user', 'cambiar_pass',),
+            )
+        },
+        {
+            'id': 'sistema',
+            'name': 'Accesso al sistema',
+            'fields': (
                 ('user', 'cambiar_pass',),
             )
         },
@@ -576,34 +584,35 @@ class Usuarios(Datatables):
     media = {
         'js': ['trustseguros/lte/js/municipio.js', ]
     }
-    #
-    # def save_related(self, instance, data):
-    #     print(data)
-    #     profile = instance.profile()
-    #     profile.primer_nombre = data['primer_nombre']
-    #     profile.segundo_nombre = data['segundo_nombre']
-    #     profile.apellido_paterno = data['apellido_paterno']
-    #     profile.apellido_materno = data['apellido_materno']
-    #     profile.email_personal = data['email_personal']
-    #     profile.cedula = data['cedula']
-    #     profile.celular = data['celular']
-    #     profile.telefono = data['telefono']
-    #     profile.departamento_id = data['departamento']
-    #     profile.municipio_id = data['municipio']
-    #     profile.domicilio = data['domicilio']
-    #     profile.sucursal = data['sucursal']
-    #     profile.codigo_empleado = data['codigo_empleado']
-    #     profile.cargo = data['cargo']
-    #     #profile.cambiar_pass = data['cambiar_pass']
-    #     profile.save()
-    #
-    # form_template = "trustseguros/lte/perfilusuario-form.html"
-    # list_template = "trustseguros/lte/perfilusuario-table.html"
+
+
+class PersonaJuridica(Datatables):
+    modal_width = 1200
+    model = ClienteJuridico
+    list_display = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
+
+    search_fields = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información General',
+            'fields': (
+                ('razon_social', 'ruc'),
+                ('nombre_comercial', 'actividad_economica'),
+                ('telefono', 'pagina_web'),
+                ('departamento', 'municipio'),
+                ('domicilio',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/lte/js/municipio.js', ]
+    }
 
 
 class Tickets(Datatables):
     modal_width = 1200
-    model = TicketCotizador
+    model = Ticket
     form = LteTicketForm
     list_display = ('code', 'nombres', 'apellidos', 'cedula')
 
@@ -704,7 +713,7 @@ class DependientesAccidente(Datatables):
 
 class PolizasAutomovil(Datatables):
     modal_width = 1000
-    model = PolizaAutomovil
+    model = Poliza
     list_display = ('fecha_emision', 'no_poliza', 'no_recibo', 'nombres', 'apellidos')
     fieldsets = [
         {

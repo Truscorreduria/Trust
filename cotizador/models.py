@@ -177,6 +177,11 @@ class Marca(base):
 # region Cliente
 
 
+class TipoCliente:
+    NATURAL = 1
+    JURIDICO = 2
+
+
 class Persona(base):
     """
         clase abstracta que representa una persona natural
@@ -214,6 +219,19 @@ class Persona(base):
         abstract = True
 
 
+class Empresa(base):
+    razon_social = models.CharField(max_length=250, null=True, blank=True)
+    nombre_comercial = models.CharField(max_length=250, null=True, blank=True)
+    ruc = models.CharField(max_length=14, null=True, blank=True)
+    fecha_constitucion = models.DateField(null=True, blank=True, verbose_name="fecha de constitución")
+    actividad_economica = models.CharField(max_length=250, null=True, blank=True)
+    pagina_web = models.CharField(max_length=250, null=True, blank=True)
+    observaciones = models.TextField(max_length=500, null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class Entidad(BaseEntity):
     descuento = models.FloatField(default=0.0)
 
@@ -221,22 +239,31 @@ class Entidad(BaseEntity):
         verbose_name_plural = "entidades"
 
 
-class Cliente(Persona, Direccion):
+class Cliente(Persona, Empresa, Direccion):
     '''
         Esta clase se convertirá en el cliente de trustseguros
     '''
+
+    tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL)
+
+    # usuario cotizador
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
+
     entidad = models.ForeignKey(Entidad, on_delete=models.CASCADE, null=True, blank=True)
+    empresa = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     sucursal = models.CharField(max_length=125, null=True, blank=True)
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
-    cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
 
     class Meta:
         verbose_name = "cliente"
 
     def __str__(self):
-        return self.full_name
+        if self.tipo_cliente == TipoCliente.NATURAL:
+            return self.full_name
+        else:
+            return self.razon_social
 
     def perfil_completo(self):
         return (self.primer_nombre and self.apellido_paterno and \
@@ -277,6 +304,39 @@ class Cliente(Persona, Direccion):
         u.save()
         messages.info(request, 'Usuario inactivado con éxito')
 
+
+class ManagerNatural(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(tipo_cliente=TipoCliente.NATURAL)
+
+
+class ClienteNatural(Cliente):
+    objects = ManagerNatural()
+    def save(self, *args, **kwargs):
+        self.tipo_cliente = TipoCliente.NATURAL
+        super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        verbose_name = "persona natural"
+        verbose_name_plural = "clientes"
+
+
+class ManagerJuridico(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(tipo_cliente=TipoCliente.JURIDICO)
+
+
+class ClienteJuridico(Cliente):
+    objects = ManagerJuridico()
+    def save(self, *args, **kwargs):
+        self.tipo_cliente = TipoCliente.JURIDICO
+        super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        verbose_name = "persona jurídica"
+        verbose_name_plural = "clientes"
 
 # endregion
 
