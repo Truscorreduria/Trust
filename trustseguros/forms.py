@@ -1,10 +1,10 @@
 from django import forms
 from .widgets import SelectSearch
-from cotizador.models import PerfilEmpleado, Ticket, benAccidente, benSepelio
+from cotizador.models import Cliente, Ticket, benAccidente, benSepelio
 
 
 class LteTicketForm(forms.ModelForm):
-    cliente = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Cliente',
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Cliente',
                                      required=True, widget=SelectSearch)
 
     class Meta:
@@ -13,7 +13,7 @@ class LteTicketForm(forms.ModelForm):
 
 
 class LteAccidentetForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Titular',
+    empleado = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Titular',
                                       required=True, widget=SelectSearch)
 
     class Meta:
@@ -22,7 +22,7 @@ class LteAccidentetForm(forms.ModelForm):
 
 
 class LteSepelioForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=PerfilEmpleado.objects.all(), label='Titular',
+    empleado = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Titular',
                                       required=True, widget=SelectSearch)
 
     class Meta:

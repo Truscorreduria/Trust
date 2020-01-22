@@ -1,7 +1,7 @@
 from grappelli_extras.utils import Codec
 from django.http import JsonResponse
 from migracion.models import *
-from cotizador.models import PerfilEmpleado, benSepelio, benAccidente, Poliza, Notificacion
+from cotizador.models import Cliente, benSepelio, benAccidente, Poliza, Notificacion
 from django.contrib.auth.models import User
 from datetime import datetime
 from django.contrib import messages
@@ -20,7 +20,7 @@ def generar_usuario(e, request):
 
     ### CREAR PERFIL
     try:
-        p = PerfilEmpleado(user=user)
+        p = Cliente(user=user)
         p.primer_nombre = e.primer_nombre
         p.segundo_nombre = e.segundo_nombre
         p.apellido_paterno = e.primer_apellido

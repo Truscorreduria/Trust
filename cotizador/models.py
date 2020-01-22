@@ -6,7 +6,7 @@ from .numero_letra import numero_a_letras
 from image_cropping import ImageRatioField
 from constance import config
 from datetime import date
-from utils.models import Departamento, Municipio
+from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
 
 
@@ -19,7 +19,7 @@ def get_media_url(model, filename):
 
 def get_profile(user):
     try:
-        p, created = PerfilEmpleado.objects.get_or_create(user=user)
+        p, created = Cliente.objects.get_or_create(user=user)
         return p
     except:
         return None
@@ -177,6 +177,43 @@ class Marca(base):
 # region Cliente
 
 
+class Persona(base):
+    """
+        clase abstracta que representa una persona natural
+    """
+    cedula = models.CharField(max_length=14, null=True, blank=True)
+    primer_nombre = models.CharField(max_length=125, null=True, blank=True)
+    segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
+    apellido_paterno = models.CharField(max_length=125, null=True, blank=True)
+    apellido_materno = models.CharField(max_length=125, null=True, blank=True)
+    celular = models.CharField(max_length=8, null=True, blank=True)
+    email_personal = models.EmailField(max_length=255, null=True, blank=True)
+    foto = models.ImageField(upload_to='perfiles', null=True, blank=True)
+    cropping = ImageRatioField('foto', '400x400')
+
+    def foto_perfil(self):
+        if self.foto:
+            return self.foto.url
+        else:
+            return "#"
+
+    @property
+    def nombres(self):
+        return "%s %s" % (self.primer_nombre or "", self.segundo_nombre or "")
+
+    @property
+    def apellidos(self):
+        return "%s %s" % (self.apellido_paterno or "", self.apellido_materno or "")
+
+    @property
+    def full_name(self):
+        return "%s %s %s %s" % (self.primer_nombre or "", self.segundo_nombre or "",
+                                self.apellido_paterno or "", self.apellido_materno or "")
+
+    class Meta:
+        abstract = True
+
+
 class Entidad(BaseEntity):
     descuento = models.FloatField(default=0.0)
 
@@ -184,33 +221,19 @@ class Entidad(BaseEntity):
         verbose_name_plural = "entidades"
 
 
-class PerfilEmpleado(base):
-
+class Cliente(Persona, Direccion):
     '''
         Esta clase se convertirá en el cliente de trustseguros
-
     '''
-
-
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    primer_nombre = models.CharField(max_length=125, null=True, blank=True)
-    segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
-    apellido_paterno = models.CharField(max_length=125, null=True, blank=True)
-    apellido_materno = models.CharField(max_length=125, null=True, blank=True)
-    email_personal = models.EmailField(max_length=255, null=True, blank=True)
-    foto = models.ImageField(upload_to='perfiles', null=True, blank=True)
-    cropping = ImageRatioField('foto', '400x400')
     entidad = models.ForeignKey(Entidad, on_delete=models.CASCADE, null=True, blank=True)
-    cedula = models.CharField(max_length=14, null=True, blank=True)
-    celular = models.CharField(max_length=8, null=True, blank=True)
-    telefono = models.CharField(max_length=25, null=True, blank=True)
-    departamento = models.ForeignKey(Departamento, null=True, blank=True, on_delete=models.CASCADE)
-    municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE)
-    domicilio = models.TextField(max_length=400, null=True, blank=True)
     sucursal = models.CharField(max_length=125, null=True, blank=True)
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
     cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
+
+    class Meta:
+        verbose_name = "cliente"
 
     def __str__(self):
         return self.full_name
@@ -219,12 +242,6 @@ class PerfilEmpleado(base):
         return (self.primer_nombre and self.apellido_paterno and \
                 self.cedula and self.departamento and self.municipio and \
                 self.celular and self.codigo_empleado)
-
-    def foto_perfil(self):
-        if self.foto:
-            return self.foto.url
-        else:
-            return "#"
 
     def polizas_activas(self):
         return Poliza.objects.filter(user=self.user, ticket__isnull=True)
@@ -243,19 +260,6 @@ class PerfilEmpleado(base):
                     (today.month, today.day) < (nacimiento.month, nacimiento.day))
         except:
             return "desconocida"
-
-    @property
-    def nombres(self):
-        return "%s %s" % (self.primer_nombre or "", self.segundo_nombre or "")
-
-    @property
-    def apellidos(self):
-        return "%s %s" % (self.apellido_paterno or "", self.apellido_materno or "")
-
-    @property
-    def full_name(self):
-        return "%s %s %s %s" % (self.primer_nombre or "", self.segundo_nombre or "",
-                                self.apellido_paterno or "", self.apellido_materno or "")
 
     def dependientes_sepelio(self):
         return benSepelio.objects.filter(empleado=self, ticket__isnull=True)
@@ -497,7 +501,7 @@ class Ticket(base):
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes')
-    cliente = models.ForeignKey(PerfilEmpleado, null=True, blank=True, on_delete=models.SET_NULL, related_name='tickets_cliente')
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL, related_name='tickets_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_resultante")
     descripcion = models.TextField(max_length=600, null=True, blank=True)
@@ -591,7 +595,7 @@ class benAbstract(base):
     numero_poliza = models.CharField(max_length=30, null=True, blank=True, verbose_name="Número de Póliza")
     orden = models.ForeignKey('OrdenTrabajo', null=True, blank=True, on_delete=models.SET_NULL,
                               related_name="orden_%(class)s")
-    empleado = models.ForeignKey(PerfilEmpleado, on_delete=models.CASCADE,
+    empleado = models.ForeignKey(Cliente, on_delete=models.CASCADE,
                                  related_name="beneficiarios_%(class)s")
     parentesco = models.CharField(max_length=65, null=True, blank=True,
                                   choices=(

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from .generics import Datatables
 from django.contrib.auth.decorators import login_required
-from cotizador.models import PerfilEmpleado, Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
+from cotizador.models import Cliente, Poliza as PolizaAutomovil, Ticket as TicketCotizador, \
     benSepelio, benAccidente
 from .forms import *
 from .widgets import TableBordered, TableBorderedInput
@@ -533,7 +533,7 @@ def index(request):
 
 class Usuarios(Datatables):
     modal_width = 1200
-    model = PerfilEmpleado
+    model = Cliente
     list_display = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
 
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')

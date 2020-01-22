@@ -173,7 +173,7 @@ class beneficiarios_accidente(admin.TabularInline):
     extra = 0
     classes = ('grp-collapse', 'grp-open')
 
-@admin.register(PerfilEmpleado)
+@admin.register(Cliente)
 class PerfilEmpleadoAdmin(ImageCroppingMixin, admin.ModelAdmin):
     search_fields = ('user__username', 'user__first_name', 'user__last_name', 'cedula', 'celular', 'user__email')
     list_display = ('user', 'cedula', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')

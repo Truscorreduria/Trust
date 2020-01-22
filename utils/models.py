@@ -1,5 +1,5 @@
 from django.db import models
-from grappelli_extras.models import BaseEntity
+from grappelli_extras.models import BaseEntity, base
 from image_cropping.fields import ImageCropField
 from image_cropping import ImageRatioField
 
@@ -13,6 +13,18 @@ class Municipio(BaseEntity):
 
     def __str__(self):
         return self.name
+
+
+class Direccion(base):
+    departamento = models.ForeignKey(Departamento, null=True, blank=True, on_delete=models.CASCADE,
+                                     related_name="%(class)s_departamento")
+    municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE,
+                                  related_name="%(class)s_municipio")
+    domicilio = models.TextField(max_length=400, null=True, blank=True)
+    telefono = models.CharField(max_length=25, null=True, blank=True)
+
+    class Meta:
+        abstract = True
 
 
 class Banner(BaseEntity):
