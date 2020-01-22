@@ -5,7 +5,7 @@ from .models import *
 class ProspectoForm(forms.ModelForm):
 
     class Meta:
-        model = Cliente
+        model = ClienteProspecto
         fields = '__all__'
 
 

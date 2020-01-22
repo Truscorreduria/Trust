@@ -262,11 +262,10 @@ class Cliente(Persona, Empresa, Direccion):
     '''
         Esta clase se convertirá en el cliente de trustseguros
     '''
-
+    nombre = models.CharField(max_length=600, null=True, blank=True)
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
                                                choices=TUPLE_TIPOS_CLIENTES)
-    estado_cliente = models.PositiveIntegerField(default=EstadoCliente.ACTIVO,
-                                                 choices=TUPLE_ESTADO_CLIENTES)
+    estado_cliente = models.PositiveIntegerField(choices=TUPLE_ESTADO_CLIENTES, null=True, blank=True)
 
     # usuario cotizador
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -337,6 +336,10 @@ class ClienteProspecto(Cliente):
 
     def save(self, *args, **kwargs):
         self.estado_cliente = EstadoCliente.PROSPECTO
+        if self.tipo_cliente == TipoCliente.NATURAL:
+            self.nombre = self.full_name
+        if self.tipo_cliente == TipoCliente.JURIDICO:
+            self.nombre = self.razon_social
         super().save(*args, **kwargs)
 
     class Meta:
@@ -355,6 +358,7 @@ class ClienteNatural(Cliente):
     def save(self, *args, **kwargs):
         self.estado_cliente = EstadoCliente.ACTIVO
         self.tipo_cliente = TipoCliente.NATURAL
+        self.name = self.full_name
         super().save(*args, **kwargs)
 
     class Meta:
@@ -374,6 +378,7 @@ class ClienteJuridico(Cliente):
     def save(self, *args, **kwargs):
         self.estado_cliente = EstadoCliente.ACTIVO
         self.tipo_cliente = TipoCliente.JURIDICO
+        self.name = self.razon_social
         super().save(*args, **kwargs)
 
     class Meta:

@@ -535,7 +535,7 @@ class Prospectos(Datatables):
     model = ClienteProspecto
     form = ProspectoForm
     form_template = "trustseguros/lte/prospecto-form.html"
-    list_display = ('telefono', 'celular')
+    list_display = ('nombre', 'telefono')
 
     search_fields = ('razon_social', 'ruc', 'cedula', 'primer_nombre', 'segundo_nombre',
                      'apellido_materno', 'apellido_materno')
