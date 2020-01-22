@@ -1,51 +1,5 @@
 from django.forms import Widget, Select
-from .models import Cliente
 
-
-# region admin
-
-class formaPago(Widget):
-    template_name = 'trustseguros/widgets/forma_pago.html'
-
-    def format_value(self, value):
-        return value
-
-
-class listaPolizas(Widget):
-    template_name = 'trustseguros/widgets/lista_polizas.html'
-
-    def format_value(self, value):
-        return value
-
-
-class listaEndosos(Widget):
-    template_name = 'trustseguros/widgets/lista_endosos.html'
-
-    def format_value(self, value):
-        return value
-
-
-class polizasGrupo(Widget):
-    template_name = 'trustseguros/widgets/polizas_grupo.html'
-
-    def format_value(self, value):
-        return value
-
-
-class autoCompleteCliente(Widget):
-    template_name = 'trustseguros/widgets/autocomplete_cliente.html'
-
-    def format_value(self, value):
-        try:
-            return Cliente.objects.get(id=value).to_json()
-        except:
-            return None
-
-
-# endregion
-
-
-# region lte
 
 def get_all_fields_from_form(instance):
     fields = list(instance().base_fields)
@@ -89,5 +43,3 @@ class TableBorderedInput(Widget):
         updated_attrs['opts'] = base_attrs['form']._meta.model._meta
         extra_attrs.update(updated_attrs)
         return super().build_attrs(base_attrs, extra_attrs)
-
-# endregion

@@ -37,7 +37,13 @@ def valid_date(year, month, day):
 User.add_to_class('profile', get_profile)
 
 
+# region Aseguradora
+
+
 class Quincena(object):
+    """
+        Objeto auxiciliar para el calculo y muestra de las quincenas en el método de pago
+    """
     MESES = [
         'Enero',
         'Febrero',
@@ -165,6 +171,12 @@ class Marca(base):
         verbose_name_plural = "marcas con recargo"
 
 
+# endregion
+
+
+# region Cliente
+
+
 class Entidad(BaseEntity):
     descuento = models.FloatField(default=0.0)
 
@@ -260,6 +272,12 @@ class PerfilEmpleado(base):
         u.is_active = False
         u.save()
         messages.info(request, 'Usuario inactivado con éxito')
+
+
+# endregion
+
+
+# region Poliza
 
 
 class Poliza(base):
@@ -640,6 +658,12 @@ class benAccidente(benAbstract):
         super(benAccidente, self).save(*args, **kwargs)
 
 
+# endregion
+
+
+# region Tramite
+
+
 class OrdenTrabajo(BaseEntity):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -683,3 +707,6 @@ class Notificacion(base):
     benaccidente = models.ForeignKey(benAccidente, null=True, blank=True, on_delete=models.CASCADE)
     bensepelio = models.ForeignKey(benSepelio, null=True, blank=True, on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=True, blank=True)
+
+
+# endregion

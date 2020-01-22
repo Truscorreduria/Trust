@@ -27,6 +27,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import update_session_auth_hash
 
 
+# region views cotizador
+
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def inicio(request):
@@ -1042,6 +1044,9 @@ def autorenovar_polizas():
             p.save()
             print(p.fecha_vence)
 
+
+
+# endregion
 
 
 # from migracion.models import Auto
