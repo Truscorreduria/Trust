@@ -530,13 +530,27 @@ def index(request):
     })
 
 
+class Prospectos(Datatables):
+    modal_width = 1200
+    model = ClienteProspecto
+    form = ProspectoForm
+    form_template = "trustseguros/lte/prospecto-form.html"
+    list_display = ('telefono', 'celular')
+
+    search_fields = ('razon_social', 'ruc', 'cedula', 'primer_nombre', 'segundo_nombre',
+                     'apellido_materno', 'apellido_materno')
+    media = {
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/tipo.cliente.js']
+    }
+
+
 class PersonaNatural(Datatables):
     modal_width = 1200
     model = ClienteNatural
     form = NaturalForm
     list_display = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
-    list_filter = ('departamento', )
+    list_filter = ('departamento',)
     fieldsets = [
         {
             'id': 'info',
@@ -616,7 +630,7 @@ class Tickets(Datatables):
     form = LteTicketForm
     list_display = ('code', 'nombres', 'apellidos', 'cedula')
 
-    search_fields = ('code', )
+    search_fields = ('code',)
     fieldsets = [
         {
             'id': 'info',
@@ -626,7 +640,7 @@ class Tickets(Datatables):
                 ('nombres', 'apellidos'),
                 ('email', 'cedula'),
                 ('celular', 'telefono'),
-                ('domicilio', ),
+                ('domicilio',),
             )
         },
         # {
@@ -644,8 +658,6 @@ class Tickets(Datatables):
         #     )
         # },
     ]
-
-
 
     #
     # def save_related(self, instance, data):
@@ -677,7 +689,7 @@ class DependientesSepelio(Datatables):
     form = LteSepelioForm
     list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    list_filter = ('empleado', )
+    list_filter = ('empleado',)
     fieldsets = [
         {
             'id': 'info',

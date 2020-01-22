@@ -2,6 +2,13 @@ from django import forms
 from .models import *
 
 
+class ProspectoForm(forms.ModelForm):
+
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+
+
 class NaturalForm(forms.ModelForm):
     empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
     

@@ -182,6 +182,25 @@ class TipoCliente:
     JURIDICO = 2
 
 
+TUPLE_TIPOS_CLIENTES = (
+    (TipoCliente.NATURAL, "Persona Natural"),
+    (TipoCliente.JURIDICO, "Persona Jurídica"),
+)
+
+
+class EstadoCliente:
+    PROSPECTO = 1
+    ACTIVO = 2
+    INACTIVO = 3
+
+
+TUPLE_ESTADO_CLIENTES = (
+    (EstadoCliente.PROSPECTO, "Prospecto"),
+    (EstadoCliente.ACTIVO, "Cliente activo"),
+    (EstadoCliente.INACTIVO, "Cliente inactivo"),
+)
+
+
 class Persona(base):
     """
         clase abstracta que representa una persona natural
@@ -244,7 +263,10 @@ class Cliente(Persona, Empresa, Direccion):
         Esta clase se convertirá en el cliente de trustseguros
     '''
 
-    tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL)
+    tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
+                                               choices=TUPLE_TIPOS_CLIENTES)
+    estado_cliente = models.PositiveIntegerField(default=EstadoCliente.ACTIVO,
+                                                 choices=TUPLE_ESTADO_CLIENTES)
 
     # usuario cotizador
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -305,14 +327,33 @@ class Cliente(Persona, Empresa, Direccion):
         messages.info(request, 'Usuario inactivado con éxito')
 
 
+class ManagerProspecto(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(estado_cliente=EstadoCliente.PROSPECTO)
+
+
+class ClienteProspecto(Cliente):
+    objects = ManagerProspecto()
+
+    def save(self, *args, **kwargs):
+        self.estado_cliente = EstadoCliente.PROSPECTO
+        super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        verbose_name = "prospecto"
+
+
 class ManagerNatural(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(tipo_cliente=TipoCliente.NATURAL)
+        return super().get_queryset().filter(tipo_cliente=TipoCliente.NATURAL, estado_cliente=EstadoCliente.ACTIVO)
 
 
 class ClienteNatural(Cliente):
     objects = ManagerNatural()
+
     def save(self, *args, **kwargs):
+        self.estado_cliente = EstadoCliente.ACTIVO
         self.tipo_cliente = TipoCliente.NATURAL
         super().save(*args, **kwargs)
 
@@ -324,12 +365,14 @@ class ClienteNatural(Cliente):
 
 class ManagerJuridico(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(tipo_cliente=TipoCliente.JURIDICO)
+        return super().get_queryset().filter(tipo_cliente=TipoCliente.JURIDICO, estado_cliente=EstadoCliente.ACTIVO)
 
 
 class ClienteJuridico(Cliente):
     objects = ManagerJuridico()
+
     def save(self, *args, **kwargs):
+        self.estado_cliente = EstadoCliente.ACTIVO
         self.tipo_cliente = TipoCliente.JURIDICO
         super().save(*args, **kwargs)
 
@@ -337,6 +380,7 @@ class ClienteJuridico(Cliente):
         proxy = True
         verbose_name = "persona jurídica"
         verbose_name_plural = "clientes"
+
 
 # endregion
 
@@ -561,7 +605,8 @@ class Ticket(base):
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes')
-    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL, related_name='tickets_cliente')
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name='tickets_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_resultante")
     descripcion = models.TextField(max_length=600, null=True, blank=True)
@@ -771,6 +816,5 @@ class Notificacion(base):
     benaccidente = models.ForeignKey(benAccidente, null=True, blank=True, on_delete=models.CASCADE)
     bensepelio = models.ForeignKey(benSepelio, null=True, blank=True, on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=True, blank=True)
-
 
 # endregion
