@@ -12,5 +12,4 @@ urlpatterns = [
     path('accidente/', DependientesAccidente.as_view(), name="accidente"),
     path('automovil/', PolizasAutomovil.as_view(), name="automovil"),
     path('tickets/', Tickets.as_view(), name="tickets"),
-
 ]
