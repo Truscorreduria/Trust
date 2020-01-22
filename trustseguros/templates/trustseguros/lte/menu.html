@@ -44,14 +44,6 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'trustseguros:tickets' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Trámites
-                        </p>
-                    </a>
-                </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>
@@ -63,42 +55,6 @@
             </ul>
         </li>
 
-        {% comment %}<li class="nav-item has-treeview">
-                        <a href="#" class="nav-link active">
-                            <i class="nav-icon fas fa-circle"></i>
-                            <p>
-                                SEGUROS
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item has-treeview">
-                                <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>
-                                        Compañias
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item has-treeview">
-                                <a href="{% url 'trustseguros:polizas' %}" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>
-                                        Pólizas
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'trustseguros:endosos' %}" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>
-                                        Endosos
-                                    </p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>{% endcomment %}
-
         <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
                 <i class="nav-icon fas fa-circle"></i>
@@ -108,6 +64,14 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'trustseguros:tickets' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Trámites
+                        </p>
+                    </a>
+                </li>
                 <li class="nav-item has-treeview">
                     <a href="{% url 'trustseguros:sepelio' %}" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>

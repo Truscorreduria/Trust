@@ -129,10 +129,10 @@
             });
         };
 
-        const buildFilters = function(){
-            if($('#table-filters')){
+        const buildFilters = function () {
+            if ($('#table-filters')) {
                 return $('#table-filters').val()
-            } else{
+            } else {
                 return ""
             }
         };
@@ -193,8 +193,7 @@
             if (response.instance) {
                 try {
                     table.row("#" + response.instance.id).data(response.instance).draw(false);
-                }
-                catch (error) {
+                } catch (error) {
                     table.row.add(response.instance).draw(false);
                 }
             }
@@ -273,16 +272,20 @@
 
             $('#{{ opts.model_name }}-table_filter').append(filters());
 
-            $(document).on('click', '#btn-table-filter', function () {
+            const togleFilters = function (event) {
                 let filters = $('.datatables-filters-group');
-                if (filters.hasClass('filter-close')) {
-                    filters.removeClass('filter-close').addClass('filter-open')
-                } else {
-                    if (filters.hasClass('filter-open')) {
-                        filters.removeClass('filter-open').addClass('filter-close')
+                if ($(event.target).attr('class') === 'fas fa-cog') {
+                    if (filters.hasClass('filter-close')) {
+                        filters.removeClass('filter-close').addClass('filter-open')
                     }
+                } else {
+
+                    filters.removeClass('filter-open').addClass('filter-close')
                 }
-            });
+            };
+
+            $(document).on('click', '#btn-table-filter', togleFilters);
+            $(document).on('click', '#{{ opts.model_name }}-table_wrapper', togleFilters);
 
             $(document).on('change', '.filter-table', function () {
                 let filters = [];
