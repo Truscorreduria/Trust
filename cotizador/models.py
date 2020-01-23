@@ -251,6 +251,7 @@ class Empresa(base):
         abstract = True
 
 
+# fixme eliminar
 class Entidad(BaseEntity):
     descuento = models.FloatField(default=0.0)
 

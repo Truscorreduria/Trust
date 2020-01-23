@@ -19,11 +19,8 @@ from .decorators import profile_required
 import random
 import string
 from constance import config
-from django.contrib.admin.models import LogEntry, ADDITION
-from django.contrib.contenttypes.models import ContentType
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
-from django.contrib.auth import authenticate, login
+from openpyxl.styles import Border, Side, Alignment, Font
 from django.contrib.auth import update_session_auth_hash
 
 

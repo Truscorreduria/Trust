@@ -31,7 +31,7 @@ $(document).ready(function () {
         $.ajax("{% url 'ajax_getCollection' %}", {
             method: "POST",
             data: {
-                app_label: 'cotizador',
+                app_label: 'utils',
                 model: 'municipio',
                 filters: "{'departamento_id': " + tag_departamento.val() + "}"
             },
@@ -49,7 +49,7 @@ $(document).ready(function () {
         $.ajax("{% url 'ajax_getCollection' %}", {
             method: "POST",
             data: {
-                app_label: 'cotizador',
+                app_label: 'utils',
                 model: 'municipio',
                 filters: "{'departamento_id': " + tag_departamento.val() + "}"
             },

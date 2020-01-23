@@ -2,6 +2,12 @@ from django import forms
 from .models import *
 
 
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+
+
 class ProspectoForm(forms.ModelForm):
 
     class Meta:
