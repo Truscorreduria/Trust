@@ -408,6 +408,8 @@ class Poliza(base):
     no_poliza = models.CharField(max_length=25, null=True, blank=True, default="pendiente")
     no_recibo = models.CharField(max_length=25, null=True, blank=True, default="pendiente")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name="polizas_automovil_cliente")
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
     referencia = models.ForeignKey(Referencia, null=True, blank=True, on_delete=models.SET_NULL)
     tipo_cobertura = models.CharField(max_length=165, null=True, blank=True,
