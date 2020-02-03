@@ -833,11 +833,11 @@ class SubRamos(Datatables):
                 c = Cobertura(sub_ramo=instance)
             else:
                 c = Cobertura.objects.get(id=int(data.getlist('contacto_id')[i]))
-            c.nombre = data.getlist('subramo_cobertura-name')[i]
-            c.cedula = data.getlist('subramo_cobertura-tipo_calculo')[i]
-            c.telefono = data.getlist('subramo_cobertura-tipo_cobertura')[i]
-            c.celular = data.getlist('subramo_cobertura-tipo_exceso')[i]
-            c.email_personal = data.getlist('subramo_cobertura-iva')[i]
+            c.name = data.getlist('subramo_cobertura-name')[i]
+            c.tipo_calculo = data.getlist('subramo_cobertura-tipo_calculo')[i]
+            c.tipo_cobertura = data.getlist('subramo_cobertura-tipo_cobertura')[i]
+            c.tipo_exceso = data.getlist('subramo_cobertura-tipo_exceso')[i]
+            c.iva = data.getlist('subramo_cobertura-iva')[i]
             c.save()
 
 
