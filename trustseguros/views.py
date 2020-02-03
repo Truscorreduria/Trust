@@ -827,6 +827,19 @@ class SubRamos(Datatables):
         }
     ]
 
+    def save_related(self, instance, data):
+        for i in range(1, len(data.getlist('cobertura_id'))):
+            if data.getlist('cobertura_id')[i] == '':
+                c = Cobertura(sub_ramo=instance)
+            else:
+                c = Cobertura.objects.get(id=int(data.getlist('contacto_id')[i]))
+            c.nombre = data.getlist('subramo_cobertura-name')[i]
+            c.cedula = data.getlist('subramo_cobertura-tipo_calculo')[i]
+            c.telefono = data.getlist('subramo_cobertura-tipo_cobertura')[i]
+            c.celular = data.getlist('subramo_cobertura-tipo_exceso')[i]
+            c.email_personal = data.getlist('subramo_cobertura-iva')[i]
+            c.save()
+
 
 class PolizasAutomovil(Datatables):
     modal_width = 1600
@@ -836,18 +849,5 @@ class PolizasAutomovil(Datatables):
     list_display = ('no_poliza', 'no_recibo', 'nombres', 'fecha_emision', 'fecha_vence')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
     list_filter = ('grupo', 'ramo')
-
-    def save_related(self, instance, data):
-        for i in range(1, len(data.getlist('cobertura_id'))):
-            if data.getlist('cobertura_id')[i] == '':
-                c = Contacto(contacto=instance)
-            else:
-                c = Contacto.objects.get(id=int(data.getlist('contacto_id')[i]))
-            c.nombre = data.getlist('subramo_cobertura-name')[i]
-            c.cedula = data.getlist('subramo_cobertura-tipo_calculo')[i]
-            c.telefono = data.getlist('subramo_cobertura-tipo_cobertura')[i]
-            c.celular = data.getlist('subramo_cobertura-tipo_exceso')[i]
-            c.email_personal = data.getlist('subramo_cobertura-iva')[i]
-            c.save()
 
 # endregion
