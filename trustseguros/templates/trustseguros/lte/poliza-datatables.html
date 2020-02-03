@@ -323,6 +323,7 @@
                     filters: `{'ramo_id': '${_this.val()}'}`},
                     success: function (response) {
                         const table = $('#id_sub_ramo').empty();
+                        table.append(`<option value="">---------</option>`);
                         $.each(response, function (i, o) {
                             table.append(`<option value="${o.id}">${o.name}</option>`);
                         })
