@@ -320,7 +320,7 @@
                 $.ajax("{% url 'ajax_getCollection' %}", {
                     method: 'POST',
                     data: {app_label: 'cotizador', model: 'cobertura',
-                    filter: `{'sub_ramo_id': '${_this.val()}'}`},
+                    filters: `{'sub_ramo_id': '${_this.val()}'}`},
                     success: function (response) {
                         const table = $('#coberturas-table').empty();
                         $.each(response, function (i, o) {
