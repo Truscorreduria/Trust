@@ -96,11 +96,42 @@ class ClienteNaturalForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
+class CoberturaForm(forms.ModelForm):
+    prefix = 'subramo_cobertura'
+
+    class Meta:
+        model = Cobertura
+        fields = ('name', 'tipo_calculo', 'tipo_cobertura', 'tipo_exceso', 'iva')
+
+
+class SubRamoForm(forms.ModelForm):
+    coberturas = forms.Field(label='', required=False,
+                             widget=TableBorderedInput(
+                                 attrs={
+                                     'form': CoberturaForm
+                                 }
+                             ))
+
+    class Meta:
+        model = SubRamo
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        updated_initial = {}
+        if instance:
+            updated_initial['coberturas'] = instance.coberturas.all()
+        kwargs.update(initial=updated_initial)
+        super().__init__(*args, **kwargs)
+
+
+
 class PolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
         fields = '__all__'
+
 
 class LteTicketForm(forms.ModelForm):
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Cliente',

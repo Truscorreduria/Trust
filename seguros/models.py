@@ -305,7 +305,6 @@ class ValorDepreciado(base):
         return o
 
 
-
 class Poliza(base):
 
     created = models.DateTimeField(auto_now_add=True)

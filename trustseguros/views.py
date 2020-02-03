@@ -805,15 +805,32 @@ class Grupos(Datatables):
 
 
 class SubRamos(Datatables):
+    modal_width = 1200
     model = SubRamo
+    form = SubRamoForm
     list_display = ('name', 'ramo.name')
     search_fields = ('name',)
     list_filter = ('ramo',)
-    fields = ('name', 'ramo')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('name', 'ramo'),
+            )
+        },
+        {
+            'id': 'coberturas',
+            'name': 'Coberturas que aplica',
+            'fields': (
+                ('coberturas', ),
+            )
+        }
+    ]
 
 
 class PolizasAutomovil(Datatables):
-    modal_width = 1400
+    modal_width = 1600
     model = Poliza
     form = PolizaForm
     form_template = 'trustseguros/lte/poliza-modal.html'

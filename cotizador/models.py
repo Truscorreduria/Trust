@@ -457,6 +457,76 @@ class SubRamo(base):
         return o
 
 
+TIPO_COBERTURA = (
+    (1, 'Básica'),
+    (2, 'Amplia'),
+    (3, 'Adicional'),
+    (4, 'Opcional'),
+)
+
+TIPO_CALCULO = (
+    (1, 'PRECIO FIJO'),
+    (2, 'TASA PORCENTUAL'),
+    (3, 'TASA PORMILLAR'),
+)
+
+TIPO_EXCESO = (
+    ('0.0', '0.0'),
+    ('valor_nuevo', 'Valor de Nuevo'),
+    ('valor_depreciado', 'Valor Depreciado'),
+    ('otro', 'Otro'),
+)
+
+
+class Cobertura(base):
+    sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
+    name = models.CharField(max_length=75, null=True, verbose_name="nombre")
+    description = models.TextField(max_length=1500, null=True, blank=True,
+                                   verbose_name="Descripción detallada")
+    tipo_calculo = models.PositiveSmallIntegerField(choices=TIPO_CALCULO, default=3)
+    tipo_cobertura = models.PositiveSmallIntegerField(choices=TIPO_COBERTURA, default=1,
+                                                      verbose_name="tipo de cobertura")
+    tipo_exceso = models.CharField(max_length=25, choices=TIPO_EXCESO, default='0.0',
+                                   verbose_name="variable de referencia")
+    iva = models.BooleanField(default=True, verbose_name="aplica iva")
+
+    def __str__(self):
+        return self.name
+
+    def get_precio(self, aseguradora):
+        try:
+            return Precio.objects.get(aseguradora=aseguradora, cobertura=self)
+        except:
+            return None
+
+    def to_json(self):
+        o = super().to_json()
+        o['precios'] = [x.to_json() for x in self.precios.all()]
+        return o
+
+    class Meta:
+        verbose_name_plural = "coberturas ofrecidas"
+        verbose_name = "cobertura"
+        ordering = ('id',)
+
+
+class DetalleCobertura(base):
+    cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250, null=True, blank=True)
+    monto = models.FloatField(default=0.0)
+
+
+class Precio(base):
+    aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
+    cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE, related_name="precios")
+    valor = models.FloatField(default=0.0)
+    available = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "%s - %s" % (self.cobertura.name, self.aseguradora.name)
+
+
+
 class Poliza(base):
     COBER_TYPES = (
         ('amplia', 'Cobertura amplia'),
@@ -479,7 +549,7 @@ class Poliza(base):
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
     contratante = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
-                                related_name="polizas_automovil_contratante")
+                                    related_name="polizas_automovil_contratante")
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
     referencia = models.ForeignKey(Referencia, null=True, blank=True, on_delete=models.SET_NULL)
     tipo_cobertura = models.CharField(max_length=165, null=True, blank=True,
