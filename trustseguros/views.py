@@ -811,6 +811,19 @@ class Ramos(Datatables):
         },
     ]
 
+    def save_related(self, instance, data):
+        for i in range(1, len(data.getlist('campoadicional_id'))):
+            if data.getlist('campoadicional_id')[i] == '':
+                c = CampoAdicional(ramo=instance)
+            else:
+                c = CampoAdicional.objects.get(id=int(data.getlist('campoadicional_id')[i]))
+            f = CampoAdicionalForm({
+                'ramo_campo_adicional-name': data.getlist('ramo_campo_adicional-name')[i],
+                'ramo_campo_adicional-label': data.getlist('ramo_campo_adicional-label')[i],
+            }, instance=c)
+            if f.is_valid():
+                f.save()
+
 
 class Grupos(Datatables):
     model = Grupo
