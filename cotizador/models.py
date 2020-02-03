@@ -526,7 +526,6 @@ class Precio(base):
         return "%s - %s" % (self.cobertura.name, self.aseguradora.name)
 
 
-
 class Poliza(base):
     COBER_TYPES = (
         ('amplia', 'Cobertura amplia'),
@@ -616,7 +615,7 @@ class Poliza(base):
     notificado = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name_plural = "Pólizas Automovil"
+        verbose_name_plural = "Pólizas"
         verbose_name = "póliza"
         permissions = (
             ("report_debito_automatico", "report_debito_automatico"),

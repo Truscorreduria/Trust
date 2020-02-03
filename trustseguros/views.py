@@ -828,9 +828,7 @@ class SubRamos(Datatables):
     ]
 
     def save_related(self, instance, data):
-        print(data.getlist('cobertura_id'))
         for i in range(1, len(data.getlist('cobertura_id'))):
-            print(i)
             if data.getlist('cobertura_id')[i] == '':
                 c = Cobertura(sub_ramo=instance)
             else:
@@ -840,7 +838,7 @@ class SubRamos(Datatables):
                 'subramo_cobertura-tipo_calculo': data.getlist('subramo_cobertura-tipo_calculo')[i],
                 'subramo_cobertura-tipo_cobertura': data.getlist('subramo_cobertura-tipo_cobertura')[i],
                 'subramo_cobertura-tipo_exceso': data.getlist('subramo_cobertura-tipo_exceso')[i],
-#                'subramo_cobertura-iva': data.getlist('subramo_cobertura-iva')[i],
+                # 'subramo_cobertura-iva': data.getlist('subramo_cobertura-iva')[i],
             }, instance=c)
             if f.is_valid():
                 f.save()
@@ -850,6 +848,7 @@ class PolizasAutomovil(Datatables):
     modal_width = 1600
     model = Poliza
     form = PolizaForm
+    list_template = 'trustseguros/lte/poliza-datatables.html'
     form_template = 'trustseguros/lte/poliza-modal.html'
     list_display = ('no_poliza', 'no_recibo', 'nombres', 'fecha_emision', 'fecha_vence')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
