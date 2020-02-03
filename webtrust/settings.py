@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'trustseguros',
     'accounts',
     'api',
+    'seguros',
 
     'django_user_agents',
     'constance',

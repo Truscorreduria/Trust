@@ -547,7 +547,7 @@ class Prospectos(Datatables):
 class PersonaNatural(Datatables):
     modal_width = 1200
     model = ClienteNatural
-    form = NaturalForm
+    form = ClienteNaturalForm
     list_display = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
     search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
     list_filter = ('departamento',)
@@ -580,6 +580,20 @@ class PersonaNatural(Datatables):
                 ('user', 'cambiar_pass',),
             )
         },
+        {
+            'id': 'polizas',
+            'name': 'Pólizas',
+            'fields': (
+                ('polizas',),
+            )
+        },
+        {
+            'id': 'tramites',
+            'name': 'Trámites',
+            'fields': (
+                ('tramites',),
+            )
+        },
         # {
         #     'id': 'sepelio',
         #     'name': 'Dependientes seguro de sepelio',
@@ -603,6 +617,7 @@ class PersonaNatural(Datatables):
 class PersonaJuridica(Datatables):
     modal_width = 1200
     model = ClienteJuridico
+    form = ClienteJuridicioForm
     list_display = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
 
     search_fields = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
@@ -618,10 +633,62 @@ class PersonaJuridica(Datatables):
                 ('domicilio',),
             )
         },
+        {
+            'id': 'contacts',
+            'name': 'Contactos',
+            'fields': (
+                ('contactos',),
+            )
+        },
+        {
+            'id': 'polizas',
+            'name': 'Pólizas',
+            'fields': (
+                ('polizas',),
+            )
+        },
+        {
+            'id': 'tramites',
+            'name': 'Trámites',
+            'fields': (
+                ('tramites',),
+            )
+        },
     ]
     media = {
         'js': ['trustseguros/lte/js/municipio.js', ]
     }
+
+    def save_related(self, instance, data):
+        print(data)
+        for i in range(1, len(data.getlist('contacto_id'))):
+            if data.getlist('contacto_id')[i] == '':
+                c = Contacto(contacto=instance)
+            else:
+                c = Contacto.objects.get(id=int(data.getlist('contacto_id')[i]))
+            c.nombre = data.getlist('cliente_contacto-nombre')[i]
+            c.cedula = data.getlist('cliente_contacto-cedula')[i]
+            c.telefono = data.getlist('cliente_contacto-telefono')[i]
+            c.celular = data.getlist('cliente_contacto-celular')[i]
+            c.email_personal = data.getlist('cliente_contacto-email_personal')[i]
+            c.save()
+
+
+class Aseguradoras(Datatables):
+    model = Aseguradora
+    list_display = ('name', 'phone', 'address', 'emision', )
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('name', 'ruc'),
+                ('phone', 'email'),
+                ('emision', ),
+                ('address',),
+            )
+        },
+    ]
 
 
 class Tickets(Datatables):
@@ -723,43 +790,35 @@ class DependientesAccidente(Datatables):
     ]
 
 
-class PolizasAutomovil(Datatables):
-    modal_width = 1000
-    model = Poliza
-    list_display = ('fecha_emision', 'no_poliza', 'no_recibo', 'nombres', 'apellidos')
-    fieldsets = [
-        {
-            'id': 'info',
-            'name': "Datos de la póliza",
-            'fields': (
-                ('fecha_emision', 'fecha_vence', 'no_poliza', 'aseguradora'),
-                ('nombres', 'apellidos'),
-                ('cedula', 'telefono', 'celular'),
-                ('domicilio',)
-            )
-        },
-        {
-            'id': 'cobertura',
-            'name': "Detalles de coberturas",
-            'fields': (
-                ('fecha_pago', 'no_recibo', 'tipo_cobertura'),
-                ('marca', 'modelo', 'anno', 'color'),
-                ('chasis', 'motor', 'circulacion', 'placa'),
+class Ramos(Datatables):
+    model = Ramo
+    list_display = ('name',)
+    search_fields = ('name',)
+    fields = ('name',)
 
-                ('minimo_deducible', 'porcentaje_deducible', 'deducible_rotura_vidrios'),
-                ('porcentaje_deducible_extension', 'minimo_deducible_extension'),
-            )
-        },
-        {
-            'id': 'pago',
-            'name': "Método y forma de pago",
-            'fields': (
-                ('costo_exceso', 'monto_exceso', 'valor_nuevo', 'suma_asegurada'),
-                ('subtotal', 'emision', 'iva', 'total'),
-                ('forma_pago', 'cuotas', 'monto_cuota'),
-                ('medio_pago', 'cesion_derecho', 'beneficiario'),
-            )
-        },
-    ]
+
+class Grupos(Datatables):
+    model = Grupo
+    list_display = ('name',)
+    search_fields = ('name',)
+    fields = ('name',)
+
+
+class SubRamos(Datatables):
+    model = SubRamo
+    list_display = ('name', 'ramo.name')
+    search_fields = ('name',)
+    list_filter = ('ramo',)
+    fields = ('name', 'ramo')
+
+
+class PolizasAutomovil(Datatables):
+    modal_width = 1400
+    model = Poliza
+    form = PolizaForm
+    form_template = 'trustseguros/lte/poliza-modal.html'
+    list_display = ('no_poliza', 'no_recibo', 'nombres', 'fecha_emision', 'fecha_vence')
+    search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
+    list_filter = ('grupo', 'ramo')
 
 # endregion

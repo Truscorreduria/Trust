@@ -6,19 +6,11 @@
             <a href="#" class="nav-link active">
                 <i class="nav-icon fas fa-circle"></i>
                 <p>
-                    Clientes
+                    CRM
                     <i class="right fas fa-angle-left"></i>
                 </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'trustseguros:prospectos' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Prospectos
-                        </p>
-                    </a>
-                </li>
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>
@@ -48,6 +40,14 @@
                     <a href="#" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>
                         <p>
+                            Nuevo negocio
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
                             Cotizaciónes
                         </p>
                     </a>
@@ -64,7 +64,47 @@
                 </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item has-treeview">
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Aseguradoras
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:ramos' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Ramos
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:subramos' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Sub ramos
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:grupos' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Grupos
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:polizas' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Pólizas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'trustseguros:tickets' %}" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>
                         <p>
@@ -72,7 +112,7 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
+                {% comment %}<li class="nav-item has-treeview">
                     <a href="{% url 'trustseguros:sepelio' %}" class="nav-link">
                         <i class="far fa-dot-circle nav-icon"></i>
                         <p>
@@ -95,7 +135,7 @@
                             Pólizas de Automovil
                         </p>
                     </a>
-                </li>
+                </li>{% endcomment %}
             </ul>
         </li>
 

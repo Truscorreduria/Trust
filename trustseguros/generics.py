@@ -203,7 +203,7 @@ class Datatables(View):
             if form.is_valid():
                 form.save()
                 instance = form.instance
-                self.save_related(instance=instance, data=form.cleaned_data)
+                self.save_related(instance=instance, data=request.POST)
             else:
                 errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
                 status = 203

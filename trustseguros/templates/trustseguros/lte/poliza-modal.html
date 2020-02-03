@@ -1,0 +1,161 @@
+{% load crispy_forms_tags crispy_forms_filters datatables mathfilters %}
+
+{% block content %}
+    <div class="izimodal" id="{{ opts.model_name }}-modal">
+        <div class="row">
+            <div class="card card-trust" style="width: 99%; margin: 15px auto">
+                <div class="card-header">
+                    <h3>Datos generales</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            {{ form.no_poliza|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.ramo|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.sub_ramo|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {{ form.fecha_emision|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.fecha_emision|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.fecha_vence|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            {{ form.cliente|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.contratante|as_crispy_field }}
+                        </div>
+                        <div class="col">
+                            {{ form.grupo|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-trust">
+                    <div class="card-header">
+                        <h3>Conceptos financieros</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table" style="border: none !important;">
+                            <tr>
+                                <td><b>Valor de nuevo</b></td>
+                                <td class="float-right">{{ form.valor_nuevo|as_inline_field }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Suma asegurada</b></td>
+                                <td class="float-right">{{ form.suma_asegurada|as_inline_field }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Prima</b></td>
+                                <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Emisión</b></td>
+                                <td class="float-right">{{ form.emision|as_inline_field }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>IVA</b></td>
+                                <td class="float-right">{{ form.iva|as_inline_field }}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td class="float-right">{{ form.total|as_inline_field }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card card-trust">
+                    <div class="card-header">
+                        <h3>Coberturas</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="cobertura-select">
+                                </td>
+                                <td>
+                                    Muerte o lesiones a una persona
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" value="0.0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="cobertura-select">
+                                </td>
+                                <td>
+                                    Choques, Vuelcos Accidentes
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" value="0.0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="cobertura-select">
+                                </td>
+                                <td>
+                                    Rotura de cristales
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" value="0.0">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="cobertura-select">
+                                </td>
+                                <td>
+                                    Gastos médicos para ocupantes
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control" value="0.0">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card card-trust" style="width: 99%; margin: 0 auto">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">{{ form.forma_pago|as_crispy_field }}</div>
+                        <div class="col">{{ form.medio_pago|as_crispy_field }}</div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">{{ form.cuotas|as_crispy_field }}</div>
+                        <div class="col">{{ form.fecha_pago|as_crispy_field }}</div>
+                        <div class="col"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra-content %}
+{% endblock %}
+
+

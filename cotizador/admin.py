@@ -173,9 +173,10 @@ class beneficiarios_accidente(admin.TabularInline):
     extra = 0
     classes = ('grp-collapse', 'grp-open')
 
+
 @admin.register(Cliente)
 class PerfilEmpleadoAdmin(ImageCroppingMixin, admin.ModelAdmin):
-    search_fields = ('user__username', 'user__first_name', 'user__last_name', 'cedula', 'celular', 'user__email')
+    search_fields = ('nombre', 'user__first_name', 'user__last_name', 'cedula', 'celular', 'user__email')
     list_display = ('user', 'cedula', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     list_filter = ('entidad',)
 
@@ -231,4 +232,11 @@ class MarcaAdmin(admin.ModelAdmin):
     list_display = ('marca', 'porcentaje_deducible', 'minimo', 'rotura_vidrios')
     search_fields = ('marca',)
     form = MarcaRecargoForm
+
+
+@admin.register(Contacto)
+class ContactoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'telefono', 'celular', 'email_personal', 'contacto')
+
+
 

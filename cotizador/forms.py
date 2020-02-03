@@ -15,14 +15,6 @@ class ProspectoForm(forms.ModelForm):
         fields = '__all__'
 
 
-class NaturalForm(forms.ModelForm):
-    empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
-    
-    class Meta:
-        model = ClienteNatural
-        fields = '__all__'
-
-
 def _marcas():
     return [(m, m) for m in Referencia.objects.distinct('marca').values_list('marca', flat=True)]
 

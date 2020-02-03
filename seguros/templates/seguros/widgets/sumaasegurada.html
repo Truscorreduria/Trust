@@ -1,0 +1,19 @@
+<table class="grp-table" style="min-width: 560px">
+
+    <thead>
+    <tr id="id_{{ widget.name }}_head">
+        {% for x in widget.value.depreciaciones.all %}
+            <th>{{ x.aseguradora.name }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr id="id_{{ widget.name }}_suma">
+        {% for x in widget.value.depreciaciones.all %}
+            <td><input type="text" value="{{ x.valor_depreciado }}" class="suma_asegurada" step="any" readonly></td>
+        {% endfor %}
+    </tr>
+    </tbody>
+
+</table>

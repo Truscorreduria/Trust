@@ -84,9 +84,11 @@ class Quincena(object):
 
 
 class Aseguradora(BaseEntity):
+    ruc = models.CharField(max_length=14, null=True, blank=True)
     logo = models.ImageField(upload_to="empresas/logos", null=True, blank=True)
     cropping = ImageRatioField('logo', '400x400', allow_fullsize=True, verbose_name="vista previa")
     phone = models.CharField(max_length=80, verbose_name="teléfono de contacto", null=True, blank=True)
+    email = models.EmailField(max_length=165, verbose_name="email de contacto", null=True, blank=True)
     address = models.TextField(max_length=600, verbose_name="dirección", null=True, blank=True)
     emision = models.FloatField(default=2.0, verbose_name="derecho de emision")
 
@@ -265,7 +267,7 @@ class Cliente(Persona, Empresa, Direccion):
     '''
     nombre = models.CharField(max_length=600, null=True, blank=True)
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
-                                               choices=TUPLE_TIPOS_CLIENTES)
+                                               choices=TUPLE_TIPOS_CLIENTES, blank=True)
     estado_cliente = models.PositiveIntegerField(choices=TUPLE_ESTADO_CLIENTES, null=True, blank=True)
 
     # usuario cotizador
@@ -273,7 +275,10 @@ class Cliente(Persona, Empresa, Direccion):
     cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
 
     entidad = models.ForeignKey(Entidad, on_delete=models.CASCADE, null=True, blank=True)
-    empresa = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
+    empresa = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                                related_name="cliente_empresa_referencia")
+    contacto = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                                 related_name="cliente_contacto_referencia")
     sucursal = models.CharField(max_length=125, null=True, blank=True)
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
@@ -294,6 +299,15 @@ class Cliente(Persona, Empresa, Direccion):
 
     def polizas_activas(self):
         return Poliza.objects.filter(user=self.user, ticket__isnull=True)
+
+    def contactos(self):
+        return Contacto.objects.filter(contacto=self)
+
+    def polizas(self):
+        return Poliza.objects.filter(cliente=self)
+
+    def tramites(self):
+        return Ticket.objects.filter(cliente=self)
 
     def edad(self):
         try:
@@ -317,7 +331,8 @@ class Cliente(Persona, Empresa, Direccion):
         return benAccidente.objects.filter(empleado=self, ticket__isnull=True)
 
     def delete(self, *args, **kwargs):
-        self.user.delete()
+        if self.user:
+            self.user.delete()
         super().delete(args, kwargs)
 
     def dar_de_baja(self, request):
@@ -388,10 +403,55 @@ class ClienteJuridico(Cliente):
         verbose_name_plural = "clientes"
 
 
+class ManagerContacto(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(tipo_cliente=TipoCliente.NATURAL,
+                                             contacto__isnull=False)
+
+
+class Contacto(Cliente):
+    objects = ManagerContacto()
+
+    def save(self, *args, **kwargs):
+        self.tipo_cliente = TipoCliente.NATURAL
+        super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        verbose_name = "contacto"
+
+
 # endregion
 
 
 # region Poliza
+
+
+class Grupo(base):
+    name = models.CharField(max_length=65, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class Ramo(base):
+    name = models.CharField(max_length=65, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class SubRamo(base):
+    ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE)
+    name = models.CharField(max_length=65, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+    def to_json(self):
+        o = super().to_json()
+        o['ramo'] = self.ramo.to_json()
+        return o
 
 
 class Poliza(base):
@@ -401,6 +461,11 @@ class Poliza(base):
     )
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
+
+    grupo = models.ForeignKey(Grupo, null=True, on_delete=models.SET_NULL, blank=True)
+    ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
+    sub_ramo = models.ForeignKey(SubRamo, null=True, on_delete=models.SET_NULL, blank=True)
+
     fecha_emision = models.DateTimeField(null=True, blank=True)
     fecha_vence = models.DateTimeField(null=True, blank=True)
     fecha_pago = models.DateField(null=True, blank=True)
@@ -410,12 +475,14 @@ class Poliza(base):
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
+    contratante = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name="polizas_automovil_contratante")
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
     referencia = models.ForeignKey(Referencia, null=True, blank=True, on_delete=models.SET_NULL)
     tipo_cobertura = models.CharField(max_length=165, null=True, blank=True,
                                       choices=COBER_TYPES)
 
-    nombres = models.CharField(max_length=165, null=True, blank=True)
+    nombres = models.CharField(max_length=165, null=True, blank=True, verbose_name="nombre")
     apellidos = models.CharField(max_length=165, null=True, blank=True)
     cedula = models.CharField(max_length=14, null=True, blank=True)
     celular = models.CharField(max_length=8, null=True, blank=True)
@@ -604,6 +671,11 @@ class Pago(base):
 class Ticket(base):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    prioridad = models.PositiveIntegerField(choices=(
+        (1, 'Baja'),
+        (2, 'Media'),
+        (3, 'Alta'),
+    ), default=2)
     vence = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(max_length=55, null=True, blank=True, default="Pendiente",
                               choices=(
@@ -701,6 +773,9 @@ class Ticket(base):
             return "%s:%s:%s" % (str(hor).zfill(2), str(minu).zfill(2), str(seg).zfill(2))
         return "<span>00:00:00</span> <button class='btn-trust btn-trust-sm contacto-directo' data-ticket='%s'>Contacto directo</button>" \
                % self.id
+
+    class Meta:
+        verbose_name = "Trámite"
 
 
 class benAbstract(base):
