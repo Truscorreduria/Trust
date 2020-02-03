@@ -828,17 +828,19 @@ class SubRamos(Datatables):
     ]
 
     def save_related(self, instance, data):
-        for i in range(0, len(data.getlist('cobertura_id'))):
+        print(data.getlist('cobertura_id'))
+        for i in range(1, len(data.getlist('cobertura_id'))):
+            print(i)
             if data.getlist('cobertura_id')[i] == '':
                 c = Cobertura(sub_ramo=instance)
             else:
-                c = Cobertura.objects.get(id=int(data.getlist('contacto_id')[i]))
+                c = Cobertura.objects.get(id=int(data.getlist('cobertura_id')[i]))
             f = CoberturaForm({
                 'subramo_cobertura-name': data.getlist('subramo_cobertura-name')[i],
                 'subramo_cobertura-tipo_calculo': data.getlist('subramo_cobertura-tipo_calculo')[i],
                 'subramo_cobertura-tipo_cobertura': data.getlist('subramo_cobertura-tipo_cobertura')[i],
                 'subramo_cobertura-tipo_exceso': data.getlist('subramo_cobertura-tipo_exceso')[i],
-                'subramo_cobertura-iva': data.getlist('subramo_cobertura-iva')[i],
+#                'subramo_cobertura-iva': data.getlist('subramo_cobertura-iva')[i],
             }, instance=c)
             if f.is_valid():
                 f.save()

@@ -101,7 +101,7 @@ class CoberturaForm(forms.ModelForm):
 
     class Meta:
         model = Cobertura
-        fields = ('name', 'tipo_calculo', 'tipo_cobertura', 'tipo_exceso', 'iva')
+        fields = ('name', 'tipo_calculo', 'tipo_cobertura', 'tipo_exceso')
 
 
 class SubRamoForm(forms.ModelForm):
