@@ -315,6 +315,21 @@
                         </tr>`)
             }
 
+            $(document).on('change', '#id_ramo', function () {
+                const _this = $(this);
+                $.ajax("{% url 'ajax_getCollection' %}", {
+                    method: 'POST',
+                    data: {app_label: 'cotizador', model: 'subramo',
+                    filters: `{'ramo_id': '${_this.val()}'}`},
+                    success: function (response) {
+                        const table = $('#id_sub_ramo').empty();
+                        $.each(response, function (i, o) {
+                            table.append(`<option value="${o.id}">${o.name}</option>`);
+                        })
+                    }
+                })
+            });
+
             $(document).on('change', '#id_sub_ramo', function () {
                 const _this = $(this);
                 $.ajax("{% url 'ajax_getCollection' %}", {
@@ -328,7 +343,7 @@
                         })
                     }
                 })
-            })
+            });
 
         });
 
