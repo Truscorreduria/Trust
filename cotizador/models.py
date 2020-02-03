@@ -450,7 +450,10 @@ class SubRamo(base):
 
     def to_json(self):
         o = super().to_json()
-        o['ramo'] = self.ramo.to_json()
+        try:
+            o['ramo'] = self.ramo.to_json()
+        except:
+            o['ramo'] = {'id': '', 'name': ''}
         return o
 
 
