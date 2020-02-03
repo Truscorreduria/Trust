@@ -104,6 +104,35 @@ class CoberturaForm(forms.ModelForm):
         fields = ('name', 'tipo_calculo', 'tipo_cobertura', 'tipo_exceso')
 
 
+class CampoAdicionalForm(forms.ModelForm):
+    prefix = 'ramo_campo_adicional'
+
+    class Meta:
+        model = CampoAdicional
+        fields = ('name', 'label',)
+
+
+class RamoForm(forms.ModelForm):
+    campos_adicionales = forms.Field(label='', required=False,
+                                     widget=TableBorderedInput(
+                                         attrs={
+                                             'form': CampoAdicionalForm
+                                         }
+                                     ))
+
+    class Meta:
+        model = Ramo
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        updated_initial = {}
+        if instance:
+            updated_initial['campos_adicionales'] = instance.campos_adicionales.all()
+        kwargs.update(initial=updated_initial)
+        super().__init__(*args, **kwargs)
+
+
 class SubRamoForm(forms.ModelForm):
     coberturas = forms.Field(label='', required=False,
                              widget=TableBorderedInput(
@@ -125,9 +154,7 @@ class SubRamoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
-
 class PolizaForm(forms.ModelForm):
-
     class Meta:
         model = Poliza
         fields = '__all__'

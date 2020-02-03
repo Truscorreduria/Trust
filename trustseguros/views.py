@@ -791,9 +791,25 @@ class DependientesAccidente(Datatables):
 
 class Ramos(Datatables):
     model = Ramo
+    form = RamoForm
     list_display = ('name',)
     search_fields = ('name',)
-    fields = ('name',)
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('name',),
+            )
+        },
+        {
+            'id': 'campos-adicionales',
+            'name': 'Campos adicionales',
+            'fields': (
+                ('campos_adicionales',),
+            )
+        },
+    ]
 
 
 class Grupos(Datatables):
