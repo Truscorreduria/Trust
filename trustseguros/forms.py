@@ -155,6 +155,11 @@ class SubRamoForm(forms.ModelForm):
 
 
 class PolizaForm(forms.ModelForm):
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Cliente',
+                                     required=True, widget=SelectSearch)
+    contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
+                                         required=True, widget=SelectSearch)
+
     class Meta:
         model = Poliza
         fields = '__all__'

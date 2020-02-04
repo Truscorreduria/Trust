@@ -486,6 +486,20 @@ TIPO_EXCESO = (
     ('otro', 'Otro'),
 )
 
+FORMAS_DE_PAGO = (
+    (1, 'Contado'),
+    (2, 'Credito'),
+)
+
+MEDIOS_DE_PAGO = (
+    (1, 'Transferencia'),
+    (2, 'Cheques'),
+    (3, 'Depositos'),
+    (4, 'Nomina'),
+    (5, 'Pestamos'),
+    (6, 'Tarjeta de Credito'),
+)
+
 
 class Cobertura(base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
@@ -599,16 +613,21 @@ class Poliza(base):
     iva = models.FloatField(default=0.0)
     total = models.FloatField(default=0.0)
 
+    per_comision = models.FloatField(default=0.0, verbose_name="% comisión")
+    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión")
+
     cesion_derecho = models.BooleanField(default=False)
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
     forma_pago = models.CharField(max_length=25, default="anual")
+    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True)
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
                                       ('debito_automatico', 'Débito automático'),
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
+    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True)
     cuotas = models.PositiveIntegerField(default=1)
     monto_cuota = models.FloatField(default=0.0)
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
@@ -665,6 +684,23 @@ class Poliza(base):
             mes = self.fecha_pago.month
             dia = self.fecha_pago.day
             for i in range(1, self.cuotas + 1):
+                if mes != 12:
+                    mes += 1
+                else:
+                    mes = 1
+                    anno += 1
+                fecha = valid_date(year=anno, month=mes, day=dia)
+                cuotas.append({'numero': i, 'cuotas': self.cuotas, 'fecha': fecha, 'monto': self.monto_cuota})
+        return cuotas
+
+    def tabla_pagos(self):
+        cuotas = []
+        self.f_pago = 2
+        if self.f_pago == 2:
+            anno = self.fecha_pago.year
+            mes = self.fecha_pago.month
+            dia = self.fecha_pago.day
+            for i in range(1, self.cuotas + 10):
                 if mes != 12:
                     mes += 1
                 else:

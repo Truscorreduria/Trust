@@ -883,4 +883,5 @@ class PolizasAutomovil(Datatables):
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
     list_filter = ('grupo', 'ramo')
 
+
 # endregion
