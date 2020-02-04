@@ -1,0 +1,58 @@
+
+
+{% with widget.value.ramo as ramo %}
+
+    <input type="hidden" id="id_{{ widget.name }}" name="{{ widget.name }}"
+           value="{{ widget.value.extra_data }}">
+
+    <div class="row {{ widget.name }}_fieldset">
+        {% for field in ramo.campos_adicionales.all %}
+
+            <div class="col">
+
+                <div id="div_{{ field.name }}" class="form-group">
+
+                    <label for="id_{{ field.name }}" class="col-form-label ">
+                        {{ field.label }}
+                    </label>
+
+                    <input name="{{ field.name }}" class="form-control" id="id_{{ field.name }}">
+
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% endwith %}
+
+<script type="text/javascript">
+
+    (function ($) {
+        $(document).ready(function () {
+
+            const $fieldset = $('.{{ widget.name }}_fieldset');
+
+            const $input = $('#id_{{ widget.name }}');
+
+            {% if widget.value.extra_data %}
+
+                let data = JSON.parse($($input).val());
+
+                Object.keys(data).forEach(function (k) {
+                    $($fieldset).find('#id_' + k).val(data[k]);
+                });
+
+            {% endif %}
+
+            $($fieldset).on('change', 'input', function () {
+                obj = {};
+                $.each($($fieldset).find('input'), function (i, o) {
+                    obj[$(o).attr('name')] = $(o).val()
+                });
+                $($input).val(JSON.stringify(obj));
+            })
+        })
+    })(jQuery)
+
+</script>

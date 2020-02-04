@@ -1,5 +1,5 @@
 from django import forms
-from .widgets import SelectSearch, TableBorderedInput, TableBordered
+from .widgets import SelectSearch, TableBorderedInput, TableBordered, JsonWidget
 from cotizador.models import *
 
 
@@ -159,10 +159,21 @@ class PolizaForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
     contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
                                          required=True, widget=SelectSearch)
+    extra_data = forms.Field(label="", required=False, widget=JsonWidget(
+        attrs={}
+    ))
 
     class Meta:
         model = Poliza
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        updated_initial = {}
+        if instance:
+            updated_initial['extra_data'] = instance
+        kwargs.update(initial=updated_initial)
+        super().__init__(*args, **kwargs)
 
 
 class LteTicketForm(forms.ModelForm):

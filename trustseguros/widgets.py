@@ -43,3 +43,10 @@ class TableBorderedInput(Widget):
         updated_attrs['opts'] = base_attrs['form']._meta.model._meta
         extra_attrs.update(updated_attrs)
         return super().build_attrs(base_attrs, extra_attrs)
+
+
+class JsonWidget(Widget):
+    template_name = 'trustseguros/lte/widgets/json_form.html'
+
+    def format_value(self, value):
+        return value

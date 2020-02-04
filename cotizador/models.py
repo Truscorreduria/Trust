@@ -8,6 +8,7 @@ from constance import config
 from datetime import date
 from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
+import json
 
 
 def get_media_url(model, filename):
@@ -554,8 +555,8 @@ class Poliza(base):
         ('amplia', 'Cobertura amplia'),
         ('basica', 'Cobertura básica'),
     )
-    created = models.DateTimeField(auto_now_add=True, null=True)
-    updated = models.DateTimeField(auto_now=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     grupo = models.ForeignKey(Grupo, null=True, on_delete=models.SET_NULL, blank=True)
     ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
@@ -588,48 +589,48 @@ class Poliza(base):
     card_expiry = models.CharField(max_length=40, null=True, blank=True)
     card_type = models.CharField(max_length=40, null=True, blank=True)
 
-    marca = models.CharField(max_length=65)
-    porcentaje_deducible = models.FloatField(default=0.2,
+    marca = models.CharField(max_length=65, null=True, blank=True)
+    porcentaje_deducible = models.FloatField(default=0.2, null=True, blank=True,
                                              help_text="usar formato decimar. Ejemplo 0.05 = 5%")
-    porcentaje_deducible_extension = models.FloatField(default=0.3,
+    porcentaje_deducible_extension = models.FloatField(default=0.3, null=True, blank=True,
                                                        help_text="usar formato decimar. Ejemplo 0.05 = 5%")
-    minimo_deducible = models.FloatField(default=100.0)
-    minimo_deducible_extension = models.FloatField(default=100.0)
-    deducible_rotura_vidrios = models.FloatField(default=0.0)
-    modelo = models.CharField(max_length=65)
-    anno = models.PositiveSmallIntegerField(verbose_name="año")
+    minimo_deducible = models.FloatField(default=100.0, null=True, blank=True,)
+    minimo_deducible_extension = models.FloatField(default=100.0, null=True, blank=True,)
+    deducible_rotura_vidrios = models.FloatField(default=0.0, null=True, blank=True,)
+    modelo = models.CharField(max_length=65, null=True, blank=True,)
+    anno = models.PositiveSmallIntegerField(verbose_name="año", null=True, blank=True,)
     chasis = models.CharField(max_length=65, null=True, blank=True)
     motor = models.CharField(max_length=65, null=True, blank=True)
     circulacion = models.CharField(max_length=65, null=True, blank=True)
     placa = models.CharField(max_length=65, null=True, blank=True)
     color = models.CharField(max_length=65, null=True, blank=True)
 
-    costo_exceso = models.FloatField(default=0.0)
-    monto_exceso = models.FloatField(default=0.0)
-    valor_nuevo = models.FloatField(default=0.0)
-    suma_asegurada = models.FloatField(default=0.0)
-    subtotal = models.FloatField(default=0.0)
-    emision = models.FloatField(default=0.0)
-    iva = models.FloatField(default=0.0)
-    total = models.FloatField(default=0.0)
+    costo_exceso = models.FloatField(default=0.0, null=True, blank=True,)
+    monto_exceso = models.FloatField(default=0.0, null=True, blank=True,)
+    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True,)
+    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True,)
+    subtotal = models.FloatField(default=0.0, null=True, blank=True,)
+    emision = models.FloatField(default=0.0, null=True, blank=True,)
+    iva = models.FloatField(default=0.0, null=True, blank=True,)
+    total = models.FloatField(default=0.0, null=True, blank=True,)
 
-    per_comision = models.FloatField(default=0.0, verbose_name="% comisión")
-    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión")
+    per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True,)
+    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True,)
 
     cesion_derecho = models.BooleanField(default=False)
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
-    forma_pago = models.CharField(max_length=25, default="anual")
-    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True)
+    forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True,)
+    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True, blank=True)
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
                                       ('debito_automatico', 'Débito automático'),
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
-    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True)
-    cuotas = models.PositiveIntegerField(default=1)
-    monto_cuota = models.FloatField(default=0.0)
+    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True,)
+    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True,)
+    monto_cuota = models.FloatField(default=0.0, null=True, blank=True,)
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
 
@@ -642,6 +643,9 @@ class Poliza(base):
 
     notificado = models.BooleanField(default=False)
 
+    extra_data = models.CharField(max_length=10000, null=True, blank=True,
+                                  verbose_name="campos adicionales")
+
     class Meta:
         verbose_name_plural = "Pólizas"
         verbose_name = "póliza"
@@ -651,6 +655,12 @@ class Poliza(base):
             ("reporte_deduccion_nomina", "reporte_deduccion_nomina"),
             ("reporte_polizas_vencer", "reporte_polizas_vencer"),
         )
+
+    def data_load(self):
+        try:
+            return json.loads(self.extra_data)
+        except:
+            return {}
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -694,6 +704,8 @@ class Poliza(base):
         return cuotas
 
     def tabla_pagos(self):
+        if not self.fecha_pago:
+            self.fecha_pago = datetime.now()
         cuotas = []
         self.f_pago = 2
         if self.f_pago == 2:
