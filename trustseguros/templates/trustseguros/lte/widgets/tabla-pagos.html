@@ -1,0 +1,33 @@
+{% load humanize %}
+<table class="table">
+    <thead>
+    <tr>
+        <th>Cuotas</th>
+        <th>Fecha vencimiento</th>
+        <th>Importe</th>
+        <th>Estado</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for fila in instance.tabla_pagos %}
+        <tr>
+            <td>
+                <input type="text" name="" class="form-control" readonly value="{{ fila.numero }}">
+            </td>
+            <td>
+                <input type="text" name="" class="form-control" readonly value="{{ fila.fecha|date:'d/m/Y' }}">
+            </td>
+            <td>
+                <input type="text" name="" class="form-control" readonly value="{{ fila.monto|intcomma }}">
+            </td>
+            <td>
+                <select name="" id="" class="form-control">
+                    <option value="1">Vigente</option>
+                    <option value="2">Vencido</option>
+                    <option value="3">Pagado</option>
+                </select>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

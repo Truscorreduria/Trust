@@ -50,3 +50,19 @@ class JsonWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class CoberturasWidget(Widget):
+    template_name = "trustseguros/lte/widgets/coberturas.html"
+
+    def format_value(self, value):
+        return value
+
+
+class TablaPagosWidget(Widget):
+    template_name = "trustseguros/lte/widgets/tabla-pagos.html"
+
+    def format_value(self, value):
+        return value
+
+

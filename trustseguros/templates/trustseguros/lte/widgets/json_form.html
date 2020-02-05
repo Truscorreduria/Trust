@@ -1,5 +1,3 @@
-
-
 {% with widget.value.ramo as ramo %}
 
     <input type="hidden" id="id_{{ widget.name }}" name="{{ widget.name }}"
@@ -8,19 +6,18 @@
     <div class="row {{ widget.name }}_fieldset">
         {% for field in ramo.campos_adicionales.all %}
 
-            <div class="col">
-
+            <div class="col-md-3">
                 <div id="div_{{ field.name }}" class="form-group">
 
-                    <label for="id_{{ field.name }}" class="col-form-label ">
+                    <label for="id_{{ field.name }}" class="col-form-label">
                         {{ field.label }}
                     </label>
 
                     <input name="{{ field.name }}" class="form-control" id="id_{{ field.name }}">
 
                 </div>
-
             </div>
+
         {% endfor %}
     </div>
 
@@ -35,13 +32,16 @@
 
             const $input = $('#id_{{ widget.name }}');
 
-            {% if widget.value.extra_data %}
-
+            const load_data = function () {
                 let data = JSON.parse($($input).val());
-
                 Object.keys(data).forEach(function (k) {
                     $($fieldset).find('#id_' + k).val(data[k]);
                 });
+            };
+
+            {% if widget.value.extra_data %}
+
+                load_data();
 
             {% endif %}
 
@@ -51,7 +51,7 @@
                     obj[$(o).attr('name')] = $(o).val()
                 });
                 $($input).val(JSON.stringify(obj));
-            })
+            });
         })
     })(jQuery)
 

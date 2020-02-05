@@ -795,6 +795,18 @@ class Pago(base):
     monto = models.FloatField(default=0.0)
     fecha_vence = models.DateField(null=True)
     fecha_pago = models.DateField(null=True)
+    estado = models.PositiveSmallIntegerField(choices=(
+        (0, 'ANULADO'),
+        (1, 'VIGENTE'),
+        (2, 'VENCIDO'),
+        (3, 'PAGADO'),
+    ), null=True, blank=True)
+
+
+class CoberturaPoliza(base):
+    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
+    cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
+    monto = models.FloatField(default=0.0)
 
 
 class Ticket(base):

@@ -1,5 +1,5 @@
 from django import forms
-from .widgets import SelectSearch, TableBorderedInput, TableBordered, JsonWidget
+from .widgets import *
 from cotizador.models import *
 
 
@@ -159,9 +159,9 @@ class PolizaForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
     contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
                                          required=True, widget=SelectSearch)
-    extra_data = forms.Field(label="", required=False, widget=JsonWidget(
-        attrs={}
-    ))
+    coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
+    extra_data = forms.Field(label="", required=False, widget=JsonWidget)
+    tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
 
     class Meta:
         model = Poliza
@@ -172,6 +172,8 @@ class PolizaForm(forms.ModelForm):
         updated_initial = {}
         if instance:
             updated_initial['extra_data'] = instance
+            updated_initial['coberturas'] = instance
+            updated_initial['tabla_pagos'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 

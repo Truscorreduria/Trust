@@ -20,6 +20,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="{% static '/cotizador/fonts/stylesheet.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/css/main.css' %}">
+
     <script src="{% static '/trustseguros/lte/plugins/jquery/jquery.min.js' %}"></script>
     {% block style %}
 
@@ -179,7 +180,7 @@
             </div>
             <input type="hidden" name="path" value="{{ request.path }}">
             <!-- Sidebar Menu -->
-                {% include 'trustseguros/lte/menu.html' %}
+            {% include 'trustseguros/lte/menu.html' %}
             <!-- /.sidebar-menu -->
         </div>
         <!-- /.sidebar -->
@@ -853,6 +854,7 @@
 </div>
 
 
+<script src="{% static '/trustseguros/lte/plugins/jquery/jquery.min.js' %}"></script>
 
 <script src="{% static '/trustseguros/lte/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
 
