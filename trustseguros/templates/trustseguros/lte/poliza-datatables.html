@@ -19,7 +19,8 @@
                                 <input type="hidden" name="cobertura" value="${cobertura.id}">
                             </td>
                             <td>
-                                <input type="number" class="form-control" value="0.0" style="max-width: 150px">
+                                <input type="number" class="form-control" value="0.0" name="monto"
+                                style="max-width: 150px">
                             </td>
                         </tr>`)
             }
@@ -122,16 +123,16 @@
                             pagos.append(`
                                     <tr>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${ o.numero }">
+                                            <input type="text" name="" class="form-control" readonly value="${o.numero}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${ o.fecha }">
+                                            <input type="text" name="" class="form-control" readonly value="${o.fecha}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${ o.monto }">
+                                            <input type="text" name="" class="form-control" readonly value="${o.monto}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${ o.estado }">
+                                            <input type="text" name="" class="form-control" readonly value="${o.estado}">
                                         </td>
                                     </tr>
                             `)

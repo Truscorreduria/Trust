@@ -960,14 +960,16 @@ def calcular_tabla_pagos(request):
     anno = fecha_pago.year
     mes = fecha_pago.month
     dia = fecha_pago.day
-    for i in range(0, cuotas):
+    data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                 'estado': 'VIGENTE'})
+    for i in range(1, cuotas):
         if mes != 12:
             mes += 1
         else:
             mes = 1
             anno += 1
         fecha = valid_date(year=anno, month=mes, day=dia)
-        data.append({'numero': i, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+        data.append({'numero': i+1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
                      'estado': 'VIGENTE'})
     return JsonResponse(data, safe=False, encoder=Codec)
 

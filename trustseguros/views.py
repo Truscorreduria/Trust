@@ -884,6 +884,7 @@ class PolizasAutomovil(Datatables):
     list_filter = ('grupo', 'ramo')
 
     def save_related(self, instance, data):
+        print(data)
         for i in range(0, len(data.getlist('cobertura'))):
             cobertura = Cobertura.objects.get(id=data.getlist('cobertura')[i])
             monto = float(data.getlist('monto')[i])

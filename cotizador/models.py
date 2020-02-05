@@ -711,24 +711,26 @@ class Poliza(base):
         return cuotas
 
     def tabla_pagos(self):
-        if not self.fecha_pago:
-            self.fecha_pago = datetime.now()
-        cuotas = []
-        self.f_pago = 2
-        if self.f_pago == 2:
-            anno = self.fecha_pago.year
-            mes = self.fecha_pago.month
-            dia = self.fecha_pago.day
-            for i in range(0, self.cuotas):
-                if mes != 12:
-                    mes += 1
-                else:
-                    mes = 1
-                    anno += 1
-                fecha = valid_date(year=anno, month=mes, day=dia)
-                cuotas.append({'numero': i, 'cuotas': self.cuotas, 'fecha': fecha, 'monto': self.monto_cuota,
-                               'estado': 'VIGENTE'})
-        return cuotas
+        total = self.total
+        fecha_pago = datetime(year=self.fecha_pago.year, month=self.fecha_pago.month, day=self.fecha_pago.day)
+        cuotas = self.cuotas
+        monto_cuota = round(total / cuotas, 2)
+        data = []
+        anno = fecha_pago.year
+        mes = fecha_pago.month
+        dia = fecha_pago.day
+        data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                     'estado': 'VIGENTE'})
+        for i in range(1, cuotas):
+            if mes != 12:
+                mes += 1
+            else:
+                mes = 1
+                anno += 1
+            fecha = valid_date(year=anno, month=mes, day=dia)
+            data.append({'numero': i + 1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                         'estado': 'VIGENTE'})
+        return data
 
     def fecha_vencimiento(self):
         self.fecha_vence = date(year=self.fecha_emision.year, month=self.fecha_emision.month,
