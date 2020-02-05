@@ -262,7 +262,6 @@ def get_data(request):
         'total': total, 'cuota': cuota, 'exceso': exceso
     })
 
-
     try:
         a, created = Analitics.objects.get_or_create(user=request.user, data=data,
                                                      area='cotizar auto', paso=2)
@@ -320,13 +319,13 @@ def generar_cotizacion(request):
         ticket.circulacion = request.FILES['circulacion']
     except:
         pass
-    #ticket.save()
+    # ticket.save()
 
     context = {'poliza': ticket}
     return render_to_pdf_response(request, 'cotizador/pdf/cotizacion.html', context)
 
 
-#fixme revizar que no se esté usando y borrar
+# fixme revizar que no se esté usando y borrar
 @csrf_exempt
 def generar_poliza(request):
     hoy = datetime.now()
@@ -952,6 +951,28 @@ def download(request):
         raise Http404
 
 
+def calcular_tabla_pagos(request):
+    total = float(request.POST.get('total'))
+    fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
+    cuotas = int(request.POST.get('cuotas'))
+    monto_cuota = round(total / cuotas, 2)
+    data = []
+    anno = fecha_pago.year
+    mes = fecha_pago.month
+    dia = fecha_pago.day
+    for i in range(0, cuotas):
+        if mes != 12:
+            mes += 1
+        else:
+            mes = 1
+            anno += 1
+        fecha = valid_date(year=anno, month=mes, day=dia)
+        data.append({'numero': i, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                     'estado': 'VIGENTE'})
+    return JsonResponse(data, safe=False, encoder=Codec)
+
+
+
 def reporte_inclusion(modelAdmin, request, queryset):
     wb = Workbook()
     ws = wb.active
@@ -1026,22 +1047,20 @@ def javascript(request, file):
     return render(request, 'cotizador/js/' + file)
 
 
-
 def autorenovar_polizas():
     hoy = datetime.now()
     aseguradora = Aseguradora.objects.get(name='ASSA')
     for p in Poliza.objects.filter(valor_nuevo__gt=0):
-        vence = datetime(year=p.fecha_vencimiento().year, month=p.fecha_vencimiento().month, day=p.fecha_vencimiento().day)
+        vence = datetime(year=p.fecha_vencimiento().year, month=p.fecha_vencimiento().month,
+                         day=p.fecha_vencimiento().day)
         print(vence)
         if vence <= hoy:
             p.suma_asegurada = aseguradora.depreciar(p.valor_nuevo, p.anno)
             emision = datetime(year=p.fecha_emision.year, month=p.fecha_emision.month, day=p.fecha_emision.day)
-            p.fecha_emision = emision+ timedelta(days=365)
+            p.fecha_emision = emision + timedelta(days=365)
             p.fecha_vence = emision + timedelta(days=730)
             p.save()
             print(p.fecha_vence)
-
-
 
 # endregion
 
@@ -1062,4 +1081,3 @@ def autorenovar_polizas():
 #             print("reparada")
 #         except ObjectDoesNotExist:
 #             print("no encontrada")
-

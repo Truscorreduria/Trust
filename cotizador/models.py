@@ -719,14 +719,15 @@ class Poliza(base):
             anno = self.fecha_pago.year
             mes = self.fecha_pago.month
             dia = self.fecha_pago.day
-            for i in range(1, self.cuotas + 10):
+            for i in range(0, self.cuotas):
                 if mes != 12:
                     mes += 1
                 else:
                     mes = 1
                     anno += 1
                 fecha = valid_date(year=anno, month=mes, day=dia)
-                cuotas.append({'numero': i, 'cuotas': self.cuotas, 'fecha': fecha, 'monto': self.monto_cuota})
+                cuotas.append({'numero': i, 'cuotas': self.cuotas, 'fecha': fecha, 'monto': self.monto_cuota,
+                               'estado': 'VIGENTE'})
         return cuotas
 
     def fecha_vencimiento(self):

@@ -22,6 +22,7 @@ urlpatterns = [
     path('guardar_poliza/', guardar_poliza, name='guardar_poliza'),
     path('generar_poliza/', generar_poliza, name='generar_poliza'),
     path('generar_cotizacion/', generar_cotizacion, name='generar_cotizacion'),
+    path('calcular_tabla_pagos/', calcular_tabla_pagos, name='calcular_tabla_pagos'),
     path('print_recibo/', print_recibo, name='print_recibo'),
     path('print_cotizacion/', print_cotizacion, name='print_cotizacion'),
     path('print_documentos/', print_documentos, name='print_documentos'),

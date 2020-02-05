@@ -103,10 +103,42 @@
                 $('#id_total').val((prima_neta + emision + iva + otros).toFixed(2))
             };
 
-            const calcular_comision = function(){
+            const calcular_comision = function () {
                 let prima_neta = parseFloat($('#id_prima_neta').val());
                 let per_comision = parseFloat($('#id_per_comision').val());
                 $('#id_amount_comision').val(((prima_neta * per_comision) / 100).toFixed(2))
+            };
+
+            const calcular_tabla_pagos = function () {
+                $.ajax("{% url 'cotizador:calcular_tabla_pagos' %}", {
+                    method: "POST",
+                    data: {
+                        total: $('#id_total').val(), fecha: $('#id_fecha_pago').val(),
+                        cuotas: $('#id_cuotas').val()
+                    },
+                    success: function (response) {
+                        const pagos = $('#id_tabla_pagos tbody').empty();
+                        $.each(response, function (i, o) {
+                            pagos.append(`
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="" class="form-control" readonly value="${ o.numero }">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control" readonly value="${ o.fecha }">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control" readonly value="${ o.monto }">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="" class="form-control" readonly value="${ o.estado }">
+                                        </td>
+                                    </tr>
+                            `)
+                        })
+                    }
+                })
+
             };
 
             $(document).on('change', '#id_subtotal', calcular_prima_neta);
@@ -119,6 +151,9 @@
 
             $(document).on('change', '#id_prima_neta', calcular_comision);
             $(document).on('change', '#id_per_comision', calcular_comision);
+
+            $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
+            $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
 
         });
 

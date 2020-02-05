@@ -1,5 +1,5 @@
 {% load humanize %}
-<table class="table">
+<table class="table" id="id_{{ widget.name }}">
     <thead>
     <tr>
         <th>Cuotas</th>
@@ -9,7 +9,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for fila in instance.tabla_pagos %}
+    {% for fila in widget.value.tabla_pagos %}
         <tr>
             <td>
                 <input type="text" name="" class="form-control" readonly value="{{ fila.numero }}">
@@ -21,11 +21,7 @@
                 <input type="text" name="" class="form-control" readonly value="{{ fila.monto|intcomma }}">
             </td>
             <td>
-                <select name="" id="" class="form-control">
-                    <option value="1">Vigente</option>
-                    <option value="2">Vencido</option>
-                    <option value="3">Pagado</option>
-                </select>
+                <input type="text" name="" class="form-control" readonly value="{{ fila.estado }}">
             </td>
         </tr>
     {% endfor %}
