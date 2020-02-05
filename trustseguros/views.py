@@ -884,8 +884,14 @@ class PolizasAutomovil(Datatables):
     list_filter = ('grupo', 'ramo')
 
     def save_related(self, instance, data):
-        print('instance', instance)
-        print('data', data)
+        for i in range(0, len(data.getlist('cobertura'))):
+            cobertura = Cobertura.objects.get(id=data.getlist('cobertura')[i])
+            monto = float(data.getlist('monto')[i])
+            print(cobertura, monto)
+            if monto > 0:
+                r, created = CoberturaPoliza.objects.get_or_create(poliza=instance, cobertura=cobertura)
+                r.monto = monto
+                r.save()
 
 
 

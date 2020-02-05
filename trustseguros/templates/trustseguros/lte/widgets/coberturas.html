@@ -1,5 +1,4 @@
-<input type="hidden" id="{{ widget.attrs.id }}" name="{{ widget.name }}">
-
+{{ widget.value.coberturas }}
 <table class="table" id="{{ widget.name }}-table">
     <thead>
     <tr>
@@ -13,14 +12,22 @@
         {% for cobertura in widget.value.sub_ramo.coberturas.all %}
             <tr>
                 <td>
-                    <input type="checkbox" name="cobertura-select">
+                    <input type="checkbox"
+                            {% for c in widget.value.coberturas %}
+                                {% ifequal cobertura c.cobertura %} checked="checked" {% endifequal %}
+                            {% endfor %}>
                 </td>
                 <td>
-                    {{ cobertura.name }}
                     <input type="hidden" name="cobertura" value="{{ cobertura.id }}">
+                    {{ cobertura.name }}
                 </td>
                 <td>
-                    <input type="number" class="form-control" value="0.0" style="max-width: 150px">
+                    <input type="number" class="form-control" style="max-width: 150px" name="monto"
+                            {% for c in widget.value.coberturas %}
+                                {% ifequal cobertura c.cobertura %}
+                           value="{{ c.monto }}"
+                                {% endifequal %}
+                            {% endfor %}>
                 </td>
             </tr>
         {% endfor %}

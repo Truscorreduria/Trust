@@ -169,7 +169,6 @@ class Datatables(View):
         }
 
     def post(self, request):
-        print(request.POST)
         status = 200
         errors = []
         instance = None
