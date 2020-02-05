@@ -613,8 +613,10 @@ class Poliza(base):
     valor_nuevo = models.FloatField(default=0.0, null=True, blank=True, )
     suma_asegurada = models.FloatField(default=0.0, null=True, blank=True, )
     subtotal = models.FloatField(default=0.0, null=True, blank=True, )
+    descuento = models.FloatField(default=0.0, null=True, blank=True, )
     emision = models.FloatField(default=0.0, null=True, blank=True, )
     iva = models.FloatField(default=0.0, null=True, blank=True, )
+    otros = models.FloatField(default=0.0, null=True, blank=True, )
     total = models.FloatField(default=0.0, null=True, blank=True, )
 
     per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )

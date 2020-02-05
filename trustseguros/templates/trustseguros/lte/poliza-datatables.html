@@ -2,8 +2,6 @@
 {% load static datatables %}
 
 
-
-
 {% block javascript %}
 
     {{ block.super }}
@@ -89,6 +87,28 @@
                     }
                 })
             });
+
+            const calcular_prima_neta = function(){
+                let prima = parseFloat($('#id_subtotal').val());
+                let descuento = parseFloat($('#id_descuento').val());
+                $('#id_prima_neta').val((prima - descuento).toFixed(2))
+            };
+
+            const calcular_total = function(){
+                let prima_neta = parseFloat($('#id_prima_neta').val());
+                let emision = parseFloat($('#id_emision').val());
+                let iva = parseFloat($('#id_iva').val());
+                let otros = parseFloat($('#id_otros').val());
+                $('#id_total').val((prima_neta + emision + iva + otros).toFixed(2))
+            };
+
+            $(document).on('change', '#id_subtotal', calcular_prima_neta);
+            $(document).on('change', '#id_descuento', calcular_prima_neta);
+
+            $(document).on('change', '#id_prima_neta', calcular_total);
+            $(document).on('change', '#id_emision', calcular_total);
+            $(document).on('change', '#id_iva', calcular_total);
+            $(document).on('change', '#id_otros', calcular_total);
 
         });
 
