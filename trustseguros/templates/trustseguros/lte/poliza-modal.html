@@ -25,7 +25,7 @@
 
             <div class="card card-trust">
                 <div class="card-body">
-                    <form action="." method="{{ method }}" id="{{ opts.model_name }}-form" data-toggle="validator">
+                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form" data-toggle="validator">
                         <input type="hidden" name="id" value="">
                         {% csrf_token %}
                         <div class="tab-content">

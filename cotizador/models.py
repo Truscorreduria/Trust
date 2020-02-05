@@ -342,6 +342,13 @@ class Cliente(Persona, Empresa, Direccion):
         u.save()
         messages.info(request, 'Usuario inactivado con éxito')
 
+    def save(self, *args, **kwargs):
+        if self.tipo_cliente == TipoCliente.NATURAL:
+            self.nombre = self.full_name
+        if self.tipo_cliente == TipoCliente.JURIDICO:
+            self.nombre = self.razon_social
+        super().save(*args, **kwargs)
+
 
 class ManagerProspecto(models.Manager):
     def get_queryset(self):
@@ -353,10 +360,6 @@ class ClienteProspecto(Cliente):
 
     def save(self, *args, **kwargs):
         self.estado_cliente = EstadoCliente.PROSPECTO
-        if self.tipo_cliente == TipoCliente.NATURAL:
-            self.nombre = self.full_name
-        if self.tipo_cliente == TipoCliente.JURIDICO:
-            self.nombre = self.razon_social
         super().save(*args, **kwargs)
 
     class Meta:
@@ -562,8 +565,8 @@ class Poliza(base):
     ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
     sub_ramo = models.ForeignKey(SubRamo, null=True, on_delete=models.SET_NULL, blank=True)
 
-    fecha_emision = models.DateTimeField(null=True, blank=True)
-    fecha_vence = models.DateTimeField(null=True, blank=True)
+    fecha_emision = models.DateField(null=True, blank=True)
+    fecha_vence = models.DateField(null=True, blank=True)
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
     no_poliza = models.CharField(max_length=25, null=True, blank=True, default="pendiente")
@@ -594,33 +597,33 @@ class Poliza(base):
                                              help_text="usar formato decimar. Ejemplo 0.05 = 5%")
     porcentaje_deducible_extension = models.FloatField(default=0.3, null=True, blank=True,
                                                        help_text="usar formato decimar. Ejemplo 0.05 = 5%")
-    minimo_deducible = models.FloatField(default=100.0, null=True, blank=True,)
-    minimo_deducible_extension = models.FloatField(default=100.0, null=True, blank=True,)
-    deducible_rotura_vidrios = models.FloatField(default=0.0, null=True, blank=True,)
-    modelo = models.CharField(max_length=65, null=True, blank=True,)
-    anno = models.PositiveSmallIntegerField(verbose_name="año", null=True, blank=True,)
+    minimo_deducible = models.FloatField(default=100.0, null=True, blank=True, )
+    minimo_deducible_extension = models.FloatField(default=100.0, null=True, blank=True, )
+    deducible_rotura_vidrios = models.FloatField(default=0.0, null=True, blank=True, )
+    modelo = models.CharField(max_length=65, null=True, blank=True, )
+    anno = models.PositiveSmallIntegerField(verbose_name="año", null=True, blank=True, )
     chasis = models.CharField(max_length=65, null=True, blank=True)
     motor = models.CharField(max_length=65, null=True, blank=True)
     circulacion = models.CharField(max_length=65, null=True, blank=True)
     placa = models.CharField(max_length=65, null=True, blank=True)
     color = models.CharField(max_length=65, null=True, blank=True)
 
-    costo_exceso = models.FloatField(default=0.0, null=True, blank=True,)
-    monto_exceso = models.FloatField(default=0.0, null=True, blank=True,)
-    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True,)
-    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True,)
-    subtotal = models.FloatField(default=0.0, null=True, blank=True,)
-    emision = models.FloatField(default=0.0, null=True, blank=True,)
-    iva = models.FloatField(default=0.0, null=True, blank=True,)
-    total = models.FloatField(default=0.0, null=True, blank=True,)
+    costo_exceso = models.FloatField(default=0.0, null=True, blank=True, )
+    monto_exceso = models.FloatField(default=0.0, null=True, blank=True, )
+    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True, )
+    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True, )
+    subtotal = models.FloatField(default=0.0, null=True, blank=True, )
+    emision = models.FloatField(default=0.0, null=True, blank=True, )
+    iva = models.FloatField(default=0.0, null=True, blank=True, )
+    total = models.FloatField(default=0.0, null=True, blank=True, )
 
-    per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True,)
-    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True,)
+    per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )
+    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True, )
 
     cesion_derecho = models.BooleanField(default=False)
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
-    forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True,)
+    forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
     f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True, blank=True)
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
@@ -628,9 +631,9 @@ class Poliza(base):
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
-    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True,)
-    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True,)
-    monto_cuota = models.FloatField(default=0.0, null=True, blank=True,)
+    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True, )
+    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
 
@@ -679,6 +682,8 @@ class Poliza(base):
     def to_json(self):
         o = super().to_json()
         o['code'] = self.print_code()
+        if self.cliente:
+            o['cliente'] = self.cliente.to_json()
         return o
 
     def saldo(self):
@@ -788,6 +793,9 @@ class Poliza(base):
 
     def ultima_quincena(self):
         return self.primera_quincena().add(self.cuotas)
+
+    def coberturas(self):
+        return CoberturaPoliza.objects.filter(poliza=self)
 
 
 class Pago(base):

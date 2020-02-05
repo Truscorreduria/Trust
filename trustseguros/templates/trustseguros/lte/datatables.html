@@ -3,6 +3,8 @@
 
 
 {% block style %}
+    <link rel="stylesheet" href="{% static 'jquery-ui/themes/base/all.css' %}">
+    <link rel="stylesheet" href="{% static 'trustseguros/lte/css/ui.theme.trust.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
     <link rel="stylesheet" href="{% static 'izimodal/css/iziModal.min.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/css/datatables.trust.css' %}">
@@ -122,8 +124,6 @@
                         headerColor: '#326634'
                     }).iziModal('open');
 
-                    $('form').data('method', 'put');
-
                     $('input[name="id"]').val('');
                 }
             });
@@ -178,13 +178,7 @@
                         width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
                         headerColor: '#326634'
                     }).iziModal('open');
-
                     $('input[name="id"]').val(obj.id);
-
-                    //$('.dateinput').datetimepicker();
-                    $('.selectpicker').selectpicker();
-
-                    $('form').data('method', 'post');
                 }
             });
         };
@@ -247,10 +241,9 @@
                     startLoader()
                 })
                 .ajaxStop(function () {
-                    stopLoader()
+                    stopLoader();
                     $('.dateinput').datepicker({
-                        autoclose: true,
-                        format: 'dd/mm/yyyy',
+                        dateFormat: 'dd/mm/yy',
                     });
                     $('.selectpicker').selectpicker();
                 });

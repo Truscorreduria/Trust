@@ -335,6 +335,7 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
  'izimodal#1.5.1',
  'jquery#3.4.1',
  'jquery-mask-plugin#1.14.15',
+ 'jquery-ui#1.12.1',
  'mocha#1.17.1',
  'moment#2.24.0',
  'morris.js#0.5.1',
@@ -343,6 +344,7 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
  'smartwizard#4.3.1',
  'sweetalert2#7.33.1',
  'tipsy#0.1.7']
+
 
 
 

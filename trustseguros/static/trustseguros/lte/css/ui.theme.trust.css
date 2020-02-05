@@ -1,0 +1,8 @@
+ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+  border: 1px solid #51972d !important;
+  background: #51972d44 !important;
+  font-weight: normal !important;
+  color: #ffffff !important;
+}
+
+/*# sourceMappingURL=ui.theme.trust.css.map */

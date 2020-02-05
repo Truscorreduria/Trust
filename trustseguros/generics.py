@@ -53,7 +53,6 @@ class Filter:
         return [{'value': '1', 'name': 'Si'}, {'value': '0', 'name': 'No'}, ]
 
     def render(self):
-        print(type(self.field))
         if isinstance(self.field, ForwardManyToOneDescriptor):
             return render_to_string(self.template_name, context={
                 'field_name': self.field_name,
@@ -145,7 +144,6 @@ class Datatables(View):
 
     def get_queryset(self, filters, search_value):
         queryset = self.model.objects.all()
-        print(filters)
         if not filters == "":
             queryset = queryset.filter(reduce(operator.and_, self.get_filters(filters)))
         if search_value:
@@ -171,6 +169,7 @@ class Datatables(View):
         }
 
     def post(self, request):
+        print(request.POST)
         status = 200
         errors = []
         instance = None
@@ -230,6 +229,7 @@ class Datatables(View):
                     self.save_related(instance=instance, data=request.PUT)
                 else:
                     errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+                    print(errors)
                     html_form = self.html_form(instance, request, form, "PUT")
             except IntegrityError as e:
                 print(e)

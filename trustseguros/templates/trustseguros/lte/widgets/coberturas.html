@@ -9,10 +9,21 @@
     </tr>
     </thead>
     <tbody>
-        {% if widget.value %}
-            {% for cobertura in widget.value.coberturas %}
-
-            {% endfor %}
-        {% endif %}
+    {% if widget.value %}
+        {% for cobertura in widget.value.sub_ramo.coberturas.all %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="cobertura-select">
+                </td>
+                <td>
+                    {{ cobertura.name }}
+                    <input type="hidden" name="cobertura" value="{{ cobertura.id }}">
+                </td>
+                <td>
+                    <input type="number" class="form-control" value="0.0" style="max-width: 150px">
+                </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
     </tbody>
 </table>

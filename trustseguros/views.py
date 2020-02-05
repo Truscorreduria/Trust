@@ -879,9 +879,14 @@ class PolizasAutomovil(Datatables):
     form = PolizaForm
     list_template = 'trustseguros/lte/poliza-datatables.html'
     form_template = 'trustseguros/lte/poliza-modal.html'
-    list_display = ('no_poliza', 'no_recibo', 'nombres', 'fecha_emision', 'fecha_vence')
+    list_display = ('no_poliza', 'no_recibo', 'cliente.nombre', 'fecha_emision', 'fecha_vence')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
     list_filter = ('grupo', 'ramo')
+
+    def save_related(self, instance, data):
+        print('instance', instance)
+        print('data', data)
+
 
 
 # endregion
