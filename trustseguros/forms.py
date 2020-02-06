@@ -162,6 +162,11 @@ class PolizaForm(forms.ModelForm):
     coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
     extra_data = forms.Field(label="", required=False, widget=JsonWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
+    amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
     total = forms.FloatField(label="Total", required=False, widget=forms.NumberInput(
         attrs={
             'readonly': 'readonly'

@@ -569,8 +569,8 @@ class Poliza(base):
     fecha_vence = models.DateField(null=True, blank=True)
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
-    no_poliza = models.CharField(max_length=25, null=True, blank=True, default="pendiente")
-    no_recibo = models.CharField(max_length=25, null=True, blank=True, default="pendiente")
+    no_poliza = models.CharField(max_length=25, null=True, blank=True)
+    no_recibo = models.CharField(max_length=25, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
@@ -626,14 +626,16 @@ class Poliza(base):
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
-    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True, blank=True)
+    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True, blank=True,
+                                         verbose_name="forma de pago")
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
                                       ('debito_automatico', 'Débito automático'),
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
-    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True, )
+    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True,
+                                  verbose_name="pago referenciado",)
     cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
