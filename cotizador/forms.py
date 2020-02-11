@@ -3,6 +3,8 @@ from .models import *
 
 
 class ProfileForm(forms.ModelForm):
+    email = forms.EmailField(label="email", required=False)
+
     class Meta:
         model = Cliente
         fields = '__all__'
