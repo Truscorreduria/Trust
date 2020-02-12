@@ -83,7 +83,7 @@
             <td>Desde:</td>
             <td style="color: blue">{{ poliza.fecha_emision|date:'j' }} de {{ poliza.fecha_emision|date:'F' }}
                 de {{ poliza.fecha_emision|date:'Y' }}</td>
-            <td>({{ poliza.fecha_emision|date:'H' }}:{{ poliza.fecha_emision|date:'i' }} Horas)</td>
+            <td>({{ poliza.created|date:'H' }}:{{ poliza.created|date:'i' }} Horas)</td>
         </tr>
         <tr>
             <td>Teléfono:</td>
