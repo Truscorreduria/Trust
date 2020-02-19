@@ -39,6 +39,17 @@ class ClienteJuridicioForm(forms.ModelForm):
             )
         }
     ))
+    telefono = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    domicilio = forms.CharField(required=True, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
 
     class Meta:
         model = ClienteJuridico
