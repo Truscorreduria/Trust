@@ -536,7 +536,7 @@ class Prospectos(Datatables):
     form = ProspectoForm
     form_template = "trustseguros/lte/prospecto-form.html"
     list_display = ('nombre', 'telefono')
-    list_filter = ('tipo_cliente', )
+    list_filter = ('tipo_cliente',)
     search_fields = ('razon_social', 'ruc', 'cedula', 'primer_nombre', 'segundo_nombre',
                      'apellido_materno', 'apellido_materno')
     media = {
@@ -558,6 +558,7 @@ class PersonaNatural(Datatables):
             'fields': (
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
+                ('genero',),
                 ('cedula', 'email_personal'),
                 ('telefono', 'celular'),
                 ('departamento', 'municipio'),
@@ -675,7 +676,7 @@ class PersonaJuridica(Datatables):
 
 class Aseguradoras(Datatables):
     model = Aseguradora
-    list_display = ('name', 'phone', 'address', 'emision', )
+    list_display = ('name', 'phone', 'address', 'emision',)
     fieldsets = [
         {
             'id': 'info',
@@ -683,7 +684,7 @@ class Aseguradoras(Datatables):
             'fields': (
                 ('name', 'ruc'),
                 ('phone', 'email'),
-                ('emision', ),
+                ('emision',),
                 ('address',),
             )
         },
@@ -851,7 +852,7 @@ class SubRamos(Datatables):
             'id': 'coberturas',
             'name': 'Coberturas que aplica',
             'fields': (
-                ('coberturas', ),
+                ('coberturas',),
             )
         }
     ]
@@ -879,7 +880,9 @@ class PolizasAutomovil(Datatables):
     form = PolizaForm
     list_template = 'trustseguros/lte/poliza-datatables.html'
     form_template = 'trustseguros/lte/poliza-modal.html'
-    list_display = ('no_poliza', 'cliente.nombre', 'fecha_emision', 'fecha_vence')
+    list_display = ('no_poliza', 'aseguradora.name', 'ramo.name', ('Fecha de inicio', 'fecha_emision'),
+                    ('Fecha fin', 'fecha_vence'), ('Dias para vencimiento', 'dias_vigencia'), 'grupo.name',
+                    'suma_asegurada', ('Prima neta', 'total'), 'tipo_poliza.label', 'estado_poliza.label')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
     list_filter = ('grupo', 'ramo')
 
@@ -893,7 +896,5 @@ class PolizasAutomovil(Datatables):
                 r, created = CoberturaPoliza.objects.get_or_create(poliza=instance, cobertura=cobertura)
                 r.monto = monto
                 r.save()
-
-
 
 # endregion

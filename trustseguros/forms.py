@@ -57,6 +57,7 @@ class ClienteJuridicioForm(forms.ModelForm):
 
 class ClienteNaturalForm(forms.ModelForm):
     empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
+    genero = forms.ChoiceField(choices=GeneroCliente.choices, widget=forms.RadioSelect)
     tramites = forms.Field(label="", required=False, widget=TableBordered(
         attrs={
             'columns': (

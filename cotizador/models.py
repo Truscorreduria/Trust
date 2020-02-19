@@ -35,6 +35,13 @@ def valid_date(year, month, day):
             day -= 1
 
 
+def json_object(obj, tpe):
+    if obj:
+        return obj.to_json()
+    else:
+        return tpe().to_json()
+
+
 User.add_to_class('profile', get_profile)
 
 
@@ -180,15 +187,25 @@ class Marca(base):
 # region Cliente
 
 
+class TipoDoc:
+    CEDULA = 1
+    PASAPORTE = 2
+    RESIDENTE = 3
+    OTRO = 4
+
+    @classmethod
+    def choices(cls):
+        return (cls.CEDULA, "Cédula"), (cls.PASAPORTE, "Pasaporte"), (cls.RESIDENTE, "Cédula de residente"), \
+               (cls.OTRO, "Otro")
+
+
 class TipoCliente:
     NATURAL = 1
     JURIDICO = 2
 
-
-TUPLE_TIPOS_CLIENTES = (
-    (TipoCliente.NATURAL, "Persona Natural"),
-    (TipoCliente.JURIDICO, "Persona Jurídica"),
-)
+    @classmethod
+    def choices(cls):
+        return (cls.NATURAL, "Persona Natural"), (cls.JURIDICO, "Persona Jurídica")
 
 
 class EstadoCliente:
@@ -196,12 +213,28 @@ class EstadoCliente:
     ACTIVO = 2
     INACTIVO = 3
 
+    @classmethod
+    def choices(cls):
+        return (cls.PROSPECTO, "Prospecto"), (cls.ACTIVO, "Activo"), (cls.INACTIVO, "Inactivo")
 
-TUPLE_ESTADO_CLIENTES = (
-    (EstadoCliente.PROSPECTO, "Prospecto"),
-    (EstadoCliente.ACTIVO, "Cliente activo"),
-    (EstadoCliente.INACTIVO, "Cliente inactivo"),
-)
+
+class GeneroCliente:
+    MASCULINO = 'M'
+    FEMENINO = 'F'
+
+    @classmethod
+    def choices(cls):
+        return (cls.MASCULINO, 'Masculino'), (cls.FEMENINO, 'Femenino')
+
+
+class EstadoCivil:
+    SOLTERO = 1
+    CASADO = 2
+    UNION_LIBRE = 3
+
+    @classmethod
+    def choices(cls):
+        return (cls.SOLTERO, "Soltero"), (cls.CASADO, "Casado"), (cls.UNION_LIBRE, "Union de hecho libre")
 
 
 class Persona(base):
@@ -211,11 +244,15 @@ class Persona(base):
     cedula = models.CharField(max_length=14, null=True, blank=True)
     primer_nombre = models.CharField(max_length=125, null=True, blank=True)
     segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
-    apellido_paterno = models.CharField(max_length=125, null=True, blank=True)
-    apellido_materno = models.CharField(max_length=125, null=True, blank=True)
+    apellido_paterno = models.CharField(max_length=125, null=True, blank=True,
+                                        verbose_name="primer apellido")
+    apellido_materno = models.CharField(max_length=125, null=True, blank=True,
+                                        verbose_name="segundo apellido")
+    genero = models.CharField(max_length=1, choices=GeneroCliente.choices(), null=True, blank=True)
     celular = models.CharField(max_length=8, null=True, blank=True)
     email_personal = models.EmailField(max_length=255, null=True, blank=True)
     foto = models.ImageField(upload_to='perfiles', null=True, blank=True)
+    estado_civil = models.PositiveSmallIntegerField(null=True, blank=True, choices=EstadoCivil.choices())
     cropping = ImageRatioField('foto', '400x400')
 
     def foto_perfil(self):
@@ -254,7 +291,6 @@ class Empresa(base):
         abstract = True
 
 
-# fixme eliminar
 class Entidad(BaseEntity):
     descuento = models.FloatField(default=0.0)
 
@@ -268,8 +304,8 @@ class Cliente(Persona, Empresa, Direccion):
     '''
     nombre = models.CharField(max_length=600, null=True, blank=True)
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
-                                               choices=TUPLE_TIPOS_CLIENTES, blank=True)
-    estado_cliente = models.PositiveIntegerField(choices=TUPLE_ESTADO_CLIENTES, null=True, blank=True)
+                                               choices=TipoCliente.choices(), blank=True)
+    estado_cliente = models.PositiveIntegerField(choices=EstadoCliente.choices(), null=True, blank=True)
 
     # usuario cotizador
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -470,39 +506,84 @@ class SubRamo(base):
         return o
 
 
-TIPO_COBERTURA = (
-    (1, 'Básica'),
-    (2, 'Amplia'),
-    (3, 'Adicional'),
-    (4, 'Opcional'),
-)
+class TipoCobertura:
+    BASICA = 1
+    AMPLIA = 2
+    ADICIONAL = 3
+    OPCIONAL = 4
 
-TIPO_CALCULO = (
-    (1, 'PRECIO FIJO'),
-    (2, 'TASA PORCENTUAL'),
-    (3, 'TASA PORMILLAR'),
-)
+    @classmethod
+    def choices(cls):
+        return (cls.BASICA, 'Básica'), (cls.AMPLIA, 'Amplia'), (cls.ADICIONAL, 'Adicional'), (cls.OPCIONAL, 'Opcional')
 
-TIPO_EXCESO = (
-    ('0.0', '0.0'),
-    ('valor_nuevo', 'Valor de Nuevo'),
-    ('valor_depreciado', 'Valor Depreciado'),
-    ('otro', 'Otro'),
-)
 
-FORMAS_DE_PAGO = (
-    (1, 'Contado'),
-    (2, 'Credito'),
-)
+class TipoCalculo:
+    PRECIO_FIJO = 1
+    TASA_PORCENTUAL = 2
+    TASA_PORMILLAR = 3
 
-MEDIOS_DE_PAGO = (
-    (1, 'Transferencia'),
-    (2, 'Cheques'),
-    (3, 'Depositos'),
-    (4, 'Nomina'),
-    (5, 'Pestamos'),
-    (6, 'Tarjeta de Credito'),
-)
+    @classmethod
+    def choices(cls):
+        return (cls.PRECIO_FIJO, 'PRECIO FIJO'), (cls.TASA_PORCENTUAL, 'TASA PORCENTUAL'), \
+               (cls.TASA_PORMILLAR, 'TASA PORMILLAR'),
+
+
+class TipoExceso:
+    CERO = '0.0'
+    VALOR_NUEVO = 'valor_nuevo'
+    VALOR_DEPRECIADO = 'valor_depreciado'
+    OTRO = 'otro'
+
+    @classmethod
+    def choices(cls):
+        return (cls.CERO, '0.0'), (cls.VALOR_NUEVO, 'Valor de Nuevo'), (cls.VALOR_DEPRECIADO, 'Valor Depreciado'), \
+               (cls.OTRO, 'Otro'),
+
+
+class FormaPago:
+    CONTADO = 1
+    CREDITO = 2
+
+    @classmethod
+    def choices(cls):
+        return (cls.CONTADO, "Contado"), (cls.CREDITO, "Cŕedito")
+
+
+class MedioPago:
+    TRANSFERENCIA = 1
+    CHEQUE = 2
+    DEPOSITO = 3
+    NOMINA = 4
+    PRESTAMO = 5
+    TARJETA_CREDITO = 6
+
+    @classmethod
+    def choices(cls):
+        return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depositos'), \
+               (cls.NOMINA, 'Nomina'), (cls.PRESTAMO, 'Pestamos'), (cls.TARJETA_CREDITO, 'Tarjeta de Credito')
+
+
+class EstadoPoliza:
+    ACTIVA = 1
+    VENCIDA = 2
+    RENOVADA = 3
+    CANCELADA = 4
+    ANULADA = 5
+    OTRO = 6
+
+    @classmethod
+    def choices(cls):
+        return (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (cls.RENOVADA, "Renovada"), \
+               (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.OTRO, "Otro")
+
+
+class TipoPoliza:
+    INDIVIDUAL = 1
+    COLECTIVA = 2
+
+    @classmethod
+    def choices(cls):
+        return (cls.INDIVIDUAL, "Individual"), (cls.COLECTIVA, "Colectiva")
 
 
 class Cobertura(base):
@@ -510,10 +591,10 @@ class Cobertura(base):
     name = models.CharField(max_length=75, null=True, verbose_name="nombre")
     description = models.TextField(max_length=1500, null=True, blank=True,
                                    verbose_name="Descripción detallada")
-    tipo_calculo = models.PositiveSmallIntegerField(choices=TIPO_CALCULO, default=3)
-    tipo_cobertura = models.PositiveSmallIntegerField(choices=TIPO_COBERTURA, default=1,
+    tipo_calculo = models.PositiveSmallIntegerField(choices=TipoCalculo.choices(), default=3)
+    tipo_cobertura = models.PositiveSmallIntegerField(choices=TipoCobertura.choices(), default=1,
                                                       verbose_name="tipo de cobertura")
-    tipo_exceso = models.CharField(max_length=25, choices=TIPO_EXCESO, default='0.0',
+    tipo_exceso = models.CharField(max_length=25, choices=TipoExceso.choices(), default='0.0',
                                    verbose_name="variable de referencia")
     iva = models.BooleanField(default=True, verbose_name="aplica iva")
 
@@ -554,13 +635,11 @@ class Precio(base):
 
 
 class Poliza(base):
-    COBER_TYPES = (
-        ('amplia', 'Cobertura amplia'),
-        ('basica', 'Cobertura básica'),
-    )
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
+    tipo_poliza = models.PositiveSmallIntegerField(choices=TipoPoliza.choices(), default=TipoPoliza.INDIVIDUAL,
+                                                   null=True)
     grupo = models.ForeignKey(Grupo, null=True, on_delete=models.SET_NULL, blank=True)
     ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
     sub_ramo = models.ForeignKey(SubRamo, null=True, on_delete=models.SET_NULL, blank=True)
@@ -579,7 +658,9 @@ class Poliza(base):
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
     referencia = models.ForeignKey(Referencia, null=True, blank=True, on_delete=models.SET_NULL)
     tipo_cobertura = models.CharField(max_length=165, null=True, blank=True,
-                                      choices=COBER_TYPES)
+                                      choices=TipoCobertura.choices())
+    estado_poliza = models.PositiveSmallIntegerField(null=True, blank=True, default=EstadoPoliza.ACTIVA,
+                                                     choices=EstadoPoliza.choices())
 
     nombres = models.CharField(max_length=165, null=True, blank=True, verbose_name="nombre")
     apellidos = models.CharField(max_length=165, null=True, blank=True)
@@ -600,7 +681,7 @@ class Poliza(base):
     minimo_deducible = models.FloatField(default=100.0, null=True, blank=True, )
     minimo_deducible_extension = models.FloatField(default=100.0, null=True, blank=True, )
     deducible_rotura_vidrios = models.FloatField(default=0.0, null=True, blank=True, )
-    modelo = models.CharField(max_length=65, null=True, blank=True, )
+    modelo = models.CharField(max_length=65, null=True, blank=True)
     anno = models.PositiveSmallIntegerField(verbose_name="año", null=True, blank=True, )
     chasis = models.CharField(max_length=65, null=True, blank=True)
     motor = models.CharField(max_length=65, null=True, blank=True)
@@ -626,7 +707,7 @@ class Poliza(base):
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
-    f_pago = models.PositiveIntegerField(choices=FORMAS_DE_PAGO, null=True, blank=True,
+    f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
                                          verbose_name="forma de pago")
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
@@ -634,8 +715,8 @@ class Poliza(base):
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
-    m_pago = models.PositiveIntegerField(choices=MEDIOS_DE_PAGO, null=True, blank=True,
-                                  verbose_name="pago referenciado",)
+    m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
+                                         verbose_name="pago referenciado", )
     cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
@@ -683,11 +764,22 @@ class Poliza(base):
     def __str__(self):
         return ""
 
+    def dias_vigencia(self):
+        if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
+            return (self.fecha_vence - self.fecha_emision).days
+        else:
+            return None
+
     def to_json(self):
         o = super().to_json()
         o['code'] = self.print_code()
-        if self.cliente:
-            o['cliente'] = self.cliente.to_json()
+        o['cliente'] = json_object(self.cliente, Cliente)
+        o['aseguradora'] = json_object(self.aseguradora, Aseguradora)
+        o['ramo'] = json_object(self.ramo, Ramo)
+        o['grupo'] = json_object(self.grupo, Grupo)
+        o['dias_vigencia'] = self.dias_vigencia()
+        o['tipo_poliza'] = {'value': self.tipo_poliza, 'label': self.get_tipo_poliza_display()}
+        o['estado_poliza'] = {'value': self.estado_poliza, 'label': self.get_estado_poliza_display()}
         return o
 
     def saldo(self):
