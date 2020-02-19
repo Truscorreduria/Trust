@@ -173,8 +173,8 @@
                     modal.iziModal('destroy');
                     modal.empty().append(response.form);
                     modal.iziModal({
-                        title: "{{ opts.verbose_name|capfirst }}",
-                        subtitle: 'Información general del {{ opts.verbose_name }}',
+                        title: response.instance.str,
+                        subtitle: 'Datos {{ opts.verbose_name }}',
                         width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
                         headerColor: '#326634'
                     }).iziModal('open');

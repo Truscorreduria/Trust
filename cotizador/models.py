@@ -11,6 +11,16 @@ from django.contrib import messages
 import json
 
 
+class Base(base):
+    def to_json(self):
+        o = super().to_json()
+        o['str'] = str(self)
+        return o
+
+    class Meta:
+        abstract = True
+
+
 def get_media_url(model, filename):
     clase = model.__class__.__name__
     code = str(model.id)
@@ -91,7 +101,7 @@ class Quincena(object):
         return Quincena(date=date, number=self.number + part)
 
 
-class Aseguradora(BaseEntity):
+class Aseguradora(BaseEntity, Base):
     ruc = models.CharField(max_length=14, null=True, blank=True)
     logo = models.ImageField(upload_to="empresas/logos", null=True, blank=True)
     cropping = ImageRatioField('logo', '400x400', allow_fullsize=True, verbose_name="vista previa")
@@ -122,7 +132,7 @@ class Aseguradora(BaseEntity):
         return round((valor_nuevo * factor), 2)
 
 
-class Depreciacion(base):
+class Depreciacion(Base):
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE, related_name="tabla_depreciacion")
 
     def __str__(self):
@@ -133,7 +143,7 @@ class Depreciacion(base):
         verbose_name = "tabla"
 
 
-class Anno(base):
+class Anno(Base):
     depreciacion = models.ForeignKey(Depreciacion, on_delete=models.CASCADE, related_name="annos")
     antiguedad = models.PositiveSmallIntegerField(default=0)
     factor = models.FloatField(default=0.0)
@@ -146,7 +156,7 @@ class Anno(base):
         verbose_name_plural = "Años de antiguedad"
 
 
-class Referencia(base):
+class Referencia(Base):
     marca = models.CharField(max_length=65)
     modelo = models.CharField(max_length=65)
     tipo = models.CharField(max_length=165, null=True)
@@ -164,7 +174,7 @@ class Referencia(base):
         return "%s, %s" % (self.marca, self.modelo)
 
 
-class Marca(base):
+class Marca(Base):
     marca = models.CharField(max_length=65)
     porcentaje_deducible = models.FloatField(default=0.25,
                                              help_text="usar formato decimar. Ejemplo 0.05 = 5%")
@@ -237,7 +247,7 @@ class EstadoCivil:
         return (cls.SOLTERO, "Soltero"), (cls.CASADO, "Casado"), (cls.UNION_LIBRE, "Union de hecho libre")
 
 
-class Persona(base):
+class Persona(Base):
     """
         clase abstracta que representa una persona natural
     """
@@ -278,7 +288,7 @@ class Persona(base):
         abstract = True
 
 
-class Empresa(base):
+class Empresa(Base):
     razon_social = models.CharField(max_length=250, null=True, blank=True)
     nombre_comercial = models.CharField(max_length=250, null=True, blank=True)
     ruc = models.CharField(max_length=14, null=True, blank=True, verbose_name="número de identificación")
@@ -291,7 +301,7 @@ class Empresa(base):
         abstract = True
 
 
-class Entidad(BaseEntity):
+class Entidad(BaseEntity, Base):
     descuento = models.FloatField(default=0.0)
 
     class Meta:
@@ -468,21 +478,21 @@ class Contacto(Cliente):
 # region Poliza
 
 
-class Grupo(base):
+class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
 
     def __str__(self):
         return self.name
 
 
-class Ramo(base):
+class Ramo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
 
     def __str__(self):
         return self.name
 
 
-class CampoAdicional(base):
+class CampoAdicional(Base):
     ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE, related_name="campos_adicionales")
     name = models.CharField(max_length=65, verbose_name="nombre")
     label = models.CharField(max_length=65, verbose_name="etiqueta")
@@ -491,7 +501,7 @@ class CampoAdicional(base):
         return self.name
 
 
-class SubRamo(base):
+class SubRamo(Base):
     ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE)
     name = models.CharField(max_length=65, verbose_name="nombre")
 
@@ -587,7 +597,7 @@ class TipoPoliza:
         return (cls.INDIVIDUAL, "Individual"), (cls.COLECTIVA, "Colectiva")
 
 
-class Cobertura(base):
+class Cobertura(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
     name = models.CharField(max_length=75, null=True, verbose_name="nombre")
     description = models.TextField(max_length=1500, null=True, blank=True,
@@ -619,13 +629,13 @@ class Cobertura(base):
         ordering = ('id',)
 
 
-class DetalleCobertura(base):
+class DetalleCobertura(Base):
     cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, null=True, blank=True)
     monto = models.FloatField(default=0.0)
 
 
-class Precio(base):
+class Precio(Base):
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
     cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE, related_name="precios")
     valor = models.FloatField(default=0.0)
@@ -635,7 +645,7 @@ class Precio(base):
         return "%s - %s" % (self.cobertura.name, self.aseguradora.name)
 
 
-class Poliza(base):
+class Poliza(Base):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -763,7 +773,10 @@ class Poliza(base):
         return 'AS - %s' % self.code
 
     def __str__(self):
-        return ""
+        if self.no_poliza:
+            return str(self.no_poliza)
+        else:
+            return "sin número"
 
     def dias_vigencia(self):
         hoy = date.today()
@@ -899,7 +912,7 @@ class Poliza(base):
         return CoberturaPoliza.objects.filter(poliza=self)
 
 
-class Pago(base):
+class Pago(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
     monto = models.FloatField(default=0.0)
     fecha_vence = models.DateField(null=True)
@@ -912,13 +925,13 @@ class Pago(base):
     ), null=True, blank=True)
 
 
-class CoberturaPoliza(base):
+class CoberturaPoliza(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
     cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
     monto = models.FloatField(default=0.0)
 
 
-class Ticket(base):
+class Ticket(Base):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     prioridad = models.PositiveIntegerField(choices=(
@@ -1028,7 +1041,7 @@ class Ticket(base):
         verbose_name = "Trámite"
 
 
-class benAbstract(base):
+class benAbstract(Base):
     created = models.DateTimeField(auto_now_add=True, null=True)
     numero_poliza = models.CharField(max_length=30, null=True, blank=True, verbose_name="Número de Póliza")
     orden = models.ForeignKey('OrdenTrabajo', null=True, blank=True, on_delete=models.SET_NULL,
@@ -1106,7 +1119,7 @@ class benAccidente(benAbstract):
 # region Tramite
 
 
-class OrdenTrabajo(BaseEntity):
+class OrdenTrabajo(BaseEntity, Base):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     tipo = models.CharField(max_length=3, choices=(
@@ -1132,11 +1145,11 @@ class OrdenTrabajo(BaseEntity):
         verbose_name_plural = "ordenes de trabajo"
 
 
-class Sucursal(BaseEntity):
+class Sucursal(BaseEntity, Base):
     pass
 
 
-class Analitics(base):
+class Analitics(Base):
     created = models.DateTimeField(auto_now=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     area = models.CharField(max_length=100, null=True, blank=True)
@@ -1144,7 +1157,7 @@ class Analitics(base):
     data = models.TextField(max_length=1000, null=True, blank=True)
 
 
-class Notificacion(base):
+class Notificacion(Base):
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.CASCADE)
     benaccidente = models.ForeignKey(benAccidente, null=True, blank=True, on_delete=models.CASCADE)
     bensepelio = models.ForeignKey(benSepelio, null=True, blank=True, on_delete=models.CASCADE)
