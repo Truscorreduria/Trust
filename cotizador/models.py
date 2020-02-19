@@ -241,7 +241,7 @@ class Persona(base):
     """
         clase abstracta que representa una persona natural
     """
-    cedula = models.CharField(max_length=14, null=True, blank=True)
+    cedula = models.CharField(max_length=14, null=True, blank=True, verbose_name="número de identificación")
     primer_nombre = models.CharField(max_length=125, null=True, blank=True)
     segundo_nombre = models.CharField(max_length=125, null=True, blank=True)
     apellido_paterno = models.CharField(max_length=125, null=True, blank=True,
@@ -281,7 +281,7 @@ class Persona(base):
 class Empresa(base):
     razon_social = models.CharField(max_length=250, null=True, blank=True)
     nombre_comercial = models.CharField(max_length=250, null=True, blank=True)
-    ruc = models.CharField(max_length=14, null=True, blank=True)
+    ruc = models.CharField(max_length=14, null=True, blank=True, verbose_name="número de identificación")
     fecha_constitucion = models.DateField(null=True, blank=True, verbose_name="fecha de constitución")
     actividad_economica = models.CharField(max_length=250, null=True, blank=True)
     pagina_web = models.CharField(max_length=250, null=True, blank=True)
@@ -303,6 +303,7 @@ class Cliente(Persona, Empresa, Direccion):
         Esta clase se convertirá en el cliente de trustseguros
     '''
     nombre = models.CharField(max_length=600, null=True, blank=True)
+    tipo_identificacion = models.PositiveSmallIntegerField(choices=TipoDoc.choices(), default=TipoDoc.CEDULA, null=True)
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
                                                choices=TipoCliente.choices(), blank=True)
     estado_cliente = models.PositiveIntegerField(choices=EstadoCliente.choices(), null=True, blank=True)

@@ -558,9 +558,9 @@ class PersonaNatural(Datatables):
             'fields': (
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
-                ('genero',),
-                ('cedula', 'email_personal'),
-                ('telefono', 'celular'),
+                ('genero', 'estado_civil'),
+                ('tipo_identificacion', 'cedula'),
+                ('telefono', 'celular', 'email_personal'),
                 ('departamento', 'municipio'),
                 ('domicilio',),
             )
