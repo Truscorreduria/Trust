@@ -766,7 +766,7 @@ class Poliza(base):
         return ""
 
     def dias_vigencia(self):
-        hoy = datetime.now()
+        hoy = date.today()
         if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
             return (self.fecha_vence - hoy).days
         else:
