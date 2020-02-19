@@ -57,7 +57,12 @@ class ClienteJuridicioForm(forms.ModelForm):
 
 class ClienteNaturalForm(forms.ModelForm):
     empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
-    cedula = forms.CharField(required=True)
+    cedula = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{13,13}A'
+        }
+    ))
     tramites = forms.Field(label="", required=False, widget=TableBordered(
         attrs={
             'columns': (

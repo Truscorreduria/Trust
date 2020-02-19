@@ -4,6 +4,7 @@
 
 {% block style %}
     <link rel="stylesheet" href="{% static 'jquery-ui/themes/base/all.css' %}">
+    <link rel="stylesheet" href="{% static 'inputmask/css/inputmask.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/css/ui.theme.trust.css' %}">
     <link rel="stylesheet" href="{% static 'trustseguros/lte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
     <link rel="stylesheet" href="{% static 'izimodal/css/iziModal.min.css' %}">
@@ -56,6 +57,7 @@
     <script src="{% static 'sweetalert2/dist/sweetalert2.min.js' %}"></script>
     <script src="{% static 'growl/javascripts/jquery.growl.js' %}"></script>
     <script src="{% static 'bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
     <script src="{% static 'ajax/token.js' %}"></script>
     <script type="text/javascript">
 
@@ -246,6 +248,10 @@
                         dateFormat: 'dd/mm/yy',
                     });
                     $('.selectpicker').selectpicker();
+                    $.each($('.inputmask'), function (n, el) {
+                        let mask = $(el).data('mask');
+                        $(el).inputmask(mask);
+                    });
                 });
 
 
