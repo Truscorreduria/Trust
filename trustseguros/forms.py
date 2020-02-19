@@ -63,6 +63,23 @@ class ClienteNaturalForm(forms.ModelForm):
             'data-mask': '9{13,13}A'
         }
     ))
+    telefono = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    celular = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    domicilio = forms.CharField(required=True, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
     tramites = forms.Field(label="", required=False, widget=TableBordered(
         attrs={
             'columns': (
