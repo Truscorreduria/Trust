@@ -1,4 +1,5 @@
 from django.forms import Widget, Select
+from cotizador.models import Cliente
 
 
 def get_all_fields_from_form(instance):
@@ -66,3 +67,10 @@ class TablaPagosWidget(Widget):
         return value
 
 
+class RepresentanteLegalWidget(Widget):
+    template_name = "trustseguros/lte/widgets/representante-legal.html"
+
+    def format_value(self, value):
+        if value:
+            return self.attrs['form'](instance=Cliente.objects.get(id=value))
+        return self.attrs['form']

@@ -1,0 +1,49 @@
+{% load datatables crispy_forms_filters %}
+
+<input type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" value="{{ widget.value.instance.id }}">
+
+<div class="row">
+    <div class="col">
+        {{ widget.attrs.form.tipo_identificacion|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'cedula'|as_crispy_field }}
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col">
+        {{ widget.value|datatables_field:'primer_nombre'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'segundo_nombre'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'apellido_paterno'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'apellido_materno'|as_crispy_field }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        {{ widget.value|datatables_field:'departamento'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'municipio'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'telefono'|as_crispy_field }}
+    </div>
+    <div class="col">
+        {{ widget.value|datatables_field:'celular'|as_crispy_field }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        {{ widget.value|datatables_field:'domicilio'|as_crispy_field }}
+    </div>
+</div>

@@ -635,6 +635,13 @@ class PersonaJuridica(Datatables):
             )
         },
         {
+            'id': 'representante-legal',
+            'name': 'Datos del represante legal',
+            'fields': (
+                ('representante',),
+            )
+        },
+        {
             'id': 'contacts',
             'name': 'Contactos',
             'fields': (
@@ -657,7 +664,8 @@ class PersonaJuridica(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/lte/js/municipio.js', ]
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/municipio-representante.js',
+               'trustseguros/lte/js/autocomplete-representante.js']
     }
 
     def save_related(self, instance, data):

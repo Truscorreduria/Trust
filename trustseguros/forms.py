@@ -11,6 +11,34 @@ class ContactoForm(forms.ModelForm):
         fields = ('nombre', 'cedula', 'telefono', 'celular', 'email_personal')
 
 
+class RepresentanteForm(forms.ModelForm):
+    prefix = 'cliente_representante'
+
+    telefono = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    celular = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    domicilio = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
+
+    class Meta:
+        model = ClienteNatural
+        fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno',
+                  'tipo_identificacion', 'cedula', 'departamento', 'municipio', 'domicilio',
+                  'telefono', 'celular')
+
+
 class ClienteJuridicioForm(forms.ModelForm):
     contactos = forms.Field(label="", required=False, widget=TableBorderedInput(
         attrs={
@@ -51,11 +79,19 @@ class ClienteJuridicioForm(forms.ModelForm):
         }
     ))
 
+    representante = forms.ModelChoiceField(queryset=Cliente.objects.filter(tipo_cliente=TipoCliente.NATURAL),
+                                           label="", required=False, widget=RepresentanteLegalWidget(
+            attrs={
+                'form': RepresentanteForm
+            }
+        ))
+
     class Meta:
         model = ClienteJuridico
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
+        super(ClienteJuridicioForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
         updated_initial = {}
         if instance:

@@ -36,9 +36,11 @@ a {
 
 .content-wrapper {
   background-color: $green-semi2;
+
   .dataTables_wrapper {
     background-color: #ffffff;
     color: $dark-green;
+
     .odd {
       background-color: $green-semi !important;
     }
@@ -60,4 +62,8 @@ a {
 
 .dropdown-menu {
   max-width: 100%;
+}
+
+.ui-autocomplete {
+  z-index: 9999 !important;
 }

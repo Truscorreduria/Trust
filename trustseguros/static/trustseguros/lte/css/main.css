@@ -56,4 +56,8 @@ a {
   max-width: 100%;
 }
 
+.ui-autocomplete {
+  z-index: 9999 !important;
+}
+
 /*# sourceMappingURL=main.css.map */

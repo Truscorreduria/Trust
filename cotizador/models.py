@@ -313,7 +313,8 @@ class Cliente(Persona, Empresa, Direccion):
         Esta clase se convertirá en el cliente de trustseguros
     '''
     nombre = models.CharField(max_length=600, null=True, blank=True)
-    tipo_identificacion = models.PositiveSmallIntegerField(choices=TipoDoc.choices(), default=TipoDoc.CEDULA, null=True)
+    tipo_identificacion = models.PositiveSmallIntegerField(choices=TipoDoc.choices(), default=TipoDoc.CEDULA, null=True,
+                                                           blank=True)
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
                                                choices=TipoCliente.choices(), blank=True)
     estado_cliente = models.PositiveIntegerField(choices=EstadoCliente.choices(), null=True, blank=True)
@@ -327,6 +328,8 @@ class Cliente(Persona, Empresa, Direccion):
                                 related_name="cliente_empresa_referencia")
     contacto = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
                                  related_name="cliente_contacto_referencia")
+    representante = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True,
+                                      related_name="cliente_representante_legal")
     sucursal = models.CharField(max_length=125, null=True, blank=True)
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
