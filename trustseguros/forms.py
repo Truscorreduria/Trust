@@ -242,24 +242,10 @@ class CampoAdicionalForm(forms.ModelForm):
 
 
 class RamoForm(forms.ModelForm):
-    campos_adicionales = forms.Field(label='', required=False,
-                                     widget=TableBorderedInput(
-                                         attrs={
-                                             'form': CampoAdicionalForm
-                                         }
-                                     ))
 
     class Meta:
         model = Ramo
         fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance', None)
-        updated_initial = {}
-        if instance:
-            updated_initial['campos_adicionales'] = instance.campos_adicionales.all()
-        kwargs.update(initial=updated_initial)
-        super().__init__(*args, **kwargs)
 
 
 class SubRamoForm(forms.ModelForm):
@@ -269,6 +255,12 @@ class SubRamoForm(forms.ModelForm):
                                      'form': CoberturaForm
                                  }
                              ))
+    campos_adicionales = forms.Field(label='', required=False,
+                                     widget=TableBorderedInput(
+                                         attrs={
+                                             'form': CampoAdicionalForm
+                                         }
+                                     ))
 
     class Meta:
         model = SubRamo
@@ -279,6 +271,7 @@ class SubRamoForm(forms.ModelForm):
         updated_initial = {}
         if instance:
             updated_initial['coberturas'] = instance.coberturas.all()
+            updated_initial['campos_adicionales'] = instance.datos_tecnicos.all()
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 

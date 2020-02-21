@@ -495,15 +495,6 @@ class Ramo(Base):
         return self.name
 
 
-class CampoAdicional(Base):
-    ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE, related_name="campos_adicionales")
-    name = models.CharField(max_length=65, verbose_name="nombre")
-    label = models.CharField(max_length=65, verbose_name="etiqueta")
-
-    def __str__(self):
-        return self.name
-
-
 class SubRamo(Base):
     ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE)
     name = models.CharField(max_length=65, verbose_name="nombre")
@@ -518,6 +509,16 @@ class SubRamo(Base):
         except:
             o['ramo'] = {'id': '', 'name': ''}
         return o
+
+
+class CampoAdicional(Base):
+    sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="datos_tecnicos",
+                                 null=True)
+    name = models.CharField(max_length=65, verbose_name="nombre")
+    label = models.CharField(max_length=65, verbose_name="etiqueta")
+
+    def __str__(self):
+        return self.name
 
 
 class TipoCobertura:
