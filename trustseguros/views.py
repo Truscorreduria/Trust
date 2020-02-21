@@ -571,7 +571,6 @@ class PersonaNatural(Datatables):
             'fields': (
                 ('empresa', 'sucursal'),
                 ('codigo_empleado', 'cargo'),
-                ('user', 'cambiar_pass',),
             )
         },
         {
@@ -718,45 +717,7 @@ class Tickets(Datatables):
                 ('domicilio',),
             )
         },
-        # {
-        #     'id': 'sepelio',
-        #     'name': 'Dependientes seguro de sepelio',
-        #     'fields': (
-        #         ('dependientes_sepelio',),
-        #     )
-        # },
-        # {
-        #     'id': 'accidentes',
-        #     'name': 'Dependientes seguro de accidentes',
-        #     'fields': (
-        #         ('dependientes_accidente',),
-        #     )
-        # },
     ]
-
-    #
-    # def save_related(self, instance, data):
-    #     print(data)
-    #     profile = instance.profile()
-    #     profile.primer_nombre = data['primer_nombre']
-    #     profile.segundo_nombre = data['segundo_nombre']
-    #     profile.apellido_paterno = data['apellido_paterno']
-    #     profile.apellido_materno = data['apellido_materno']
-    #     profile.email_personal = data['email_personal']
-    #     profile.cedula = data['cedula']
-    #     profile.celular = data['celular']
-    #     profile.telefono = data['telefono']
-    #     profile.departamento_id = data['departamento']
-    #     profile.municipio_id = data['municipio']
-    #     profile.domicilio = data['domicilio']
-    #     profile.sucursal = data['sucursal']
-    #     profile.codigo_empleado = data['codigo_empleado']
-    #     profile.cargo = data['cargo']
-    #     #profile.cambiar_pass = data['cambiar_pass']
-    #     profile.save()
-    #
-    # form_template = "trustseguros/lte/perfilusuario-form.html"
-    # list_template = "trustseguros/lte/perfilusuario-table.html"
 
 
 class DependientesSepelio(Datatables):
@@ -893,6 +854,11 @@ class PolizasAutomovil(Datatables):
                     'suma_asegurada', ('Prima neta', 'total'), 'tipo_poliza.label', 'estado_poliza.label')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
     list_filter = ('grupo', 'ramo')
+
+    media = {
+        'js': ['trustseguros/lte/js/fecha-vence.js', ],
+        'css': ['trustseguros/lte/css/coberturas-field.css', ]
+    }
 
     def save_related(self, instance, data):
         print(data)

@@ -61,9 +61,16 @@ class ClienteJuridicioForm(forms.ModelForm):
         attrs={
             'columns': (
                 ('no_poliza', 'Número de póliza'),
+                ('aseguradora.name', 'Aseguradora'),
                 ('ramo', 'Ramo'),
-                ('sub_ramo', 'Sub ramo'),
-                ('fecha_vence', 'Fecha de vencimiento'),
+                ('fecha_emision', 'Fecha inicio'),
+                ('fecha_vence', 'Fecha fin'),
+                ('dias_vigencia', 'Vence'),
+                ('grupo', 'Grupo'),
+                ('suma_asegurada', 'Suma asegurada'),
+                ('total', 'Prima neta'),
+                ('tipo_poliza', 'Tipo póliza'),
+                ('estado', 'Estado'),
             )
         }
     ))
@@ -104,6 +111,12 @@ class ClienteJuridicioForm(forms.ModelForm):
 
 class ClienteNaturalForm(forms.ModelForm):
     empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
+    primer_nombre = forms.CharField(required=True)
+    apellido_paterno = forms.CharField(required=True)
+    genero = forms.ChoiceField(required=True, choices=GeneroCliente.choices())
+    estado_civil = forms.ChoiceField(required=True, choices=EstadoCivil.choices())
+    departamento = forms.ModelChoiceField(required=True, queryset=Departamento.objects.all())
+    municipio = forms.ModelChoiceField(required=True, queryset=Municipio.objects.all())
     cedula = forms.CharField(required=True, widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
@@ -143,11 +156,16 @@ class ClienteNaturalForm(forms.ModelForm):
         attrs={
             'columns': (
                 ('no_poliza', 'Número de póliza'),
+                ('aseguradora.name', 'Aseguradora'),
                 ('ramo', 'Ramo'),
-                ('sub_ramo', 'Sub ramo'),
+                ('fecha_emision', 'Fecha inicio'),
+                ('fecha_vence', 'Fecha fin'),
+                ('dias_vigencia', 'Vence'),
+                ('grupo', 'Grupo'),
                 ('suma_asegurada', 'Suma asegurada'),
-                ('prima', 'Prima'),
-                ('fecha_vence', 'Fecha de vencimiento'),
+                ('total', 'Prima neta'),
+                ('tipo_poliza', 'Tipo póliza'),
+                ('estado', 'Estado'),
             )
         }
     ))
@@ -164,6 +182,12 @@ class ClienteNaturalForm(forms.ModelForm):
             updated_initial['tramites'] = instance.tramites()
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+
+    def clean_cedula(self):
+        data = self.cleaned_data['cedula']
+        if ClienteNatural.objects.filter(cedula=data).count() > 0:
+            raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        return data
 
 
 class CoberturaForm(forms.ModelForm):
@@ -242,6 +266,11 @@ class PolizaForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
+    fecha_vence = forms.DateField(widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
 
     class Meta:
         model = Poliza
@@ -252,6 +281,7 @@ class PolizaForm(forms.ModelForm):
         updated_initial = {}
         if instance:
             updated_initial['extra_data'] = instance
+            updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance
         kwargs.update(initial=updated_initial)

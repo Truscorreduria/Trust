@@ -560,7 +560,7 @@ class FormaPago:
 
     @classmethod
     def choices(cls):
-        return (cls.CONTADO, "Contado"), (cls.CREDITO, "Cŕedito")
+        return (cls.CONTADO, "Contado"), (cls.CREDITO, "Fraccionado")
 
 
 class MedioPago:
@@ -574,7 +574,7 @@ class MedioPago:
     @classmethod
     def choices(cls):
         return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depositos'), \
-               (cls.NOMINA, 'Nomina'), (cls.PRESTAMO, 'Pestamos'), (cls.TARJETA_CREDITO, 'Tarjeta de Credito')
+               (cls.TARJETA_CREDITO, 'Tarjeta de Credito')
 
 
 class EstadoPoliza:
@@ -658,11 +658,11 @@ class Poliza(Base):
     ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
     sub_ramo = models.ForeignKey(SubRamo, null=True, on_delete=models.SET_NULL, blank=True)
 
-    fecha_emision = models.DateField(null=True, blank=True)
-    fecha_vence = models.DateField(null=True, blank=True)
+    fecha_emision = models.DateField(null=True, blank=True, verbose_name="fecha de inicio vigencia")
+    fecha_vence = models.DateField(null=True, blank=True, verbose_name="fecha fin de vigencia")
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
-    no_poliza = models.CharField(max_length=25, null=True, blank=True)
+    no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
     no_recibo = models.CharField(max_length=25, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
@@ -730,7 +730,7 @@ class Poliza(Base):
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
     m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
-                                         verbose_name="pago referenciado", )
+                                         verbose_name="medio de pago", )
     cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
@@ -781,6 +781,7 @@ class Poliza(Base):
         else:
             return "sin número"
 
+    @property
     def dias_vigencia(self):
         hoy = date.today()
         if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
@@ -795,7 +796,7 @@ class Poliza(Base):
         o['aseguradora'] = json_object(self.aseguradora, Aseguradora)
         o['ramo'] = json_object(self.ramo, Ramo)
         o['grupo'] = json_object(self.grupo, Grupo)
-        o['dias_vigencia'] = self.dias_vigencia()
+        o['dias_vigencia'] = self.dias_vigencia
         o['tipo_poliza'] = {'value': self.tipo_poliza, 'label': self.get_tipo_poliza_display()}
         o['estado_poliza'] = {'value': self.estado_poliza, 'label': self.get_estado_poliza_display()}
         return o
