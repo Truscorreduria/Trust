@@ -530,6 +530,15 @@ def index(request):
     })
 
 
+@login_required(login_url="/cotizador/login/")
+def profile(request):
+    return render(request, 'trustseguros/lte/profile.html', {
+
+    })
+
+
+
+
 class Prospectos(Datatables):
     modal_width = 1200
     model = ClienteProspecto

@@ -175,7 +175,7 @@
                          alt="User Image">
                 </div>
                 <div class="info">
-                    <a href="#" class="d-block">{{ user.username }}</a>
+                    <a href="{% url 'trustseguros:profile' %}" class="d-block">{{ user.username }}</a>
                 </div>
             </div>
             <input type="hidden" name="path" value="{{ request.path }}">
