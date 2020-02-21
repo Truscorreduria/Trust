@@ -6,6 +6,19 @@ from cotizador.models import *
 class ContactoForm(forms.ModelForm):
     prefix = 'cliente_contacto'
 
+    telefono = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+    celular = forms.CharField(required=False, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{8,8}'
+        }
+    ))
+
     class Meta:
         model = Contacto
         fields = ('nombre', 'cedula', 'telefono', 'celular', 'email_personal')
@@ -13,6 +26,15 @@ class ContactoForm(forms.ModelForm):
 
 class RepresentanteForm(forms.ModelForm):
     prefix = 'cliente_representante'
+
+    tipo_identificacion = forms.ChoiceField(choices=TipoDoc.choices(), required=True)
+
+    cedula = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': '9{13,13}A'
+        }
+    ))
 
     telefono = forms.CharField(required=False, widget=forms.TextInput(
         attrs={
@@ -40,6 +62,13 @@ class RepresentanteForm(forms.ModelForm):
 
 
 class ClienteJuridicioForm(forms.ModelForm):
+    razon_social = forms.CharField(required=True)
+    ruc = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'class': 'inputmask',
+            'data-mask': 'J0319{10,10}'
+        }
+    ))
     contactos = forms.Field(label="", required=False, widget=TableBorderedInput(
         attrs={
             'form': ContactoForm
@@ -74,13 +103,13 @@ class ClienteJuridicioForm(forms.ModelForm):
             )
         }
     ))
-    telefono = forms.CharField(required=True, widget=forms.TextInput(
+    telefono = forms.CharField(required=False, widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
             'data-mask': '9{8,8}'
         }
     ))
-    domicilio = forms.CharField(required=True, widget=forms.Textarea(
+    domicilio = forms.CharField(required=False, widget=forms.Textarea(
         attrs={
             'rows': '4'
         }
@@ -107,6 +136,12 @@ class ClienteJuridicioForm(forms.ModelForm):
             updated_initial['tramites'] = instance.tramites()
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+
+    def clean_ruc(self):
+        data = self.cleaned_data['ruc']
+        if ClienteJuridico.objects.filter(cedula=data).count() > 0:
+            raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        return data
 
 
 class ClienteNaturalForm(forms.ModelForm):
@@ -262,11 +297,6 @@ class PolizaForm(forms.ModelForm):
         }
     ))
     total = forms.FloatField(label="Total", required=False, widget=forms.NumberInput(
-        attrs={
-            'readonly': 'readonly'
-        }
-    ))
-    fecha_vence = forms.DateField(widget=forms.TextInput(
         attrs={
             'readonly': 'readonly'
         }
