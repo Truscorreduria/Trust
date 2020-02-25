@@ -19,4 +19,5 @@ urlpatterns = [
     path('accidente/', DependientesAccidente.as_view(), name="accidente"),
     path('polizas/', PolizasAutomovil.as_view(), name="polizas"),
     path('tickets/', Tickets.as_view(), name="tickets"),
+    path('documentos/', documentos, name="documentos"),
 ]

@@ -11,6 +11,7 @@ from django.contrib import messages
 import json
 from django.urls import reverse, resolve
 from django.utils.html import mark_safe
+from django.contrib.contenttypes.models import ContentType
 
 
 class Base(base):
@@ -1188,4 +1189,17 @@ class Notificacion(Base):
     bensepelio = models.ForeignKey(benSepelio, null=True, blank=True, on_delete=models.CASCADE)
     fecha = models.DateTimeField(null=True, blank=True)
 
+
 # endregion
+
+
+class Archivo(base):
+    nombre = models.CharField(max_length=250, null=True)
+    tiene_caducidad = models.BooleanField(default=False)
+    fecha_caducidad = models.DateField(null=True)
+    archivo = models.FileField(upload_to="archivos", null=True, blank=True)
+    type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
+    key = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        return self.nombre

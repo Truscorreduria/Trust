@@ -3,70 +3,60 @@ from .generics import Datatables
 from django.contrib.auth.decorators import login_required
 from cotizador.forms import *
 from .forms import *
-from .widgets import TableBordered, TableBorderedInput
+from django.http import JsonResponse
 
 
-# @staff_member_required
-# def documentos(request):
-#     if request.method == "GET":
-#         files = []
-#         try:
-#             type = ContentType.objects.get(app_label=request.GET.get('app_label'),
-#                                            model=request.GET.get('model'))
-#             original = type.get_object_for_this_type(id=int(request.GET.get('id')))
-#         except:
-#             original = None
-#             type = None
-#         if original:
-#             files = Archivo.objects.filter(type=type, key=original.id)
-#         return render(request, 'trustseguros/documentos_adjuntos.html',
-#                       {'archivos': files, 'catalogos': catalogoArchivo.objects.all().order_by('nombre'),
-#                        'original': original.to_json()})
-#
-#     if request.method == "POST":
-#         if 'new' in request.POST:
-#             file = None
-#             try:
-#                 type = ContentType.objects.get(app_label=request.POST.get('app_label'),
-#                                                model=request.POST.get('model'))
-#                 original = type.get_object_for_this_type(id=int(request.POST.get('id')))
-#             except:
-#                 type = None
-#                 original = None
-#             if original:
-#                 file = Archivo()
-#                 document = request.FILES['file']
-#                 file.nombre = document.name
-#                 file.catalogo = request.POST.get('catalogo')
-#                 file.fecha_caducidad = request.POST.get('fecha_caducidad')
-#                 file.archivo = document
-#                 file.type = type
-#                 file.key = original.id
-#                 file.save()
-#                 print(file)
-#             return render(request, 'trustseguros/include/row_document.html', {
-#                 'archivo': file.to_json(), 'catalogos': catalogoArchivo.objects.all().order_by('nombre')
-#             })
-#         if 'update' in request.POST:
-#             print(request.POST)
-#             a = Archivo.objects.get(id=int(request.POST.get('id')))
-#             a.nombre = request.POST.get('nombre')
-#
-#             try:
-#                 a.catalogo = catalogoArchivo.objects.get(id=int(request.POST.get('catalogo')))
-#             except:
-#                 pass
-#
-#             try:
-#                 a.fecha_caducidad = request.POST.get('fecha')
-#             except:
-#                 pass
-#
-#             a.save()
-#             return JsonResponse(a.to_json(), encoder=Codec)
-#         if 'delete' in request.POST:
-#             Archivo.objects.get(id=int(request.POST.get('id'))).delete()
-#             return JsonResponse({})
+def documentos(request):
+    if request.method == "GET":
+        files = []
+        try:
+            type = ContentType.objects.get(app_label=request.GET.get('app_label'),
+                                           model=request.GET.get('model'))
+            original = type.get_object_for_this_type(id=int(request.GET.get('id')))
+        except:
+            original = None
+            type = None
+        if original:
+            files = Archivo.objects.filter(type=type, key=original.id)
+        return render(request, 'trustseguros/documentos_adjuntos.html',
+                      {'archivos': files, 'original': original.to_json()})
+
+    if request.method == "POST":
+        if 'new' in request.POST:
+            file = None
+            try:
+                type = ContentType.objects.get(app_label=request.POST.get('app_label'),
+                                               model=request.POST.get('model'))
+                original = type.get_object_for_this_type(id=int(request.POST.get('id')))
+            except:
+                type = None
+                original = None
+            if original:
+                file = Archivo()
+                document = request.FILES['file']
+                file.nombre = document.name
+                file.catalogo = request.POST.get('catalogo')
+                file.fecha_caducidad = request.POST.get('fecha_caducidad')
+                file.archivo = document
+                file.type = type
+                file.key = original.id
+                file.save()
+            return render(request, 'trustseguros/include/row_document.html', {
+                'archivo': file.to_json()})
+        if 'update' in request.POST:
+            a = Archivo.objects.get(id=int(request.POST.get('id')))
+            a.nombre = request.POST.get('nombre')
+
+            try:
+                a.fecha_caducidad = request.POST.get('fecha')
+            except:
+                pass
+
+            a.save()
+            return JsonResponse(a.to_json(), encoder=Codec)
+        if 'delete' in request.POST:
+            Archivo.objects.get(id=int(request.POST.get('id'))).delete()
+            return JsonResponse({})
 #
 #
 # @staff_member_required
