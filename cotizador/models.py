@@ -9,6 +9,8 @@ from datetime import date
 from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
 import json
+from django.urls import reverse, resolve
+from django.utils.html import mark_safe
 
 
 class Base(base):
@@ -718,7 +720,7 @@ class Poliza(Base):
     per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )
     amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True, )
 
-    cesion_derecho = models.BooleanField(default=False)
+    cesion_derecho = models.BooleanField(default=False, verbose_name="¿tiene cesión de derecho?")
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
 
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
@@ -745,9 +747,6 @@ class Poliza(Base):
                                related_name="ticket_de_baja")
 
     notificado = models.BooleanField(default=False)
-
-    extra_data = models.CharField(max_length=10000, null=True, blank=True,
-                                  verbose_name="campos adicionales")
 
     class Meta:
         verbose_name_plural = "Pólizas"
@@ -783,12 +782,21 @@ class Poliza(Base):
             return "sin número"
 
     @property
+    def trust_url(self):
+        return reverse('trustseguros:polizas')
+
+    @property
     def dias_vigencia(self):
         hoy = date.today()
         if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
             return (self.fecha_vence - hoy).days
         else:
             return None
+
+    @property
+    def ver(self):
+        tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
+        return mark_safe(tag)
 
     def to_json(self):
         o = super().to_json()
@@ -934,6 +942,16 @@ class CoberturaPoliza(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
     cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
     monto = models.FloatField(default=0.0)
+
+
+class DatoPoliza(base):
+    """
+    Modelo usado para generar los formularios dinamicos de acuerdo al subramo de la poliza
+    """
+    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE, related_name="datos_tecnicos")
+
+    extra_data = models.CharField(max_length=10000, null=True, blank=True,
+                                  verbose_name="datos técnicos")
 
 
 class Ticket(Base):

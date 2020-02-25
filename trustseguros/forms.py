@@ -100,6 +100,7 @@ class ClienteJuridicioForm(forms.ModelForm):
                 ('total', 'Prima neta'),
                 ('tipo_poliza', 'Tipo póliza'),
                 ('estado', 'Estado'),
+                ('ver', ''),
             )
         }
     ))
@@ -201,6 +202,7 @@ class ClienteNaturalForm(forms.ModelForm):
                 ('total', 'Prima neta'),
                 ('tipo_poliza', 'Tipo póliza'),
                 ('estado', 'Estado'),
+                ('ver', ''),
             )
         }
     ))
@@ -282,7 +284,6 @@ class PolizaForm(forms.ModelForm):
     contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
                                          required=True, widget=SelectSearch)
     coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
-    extra_data = forms.Field(label="", required=False, widget=JsonWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
     amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
         attrs={
@@ -294,6 +295,7 @@ class PolizaForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
+    campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
 
     class Meta:
         model = Poliza
@@ -303,7 +305,7 @@ class PolizaForm(forms.ModelForm):
         instance = kwargs.get('instance', None)
         updated_initial = {}
         if instance:
-            updated_initial['extra_data'] = instance
+            updated_initial['campos_adicionales'] = instance
             updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance

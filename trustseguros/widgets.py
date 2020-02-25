@@ -53,6 +53,13 @@ class JsonWidget(Widget):
         return value
 
 
+class CamposAdicionalesWidget(Widget):
+    template_name = 'trustseguros/lte/widgets/campos-adicionales.html'
+
+    def format_value(self, value):
+        return value
+
+
 class CoberturasWidget(Widget):
     template_name = "trustseguros/lte/widgets/coberturas.html"
 

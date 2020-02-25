@@ -1,0 +1,53 @@
+<table class="table-template" id="{{ widget.name }}-template" style="display: none">
+    <tr>
+        {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
+            <td>
+                <input type="text" class="form-control" value="" name="{{ widget.name }}-{{ field.name }}">
+            </td>
+        {% endfor %}
+        <td>
+            <input type="hidden" name="{{ widget.name }}">
+            <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+</table>
+
+
+<table class="table">
+    <thead>
+    <tr>
+        {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
+            <th>{{ field.label }}</th>
+        {% endfor %}
+        <th style="width: 40px; text-align: center">
+            <button type="button" class="btn btn-info btn-table-add"
+                    data-target="{{ widget.name }}-table" data-template="{{ widget.name }}-template">
+                <i class="fa fa-plus"></i>
+            </button>
+        </th>
+    </tr>
+    </thead>
+    <tbody id="{{ widget.name }}-table">
+    {% for row in widget.value.datos_tecnicos.all %}
+        <tr>
+
+            {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
+                <td>{{ field.label }}</td>
+            {% endfor %}
+
+            <td>
+                <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}">
+                <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
+                        data-model="datopoliza">
+                    <i class="fa fa-trash"></i>
+                </button>
+            </td>
+
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+

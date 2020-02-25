@@ -19,7 +19,7 @@
                 </li>
                 <li class="nav-item">
                     <a data-toggle="tab" href="#{{ opts.model_name }}-adicionales" class="nav-link">
-                        Datos adicionales</a>
+                        Datos técnicos</a>
                 </li>
             </ul>
 
@@ -69,6 +69,7 @@
                                         {{ form.tipo_poliza|as_crispy_field }}
                                     </div>
                                     <div class="col">
+                                        {{ form.cesion_derecho|as_crispy_field }}
                                     </div>
                                     <div class="col">
                                     </div>
@@ -79,14 +80,6 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <table class="table" style="border: none !important;">
-                                            {% comment %}<tr>
-                                                <td><b>Valor de nuevo</b></td>
-                                                <td class="float-right">{{ form.valor_nuevo|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Suma asegurada</b></td>
-                                                <td class="float-right">{{ form.suma_asegurada|as_inline_field }}</td>
-                                            </tr>{% endcomment %}
                                             <tr>
                                                 <td><b>Prima</b></td>
                                                 <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
@@ -138,12 +131,8 @@
                                 <div class="row">
                                     <div class="col">{{ form.f_pago|as_crispy_field }}</div>
                                     <div class="col">{{ form.m_pago|as_crispy_field }}</div>
-                                    <div class="col">{{ form.per_comision|as_crispy_field }}</div>
-                                </div>
-                                <div class="row">
                                     <div class="col">{{ form.cuotas|as_crispy_field }}</div>
                                     <div class="col">{{ form.fecha_pago|as_crispy_field }}</div>
-                                    <div class="col">{{ form.amount_comision|as_crispy_field }}</div>
                                 </div>
                                 <div class="row">
                                     {{ form.tabla_pagos }}
@@ -151,7 +140,7 @@
                             </div>
                             <div id="{{ opts.model_name }}-adicionales"
                                  class="tab-pane fade">
-                                {{ form.extra_data }}
+                                {{ form.campos_adicionales }}
                             </div>
                         </div>
                     </form>

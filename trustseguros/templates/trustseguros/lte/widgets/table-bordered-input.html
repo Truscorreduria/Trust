@@ -4,7 +4,6 @@
 <table class="table-template" id="{{ widget.name }}-template" style="display: none">
     <tr>
         {% for column in widget.attrs.columns %}
-
             <td>
                 {% ifequal forloop.counter0 0 %}
                     <input type="hidden" name="{{ widget.attrs.model }}" value="">

@@ -537,8 +537,6 @@ def profile(request):
     })
 
 
-
-
 class Prospectos(Datatables):
     modal_width = 1200
     model = ClienteProspecto
@@ -596,27 +594,6 @@ class PersonaNatural(Datatables):
                 ('polizas',),
             )
         },
-        {
-            'id': 'tramites',
-            'name': 'Trámites',
-            'fields': (
-                ('tramites',),
-            )
-        },
-        # {
-        #     'id': 'sepelio',
-        #     'name': 'Dependientes seguro de sepelio',
-        #     'fields': (
-        #         ('dependientes_sepelio',),
-        #     )
-        # },
-        # {
-        #     'id': 'accidentes',
-        #     'name': 'Dependientes seguro de accidentes',
-        #     'fields': (
-        #         ('dependientes_accidente',),
-        #     )
-        # },
     ]
     media = {
         'js': ['trustseguros/lte/js/municipio.js', ]
@@ -661,13 +638,6 @@ class PersonaJuridica(Datatables):
             'name': 'Pólizas',
             'fields': (
                 ('polizas',),
-            )
-        },
-        {
-            'id': 'tramites',
-            'name': 'Trámites',
-            'fields': (
-                ('tramites',),
             )
         },
     ]
@@ -880,7 +850,6 @@ class PolizasAutomovil(Datatables):
     }
 
     def save_related(self, instance, data):
-        print(data)
         for i in range(0, len(data.getlist('cobertura'))):
             cobertura = Cobertura.objects.get(id=data.getlist('cobertura')[i])
             monto = float(data.getlist('monto')[i])

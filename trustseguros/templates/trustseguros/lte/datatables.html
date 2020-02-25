@@ -169,11 +169,10 @@
 
         const modal = $('#{{ opts.model_name }}-modal').iziModal({});
 
-        const show_object = function () {
-            const obj = table.row(this).data();
+        const open_object = function (id) {
             $.ajax('.', {
                 method: "POST",
-                data: {id: obj.id, 'open': 'open'},
+                data: {id: id, 'open': 'open'},
                 success: function (response, respose_text, xhr) {
                     modal.iziModal('destroy');
                     modal.empty().append(response.form);
@@ -183,9 +182,14 @@
                         width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
                         headerColor: '#326634'
                     }).iziModal('open');
-                    $('input[name="id"]').val(obj.id);
+                    $('input[name="id"]').val(id);
                 }
             });
+        };
+
+        const show_object = function () {
+            const obj = table.row(this).data();
+            open_object(obj.id);
         };
 
         const update_table = function (response) {
@@ -257,7 +261,6 @@
                     });
                 });
 
-
             $('#{{ opts.model_name }}-table').on('click', 'tbody tr', show_object);
 
             $(document).on('submit', '#{{ opts.model_name }}-form', form_submit);
@@ -302,14 +305,22 @@
 
                 table.ajax.reload();
             });
-
-            {% comment %}$(document).on('focusout', 'input', function(){
+            $(document).on('focusout', 'input,textarea', function () {
                 const self = $(this);
                 let text = self.val().toUpperCase();
                 self.val(text);
-            });{% endcomment %}
+            });
 
         });
+
+        function get_hash() {
+            const hash = window.location.hash;
+            if (hash) {
+                open_object(hash.replace('#', ''))
+            }
+        }
+
+        get_hash();
 
     </script>
 
