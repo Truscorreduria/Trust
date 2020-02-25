@@ -283,6 +283,8 @@ class PolizaForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
     contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
                                          required=True, widget=SelectSearch)
+    cesioinario = forms.ModelChoiceField(queryset=ClienteJuridico.objects.filter(es_cesionario=True),
+                                          required=False, label="Cesionario")
     coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
     amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(

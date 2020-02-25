@@ -75,7 +75,9 @@
                                     <div class="col">
                                         {{ form.cesion_derecho|as_crispy_field }}
                                     </div>
-                                    <div class="col">
+                                    <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
+                                    style="visibility: hidden" {% endif %}>
+                                        {{ form.cesioinario|as_crispy_field }}
                                     </div>
                                 </div>
                             </div>

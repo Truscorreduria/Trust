@@ -335,6 +335,7 @@ class Cliente(Persona, Empresa, Direccion):
     sucursal = models.CharField(max_length=125, null=True, blank=True)
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
+    es_cesionario = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "cliente"
@@ -722,6 +723,7 @@ class Poliza(Base):
 
     cesion_derecho = models.BooleanField(default=False, verbose_name="¿tiene cesión de derecho?")
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
+    cesioinario = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL)
 
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
     f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,

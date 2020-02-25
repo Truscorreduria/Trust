@@ -156,6 +156,14 @@
             $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
 
+            $(document).on('change', '#id_cesion_derecho', function () {
+                if($(this).is(':checked')){
+                    $('#col-cesionario').css('visibility', 'visible');
+                }else{
+                    $('#col-cesionario').css('visibility', 'hidden');
+                }
+            })
+
         });
 
     </script>

@@ -605,7 +605,6 @@ class PersonaJuridica(Datatables):
     model = ClienteJuridico
     form = ClienteJuridicioForm
     list_display = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
-
     search_fields = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
     fieldsets = [
         {
@@ -615,6 +614,7 @@ class PersonaJuridica(Datatables):
                 ('razon_social', 'ruc'),
                 ('nombre_comercial', 'actividad_economica'),
                 ('telefono', 'pagina_web'),
+                ('es_cesionario', ),
                 ('departamento', 'municipio'),
                 ('domicilio',),
             )
