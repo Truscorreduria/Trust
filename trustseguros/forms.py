@@ -296,6 +296,7 @@ class PolizaForm(forms.ModelForm):
         }
     ))
     campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
+    drive = forms.Field(label="", required=False, widget=DriveWidget)
 
     class Meta:
         model = Poliza

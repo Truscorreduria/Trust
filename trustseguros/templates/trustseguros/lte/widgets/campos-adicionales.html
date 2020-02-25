@@ -2,12 +2,15 @@
     <tr>
         {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
             <td>
-                <input type="text" class="form-control" value="" name="{{ widget.name }}-{{ field.name }}">
+                <input type="text" class="form-control {{ widget.name }}-input" value=""
+                       name="{{ widget.name }}-{{ field.name }}">
             </td>
         {% endfor %}
         <td>
-            <input type="hidden" name="{{ widget.name }}">
-            <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza">
+            <input type="hidden" name="{{ widget.name }}_id" class="{{ widget.name }}-id">
+            <input type="hidden" name="{{ widget.name }}" class="{{ widget.name }}-value">
+            <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza"
+                    data-app="cotizador">
                 <i class="fa fa-trash"></i>
             </button>
         </td>
@@ -34,13 +37,19 @@
         <tr>
 
             {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
-                <td>{{ field.label }}</td>
+                <td>
+                    <input type="text" class="form-control {{ widget.name }}-input" value=""
+                           name="{{ widget.name }}-{{ field.name }}">
+                </td>
             {% endfor %}
 
             <td>
-                <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}">
+                <input type="hidden" name="{{ widget.name }}_id" value="{{ row.id }}"
+                       class="{{ widget.name }}-id">
+                <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}"
+                       class="{{ widget.name }}-value">
                 <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
-                        data-model="datopoliza">
+                        data-model="datopoliza" data-app="cotizador">
                     <i class="fa fa-trash"></i>
                 </button>
             </td>
@@ -50,4 +59,37 @@
     </tbody>
 </table>
 
+
+<script type="text/javascript">
+
+    (function ($) {
+        $(document).ready(function () {
+
+            const $fieldset = $('#{{ widget.name }}-table');
+
+            const load_data = function () {
+                $.each($($fieldset).find('.{{ widget.name }}-value'), function (i, o) {
+                    const data = JSON.parse($(o).val());
+                    const $tr = $(o).parents('tr');
+                    Object.keys(data).forEach(function (k) {
+                        $($tr).find(`input[name="${k}"]`).val(data[k]);
+                    });
+                });
+            };
+
+            $($fieldset).on('change', '.{{ widget.name }}-input', function () {
+                let obj = {};
+                const $tr = $(this).parents('tr');
+                const $trvalue = $($tr).find('.{{ widget.name }}-value');
+                $.each($($tr).find('input'), function (i, o) {
+                    obj[$(o).attr('name')] = $(o).val()
+                });
+                $($trvalue).val(JSON.stringify(obj));
+            });
+
+            load_data();
+        })
+    })(jQuery)
+
+</script>
 

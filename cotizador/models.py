@@ -950,7 +950,7 @@ class DatoPoliza(base):
     """
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE, related_name="datos_tecnicos")
 
-    extra_data = models.CharField(max_length=10000, null=True, blank=True,
+    extra_data = models.CharField(max_length=1000000, null=True, blank=True,
                                   verbose_name="datos técnicos")
 
 

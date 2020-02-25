@@ -1,0 +1,21 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre del archivo</th>
+        <th>Usuario</th>
+        <th>Última modificación</th>
+        <th>Tamaño</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for file in widget.value.media_files %}
+        <tr>
+            <td>{{ file.name }}</td>
+            <td>{{ file.created_user }}</td>
+            <td>{{ file.updated }}</td>
+            <td>{{ file.size }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

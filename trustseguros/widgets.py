@@ -81,3 +81,10 @@ class RepresentanteLegalWidget(Widget):
         if value:
             return self.attrs['form'](instance=Cliente.objects.get(id=value))
         return self.attrs['form']
+
+
+class DriveWidget(Widget):
+    template_name = "trustseguros/lte/widgets/drive.html"
+
+    def format_value(self, value):
+        return value

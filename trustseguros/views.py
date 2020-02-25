@@ -853,10 +853,17 @@ class PolizasAutomovil(Datatables):
         for i in range(0, len(data.getlist('cobertura'))):
             cobertura = Cobertura.objects.get(id=data.getlist('cobertura')[i])
             monto = float(data.getlist('monto')[i])
-            print(cobertura, monto)
             if monto > 0:
                 r, created = CoberturaPoliza.objects.get_or_create(poliza=instance, cobertura=cobertura)
                 r.monto = monto
                 r.save()
+
+        for i in range(1, len(data.getlist('campos_adicionales_id'))):
+            if data.getlist('campos_adicionales_id')[i] == '':
+                c = DatoPoliza(poliza=instance)
+            else:
+                c = DatoPoliza.objects.get(id=int(data.getlist('contacto_id')[i]))
+            c.extra_data = data.getlist('campos_adicionales')[i]
+            c.save()
 
 # endregion

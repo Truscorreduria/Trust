@@ -21,6 +21,10 @@
                     <a data-toggle="tab" href="#{{ opts.model_name }}-adicionales" class="nav-link">
                         Datos técnicos</a>
                 </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-drive-files" class="nav-link">
+                        Soportes</a>
+                </li>
             </ul>
 
             <div class="card card-trust">
@@ -141,6 +145,10 @@
                             <div id="{{ opts.model_name }}-adicionales"
                                  class="tab-pane fade">
                                 {{ form.campos_adicionales }}
+                            </div>
+                            <div id="{{ opts.model_name }}-drive-files"
+                                 class="tab-pane fade">
+                                {{ form.drive }}
                             </div>
                         </div>
                     </form>
