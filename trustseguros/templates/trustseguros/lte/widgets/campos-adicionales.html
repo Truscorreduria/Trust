@@ -43,7 +43,8 @@
             {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
                 <td>
                     <input type="text" class="form-control {{ widget.name }}-input" value=""
-                           name="{{ widget.name }}-{{ field.name }}">
+                           name="{{ widget.name }}-{{ field.name }}"
+                            {% ifnotequal widget.value.estado_poliza 0 %}readonly{% endifnotequal %}>
                 </td>
             {% endfor %}
 
