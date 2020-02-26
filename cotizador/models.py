@@ -485,6 +485,13 @@ class Contacto(Cliente):
 # region Poliza
 
 
+class Moneda(Base):
+    moneda = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.moneda
+
+
 class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
 
@@ -710,16 +717,17 @@ class Poliza(Base):
     placa = models.CharField(max_length=65, null=True, blank=True)
     color = models.CharField(max_length=65, null=True, blank=True)
 
-    costo_exceso = models.FloatField(default=0.0, null=True, blank=True, )
-    monto_exceso = models.FloatField(default=0.0, null=True, blank=True, )
-    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True, )
-    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True, )
-    subtotal = models.FloatField(default=0.0, null=True, blank=True, )
-    descuento = models.FloatField(default=0.0, null=True, blank=True, )
-    emision = models.FloatField(default=0.0, null=True, blank=True, )
-    iva = models.FloatField(default=0.0, null=True, blank=True, )
-    otros = models.FloatField(default=0.0, null=True, blank=True, )
-    total = models.FloatField(default=0.0, null=True, blank=True, )
+    moneda = models.ForeignKey(Moneda, null=True, on_delete=models.SET_NULL, blank=True)
+    costo_exceso = models.FloatField(default=0.0, null=True, blank=True)
+    monto_exceso = models.FloatField(default=0.0, null=True, blank=True)
+    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True)
+    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True, verbose_name="suma asegurada total")
+    subtotal = models.FloatField(default=0.0, null=True, blank=True)
+    descuento = models.FloatField(default=0.0, null=True, blank=True)
+    emision = models.FloatField(default=0.0, null=True, blank=True)
+    iva = models.FloatField(default=0.0, null=True, blank=True)
+    otros = models.FloatField(default=0.0, null=True, blank=True)
+    total = models.FloatField(default=0.0, null=True, blank=True)
 
     per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )
     amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True, )
