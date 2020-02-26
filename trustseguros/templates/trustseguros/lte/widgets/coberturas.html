@@ -26,7 +26,8 @@
                                 {% ifequal cobertura c.cobertura %}
                            value="{{ c.monto }}"
                                 {% endifequal %}
-                            {% endfor %}>
+                            {% endfor %}
+                           {% ifnotequal widget.value.estado_poliza 0 %}readonly{% endifnotequal %}>
                 </td>
             </tr>
         {% endfor %}

@@ -328,6 +328,35 @@ class PolizaForm(forms.ModelForm):
             updated_initial['bitacora'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+        if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
+            self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
+            self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
+            self.fields['concepto'].widget.attrs['readonly'] = 'readonly'
+            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+            self.fields['total'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_vence'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['ramo'].widget.attrs['disabled'] = 'disabled'
+            self.fields['sub_ramo'].widget.attrs['disabled'] = 'disabled'
+            self.fields['aseguradora'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
+            self.fields['contratante'].widget.attrs['disabled'] = 'disabled'
+            self.fields['grupo'].widget.attrs['disabled'] = 'disabled'
+            self.fields['tipo_poliza'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cesion_derecho'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cesioinario'].widget.attrs['disabled'] = 'disabled'
+            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
+            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
 
 
 class LteTicketForm(forms.ModelForm):

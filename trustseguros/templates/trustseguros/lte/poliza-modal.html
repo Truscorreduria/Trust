@@ -33,7 +33,8 @@
 
             <div class="card card-trust">
                 <div class="card-body">
-                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form" data-toggle="validator">
+                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
+                          data-toggle="validator">
                         <input type="hidden" name="id" value="">
                         {% csrf_token %}
                         <div class="tab-content">
@@ -80,7 +81,7 @@
                                         {{ form.cesion_derecho|as_crispy_field }}
                                     </div>
                                     <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
-                                    style="visibility: hidden" {% endif %}>
+                                         style="visibility: hidden" {% endif %}>
                                         {{ form.cesioinario|as_crispy_field }}
                                     </div>
                                 </div>
@@ -190,14 +191,16 @@
             <div class="row">
                 <div class="col-md-12 form-buttons">
                     {% block buttons %}
-                        <button type="button" class="btn btn-info" id="btn-save">
-                            <i class="fa fa-save"></i>
-                            Guardar
-                        </button>
-                        <button type="button" class="btn btn-success" id="btn-finish">
-                            <i class="fa fa-suitcase"></i>
-                            Finalizar
-                        </button>
+                        {% ifequal instance.estado_poliza 0 %}
+                            <button type="button" class="btn btn-info" id="btn-save">
+                                <i class="fa fa-save"></i>
+                                Guardar
+                            </button>
+                            <button type="button" class="btn btn-success" id="btn-finish">
+                                <i class="fa fa-suitcase"></i>
+                                Finalizar
+                            </button>
+                        {% endifequal %}
                     {% endblock %}
                 </div>
             </div>

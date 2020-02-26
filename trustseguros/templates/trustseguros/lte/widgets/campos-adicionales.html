@@ -9,10 +9,12 @@
         <td>
             <input type="hidden" name="{{ widget.name }}_id" class="{{ widget.name }}-id">
             <input type="hidden" name="{{ widget.name }}" class="{{ widget.name }}-value">
-            <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza"
-                    data-app="cotizador">
-                <i class="fa fa-trash"></i>
-            </button>
+            {% ifequal widget.value.estado_poliza 0 %}
+                <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza"
+                        data-app="cotizador">
+                    <i class="fa fa-trash"></i>
+                </button>
+            {% endifequal %}
         </td>
     </tr>
 </table>
@@ -25,10 +27,12 @@
             <th>{{ field.label }}</th>
         {% endfor %}
         <th style="width: 40px; text-align: center">
-            <button type="button" class="btn btn-info btn-table-add"
-                    data-target="{{ widget.name }}-table" data-template="{{ widget.name }}-template">
-                <i class="fa fa-plus"></i>
-            </button>
+            {% ifequal widget.value.estado_poliza 0 %}
+                <button type="button" class="btn btn-info btn-table-add"
+                        data-target="{{ widget.name }}-table" data-template="{{ widget.name }}-template">
+                    <i class="fa fa-plus"></i>
+                </button>
+            {% endifequal %}
         </th>
     </tr>
     </thead>
@@ -48,10 +52,12 @@
                        class="{{ widget.name }}-id">
                 <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}"
                        class="{{ widget.name }}-value">
-                <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
-                        data-model="datopoliza" data-app="cotizador">
-                    <i class="fa fa-trash"></i>
-                </button>
+                {% ifequal widget.value.estado_poliza 0 %}
+                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
+                            data-model="datopoliza" data-app="cotizador">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                {% endifequal %}
             </td>
 
         </tr>
