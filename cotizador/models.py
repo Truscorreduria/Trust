@@ -1245,6 +1245,7 @@ class Archivo(base):
 
 
 class Comentario(base):
+    created = models.DateTimeField(auto_now_add=True)
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
                                      related_name="comentario_user_created")
     updated = models.DateTimeField(auto_now=True)

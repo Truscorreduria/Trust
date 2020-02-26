@@ -45,8 +45,31 @@ def documentos(request):
         if 'delete' in request.POST:
             Archivo.objects.get(id=int(request.POST.get('id'))).delete()
             return JsonResponse({})
-#
-#
+
+
+def comentarios(request):
+    if request.method == "POST":
+        if 'new' in request.POST:
+            file = None
+            try:
+                type = ContentType.objects.get(app_label=request.POST.get('app_label'),
+                                               model=request.POST.get('model'))
+                original = type.get_object_for_this_type(id=int(request.POST.get('id')))
+            except:
+                type = None
+                original = None
+            if original:
+                file = Comentario()
+                file.created_user = request.user
+                file.updated_user = request.user
+                file.comentario = request.POST.get('comentario')
+                file.type = type
+                file.key = original.id
+                file.save()
+            return JsonResponse({'instance': file.to_json()}, encoder=Codec)
+
+
+
 # @staff_member_required
 # def certificados(request):
 #     return render(request, 'trustseguros/include/certificados.html', {

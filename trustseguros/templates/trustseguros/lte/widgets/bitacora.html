@@ -1,25 +1,25 @@
 <table class="table">
     <thead>
     <tr>
-        <th colspan="3"><input type="text" class="form-control"></th>
+        <th colspan="3"><input type="text" class="form-control" id="{{ widget.name }}-comentario-input"></th>
         <th>
-            <button type="button" class="btn btn-trust">
+            <button type="button" class="btn btn-trust" id="{{ widget.name }}btn-add-comment">
                 <i class="fa fa-plus"></i>
             </button>
         </th>
     </tr>
     <tr>
-        <th>Fecha</th>
-        <th>Usuario</th>
         <th colspan="2">Comentario</th>
+        <th>Usuario</th>
+        <th>Fecha</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="{{ widget.name }}-table">
     {% for comment in widget.value.bitacora %}
         <tr>
-            <td>{{ comment.created }}</td>
-            <td>{{ comment.created_user.username }}</td>
             <td colspan="2">{{ comment.comentario }}</td>
+            <td>{{ comment.created_user.username }}</td>
+            <td>{{ comment.created }}</td>
         </tr>
     {% endfor %}
     </tbody>

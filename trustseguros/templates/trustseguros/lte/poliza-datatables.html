@@ -177,10 +177,9 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log(response);
                         $('#drive-list').append(`
                             <tr>
-                                <td> <a href="${ response.archivo.archivo }" target="_blank"><i class="fa fa-eye"></i></a> ${response.archivo.nombre}</td>
+                                <td> <a href="${response.archivo.archivo}" target="_blank"><i class="fa fa-eye"></i></a> ${response.archivo.nombre}</td>
                                 <td>${response.archivo.created_user.username}</td>
                                 <td>${response.archivo.updated}</td>
                                 <td style="text-align: center;">
@@ -197,6 +196,30 @@
             $(document).on('change', '#drive-files', function () {
                 uploadFile(this.files[0]);
             });
+
+            $(document).on('click', '#bitacorabtn-add-comment', function () {
+                let comment = $('#bitacora-comentario-input').val();
+                if (comment.length > 0) {
+                    $.ajax("{% url 'trustseguros:comentarios' %}", {
+                        method: "post",
+                        data: {
+                            new: 'new', comentario: comment,
+                            app_label: 'cotizador', model: 'poliza',
+                            id: $('input[name="id"]').val()
+                        },
+                        success: function (response) {
+                            $('#bitacora-table').prepend(`
+                                <tr>
+                                    <td colspan="2">${response.instance.comentario}</td>
+                                    <td>${response.instance.created_user.username}</td>
+                                    <td>${response.instance.created}</td>
+                                </tr>
+                            `);
+                            $('#bitacora-comentario-input').val('')
+                        }
+                    })
+                }
+            })
 
         });
 
