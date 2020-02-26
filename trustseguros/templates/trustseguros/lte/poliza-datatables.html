@@ -180,7 +180,7 @@
                         console.log(response);
                         $('#drive-list').append(`
                             <tr>
-                                <td>${response.archivo.nombre}</td>
+                                <td> <a href="${ response.archivo.archivo }" target="_blank"><i class="fa fa-eye"></i></a> ${response.archivo.nombre}</td>
                                 <td>${response.archivo.created_user.username}</td>
                                 <td>${response.archivo.updated}</td>
                                 <td style="text-align: center;">
