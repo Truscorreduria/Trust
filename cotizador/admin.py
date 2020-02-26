@@ -21,7 +21,7 @@ class AntiguedadList(admin.TabularInline):
 
 @admin.register(Depreciacion)
 class DepreciacionAdmin(admin.ModelAdmin):
-    list_display = ('aseguradora', )
+    list_display = ('aseguradora',)
     inlines = [AntiguedadList, ]
     save_as = True
 
@@ -80,8 +80,9 @@ class ReferenciaAdmin(ImportExportModelAdmin):
 @admin.register(Poliza)
 class PolizaAdmin(ImportExportModelAdmin):
     date_hierarchy = 'fecha_emision'
-    list_display = ('print_code', 'fecha_emision', 'no_poliza', 'marca', 'modelo', 'anno', 'user', 'chasis', 'valor_nuevo',
-                    'suma_asegurada', 'subtotal', 'emision', 'iva', 'total', 'medio_pago', 'fecha_vence')
+    list_display = (
+    'print_code', 'fecha_emision', 'no_poliza', 'marca', 'modelo', 'anno', 'user', 'chasis', 'valor_nuevo',
+    'suma_asegurada', 'subtotal', 'emision', 'iva', 'total', 'medio_pago', 'fecha_vence')
     search_fields = ('code', 'nombres', 'apellidos', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
@@ -127,6 +128,7 @@ class PolizaAdmin(ImportExportModelAdmin):
 
     readonly_fields = ('no_poliza', 'no_recibo')
 
+
 @admin.register(Ticket)
 class TicketAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
@@ -156,8 +158,9 @@ class TicketAdmin(admin.ModelAdmin):
         extra_context = {'aseguradora': Aseguradora.objects.get(name="ASSA")}
         return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
 
-    #readonly_fields = ('code', 'marca', 'anno', 'modelo', 'placa', 'color', 'uso', 'circulacion',
+    # readonly_fields = ('code', 'marca', 'anno', 'modelo', 'placa', 'color', 'uso', 'circulacion',
     #                   'chasis', 'motor')
+
 
 admin.site.register(Entidad, entidad_admin)
 
@@ -192,8 +195,8 @@ class beneficiarios_sepelio_tabular(admin.TabularInline):
               'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
               'tipo_identificacion', 'file_cedula')
     readonly_fields = ('parentesco', 'primer_nombre', 'segundo_nombre',
-              'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
-              'tipo_identificacion', 'file_cedula')
+                       'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
+                       'tipo_identificacion', 'file_cedula')
 
 
 class beneficiarios_accidente_tabular(admin.TabularInline):
@@ -204,15 +207,15 @@ class beneficiarios_accidente_tabular(admin.TabularInline):
               'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
               'tipo_identificacion', 'file_cedula')
     readonly_fields = ('parentesco', 'primer_nombre', 'segundo_nombre',
-              'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
-              'tipo_identificacion', 'file_cedula')
+                       'apellido_paterno', 'apellido_materno', 'fecha_nacimiento',
+                       'tipo_identificacion', 'file_cedula')
 
 
 @admin.register(OrdenTrabajo)
 class ordenTrabajoAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
     list_display = ('nomeclatura', 'created', 'user', 'tipo')
-    list_filter = ('tipo', )
+    list_filter = ('tipo',)
     fields = ('tipo', 'user')
     readonly_fields = ('tipo', 'user')
 
@@ -239,4 +242,6 @@ class ContactoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'telefono', 'celular', 'email_personal', 'contacto')
 
 
-
+@admin.register(Moneda)
+class MonedaAdmin(admin.ModelAdmin):
+    pass
