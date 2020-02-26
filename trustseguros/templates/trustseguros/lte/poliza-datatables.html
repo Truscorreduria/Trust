@@ -219,6 +219,18 @@
                         }
                     })
                 }
+            });
+
+            $(document).on('click', '#btn-finish', function () {
+                $.ajax("{% url 'ajax_objectExecute' %}", {
+                    method: "POST",
+                    data: {
+                        app_label: 'cotizador', model: 'poliza',
+                        id: $('input[name="id"]').val(), view: 'activar'
+                    }, success: function (response) {
+                        modal.iziModal('close');
+                    }
+                })
             })
 
         });

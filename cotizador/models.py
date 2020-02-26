@@ -945,6 +945,10 @@ class Poliza(Base):
     def coberturas(self):
         return CoberturaPoliza.objects.filter(poliza=self)
 
+    def activar(self):
+        self.estado_poliza = EstadoPoliza.ACTIVA
+        self.save()
+
 
 class Pago(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
