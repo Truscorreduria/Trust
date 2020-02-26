@@ -801,6 +801,10 @@ class Poliza(Base):
         return Archivo.media_files(self)
 
     @property
+    def bitacora(self):
+        return Comentario.bitacora(self)
+
+    @property
     def ver(self):
         tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
         return mark_safe(tag)
@@ -1216,7 +1220,7 @@ class Archivo(base):
     def media_files(cls, obj):
         return Archivo.objects.filter(type=ContentType.objects.get(
             app_label='cotizador', model=obj._meta.model_name
-        ), key=obj.id)
+        ), key=obj.id).order_by('-updated')
 
     def __str__(self):
         return self.nombre
@@ -1228,3 +1232,33 @@ class Archivo(base):
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
         return o
+
+
+class Comentario(base):
+    created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name="comentario_user_created")
+    updated = models.DateTimeField(auto_now=True)
+    updated_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name="comentario_user_updated")
+    comentario = models.CharField(max_length=500, null=True)
+    type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
+    key = models.PositiveIntegerField(null=True)
+
+    def __str__(self):
+        return self.comentario
+
+    @classmethod
+    def bitacora(cls, obj):
+        return Comentario.objects.filter(type=ContentType.objects.get(
+            app_label='cotizador', model=obj._meta.model_name
+        ), key=obj.id)
+
+    def to_json(self):
+        o = super().to_json()
+        o['created'] = self.created
+        o['updated'] = self.updated
+        o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
+        o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
+        return o
+
+

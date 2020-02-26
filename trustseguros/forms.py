@@ -29,12 +29,7 @@ class RepresentanteForm(forms.ModelForm):
 
     tipo_identificacion = forms.ChoiceField(choices=TipoDoc.choices(), required=True)
 
-    cedula = forms.CharField(required=True, widget=forms.TextInput(
-        attrs={
-            'class': 'inputmask',
-            'data-mask': '9{13,13}A'
-        }
-    ))
+    cedula = forms.CharField(required=True)
 
     telefono = forms.CharField(required=False, widget=forms.TextInput(
         attrs={
@@ -299,6 +294,7 @@ class PolizaForm(forms.ModelForm):
     ))
     campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
     drive = forms.Field(label="", required=False, widget=DriveWidget)
+    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
     class Meta:
         model = Poliza
@@ -313,6 +309,7 @@ class PolizaForm(forms.ModelForm):
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance
             updated_initial['drive'] = instance
+            updated_initial['bitacora'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 

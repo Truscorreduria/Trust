@@ -88,3 +88,10 @@ class DriveWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class BitacoraWidget(Widget):
+    template_name = "trustseguros/lte/widgets/bitacora.html"
+
+    def format_value(self, value):
+        return value
