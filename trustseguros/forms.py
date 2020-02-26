@@ -29,7 +29,7 @@ class RepresentanteForm(forms.ModelForm):
 
     tipo_identificacion = forms.ChoiceField(choices=TipoDoc.choices(), required=True)
 
-    cedula = forms.CharField(required=True)
+    cedula = forms.CharField(required=True, label="número de identificación")
 
     telefono = forms.CharField(required=False, widget=forms.TextInput(
         attrs={
@@ -153,7 +153,7 @@ class ClienteNaturalForm(forms.ModelForm):
             'class': 'inputmask',
             'data-mask': '9{13,13}A'
         }
-    ))
+    ), label="número de identificación")
     telefono = forms.CharField(required=True, widget=forms.TextInput(
         attrs={
             'class': 'inputmask',

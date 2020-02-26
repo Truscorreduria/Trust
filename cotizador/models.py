@@ -669,6 +669,7 @@ class Poliza(Base):
     code = models.CharField(max_length=25, null=True, blank=True)
     no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
     no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
+    concepto = models.CharField(max_length=25, null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
