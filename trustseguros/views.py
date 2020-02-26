@@ -4,23 +4,10 @@ from django.contrib.auth.decorators import login_required
 from cotizador.forms import *
 from .forms import *
 from django.http import JsonResponse
+from grappelli_extras.utils import Codec
 
 
 def documentos(request):
-    if request.method == "GET":
-        files = []
-        try:
-            type = ContentType.objects.get(app_label=request.GET.get('app_label'),
-                                           model=request.GET.get('model'))
-            original = type.get_object_for_this_type(id=int(request.GET.get('id')))
-        except:
-            original = None
-            type = None
-        if original:
-            files = Archivo.objects.filter(type=type, key=original.id)
-        return render(request, 'trustseguros/documentos_adjuntos.html',
-                      {'archivos': files, 'original': original.to_json()})
-
     if request.method == "POST":
         if 'new' in request.POST:
             file = None
@@ -33,16 +20,17 @@ def documentos(request):
                 original = None
             if original:
                 file = Archivo()
+                file.created_user = request.user
+                file.updated_user = request.user
                 document = request.FILES['file']
                 file.nombre = document.name
-                file.catalogo = request.POST.get('catalogo')
                 file.fecha_caducidad = request.POST.get('fecha_caducidad')
                 file.archivo = document
                 file.type = type
                 file.key = original.id
                 file.save()
-            return render(request, 'trustseguros/include/row_document.html', {
-                'archivo': file.to_json()})
+            return JsonResponse({'archivo': file.to_json()}, encoder=Codec)
+
         if 'update' in request.POST:
             a = Archivo.objects.get(id=int(request.POST.get('id')))
             a.nombre = request.POST.get('nombre')

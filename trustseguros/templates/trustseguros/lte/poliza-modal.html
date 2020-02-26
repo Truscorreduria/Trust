@@ -25,6 +25,10 @@
                     <a data-toggle="tab" href="#{{ opts.model_name }}-drive-files" class="nav-link">
                         Soportes</a>
                 </li>
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-bitacora" class="nav-link">
+                        Bitácora</a>
+                </li>
             </ul>
 
             <div class="card card-trust">
@@ -78,6 +82,17 @@
                                     <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
                                     style="visibility: hidden" {% endif %}>
                                         {{ form.cesioinario|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.estado_poliza|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.no_recibo|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+
                                     </div>
                                 </div>
                             </div>
@@ -151,6 +166,10 @@
                             <div id="{{ opts.model_name }}-drive-files"
                                  class="tab-pane fade">
                                 {{ form.drive }}
+                            </div>
+                            <div id="{{ opts.model_name }}-bitacora"
+                                 class="tab-pane fade">
+                                {{ form.bitacora }}
                             </div>
                         </div>
                     </form>

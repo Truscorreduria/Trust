@@ -157,12 +157,46 @@
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
 
             $(document).on('change', '#id_cesion_derecho', function () {
-                if($(this).is(':checked')){
+                if ($(this).is(':checked')) {
                     $('#col-cesionario').css('visibility', 'visible');
-                }else{
+                } else {
                     $('#col-cesionario').css('visibility', 'hidden');
                 }
-            })
+            });
+
+            const uploadFile = function (file) {
+                const data = new FormData();
+                data.append('file', file);
+                data.append('new', 'new');
+                data.append('app_label', 'cotizador');
+                data.append('model', 'poliza');
+                data.append('id', $('input[name="id"]').val());
+                $.ajax("{% url 'trustseguros:documentos' %}", {
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response);
+                        $('#drive-list').append(`
+                            <tr>
+                                <td>${response.archivo.nombre}</td>
+                                <td>${response.archivo.created_user.username}</td>
+                                <td>${response.archivo.updated}</td>
+                                <td style="text-align: center;">
+                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.id }}">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                })
+            };
+
+            $(document).on('change', '#drive-files', function () {
+                uploadFile(this.files[0]);
+            });
 
         });
 

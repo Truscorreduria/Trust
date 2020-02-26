@@ -312,6 +312,7 @@ class PolizaForm(forms.ModelForm):
             updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance
+            updated_initial['drive'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 

@@ -668,7 +668,7 @@ class Poliza(Base):
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
     no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
-    no_recibo = models.CharField(max_length=25, null=True, blank=True)
+    no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
@@ -795,6 +795,10 @@ class Poliza(Base):
             return (self.fecha_vence - hoy).days
         else:
             return None
+
+    @property
+    def media_files(self):
+        return Archivo.media_files(self)
 
     @property
     def ver(self):
@@ -1194,6 +1198,13 @@ class Notificacion(Base):
 
 
 class Archivo(base):
+    created = models.DateTimeField(auto_now_add=True)
+    created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name="archivo_user_created")
+    updated = models.DateTimeField(auto_now=True)
+    updated_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+                                     related_name="archivo_user_updated")
+
     nombre = models.CharField(max_length=250, null=True)
     tiene_caducidad = models.BooleanField(default=False)
     fecha_caducidad = models.DateField(null=True)
@@ -1201,5 +1212,19 @@ class Archivo(base):
     type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     key = models.PositiveIntegerField(null=True)
 
+    @classmethod
+    def media_files(cls, obj):
+        return Archivo.objects.filter(type=ContentType.objects.get(
+            app_label='cotizador', model=obj._meta.model_name
+        ), key=obj.id)
+
     def __str__(self):
         return self.nombre
+
+    def to_json(self):
+        o = super().to_json()
+        o['created'] = self.created
+        o['updated'] = self.updated
+        o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
+        o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
+        return o
