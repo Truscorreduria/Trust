@@ -296,6 +296,13 @@ class PolizaForm(forms.ModelForm):
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
+    estado_poliza = forms.ChoiceField(choices=EstadoPoliza.choices(), label="Estado póliza",
+                                      widget=forms.Select(
+                                          attrs={
+                                              'disabled': 'disabled'
+                                          }
+                                      ))
+
     class Meta:
         model = Poliza
         fields = '__all__'

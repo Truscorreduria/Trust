@@ -583,6 +583,7 @@ class MedioPago:
 
 
 class EstadoPoliza:
+    PENDIENTE = 0
     ACTIVA = 1
     VENCIDA = 2
     RENOVADA = 3
@@ -592,7 +593,7 @@ class EstadoPoliza:
 
     @classmethod
     def choices(cls):
-        return (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (cls.RENOVADA, "Renovada"), \
+        return (cls.PENDIENTE, "Pendiente"), (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (cls.RENOVADA, "Renovada"), \
                (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.OTRO, "Otro")
 
 
@@ -679,7 +680,7 @@ class Poliza(Base):
     referencia = models.ForeignKey(Referencia, null=True, blank=True, on_delete=models.SET_NULL)
     tipo_cobertura = models.CharField(max_length=165, null=True, blank=True,
                                       choices=TipoCobertura.choices())
-    estado_poliza = models.PositiveSmallIntegerField(null=True, blank=True, default=EstadoPoliza.ACTIVA,
+    estado_poliza = models.PositiveSmallIntegerField(null=True, blank=True, default=EstadoPoliza.PENDIENTE,
                                                      choices=EstadoPoliza.choices())
 
     nombres = models.CharField(max_length=165, null=True, blank=True, verbose_name="nombre")
