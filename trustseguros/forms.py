@@ -305,6 +305,13 @@ class PolizaForm(forms.ModelForm):
                                       ))
     no_poliza = forms.CharField(max_length=50, required=True, label="Número de póliza")
 
+    moneda = forms.ModelChoiceField(queryset=Moneda.objects.all().order_by('moneda'), required=False,
+                                    widget=forms.Select(
+                                        attrs={
+                                            'style': "min-width: 178px"
+                                        }
+                                    ))
+
     class Meta:
         model = Poliza
         fields = '__all__'
