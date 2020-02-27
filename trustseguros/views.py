@@ -69,7 +69,6 @@ def comentarios(request):
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
 
 
-
 # @staff_member_required
 # def certificados(request):
 #     return render(request, 'trustseguros/include/certificados.html', {
@@ -615,7 +614,7 @@ class PersonaJuridica(Datatables):
                 ('razon_social', 'ruc'),
                 ('nombre_comercial', 'actividad_economica'),
                 ('telefono', 'pagina_web'),
-                ('es_cesionario', ),
+                ('es_cesionario',),
                 ('departamento', 'municipio'),
                 ('domicilio',),
             )
@@ -849,6 +848,16 @@ class PolizasAutomovil(Datatables):
         'js': ['trustseguros/lte/js/fecha-vence.js', ],
         'css': ['trustseguros/lte/css/coberturas-field.css', ]
     }
+
+    def post(self, request):
+        if 'activar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.ACTIVA
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        return super().post(request)
 
     def save_related(self, instance, data):
         for i in range(0, len(data.getlist('cobertura'))):

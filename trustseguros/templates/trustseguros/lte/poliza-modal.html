@@ -37,7 +37,8 @@
                 <div class="card-body">
                     <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
                           data-toggle="validator">
-                        <input type="hidden" name="id" value="">
+                        <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+
                         {% csrf_token %}
                         <div class="tab-content">
                             <div id="{{ opts.model_name }}-info"
@@ -198,10 +199,12 @@
                                 <i class="fa fa-save"></i>
                                 Guardar
                             </button>
-                            <button type="button" class="btn btn-success" id="btn-finish">
-                                <i class="fa fa-suitcase"></i>
-                                Finalizar
-                            </button>
+                            {% if instance.id %}
+                                <button type="button" class="btn btn-success" id="btn-finish">
+                                    <i class="fa fa-suitcase"></i>
+                                    Finalizar
+                                </button>
+                            {% endif %}
                         {% endifequal %}
                     {% endblock %}
                 </div>

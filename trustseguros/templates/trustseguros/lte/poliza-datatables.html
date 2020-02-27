@@ -60,35 +60,6 @@
                 })
             });
 
-            $(document).on('change', '#id_ramo', function () {
-                const _this = $(this);
-                const $fieldset = $('.extra_data_fieldset').empty();
-                $.ajax("{% url 'ajax_getCollection' %}", {
-                    method: "POST",
-                    data: {
-                        app_label: 'cotizador', model: 'campoadicional',
-                        filters: `{'ramo_id': ${_this.val()}}`
-                    },
-                    success: function (response) {
-                        $.each(response, function (i, o) {
-                            $fieldset.append(`
-                            <div class="col-md-3">
-                                <div id="div_${o.name}" class="form-group">
-
-                                    <label for="id_${o.name}" class="col-form-label">
-                                        ${o.label}
-                                    </label>
-
-                                    <input name="${o.name}" class="form-control" id="id_${o.name}">
-
-                                </div>
-                            </div>
-                            `)
-                        })
-                    }
-                })
-            });
-
             const calcular_prima_neta = function () {
                 let prima = parseFloat($('#id_subtotal').val());
                 let descuento = parseFloat($('#id_descuento').val());
@@ -222,13 +193,12 @@
             });
 
             $(document).on('click', '#btn-finish', function () {
-                $.ajax("{% url 'ajax_objectExecute' %}", {
+                $.ajax("{% url 'trustseguros:polizas' %}", {
                     method: "POST",
                     data: {
-                        app_label: 'cotizador', model: 'poliza',
-                        id: $('input[name="id"]').val(), view: 'activar'
+                        id: $('input[name="id"]').val(), activar: 'activar'
                     }, success: function (response) {
-                        modal.iziModal('close');
+                        redraw_object(response);
                     }
                 })
             })

@@ -85,23 +85,10 @@
                 processData: false,
                 contentType: false,
                 success: function (response, textStatus, xhr) {
+                    redraw_object(response);
                     if (xhr.status === 200) {
-                        modal.iziModal('close');
-                        update_table(response)
-                    } else {
-                        modal.iziModal('destroy');
-                        modal.empty().append(response.form);
-                        modal.iziModal({
-                            title: "{{ verbose_name|capfirst }}",
-                            subtitle: 'Información general del {{ verbose_name }}',
-                            width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
-                            headerColor: '#222d32'
-                        }).iziModal('open');
+                        update_table(response);
                     }
-                    if (response.instance) {
-                        $('input[name="id"]').val(response.instance.id);
-                    }
-
                     $.each(response.errors, function (n, error) {
                         $.growl.error({
                             message: `<p>${error.key}</p>
@@ -111,6 +98,9 @@
                 },
                 error: function (error) {
                     console.log(error);
+                    $.growl.error({
+                            message: `<p>${error}</p>`
+                        });
                 }
             })
         };
@@ -123,13 +113,11 @@
                     modal.iziModal('destroy');
                     modal.empty().append(response.form);
                     modal.iziModal({
-                        title: 'Agregar {{ verbose_name }}',
-                        subtitle: 'Información general del {{ verbose_name }}',
+                        title: 'Agregar {{ opts.verbose_name }}',
+                        subtitle: 'Datos {{ opts.verbose_name }}',
                         width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
                         headerColor: '#326634'
                     }).iziModal('open');
-
-                    $('input[name="id"]').val('');
                 }
             });
         };
@@ -190,6 +178,17 @@
         const show_object = function () {
             const obj = table.row(this).data();
             open_object(obj.id);
+        };
+
+        const redraw_object = function (response) {
+            modal.iziModal('destroy');
+            modal.empty().append(response.form);
+            modal.iziModal({
+                title: response.instance.str,
+                subtitle: 'Datos {{ opts.verbose_name }}',
+                width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
+                headerColor: '#326634'
+            }).iziModal('open');
         };
 
         const update_table = function (response) {
