@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.template.loader import render_to_string
 from .generics import Datatables
 from django.contrib.auth.decorators import login_required
 from cotizador.forms import *
 from .forms import *
 from django.http import JsonResponse
 from grappelli_extras.utils import Codec
+import pandas as pd
 
 
 def documentos(request):
@@ -857,6 +859,20 @@ class PolizasAutomovil(Datatables):
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'import_data' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            file = request.FILES['file']
+            data = pd.read_excel(file)
+            forms = []
+            for row in data.to_dict('records'):
+                d = DatoPoliza(poliza=p)
+                d.extra_data = str(row)
+                form = DatoImportForm(instance=d)
+                forms.append(form)
+            html = render_to_string('trustseguros/lte/widgets/import-rows.html', context={
+                'forms': forms, 'widget_name': 'campos_adicionales'
+            }, request=request)
+            return JsonResponse({'html': html}, encoder=Codec, safe=False)
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -875,5 +891,8 @@ class PolizasAutomovil(Datatables):
                 c = DatoPoliza.objects.get(id=int(data.getlist('contacto_id')[i]))
             c.extra_data = data.getlist('campos_adicionales')[i]
             c.save()
+
+
+
 
 # endregion

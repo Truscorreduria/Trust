@@ -6,7 +6,7 @@ from cotizador.models import *
 class ContactoForm(forms.ModelForm):
     prefix = 'cliente_contacto'
 
-    telefono = forms.CharField(required=False, widget=forms.TextInput(
+    telefono = forms.CharField(required=False, label="teléfono", widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
             'data-mask': '9{8,8}'
@@ -31,7 +31,7 @@ class RepresentanteForm(forms.ModelForm):
 
     cedula = forms.CharField(required=True, label="Número de identificación")
 
-    telefono = forms.CharField(required=False, widget=forms.TextInput(
+    telefono = forms.CharField(required=False, label="teléfono", widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
             'data-mask': '9{8,8}'
@@ -99,7 +99,7 @@ class ClienteJuridicioForm(forms.ModelForm):
             )
         }
     ))
-    telefono = forms.CharField(required=False, widget=forms.TextInput(
+    telefono = forms.CharField(required=False, label="teléfono", widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
             'data-mask': '9{8,8}'
@@ -239,7 +239,6 @@ class CampoAdicionalForm(forms.ModelForm):
 
 
 class RamoForm(forms.ModelForm):
-
     class Meta:
         model = Ramo
         fields = '__all__'
@@ -279,7 +278,7 @@ class PolizaForm(forms.ModelForm):
     contratante = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Contratante',
                                          required=True, widget=SelectSearch)
     cesioinario = forms.ModelChoiceField(queryset=ClienteJuridico.objects.filter(es_cesionario=True),
-                                          required=False, label="Cesionario")
+                                         required=False, label="Cesionario")
     coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
     amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
@@ -357,6 +356,14 @@ class PolizaForm(forms.ModelForm):
             self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
             self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
             self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
+
+
+class DatoImportForm(forms.ModelForm):
+    extra_data = forms.CharField(widget=forms.HiddenInput)
+
+    class Meta:
+        model = DatoPoliza
+        fields = '__all__'
 
 
 class LteTicketForm(forms.ModelForm):

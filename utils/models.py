@@ -21,7 +21,7 @@ class Direccion(base):
     municipio = models.ForeignKey(Municipio, null=True, blank=True, on_delete=models.CASCADE,
                                   related_name="%(class)s_municipio")
     domicilio = models.TextField(max_length=400, null=True, blank=True)
-    telefono = models.CharField(max_length=25, null=True, blank=True)
+    telefono = models.CharField(max_length=25, null=True, blank=True, verbose_name="teléfono")
 
     class Meta:
         abstract = True

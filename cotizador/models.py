@@ -296,8 +296,8 @@ class Empresa(Base):
     nombre_comercial = models.CharField(max_length=250, null=True, blank=True)
     ruc = models.CharField(max_length=14, null=True, blank=True, verbose_name="número de identificación")
     fecha_constitucion = models.DateField(null=True, blank=True, verbose_name="fecha de constitución")
-    actividad_economica = models.CharField(max_length=250, null=True, blank=True)
-    pagina_web = models.CharField(max_length=250, null=True, blank=True)
+    actividad_economica = models.CharField(max_length=250, null=True, blank=True, verbose_name="actividad económica")
+    pagina_web = models.CharField(max_length=250, null=True, blank=True, verbose_name="página web")
     observaciones = models.TextField(max_length=500, null=True, blank=True)
 
     class Meta:
@@ -818,6 +818,10 @@ class Poliza(Base):
     def ver(self):
         tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
         return mark_safe(tag)
+
+    @property
+    def estado(self):
+        return self.get_estado_poliza_display()
 
     def to_json(self):
         o = super().to_json()

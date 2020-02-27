@@ -1,0 +1,21 @@
+{% for form in forms %}
+    <tr>
+        {% for foo in form.instance.poliza.sub_ramo.datos_tecnicos.all %}
+            <td>
+                <input type="text" class="form-control {{ widget.name }}-input" value=""
+                       name="{{ widget.name }}-{{ field.name }}">
+            </td>
+        {% endfor %}
+
+        <td style="text-align: center">
+            <input type="hidden" name="{{ widget_name }}_id" value=""
+                   class="{{ widget_name }}-id">
+            <input type="hidden" name="{{ widget_name }}" class="{{ widget_name }}-value"
+            value="{{ form.extra_data.value }}">
+            <button type="button" class="btn btn-danger btn-table-delete" data-id=""
+                    data-model="datopoliza" data-app="cotizador">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+{% endfor %}

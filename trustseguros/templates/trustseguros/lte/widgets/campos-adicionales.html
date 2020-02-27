@@ -6,7 +6,7 @@
                        name="{{ widget.name }}-{{ field.name }}">
             </td>
         {% endfor %}
-        <td>
+        <td style="text-align: center">
             <input type="hidden" name="{{ widget.name }}_id" class="{{ widget.name }}-id">
             <input type="hidden" name="{{ widget.name }}" class="{{ widget.name }}-value">
             {% ifequal widget.value.estado_poliza 0 %}
@@ -26,9 +26,15 @@
         {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
             <th>{{ field.label }}</th>
         {% endfor %}
-        <th style="width: 40px; text-align: center">
+        <th style="width: 120px; text-align: center">
             {% ifequal widget.value.estado_poliza 0 %}
+                <input type="file" id="{{ widget.name }}-import-file" style="display:none;" />
+                <button type="button" class="btn btn-info" title="Importar desde excell"
+                    id="{{ widget.name }}-import-button">
+                    <i class="fa fa-upload"></i>
+                </button>
                 <button type="button" class="btn btn-info btn-table-add"
+                        title="Agregar nuevo registro"
                         data-target="{{ widget.name }}-table" data-template="{{ widget.name }}-template">
                     <i class="fa fa-plus"></i>
                 </button>
@@ -48,7 +54,7 @@
                 </td>
             {% endfor %}
 
-            <td>
+            <td style="text-align: center">
                 <input type="hidden" name="{{ widget.name }}_id" value="{{ row.id }}"
                        class="{{ widget.name }}-id">
                 <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}"
