@@ -600,7 +600,8 @@ class EstadoPoliza:
 
     @classmethod
     def choices(cls):
-        return (cls.PENDIENTE, "Pendiente"), (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (cls.RENOVADA, "Renovada"), \
+        return (cls.PENDIENTE, "Pendiente"), (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (
+        cls.RENOVADA, "Renovada"), \
                (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.OTRO, "Otro")
 
 
@@ -611,6 +612,15 @@ class TipoPoliza:
     @classmethod
     def choices(cls):
         return (cls.INDIVIDUAL, "Individual"), (cls.COLECTIVA, "Colectiva")
+
+
+class ConceptoPoliza:
+    NUEVA = 1
+    RENOVACION = 2
+
+    @classmethod
+    def choices(cls):
+        return (cls.NUEVA, 'Nueva Póliza'), (cls.RENOVACION, 'Renovación')
 
 
 class Cobertura(Base):
@@ -677,7 +687,8 @@ class Poliza(Base):
     code = models.CharField(max_length=25, null=True, blank=True)
     no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
     no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
-    concepto = models.CharField(max_length=25, null=True, blank=True)
+    concepto = models.PositiveSmallIntegerField(choices=ConceptoPoliza.choices(), default=ConceptoPoliza.NUEVA,
+                                                null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
@@ -1275,5 +1286,3 @@ class Comentario(base):
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
         return o
-
-

@@ -221,11 +221,11 @@
                         $('#campos_adicionales-table').append(response.html);
 
                         $.each($('#campos_adicionales-table').find('.campos_adicionales-value'), function (i, o) {
-                            const data = JSON.parse($(o).val());
+                            {% comment %}const data = JSON.parse($(o).val());
                             const $tr = $(o).parents('tr');
                             Object.keys(data).forEach(function (k) {
                                 $($tr).find(`input[name="${k}"]`).val(data[k]);
-                            });
+                            });{% endcomment %}
                         });
                     }
                 })

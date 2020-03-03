@@ -330,7 +330,6 @@ class PolizaForm(forms.ModelForm):
         if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
             self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['concepto'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
             self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
             self.fields['emision'].widget.attrs['readonly'] = 'readonly'
@@ -356,6 +355,7 @@ class PolizaForm(forms.ModelForm):
             self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
             self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
             self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
+            self.fields['concepto'].widget.attrs['disabled'] = 'disabled'
 
 
 class DatoImportForm(forms.ModelForm):
