@@ -25,12 +25,13 @@
                        value="{{ fila.fecha_vence|date:'d/m/Y' }}">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto" class="form-control" readonly
+                <input type="text" name="{{ widget.name }}_monto" class="form-control"
+                       {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
                        value="{{ fila.monto|intcomma }}">
             </td>
             <td>
                 <input type="text" name="{{ widget.name }}_estado" class="form-control" readonly
-                       value="{{ fila.estado }}">
+                       value="{{ fila.get_estado_display }}">
             </td>
         </tr>
     {% endfor %}
