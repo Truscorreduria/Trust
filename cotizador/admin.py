@@ -245,3 +245,9 @@ class ContactoAdmin(admin.ModelAdmin):
 @admin.register(Moneda)
 class MonedaAdmin(admin.ModelAdmin):
     pass
+
+
+
+@admin.register(Pago)
+class MonedaAdmin(admin.ModelAdmin):
+    pass

@@ -94,20 +94,26 @@
                             pagos.append(`
                                     <tr>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${o.numero}">
+                                            <input type="hidden" name="tabla_pagos_id">
+                                            <input type="text" name="tabla_pagos_numero" class="form-control" readonly value="${o.numero}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${o.fecha}">
+                                            <input type="text" name="tabla_pagos_fecha_vence" class="form-control" readonly value="${o.fecha}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" value="${o.monto}">
+                                            <input type="text" name="tabla_pagos_monto" class="form-control" value="${o.monto}">
                                         </td>
                                         <td>
-                                            <input type="text" name="" class="form-control" readonly value="${o.estado}">
+                                            <input type="text" name="tabla_pagos_estado" class="form-control" readonly value="${o.estado}">
                                         </td>
                                     </tr>
                             `)
-                        })
+                        });
+                        let total_pagos = 0.0;
+                        $.each($('input[name="tabla_pagos_monto"]'), function (i, o) {
+                            total_pagos += parseFloat($(o).val())
+                        });
+                        $('#id_total_pagos').val(total_pagos);
                     }
                 })
 

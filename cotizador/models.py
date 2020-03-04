@@ -601,7 +601,7 @@ class EstadoPoliza:
     @classmethod
     def choices(cls):
         return (cls.PENDIENTE, "Pendiente"), (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (
-        cls.RENOVADA, "Renovada"), \
+            cls.RENOVADA, "Renovada"), \
                (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.OTRO, "Otro")
 
 
@@ -771,6 +771,8 @@ class Poliza(Base):
                                related_name="ticket_de_baja")
 
     notificado = models.BooleanField(default=False)
+
+    total_pagos = models.FloatField(default=0.0)
 
     class Meta:
         verbose_name_plural = "Pólizas"
@@ -961,17 +963,26 @@ class Poliza(Base):
         return CoberturaPoliza.objects.filter(poliza=self)
 
 
+class EstadoPago:
+    ANULADO = 0
+    VIGENTE = 1
+    VENCIDO = 2
+    PAGADO = 3
+
+    @classmethod
+    def choices(cls):
+        return (cls.ANULADO, "Anulado"), (cls.VIGENTE, "Vigente"), (cls.VENCIDO, "Vencido"), (cls.PAGADO, "Pagado")
+
+
 class Pago(Base):
-    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
+    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE,
+                               related_name="pagos")
     monto = models.FloatField(default=0.0)
+    numero = models.PositiveSmallIntegerField(null=True, blank=True)
     fecha_vence = models.DateField(null=True)
     fecha_pago = models.DateField(null=True)
-    estado = models.PositiveSmallIntegerField(choices=(
-        (0, 'ANULADO'),
-        (1, 'VIGENTE'),
-        (2, 'VENCIDO'),
-        (3, 'PAGADO'),
-    ), null=True, blank=True)
+    estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
+                                              default=EstadoPago.VIGENTE)
 
 
 class CoberturaPoliza(Base):

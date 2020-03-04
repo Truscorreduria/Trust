@@ -902,4 +902,14 @@ class PolizasAutomovil(Datatables):
             c.extra_data = data.getlist('campos_adicionales')[i]
             c.save()
 
+        for i in range(1, len(data.getlist('tabla_pagos_id'))):
+            if data.getlist('tabla_pagos_id')[i] == '':
+                p = Pago(poliza=instance)
+            else:
+                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+            p.numero = data.getlist('tabla_pagos_numero')[i]
+            p.monto = data.getlist('tabla_pagos_monto')[i]
+            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.save()
+
 # endregion

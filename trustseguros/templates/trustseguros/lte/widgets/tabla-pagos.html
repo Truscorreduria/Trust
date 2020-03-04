@@ -1,4 +1,8 @@
 {% load humanize %}
+
+<input type="hidden" name="total_pagos" id="id_total_pagos" {% if widget.value %}
+       value="{{ widget.value.total_pagos }}" {% endif %}>
+
 <table class="table" id="id_{{ widget.name }}">
     <thead>
     <tr>
@@ -9,19 +13,24 @@
     </tr>
     </thead>
     <tbody>
-    {% for fila in widget.value.tabla_pagos %}
+    {% for fila in widget.value.pagos.all %}
         <tr>
             <td>
-                <input type="text" name="" class="form-control" readonly value="{{ fila.numero }}">
+                <input type="hidden" name="{{ widget.name }}_id" value="{{ fila.id }}">
+                <input type="text" name="{{ widget.name }}_numero" class="form-control" readonly
+                       value="{{ fila.numero }}">
             </td>
             <td>
-                <input type="text" name="" class="form-control" readonly value="{{ fila.fecha }}">
+                <input type="text" name="{{ widget.name }}_fecha_vence" class="form-control" readonly
+                       value="{{ fila.fecha_vence|date:'d/m/Y' }}">
             </td>
             <td>
-                <input type="text" name="" class="form-control" readonly value="{{ fila.monto|intcomma }}">
+                <input type="text" name="{{ widget.name }}_monto" class="form-control" readonly
+                       value="{{ fila.monto|intcomma }}">
             </td>
             <td>
-                <input type="text" name="" class="form-control" readonly value="{{ fila.estado }}">
+                <input type="text" name="{{ widget.name }}_estado" class="form-control" readonly
+                       value="{{ fila.estado }}">
             </td>
         </tr>
     {% endfor %}
