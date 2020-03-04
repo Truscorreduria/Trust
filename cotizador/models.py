@@ -984,6 +984,9 @@ class Pago(Base):
     estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
                                               default=EstadoPago.VIGENTE)
 
+    class Meta:
+        ordering = ['fecha_vence', ]
+
 
 class CoberturaPoliza(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)

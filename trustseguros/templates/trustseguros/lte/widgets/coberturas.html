@@ -1,3 +1,5 @@
+{% load poliza %}
+
 <table class="table" id="{{ widget.name }}-table">
     <thead>
     <tr>
@@ -22,11 +24,7 @@
                 </td>
                 <td class="cobertura-amount">
                     <input type="number" class="form-control" style="max-width: 150px" name="monto"
-                            {% for c in widget.value.coberturas %}
-                                {% ifequal cobertura c.cobertura %}
-                           value="{{ c.monto }}"
-                                {% endifequal %}
-                            {% endfor %}
+                           value="{{ widget.value|valor_cobertura:cobertura }}"
                            {% ifnotequal widget.value.estado_poliza 0 %}readonly{% endifnotequal %}>
                 </td>
             </tr>
