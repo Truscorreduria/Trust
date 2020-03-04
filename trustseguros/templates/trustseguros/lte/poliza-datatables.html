@@ -116,8 +116,15 @@
                         $('#id_total_pagos').val(total_pagos);
                     }
                 })
-
             };
+
+            $(document).on('change', 'input[name="tabla_pagos_monto"]', function () {
+                let total_pagos = 0.0;
+                $.each($('input[name="tabla_pagos_monto"]'), function (i, o) {
+                    total_pagos += parseFloat($(o).val())
+                });
+                $('#id_total_pagos').val(total_pagos);
+            });
 
             $(document).on('change', '#id_subtotal', calcular_prima_neta);
             $(document).on('change', '#id_descuento', calcular_prima_neta);
