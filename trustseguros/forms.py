@@ -381,6 +381,11 @@ class PolizaForm(forms.ModelForm):
             self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
             self.fields['concepto'].widget.attrs['disabled'] = 'disabled'
 
+    def clean(self):
+        if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:
+            raise forms.ValidationError("La suma de pagos y el total de la póliza no son iguales")
+        return self.cleaned_data
+
 
 class DatoImportForm(forms.ModelForm):
     extra_data = forms.CharField(widget=forms.HiddenInput)

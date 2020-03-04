@@ -902,7 +902,7 @@ class PolizasAutomovil(Datatables):
             c.extra_data = data.getlist('campos_adicionales')[i]
             c.save()
 
-        for i in range(1, len(data.getlist('tabla_pagos_id'))):
+        for i in range(0, len(data.getlist('tabla_pagos_id'))):
             if data.getlist('tabla_pagos_id')[i] == '':
                 p = Pago(poliza=instance)
             else:
