@@ -1,13 +1,26 @@
 {% load datatables crispy_forms_filters %}
 
-<input type="hidden" name="{{ widget.name }}" id="{{ widget.attrs.id }}" value="{{ widget.value.instance.id }}">
-
 <div class="row">
     <div class="col">
         {{ widget.attrs.form.tipo_identificacion|as_crispy_field }}
     </div>
     <div class="col">
-        {{ widget.value|datatables_field:'cedula'|as_crispy_field }}
+        {{ widget.value.instance }}
+        <div id="div_id_cliente_representante-cedula" class="form-group">
+
+            <label for="id_cliente_representante-cedula" class="col-form-label  requiredField">
+                Número de identificación<span class="asteriskField">*</span>
+            </label>
+            <div style="display: flex">
+                <input type="text" name="cliente_representante-cedula" class="textinput textInput form-control"
+                       required="" id="id_cliente_representante-cedula" value="{{ widget.value.cedula.value }}"
+                       {% if widget.value.instance.value %}readonly{% endif %}>
+                <button type="button" class="{{ widget.name }}-button-clear">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+
+        </div>
     </div>
 </div>
 

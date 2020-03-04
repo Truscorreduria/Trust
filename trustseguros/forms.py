@@ -27,6 +27,9 @@ class ContactoForm(forms.ModelForm):
 class RepresentanteForm(forms.ModelForm):
     prefix = 'cliente_representante'
 
+    instance = forms.ModelChoiceField(queryset=ClienteNatural.objects.all(), required=False,
+                                      widget=forms.HiddenInput)
+
     tipo_identificacion = forms.ChoiceField(choices=TipoDoc.choices(), required=True)
 
     cedula = forms.CharField(required=True, label="Número de identificación")
@@ -54,6 +57,27 @@ class RepresentanteForm(forms.ModelForm):
         fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno',
                   'tipo_identificacion', 'cedula', 'departamento', 'municipio', 'domicilio',
                   'telefono', 'celular')
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            kwargs.update(initial={
+                'instance': instance
+            })
+        super().__init__(*args, **kwargs)
+        if not instance:
+            self.fields['primer_nombre'].widget.attrs['readonly'] = 'readonly'
+            self.fields['segundo_nombre'].widget.attrs['readonly'] = 'readonly'
+            self.fields['apellido_paterno'].widget.attrs['readonly'] = 'readonly'
+            self.fields['apellido_materno'].widget.attrs['readonly'] = 'readonly'
+            self.fields['telefono'].widget.attrs['readonly'] = 'readonly'
+            self.fields['celular'].widget.attrs['readonly'] = 'readonly'
+            self.fields['domicilio'].widget.attrs['readonly'] = 'readonly'
+            self.fields['departamento'].widget.attrs['disabled'] = 'disabled'
+            self.fields['municipio'].widget.attrs['disabled'] = 'disabled'
+        else:
+            self.fields['tipo_identificacion'].required = False
+            self.fields['tipo_identificacion'].widget.attrs['disabled'] = 'disabled'
 
 
 class ClienteJuridicioForm(forms.ModelForm):
@@ -111,8 +135,8 @@ class ClienteJuridicioForm(forms.ModelForm):
         }
     ))
 
-    representante = forms.ModelChoiceField(queryset=Cliente.objects.filter(tipo_cliente=TipoCliente.NATURAL),
-                                           label="", required=False, widget=RepresentanteLegalWidget(
+    representante = forms.ModelChoiceField(queryset=ClienteNatural.objects.all(), label="",
+                                           required=False, widget=RepresentanteLegalWidget(
             attrs={
                 'form': RepresentanteForm
             }

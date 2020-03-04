@@ -78,9 +78,10 @@ class RepresentanteLegalWidget(Widget):
     template_name = "trustseguros/lte/widgets/representante-legal.html"
 
     def format_value(self, value):
-        if value:
+        try:
             return self.attrs['form'](instance=Cliente.objects.get(id=value))
-        return self.attrs['form']
+        except:
+            return self.attrs['form']
 
 
 class DriveWidget(Widget):

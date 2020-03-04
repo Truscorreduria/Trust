@@ -7,6 +7,7 @@ from .forms import *
 from django.http import JsonResponse
 from grappelli_extras.utils import Codec
 import pandas as pd
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def documentos(request):
@@ -649,17 +650,26 @@ class PersonaJuridica(Datatables):
     }
 
     def save_related(self, instance, data):
-        representante = ClienteNatural.objects.get(id=data.get('representante'))
-        representante.primer_nombre = data.get('cliente_representante-primer_nombre')
-        representante.segundo_nombre = data.get('cliente_representante-segundo_nombre')
-        representante.apellido_paterno = data.get('cliente_representante-apellido_paterno')
-        representante.apellido_materno = data.get('cliente_representante-apellido_materno')
-        representante.departamento_id = data.get('cliente_representante-departamento')
-        representante.municipio_id = data.get('cliente_representante-municipio')
-        representante.telefono = data.get('cliente_representante-telefono')
-        representante.celular = data.get('cliente_representante-celular')
-        representante.domicilio = data.get('cliente_representante-domicilio')
-        representante.save()
+        try:
+            representante = ClienteNatural.objects.get(id=data.get('representante'))
+            rf = RepresentanteForm(data, instance=representante)
+        except ObjectDoesNotExist as error:
+            representante = ClienteNatural()
+            rf = RepresentanteForm(data)
+        if rf.is_valid():
+            rf.save()
+            # representante.primer_nombre = data.get('cliente_representante-primer_nombre')
+            # representante.segundo_nombre = data.get('cliente_representante-segundo_nombre')
+            # representante.apellido_paterno = data.get('cliente_representante-apellido_paterno')
+            # representante.apellido_materno = data.get('cliente_representante-apellido_materno')
+            # representante.departamento_id = data.get('cliente_representante-departamento')
+            # representante.municipio_id = data.get('cliente_representante-municipio')
+            # representante.telefono = data.get('cliente_representante-telefono')
+            # representante.celular = data.get('cliente_representante-celular')
+            # representante.domicilio = data.get('cliente_representante-domicilio')
+            # representante.save()
+            # instance.representante = rf.instance
+            # instance.save()
         for i in range(1, len(data.getlist('contacto_id'))):
             if data.getlist('contacto_id')[i] == '':
                 c = Contacto(contacto=instance)
@@ -891,8 +901,5 @@ class PolizasAutomovil(Datatables):
                 c = DatoPoliza.objects.get(id=int(data.getlist('contacto_id')[i]))
             c.extra_data = data.getlist('campos_adicionales')[i]
             c.save()
-
-
-
 
 # endregion
