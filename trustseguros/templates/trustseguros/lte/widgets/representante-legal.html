@@ -13,11 +13,26 @@
             </label>
             <div style="display: flex">
                 <input type="text" name="cliente_representante-cedula" class="textinput textInput form-control"
-                       required="" id="id_cliente_representante-cedula" value="{{ widget.value.cedula.value }}"
-                       {% if widget.value.instance.value %}readonly{% endif %}>
-                <button type="button" class="{{ widget.name }}-button-clear">
+                       required="" id="id_cliente_representante-cedula"
+                       {% if widget.value.instance.value %}value="{{ widget.value.cedula.value }}" readonly{% endif %}>
+
+
+                <button type="button" class="{{ widget.name }}-button-clear"
+
+                        style="
+                                {% if not widget.value.instance.value %}
+                                    display: none;
+                                {% endif %}
+                                color: red;
+                                background-color: pink;
+                                position: absolute;
+                                right: 15px;
+                                top: 41px;"
+                >
                     <i class="fa fa-times"></i>
                 </button>
+
+
             </div>
 
         </div>

@@ -15,6 +15,25 @@ $(document).on('keyup', '#id_cliente_representante-cedula', function () {
             $('#id_cliente_representante-domicilio').val(o.item.obj.domicilio).removeAttr('readonly');
             $('#id_cliente_representante-tipo_identificacion').attr('disabled', 'disabled');
             $('#id_cliente_representante-cedula').attr('readonly', 'readonly');
+
+            $('.representante-button-clear').css('display', 'initial');
         }
     })
+});
+
+
+$(document).on('click', '.representante-button-clear', function () {
+    $('#id_cliente_representante-instance').val('');
+    $('#id_cliente_representante-primer_nombre').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-segundo_nombre').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-apellido_paterno').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-apellido_materno').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-departamento').val('').attr('disabled', 'disabled');
+    $('#id_cliente_representante-municipio').val('').attr('disabled', 'disabled');
+    $('#id_cliente_representante-telefono').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-celular').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-domicilio').val('').attr('readonly', 'readonly');
+    $('#id_cliente_representante-cedula').val('').removeAttr('readonly', 'readonly');
+    $('#id_cliente_representante-tipo_identificacion').removeAttr('disabled', 'disabled');
+    $(this).css('display', 'none');
 });
