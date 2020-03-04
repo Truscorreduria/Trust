@@ -41,7 +41,7 @@ urlpatterns = [
 
     path('download/', download, name="download"),
     path('login/', LoginView.as_view(template_name='cotizador/login.html'), name="login"),
-    path('logout/', LogoutView.as_view(next_page="/cotizador"), name="logout"),
+    path('logout/', LogoutView.as_view(next_page="/"), name="logout"),
 
     path('ingresar_numero_poliza', ingresar_numero_poliza, name="ingresar_numero_poliza"),
     path('javascript/<file>/', javascript, name="javascript"),
