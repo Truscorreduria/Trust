@@ -27,9 +27,6 @@ class ContactoForm(forms.ModelForm):
 class RepresentanteForm(forms.ModelForm):
     prefix = 'cliente_representante'
 
-    instance = forms.ModelChoiceField(queryset=ClienteNatural.objects.all(), required=False,
-                                      widget=forms.HiddenInput)
-
     tipo_identificacion = forms.ChoiceField(choices=TipoDoc.choices(), required=True)
 
     cedula = forms.CharField(required=True, label="Número de identificación")
@@ -60,11 +57,8 @@ class RepresentanteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
-        if instance:
-            kwargs.update(initial={
-                'instance': instance
-            })
         super().__init__(*args, **kwargs)
+        print('instance', instance)
         if not instance:
             self.fields['primer_nombre'].widget.attrs['readonly'] = 'readonly'
             self.fields['segundo_nombre'].widget.attrs['readonly'] = 'readonly'
@@ -75,9 +69,11 @@ class RepresentanteForm(forms.ModelForm):
             self.fields['domicilio'].widget.attrs['readonly'] = 'readonly'
             self.fields['departamento'].widget.attrs['disabled'] = 'disabled'
             self.fields['municipio'].widget.attrs['disabled'] = 'disabled'
+            self.fields['tipo_identificacion'].required = True
         else:
             self.fields['tipo_identificacion'].required = False
             self.fields['tipo_identificacion'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
 
 
 class ClienteJuridicioForm(forms.ModelForm):
@@ -85,7 +81,7 @@ class ClienteJuridicioForm(forms.ModelForm):
     ruc = forms.CharField(required=True, widget=forms.TextInput(
         attrs={
             'class': 'inputmask',
-            'data-mask': 'J0319{10,10}'
+            'data-mask': 'A9{13,13}'
         }
     ))
     contactos = forms.Field(label="", required=False, widget=TableBorderedInput(
@@ -159,8 +155,12 @@ class ClienteJuridicioForm(forms.ModelForm):
 
     def clean_ruc(self):
         data = self.cleaned_data['ruc']
-        if ClienteJuridico.objects.filter(cedula=data).count() > 0:
-            raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        if self.instance:
+            if ClienteJuridico.objects.filter(cedula=data).exclude(id=self.instance.id).count() > 0:
+                raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        else:
+            if ClienteJuridico.objects.filter(cedula=data).count() > 0:
+                raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
         return data
 
 
@@ -241,8 +241,12 @@ class ClienteNaturalForm(forms.ModelForm):
 
     def clean_cedula(self):
         data = self.cleaned_data['cedula']
-        if ClienteNatural.objects.filter(cedula=data).count() > 0:
-            raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        if self.instance:
+            if ClienteNatural.objects.filter(cedula=data).exclude(id=self.instance.id).count() > 0:
+                raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
+        else:
+            if ClienteNatural.objects.filter(cedula=data).count() > 0:
+                raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
         return data
 
 

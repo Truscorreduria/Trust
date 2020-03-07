@@ -651,25 +651,19 @@ class PersonaJuridica(Datatables):
 
     def save_related(self, instance, data):
         try:
-            representante = ClienteNatural.objects.get(id=data.get('representante'))
-            rf = RepresentanteForm(data, instance=representante)
+            rf = RepresentanteForm(data,
+                                   instance=ClienteNatural.objects.get(
+                                       cedula=data.get('cliente_representante-cedula')))
         except ObjectDoesNotExist as error:
-            representante = ClienteNatural()
+            print(error)
             rf = RepresentanteForm(data)
         if rf.is_valid():
             rf.save()
-            # representante.primer_nombre = data.get('cliente_representante-primer_nombre')
-            # representante.segundo_nombre = data.get('cliente_representante-segundo_nombre')
-            # representante.apellido_paterno = data.get('cliente_representante-apellido_paterno')
-            # representante.apellido_materno = data.get('cliente_representante-apellido_materno')
-            # representante.departamento_id = data.get('cliente_representante-departamento')
-            # representante.municipio_id = data.get('cliente_representante-municipio')
-            # representante.telefono = data.get('cliente_representante-telefono')
-            # representante.celular = data.get('cliente_representante-celular')
-            # representante.domicilio = data.get('cliente_representante-domicilio')
-            # representante.save()
-            # instance.representante = rf.instance
-            # instance.save()
+        else:
+            print(rf.errors)
+        instance.representante = rf.instance
+        instance.save()
+        print(rf.cleaned_data)
         for i in range(1, len(data.getlist('contacto_id'))):
             if data.getlist('contacto_id')[i] == '':
                 c = Contacto(contacto=instance)
