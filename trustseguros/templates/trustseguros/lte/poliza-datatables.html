@@ -72,7 +72,7 @@
                 let emision = parseFloat($('#id_emision').val());
                 let iva = parseFloat($('#id_iva').val());
                 let otros = parseFloat($('#id_otros').val());
-                $('#id_total').val((prima_neta + emision + iva + otros).toFixed(2))
+                $('#id_total').val((prima_neta + emision + iva + otros).toFixed(2)).trigger('change')
             };
 
             const calcular_comision = function () {
@@ -86,7 +86,7 @@
                     method: "POST",
                     data: {
                         total: $('#id_total').val(), fecha: $('#id_fecha_pago').val(),
-                        cuotas: $('#id_cuotas').val()
+                        cuotas: $('#id_cuotas').val(), poliza: $('input[name="id"]').val()
                     },
                     success: function (response) {
                         const pagos = $('#id_tabla_pagos tbody').empty();
@@ -139,6 +139,15 @@
 
             $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
+            $(document).on('change', '#id_total', calcular_tabla_pagos);
+
+            $(document).on('change', '#id_f_pago', function () {
+                if ($(this).val() === "1") {
+                    $('#id_cuotas').attr('readonly', 'readonly').val('1').trigger('change')
+                } else {
+                    $('#id_cuotas').removeAttr('readonly')
+                }
+            });
 
             $(document).on('change', '#id_cesion_derecho', function () {
                 if ($(this).is(':checked')) {

@@ -88,6 +88,10 @@
                     redraw_object(response);
                     if (xhr.status === 200) {
                         update_table(response);
+                        $.growl.notice({
+                            title: `Notificación`,
+                            message: `<p>${response.instance.str} se guardó con éxito!</p>`
+                        });
                     }
                     $.each(response.errors, function (n, error) {
                         $.growl.error({
@@ -99,8 +103,8 @@
                 error: function (error) {
                     console.log(error);
                     $.growl.error({
-                            message: `<p>${error}</p>`
-                        });
+                        message: `<p>${error}</p>`
+                    });
                 }
             })
         };

@@ -314,11 +314,12 @@ class PolizaForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
-    total = forms.FloatField(label="Total", required=False, widget=forms.NumberInput(
-        attrs={
-            'readonly': 'readonly'
-        }
-    ))
+    total = forms.FloatField(label="Total", required=False, initial=0.0,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
     campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
@@ -384,11 +385,14 @@ class PolizaForm(forms.ModelForm):
             self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
             self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
             self.fields['concepto'].widget.attrs['disabled'] = 'disabled'
+        if instance:
+            if instance.f_pago == FormaPago.CONTADO:
+                self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
 
-    def clean(self):
-        if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:
-            raise forms.ValidationError("La suma de pagos y el total de la póliza no son iguales")
-        return self.cleaned_data
+    # def clean(self):
+    #     if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:
+    #         raise forms.ValidationError("La suma de pagos y el total de la póliza no son iguales")
+    #     return self.cleaned_data
 
 
 class DatoImportForm(forms.ModelForm):

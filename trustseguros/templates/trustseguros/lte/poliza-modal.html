@@ -10,12 +10,12 @@
                         general</a>
                 </li>
                 <li class="nav-item">
-                    <a data-toggle="tab" href="#{{ opts.model_name }}-costos-coberturas" class="nav-link">
-                        Costos y coberturas</a>
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-coberturas" class="nav-link">
+                        Detalle de coberturas</a>
                 </li>
                 <li class="nav-item">
                     <a data-toggle="tab" href="#{{ opts.model_name }}-pago" class="nav-link">
-                        Forma y medio de pago</a>
+                        Costo y forma de pago</a>
                 </li>
                 {% if instance.id %}
                     <li class="nav-item">
@@ -100,61 +100,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="{{ opts.model_name }}-costos-coberturas"
+                            <div id="{{ opts.model_name }}-coberturas"
                                  class="tab-pane fade">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <table class="table" style="border: none !important;">
-                                            <tr>
-                                                <td><b>Prima</b></td>
-                                                <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Descuento</b></td>
-                                                <td class="float-right">{{ form.descuento|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Prima neta</b></td>
-                                                <td class="float-right">
-                                                    <input type="number" class="form-control" name="prima_neta"
-                                                           readonly value="0.0" id="id_prima_neta">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Emisión</b></td>
-                                                <td class="float-right">{{ form.emision|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>IVA</b></td>
-                                                <td class="float-right">{{ form.iva|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Otros gastos</b></td>
-                                                <td class="float-right">{{ form.otros|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Total</b></td>
-                                                <td class="float-right">{{ form.total|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>% Comisión</b></td>
-                                                <td class="float-right">{{ form.per_comision|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Monto de comisión</b></td>
-                                                <td class="float-right">{{ form.amount_comision|as_inline_field }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Moneda</b></td>
-                                                <td class="float-right">{{ form.moneda|as_inline_field }}</td>
-                                            </tr>
-                                            {% comment %}<tr>
-                                                <td><b>Suma asegurada total</b></td>
-                                                <td class="float-right">{{ form.suma_asegurada|as_inline_field }}</td>
-                                            </tr>{% endcomment %}
-                                        </table>
-                                    </div>
-                                    <div class="col-md-8">
+                                    <div class="col">
                                         {{ form.coberturas }}
                                     </div>
                                 </div>
@@ -168,8 +117,73 @@
                                     <div class="col">{{ form.fecha_pago|as_crispy_field }}</div>
                                 </div>
                                 <div class="row">
-                                    {{ form.tabla_pagos }}
+                                    <div class="col-md-4">
+                                        <div class="card">
+                                            <table class="table" style="border: none !important;">
+                                                <tr>
+                                                    <td><b>Prima</b></td>
+                                                    <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Descuento</b></td>
+                                                    <td class="float-right">{{ form.descuento|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Prima neta</b></td>
+                                                    <td class="float-right">
+                                                        <input type="number" class="form-control" name="prima_neta"
+                                                               readonly value="0.0" id="id_prima_neta">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Emisión</b></td>
+                                                    <td class="float-right">{{ form.emision|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>IVA</b></td>
+                                                    <td class="float-right">{{ form.iva|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Otros gastos</b></td>
+                                                    <td class="float-right">{{ form.otros|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Total</b></td>
+                                                    <td class="float-right">{{ form.total|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>% Comisión</b></td>
+                                                    <td class="float-right">{{ form.per_comision|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Monto de comisión</b></td>
+                                                    <td class="float-right">{{ form.amount_comision|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Moneda</b></td>
+                                                    <td class="float-right">{{ form.moneda|as_inline_field }}</td>
+                                                </tr>
+                                                {% comment %}<tr>
+                                                <td><b>Suma asegurada total</b></td>
+                                                <td class="float-right">{{ form.suma_asegurada|as_inline_field }}</td>
+                                            </tr>{% endcomment %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Tabla de pagos</h5>
+                                                <div class="card-text">
+                                                    {{ form.tabla_pagos }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                 </div>
+
                             </div>
                             <div id="{{ opts.model_name }}-adicionales"
                                  class="tab-pane fade">

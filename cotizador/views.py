@@ -955,6 +955,11 @@ def calcular_tabla_pagos(request):
     total = float(request.POST.get('total'))
     fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cuotas'))
+    try:
+        poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
+        poliza.pagos.all().delete()
+    except:
+        pass
     monto_cuota = round(total / cuotas, 2)
     data = []
     anno = fecha_pago.year
