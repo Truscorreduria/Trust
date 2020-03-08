@@ -181,14 +181,8 @@
         };
 
         const redraw_object = function (response) {
-            modal.iziModal('destroy');
-            modal.empty().append(response.form);
-            modal.iziModal({
-                title: response.instance.str,
-                subtitle: 'Datos {{ opts.verbose_name }}',
-                width: modal_width, padding: 20, fullscreen: false, zindex: 1500,
-                headerColor: '#326634'
-            }).iziModal('open');
+            const wrap = modal.find('#{{ opts.model_name }}-modal');
+            wrap.empty().append(response.form);
         };
 
         const update_table = function (response) {

@@ -156,10 +156,10 @@ class ClienteJuridicioForm(forms.ModelForm):
     def clean_ruc(self):
         data = self.cleaned_data['ruc']
         if self.instance:
-            if ClienteJuridico.objects.filter(cedula=data).exclude(id=self.instance.id).count() > 0:
+            if ClienteJuridico.objects.filter(ruc=data).exclude(id=self.instance.id).count() > 0:
                 raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
         else:
-            if ClienteJuridico.objects.filter(cedula=data).count() > 0:
+            if ClienteJuridico.objects.filter(ruc=data).count() > 0:
                 raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
         return data
 
