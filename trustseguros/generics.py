@@ -168,7 +168,6 @@ class Datatables(View):
             'recordsFiltered': queryset.count(),
         }
 
-
     def post(self, request):
         status = 200
         errors = []
@@ -229,14 +228,14 @@ class Datatables(View):
                     status = 200
                     self.save_related(instance=instance, data=request.PUT)
                     form = self.get_form()(instance=instance)
+                    html_form = self.html_form(instance, request, form, "POST")
                 else:
                     errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
                     print(errors)
-                html_form = self.html_form(instance, request, form, "PUT")
+                    html_form = self.html_form(instance, request, form, "PUT")
             except IntegrityError as e:
                 print(e)
                 # errors.append(dict(e))
 
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
                              'errors': errors}, status=status, encoder=Codec)
-
