@@ -308,6 +308,10 @@
                 self.val(text);
             });
 
+            $(document).on('click', '.form-buttons button', function () {
+                $(this).attr('disabled', 'disabled')
+            })
+
         });
 
         function get_hash() {
