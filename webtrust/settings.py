@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'api',
     'seguros',
 
+    'adminlte',
     'django_user_agents',
     'constance',
     'constance.backends.database',

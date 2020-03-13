@@ -911,6 +911,13 @@ class Poliza(Base):
         except:
             return 0.0
 
+    @property
+    def prima_neta(self):
+        try:
+            return round(self.subtotal - self.descuento, 2)
+        except:
+            return 0.0
+
     def rotura_vidrios(self):
         try:
             return round(float(self.valor_nuevo) * 0.05, 2)

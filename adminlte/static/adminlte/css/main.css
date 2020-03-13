@@ -1,0 +1,63 @@
+body {
+  font-family: "Museo Sans" !important;
+  font-weight: 600 !important;
+}
+
+a {
+  color: #51972d !important;
+}
+
+.brand-text, .text-dark {
+  color: #326634 !important;
+  font-weight: 900 !important;
+}
+
+.navbar-light {
+  background-color: #51972d !important;
+}
+
+.sidebar-light-success .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-success .nav-sidebar > .nav-item > .nav-link.active {
+  background-color: #51972d !important;
+  color: #ffffff !important;
+}
+.sidebar-light-success .nav-treeview > .nav-item > .nav-link.active,
+.sidebar-light-success .nav-treeview > .nav-item > .nav-link.active:hover,
+.sidebar-light-success .nav-pills .nav-link:not(.active):hover {
+  color: #51972d !important;
+  background-color: #51972d44 !important;
+}
+
+.content-wrapper {
+  background-color: #51972d14;
+}
+.content-wrapper .dataTables_wrapper {
+  background-color: #ffffff;
+  color: #326634;
+}
+.content-wrapper .dataTables_wrapper .odd {
+  background-color: #51972d44 !important;
+}
+
+.bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+  width: 100% !important;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+  background-color: #326634;
+  color: #ffffff !important;
+}
+
+.bootstrap-select button.dropdown-toggle:focus, .bootstrap-select > select.mobile-device:focus + button.dropdown-toggle {
+  outline: 5px auto #326634 !important;
+}
+
+.dropdown-menu {
+  max-width: 100%;
+}
+
+.ui-autocomplete {
+  z-index: 9999 !important;
+}
+
+/*# sourceMappingURL=main.css.map */
