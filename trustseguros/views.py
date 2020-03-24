@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from .generics import Datatables
+from adminlte.generics import Datatables
 from django.contrib.auth.decorators import login_required
 from cotizador.forms import *
 from .forms import *
@@ -528,7 +528,7 @@ def comentarios(request):
 
 @login_required(login_url="/cotizador/login/")
 def index(request):
-    return render(request, 'trustseguros/lte/index.html', {
+    return render(request, 'adminlte/index.html', {
 
     })
 
