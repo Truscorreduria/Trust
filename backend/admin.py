@@ -128,8 +128,8 @@ class PolizaAdmin(ImportExportModelAdmin):
     readonly_fields = ('no_poliza', 'no_recibo')
 
 
-@admin.register(Ticket)
-class TicketAdmin(admin.ModelAdmin):
+@admin.register(Tramite)
+class TramiteAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
     list_display = ('code', 'created', 'referente', 'movimiento', 'poliza', 'descripcion',
                     'nombres', 'apellidos', 'cedula', 'email', 'telefono', 'estado')

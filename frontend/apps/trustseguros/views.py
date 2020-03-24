@@ -712,9 +712,9 @@ class Aseguradoras(Datatables):
             c.save()
 
 
-class Tickets(Datatables):
+class Tramites(Datatables):
     modal_width = 1200
-    model = Ticket
+    model = Tramite
     form = LteTicketForm
     list_display = ('code', 'nombres', 'apellidos', 'cedula')
 

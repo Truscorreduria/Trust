@@ -436,7 +436,7 @@ class LteTicketForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
 
     class Meta:
-        model = Ticket
+        model = Tramite
         fields = '__all__'
 
 

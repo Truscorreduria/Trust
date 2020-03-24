@@ -18,7 +18,7 @@ urlpatterns = [
     path('sepelio/', DependientesSepelio.as_view(), name="sepelio"),
     path('accidente/', DependientesAccidente.as_view(), name="accidente"),
     path('polizas/', Polizas.as_view(), name="polizas"),
-    path('tickets/', Tickets.as_view(), name="tickets"),
+    path('tramites/', Tramites.as_view(), name="tramites"),
     path('documentos/', documentos, name="documentos"),
     path('comentarios/', comentarios, name="comentarios"),
 ]

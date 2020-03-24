@@ -145,6 +145,7 @@ class ContactoAseguradora(Base):
     def __str__(self):
         return self.name
 
+
 class Depreciacion(Base):
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE, related_name="tabla_depreciacion")
 
@@ -331,7 +332,6 @@ class Cliente(Persona, Empresa, Direccion):
     tipo_cliente = models.PositiveIntegerField(default=TipoCliente.NATURAL,
                                                choices=TipoCliente.choices(), blank=True)
     estado_cliente = models.PositiveIntegerField(choices=EstadoCliente.choices(), null=True, blank=True)
-
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     cambiar_pass = models.BooleanField(default=False, verbose_name="Exigir cambio de contraseña")
@@ -777,8 +777,8 @@ class Poliza(Base):
     file_cedula = models.FileField(upload_to=get_media_url, null=True, blank=True)
     file_carta = models.FileField(upload_to=get_media_url, null=True, blank=True)
 
-    ticket = models.ForeignKey('Ticket', null=True, blank=True, on_delete=models.SET_NULL,
-                               related_name="ticket_de_baja")
+    tramite = models.ForeignKey('Tramite', null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name="ticket_de_baja")
 
     notificado = models.BooleanField(default=False)
 
@@ -1023,7 +1023,28 @@ class DatoPoliza(base):
                                   verbose_name="datos técnicos")
 
 
-class Ticket(Base):
+class TipoTramite:
+    ENDOSO = 1
+    CANCELACION = 2
+    CESION = 3
+    CORRECCION = 4
+    COTIZACION = 5
+    CAMBIO = 6
+    LAVADO = 7
+    RECLAMO = 8
+    RENOVACION = 9
+    LIQUIDACION = 10
+
+    @classmethod
+    def choices(cls):
+        return (cls.ENDOSO, "Endoso por póliza"), (cls.CANCELACION, "Cancelación de póliza"), \
+               (cls.CESION, "Cesión de derechos"), (cls.CORRECCION, "Corección de póliza"), \
+               (cls.COTIZACION, "Cotización nueva póliza"), (cls.CAMBIO, "Cambio de razón social"), \
+               (cls.LAVADO, "Documento de lavado de dinero"), (cls.RECLAMO, "Documento de reclamo"), \
+               (cls.RENOVACION, "Renovaciones"), (cls.LIQUIDACION, "Liquidaciones")
+
+
+class Tramite(Base):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     prioridad = models.PositiveIntegerField(choices=(
@@ -1158,7 +1179,7 @@ class benAbstract(Base):
     suma_asegurada = models.FloatField(null=True, blank=True)
     tipo_identificacion = models.CharField(max_length=25, null=True, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
-    ticket = models.ForeignKey(Ticket, null=True, blank=True, on_delete=models.SET_NULL)
+    tramite = models.ForeignKey(Tramite, null=True, blank=True, on_delete=models.SET_NULL)
     file_cedula = models.FileField(upload_to='cedulas', null=True, blank=True)
 
     class Meta:
