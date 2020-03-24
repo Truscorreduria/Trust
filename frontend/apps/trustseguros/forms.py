@@ -431,13 +431,68 @@ class DatoImportForm(forms.ModelForm):
         fields = '__all__'
 
 
-class LteTicketForm(forms.ModelForm):
+class TramiteForm(forms.ModelForm):
+    code = forms.CharField(required=False, label="Número trámite", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    fecha = forms.CharField(required=False, label="Fecha registro", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    hora = forms.CharField(required=False, label="Hora registro", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    ramo = forms.CharField(required=False, label="Ramo", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    sub_ramo = forms.CharField(required=False, label="Sub ramo", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    grupo = forms.CharField(required=False, label="Grupo", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    aseguradora = forms.CharField(required=False, label="Aseguradora", widget=forms.TextInput(
+        attrs={
+            'disabled': 'disabled',
+        }
+    ))
+    descripcion = forms.CharField(widget=forms.Textarea(
+        attrs={
+            'rows': 4
+        }
+    ))
+
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Cliente',
                                      required=True, widget=SelectSearch)
+    drive = forms.Field(label="", required=False, widget=DriveWidget)
+    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
     class Meta:
         model = Tramite
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        updated_initial = {}
+        if instance:
+            updated_initial['campos_adicionales'] = instance
+            updated_initial['fecha'] = instance.created.strftime('%d/%m/%Y')
+            updated_initial['hora'] = instance.created.strftime('%H:%M')
+            updated_initial['drive'] = instance
+            updated_initial['bitacora'] = instance
+        kwargs.update(initial=updated_initial)
+        super().__init__(*args, **kwargs)
 
 
 class LteAccidentetForm(forms.ModelForm):

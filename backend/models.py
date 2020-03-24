@@ -363,7 +363,7 @@ class Cliente(Persona, Empresa, Direccion):
                 self.celular and self.codigo_empleado)
 
     def polizas_activas(self):
-        return Poliza.objects.filter(user=self.user, ticket__isnull=True)
+        return Poliza.objects.filter(user=self.user, tramite__isnull=True)
 
     def contactos(self):
         return Contacto.objects.filter(contacto=self)
@@ -390,10 +390,10 @@ class Cliente(Persona, Empresa, Direccion):
             return "desconocida"
 
     def dependientes_sepelio(self):
-        return benSepelio.objects.filter(empleado=self, ticket__isnull=True)
+        return benSepelio.objects.filter(empleado=self, tramite__isnull=True)
 
     def dependientes_accidente(self):
-        return benAccidente.objects.filter(empleado=self, ticket__isnull=True)
+        return benAccidente.objects.filter(empleado=self, tramite__isnull=True)
 
     def delete(self, *args, **kwargs):
         if self.user:
@@ -1045,8 +1045,12 @@ class TipoTramite:
 
 
 class Tramite(Base):
+    tipo_tramite = models.PositiveSmallIntegerField(choices=TipoTramite.choices(), null=True)
+
+    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    fechahora = models.DateTimeField(null=True)
     prioridad = models.PositiveIntegerField(choices=(
         (1, 'Baja'),
         (2, 'Media'),
@@ -1149,6 +1153,22 @@ class Tramite(Base):
             return "%s:%s:%s" % (str(hor).zfill(2), str(minu).zfill(2), str(seg).zfill(2))
         return "<span>00:00:00</span> <button class='btn-trust btn-trust-sm contacto-directo' data-ticket='%s'>Contacto directo</button>" \
                % self.id
+
+    def to_json(self):
+        o = super().to_json()
+        if self.poliza:
+            o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
+        else:
+            o['poliza'] = {'id': '', 'number': ''}
+        if self.user:
+            o['user'] = {'id': self.user.id, 'username': self.user.username}
+        else:
+            o['user'] = {'id': '', 'username': ''}
+        if self.cliente:
+            o['cliente'] = {'id': self.cliente.id, 'name': self.cliente.__str__()}
+        else:
+            o['cliente'] = {'id': '', 'name': ''}
+        return o
 
     class Meta:
         verbose_name = "Trámite"

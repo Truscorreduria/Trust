@@ -715,23 +715,40 @@ class Aseguradoras(Datatables):
 class Tramites(Datatables):
     modal_width = 1200
     model = Tramite
-    form = LteTicketForm
-    list_display = ('code', 'nombres', 'apellidos', 'cedula')
-
+    form = TramiteForm
+    list_display = ('code', 'tipo_tramite', ('Cliente', 'cliente.name'),
+                    ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'))
+    list_filter = ('tipo_tramite', 'estado', 'user')
     search_fields = ('code',)
     fieldsets = [
         {
             'id': 'info',
             'name': 'Datos del cliente',
             'fields': (
-                ('code', 'cliente'),
-                ('nombres', 'apellidos'),
-                ('email', 'cedula'),
-                ('celular', 'telefono'),
-                ('domicilio',),
+                ('code', 'fecha', 'hora', 'tipo_tramite'),
+                ('cliente', 'poliza', 'ramo'),
+                ('sub_ramo', 'grupo', 'aseguradora', 'contacto_aseguradora'),
+                ('estado', 'telefono'),
+                ('user', 'descripcion'),
+            )
+        },
+        {
+            'id': 'drive',
+            'name': 'Soportes',
+            'fields': (
+                ('drive', ),
+            )
+        },
+        {
+            'id': 'bita',
+            'name': 'Bitácora',
+            'fields': (
+                ('bitacora', ),
             )
         },
     ]
+
+
 
 
 class DependientesSepelio(Datatables):
