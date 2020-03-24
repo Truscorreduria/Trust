@@ -32,7 +32,7 @@ def as_inline_field(field):
         'field': field,
     }
 
-    template_path = 'trustseguros/lte/datatables-field.html'
+    template_path = 'adminlte/datatables-field.html'
     template = get_template(template_path)
 
     c = Context(attributes).flatten()

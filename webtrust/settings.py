@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from collections import OrderedDict
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -53,13 +54,10 @@ INSTALLED_APPS = [
 
     'home',
     'utils',
-    'cotizador',
-    'reportes',
-    'migracion',
-    'trustseguros',
+    'backend',
+    'frontend',
     'accounts',
     'api',
-    'seguros',
 
     'adminlte',
     'django_user_agents',
@@ -91,7 +89,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 #
 # USER_AGENTS_CACHE = 'default'
 
-from collections import OrderedDict
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'image_field': ['django.forms.ImageField', {'initial': 'cotizador/images/aseguradoras/assa.png'}],
+    'aseguradora_field': ['backend.forms.AseguradoraField', {}],
+    'ramo_field': ['backend.forms.RamoField', {}],
+    'subramo_field': ['backend.forms.SubRamoField', {}],
+    'cliente_field': ['backend.forms.ClienteField', {}],
+}
 
 CONSTANCE_CONFIG = OrderedDict([
 
@@ -106,14 +110,18 @@ CONSTANCE_CONFIG = OrderedDict([
     ('DIAS_DEBITO_AUTOMATICO',
      ('10,20', 'Dias del mes en los que se enviará el reporte de debito automático.')),
 
-    ('LOGO_AUTOMOVIL', ('cotizador/images/aseguradoras/assa.png', 'Logo de la compañia de seguros de Accidentes.')),
+    ('ASEGURADORA', (None, 'Aseguradora', 'aseguradora_field')),
+    ('RAMO', (None, 'Ramo', 'ramo_field')),
+    ('SUBRAMO', (None, 'Sub ramo', 'subramo_field')),
+    ('CONTRATANTE', (None, 'Contratante', 'cliente_field')),
+    ('LOGO_AUTOMOVIL', ('cotizador/images/aseguradoras/assa.png', 'Logo de la compañia de seguros de Accidentes.',
+                        'image_field')),
     ('TASA_AUTOMOVIL', (10.4, 'Tarifa para el seguro de prima de vehículo')),
     ('SOA_AUTOMOVIL', (55.0, 'Tarifa para el seguro obligatorio de vehículo')),
     ('PORCENTAJE_DEDUCIBLE', (0.2,
                               'Porcentaje deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')),
     ('PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL', (0.3,
-                              'Porcentaje deducible solo para la cobertura de extensión territorial. Para aplicar regargo vaya a Marcas con recargo.')),
-
+                                                    'Porcentaje deducible solo para la cobertura de extensión territorial. Para aplicar regargo vaya a Marcas con recargo.')),
     ('MINIMO_DEDUCIBLE', (100.0,
                           'Mínimo deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')),
     ('SOA_DESCUENTO', (
@@ -121,6 +129,10 @@ CONSTANCE_CONFIG = OrderedDict([
     ('EMAIL_AUTOMOVIL', ('gcarrion@trustcorreduria.com,',
                          'Lista de correos de automovil usados para las notificaciones del sistema')),
 
+    ('ASEGURADORA_SEPELIO', (None, 'Aseguradora', 'aseguradora_field')),
+    ('RAMO_SEPELIO', (None, 'Ramo', 'ramo_field')),
+    ('SUBRAMO_SEPELIO', (None, 'Sub ramo', 'subramo_field')),
+    ('CONTRATANTE_SEPELIO', (None, 'Contratante', 'cliente_field')),
     ('POLIZA_SEPELIO', ('CF - 000521 - 0', 'Número de Póliza para Seguros del Titular.')),
     ('POLIZA_SEPELIO_DEPENDIENTE', ('CF - 000564 - 0', 'Número de Póliza para Seguros del Dependiente.')),
     ('COSTO_SEPELIO', (3.75, 'Costo del Seguro de Sepelio para empleados Banpro.')),
@@ -130,6 +142,10 @@ CONSTANCE_CONFIG = OrderedDict([
     ('EMAIL_SEPELIO', ('asanchez@segurosamerica.com,',
                        'Lista de correos de sepelio usados para las notificaciones del sistema')),
 
+    ('ASEGURADORA_ACCIDENTE', (None, 'Aseguradora', 'aseguradora_field')),
+    ('RAMO_ACCIDENTE', (None, 'Ramo', 'ramo_field')),
+    ('SUBRAMO_ACCIDENTE', (None, 'Sub ramo', 'subramo_field')),
+    ('CONTRATANTE_ACCIDENTE', (None, 'Contratante', 'cliente_field')),
     ('POLIZA_ACCIDENTE', ('APC - 13359 - 30977', 'Número de Póliza para Seguros de Accidente Banpro.')),
     ('COSTO_ACCIDENTE', (18.0, 'Costo del Seguro de Accidentes para empleados Banpro.')),
     ('COSTO_CARNET_ACCIDENTE', (1.85, 'Costo del carnet para seguros de Accidente')),
@@ -139,52 +155,47 @@ CONSTANCE_CONFIG = OrderedDict([
     ('EMAIL_ACCIDENTE', ('luis.collado@mapfre.com.ni,',
                          'Lista de correos de accidente usados para las notificaciones del sistema')),
 
+    ('ASEGURADORA_VIDA', (None, 'Aseguradora', 'aseguradora_field')),
+    ('RAMO_VIDA', (None, 'Ramo', 'ramo_field')),
+    ('SUBRAMO_VIDA', (None, 'Sub ramo', 'subramo_field')),
+    ('CONTRATANTE_VIDA', (None, 'Contratante', 'cliente_field')),
     ('POLIZA_VIDA', ('CV-000209-0', 'Número de Póliza para Seguros de Vida Banpro.')),
     ('SUMA_VIDA', ("22 veces el salario", 'Suma asegurada para Seguros de Accidentes del Titular.')),
     ('LOGO_VIDA', ('cotizador/images/aseguradoras/iniser.png', 'Logo de la compañia de seguros de Accidentes.')),
 
-
-    ('COSTO_REMESA_ROBO', (3.0 , 'Costo de la cobertura de robo en producto de remesas.')),
-    ('COSTO_REMESA_SEPELIO', (7.0 , 'Costo de la cobertura de repatriación y sepelio.')),
+    ('COSTO_REMESA_ROBO', (3.0, 'Costo de la cobertura de robo en producto de remesas.')),
+    ('COSTO_REMESA_SEPELIO', (7.0, 'Costo de la cobertura de repatriación y sepelio.')),
 ])
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'Configuración envio de reportes': ('EMAIL_TRUST', 'EMAIL_BANPRO', 'EMAIL_DEBITO_AUTOMATICO',
                                         'DIAS_DEBITO_AUTOMATICO'),
 
-    'Configuración cotizador automovil': ('LOGO_AUTOMOVIL', 'TASA_AUTOMOVIL', 'SOA_AUTOMOVIL', 'PORCENTAJE_DEDUCIBLE',
-                                          'PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL',
-                                          'MINIMO_DEDUCIBLE', 'SOA_DESCUENTO', 'EMAIL_AUTOMOVIL'
-                                          ),
+    'Configuración cotizador automovil': (
+        'ASEGURADORA', 'RAMO', 'SUBRAMO', 'CONTRATANTE', 'TASA_AUTOMOVIL', 'SOA_AUTOMOVIL', 'PORCENTAJE_DEDUCIBLE',
+        'PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL',
+        'MINIMO_DEDUCIBLE', 'SOA_DESCUENTO', 'EMAIL_AUTOMOVIL'
+    ),
 
-    'Configuración cotizador sepelio': ('POLIZA_SEPELIO', 'POLIZA_SEPELIO_DEPENDIENTE', 'COSTO_SEPELIO',
-                                        'SUMA_SEPELIO', 'LOGO_SEPELIO', 'EMAIL_SEPELIO'),
+    'Configuración cotizador sepelio': (
+        'ASEGURADORA_SEPELIO', 'RAMO_SEPELIO', 'SUBRAMO_SEPELIO', 'CONTRATANTE_SEPELIO',
+        'POLIZA_SEPELIO', 'POLIZA_SEPELIO_DEPENDIENTE', 'COSTO_SEPELIO',
+        'SUMA_SEPELIO', 'LOGO_SEPELIO', 'EMAIL_SEPELIO'),
 
-    'Configuración cotizador accidente': ('POLIZA_ACCIDENTE', 'COSTO_ACCIDENTE', 'COSTO_CARNET_ACCIDENTE',
-                                          'SUMA_ACCIDENTE', 'SUMA_ACCIDENTE_DEPENDIENTE', 'LOGO_ACCIDENTE',
-                                          'EMAIL_ACCIDENTE'),
+    'Configuración cotizador accidente': (
+        'ASEGURADORA_ACCIDENTE', 'RAMO_ACCIDENTE', 'SUBRAMO_ACCIDENTE', 'CONTRATANTE_ACCIDENTE',
+        'POLIZA_ACCIDENTE', 'COSTO_ACCIDENTE', 'COSTO_CARNET_ACCIDENTE',
+        'SUMA_ACCIDENTE', 'SUMA_ACCIDENTE_DEPENDIENTE', 'LOGO_ACCIDENTE',
+        'EMAIL_ACCIDENTE'),
 
-    'Configuración cotizador vida': ('POLIZA_VIDA', 'SUMA_VIDA', 'LOGO_VIDA'),
+    'Configuración cotizador vida': (
+        'ASEGURADORA_VIDA', 'RAMO_VIDA', 'SUBRAMO_VIDA', 'CONTRATANTE_VIDA',
+        'POLIZA_VIDA', 'SUMA_VIDA', 'LOGO_VIDA'),
 
     'Configuración BANCASEGUROS remesas': ('COSTO_REMESA_ROBO', 'COSTO_REMESA_SEPELIO'),
 }
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 GRAPPELLI_SWITCH_USER = False
-EXTRA_MENUS = [
-    {'menu': 'Reportería', 'link': '#',
-     'options': [
-         {'link': '/reportes/reporte_cotizacion_auto', 'label': 'Cotizaciónes de Automovil',
-          'perm':'cotizador.report_cotizaciones'},
-         {'link': '/reportes/reporte_debito_automatico', 'label': 'Débito Automático',
-          'perm': 'cotizador.report_debito_automatico'},
-         {'link': '/reportes/reporte_deduccion_nomina', 'label': 'Deducción de Nómina',
-          'perm': 'cotizador.reporte_deduccion_nomina'},
-         {'link': '/reportes/reporte_polizas_vencer', 'label': 'Póliza a vencer',
-          'perm': 'cotizador.reporte_polizas_vencer'},
-     ]
-     },
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -197,9 +208,9 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-    'trustseguros.middleware.PutParsingMiddleware',
-    'trustseguros.middleware.DeleteParsingMiddleware',
-    'trustseguros.middleware.JSONParsingMiddleware',
+    'adminlte.middleware.PutParsingMiddleware',
+    'adminlte.middleware.DeleteParsingMiddleware',
+    'adminlte.middleware.JSONParsingMiddleware',
 ]
 
 ROOT_URLCONF = 'webtrust.urls'
@@ -216,10 +227,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'grappelli_extras.context_processors.applist',
-                'grappelli_extras.context_processors.extra_menus',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
-                'cotizador.context_processors.Entidades',
+                'backend.context_processors.Entidades',
                 'utils.context_processors.Utils',
             ],
         },
@@ -317,38 +327,34 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 # BOWER_PATH = '/usr/local/bin/bower'
 
 BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
- 'bootstrap-select#1.13.12',
- 'bootstrap-validator#0.11.9',
- 'datatables#1.10.19',
- 'datatables.net#1.10.20',
- 'datatables.net-bs#2.1.1',
- 'datatables.net-bs4#3.2.2',
- 'datatables.net-buttons#1.5.4',
- 'datatables.net-buttons-bs#1.5.4',
- 'eonasdan-bootstrap-datetimepicker#4.17.47',
- 'eve-raphael#0.5.0',
- 'flexslider#2.7.2',
- 'fontAwesome#5.7.0',
- 'fullcalendar#3.10.0',
- 'glyphicons#0.0.2',
- 'growl#1.3.5',
- 'inputmask#4.0.8',
- 'izimodal#1.5.1',
- 'jquery#3.4.1',
- 'jquery-mask-plugin#1.14.15',
- 'jquery-ui#1.12.1',
- 'mocha#1.17.1',
- 'moment#2.24.0',
- 'morris.js#0.5.1',
- 'mustache.js#3.0.1',
- 'raphael#2.2.7',
- 'smartwizard#4.3.1',
- 'sweetalert2#7.33.1',
- 'tipsy#0.1.7']
-
-
-
-
+                        'bootstrap-select#1.13.12',
+                        'bootstrap-validator#0.11.9',
+                        'datatables#1.10.19',
+                        'datatables.net#1.10.20',
+                        'datatables.net-bs#2.1.1',
+                        'datatables.net-bs4#3.2.2',
+                        'datatables.net-buttons#1.5.4',
+                        'datatables.net-buttons-bs#1.5.4',
+                        'eonasdan-bootstrap-datetimepicker#4.17.47',
+                        'eve-raphael#0.5.0',
+                        'flexslider#2.7.2',
+                        'fontAwesome#5.7.0',
+                        'fullcalendar#3.10.0',
+                        'glyphicons#0.0.2',
+                        'growl#1.3.5',
+                        'inputmask#4.0.8',
+                        'izimodal#1.5.1',
+                        'jquery#3.4.1',
+                        'jquery-mask-plugin#1.14.15',
+                        'jquery-ui#1.12.1',
+                        'mocha#1.17.1',
+                        'moment#2.24.0',
+                        'morris.js#0.5.1',
+                        'mustache.js#3.0.1',
+                        'raphael#2.2.7',
+                        'smartwizard#4.3.1',
+                        'sweetalert2#7.33.1',
+                        'tipsy#0.1.7']
 
 # GRAPH_MODELS = {
 #     'all_applications': True,

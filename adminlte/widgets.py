@@ -1,5 +1,4 @@
 from django.forms import Widget, Select
-from cotizador.models import Cliente
 
 
 def get_all_fields_from_form(instance):

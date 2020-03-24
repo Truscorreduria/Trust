@@ -1,0 +1,263 @@
+{% extends 'adminlte/datatables.html' %}
+{% load static datatables %}
+
+
+{% block javascript %}
+
+    {{ block.super }}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            function coberturaTemplate(cobertura) {
+                return (`<tr>
+                            <td>
+                                <input type="checkbox" name="cobertura-select">
+                            </td>
+                            <td>
+                                ${cobertura.name}
+                                <input type="hidden" name="cobertura" value="${cobertura.id}">
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" value="0.0" name="monto"
+                                style="max-width: 150px">
+                            </td>
+                        </tr>`)
+            }
+
+            $(document).on('change', '#id_ramo', function () {
+                const _this = $(this);
+                $.ajax("{% url 'ajax_getCollection' %}", {
+                    method: 'POST',
+                    data: {
+                        app_label: 'cotizador', model: 'subramo',
+                        filters: `{'ramo_id': '${_this.val()}'}`
+                    },
+                    success: function (response) {
+                        const table = $('#id_sub_ramo').empty();
+                        table.append(`<option value="">---------</option>`);
+                        $.each(response, function (i, o) {
+                            table.append(`<option value="${o.id}">${o.name}</option>`);
+                        })
+                    }
+                })
+            });
+
+            $(document).on('change', '#id_sub_ramo', function () {
+                const _this = $(this);
+                $.ajax("{% url 'ajax_getCollection' %}", {
+                    method: 'POST',
+                    data: {
+                        app_label: 'cotizador', model: 'cobertura',
+                        filters: `{'sub_ramo_id': '${_this.val()}'}`
+                    },
+                    success: function (response) {
+                        const table = $('#coberturas-table tbody').empty();
+                        $.each(response, function (i, o) {
+                            table.append(coberturaTemplate(o));
+                        })
+                    }
+                })
+            });
+
+            const calcular_prima_neta = function () {
+                let prima = parseFloat($('#id_subtotal').val());
+                let descuento = parseFloat($('#id_descuento').val());
+                $('#id_prima_neta').val((prima - descuento).toFixed(2))
+                    .trigger('change')
+            };
+
+            const calcular_total = function () {
+                let prima_neta = parseFloat($('#id_prima_neta').val());
+                let emision = parseFloat($('#id_emision').val());
+                let iva = parseFloat($('#id_iva').val());
+                let otros = parseFloat($('#id_otros').val());
+                $('#id_total').val((prima_neta + emision + iva + otros).toFixed(2)).trigger('change')
+            };
+
+            const calcular_comision = function () {
+                let prima_neta = parseFloat($('#id_prima_neta').val());
+                let per_comision = parseFloat($('#id_per_comision').val());
+                $('#id_amount_comision').val(((prima_neta * per_comision) / 100).toFixed(2))
+            };
+
+            const calcular_tabla_pagos = function () {
+                $.ajax("{% url 'cotizador:calcular_tabla_pagos' %}", {
+                    method: "POST",
+                    data: {
+                        total: $('#id_total').val(), fecha: $('#id_fecha_pago').val(),
+                        cuotas: $('#id_cuotas').val(), poliza: $('input[name="id"]').val()
+                    },
+                    success: function (response) {
+                        const pagos = $('#id_tabla_pagos tbody').empty();
+                        $.each(response, function (i, o) {
+                            pagos.append(`
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="tabla_pagos_id">
+                                            <input type="text" name="tabla_pagos_numero" class="form-control" readonly value="${o.numero}">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tabla_pagos_fecha_vence" class="form-control" readonly value="${o.fecha}">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tabla_pagos_monto" class="form-control" value="${o.monto}">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tabla_pagos_estado" class="form-control" readonly value="${o.estado}">
+                                        </td>
+                                    </tr>
+                            `)
+                        });
+                        let total_pagos = 0.0;
+                        $.each($('input[name="tabla_pagos_monto"]'), function (i, o) {
+                            total_pagos += parseFloat($(o).val())
+                        });
+                        $('#id_total_pagos').val(total_pagos);
+                    }
+                })
+            };
+
+            $(document).on('change', 'input[name="tabla_pagos_monto"]', function () {
+                let total_pagos = 0.0;
+                $.each($('input[name="tabla_pagos_monto"]'), function (i, o) {
+                    total_pagos += parseFloat($(o).val())
+                });
+                $('#id_total_pagos').val(total_pagos);
+            });
+
+            $(document).on('change', '#id_subtotal', calcular_prima_neta);
+            $(document).on('change', '#id_descuento', calcular_prima_neta);
+
+            $(document).on('change', '#id_prima_neta', calcular_total);
+            $(document).on('change', '#id_emision', calcular_total);
+            $(document).on('change', '#id_iva', calcular_total);
+            $(document).on('change', '#id_otros', calcular_total);
+
+            $(document).on('change', '#id_prima_neta', calcular_comision);
+            $(document).on('change', '#id_per_comision', calcular_comision);
+
+            $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
+            $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
+            $(document).on('change', '#id_total', calcular_tabla_pagos);
+
+            $(document).on('change', '#id_f_pago', function () {
+                if ($(this).val() === "1") {
+                    $('#id_cuotas').attr('readonly', 'readonly').val('1').trigger('change')
+                } else {
+                    $('#id_cuotas').removeAttr('readonly')
+                }
+            });
+
+            $(document).on('change', '#id_cesion_derecho', function () {
+                if ($(this).is(':checked')) {
+                    $('#col-cesionario').css('visibility', 'visible');
+                } else {
+                    $('#col-cesionario').css('visibility', 'hidden');
+                }
+            });
+
+            const uploadFile = function (file) {
+                const data = new FormData();
+                data.append('file', file);
+                data.append('new', 'new');
+                data.append('app_label', 'cotizador');
+                data.append('model', 'poliza');
+                data.append('id', $('input[name="id"]').val());
+                $.ajax("{% url 'trustseguros:documentos' %}", {
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $('#drive-list').append(`
+                            <tr>
+                                <td> <a href="${response.archivo.archivo}" target="_blank"><i class="fa fa-eye"></i></a> ${response.archivo.nombre}</td>
+                                <td>${response.archivo.created_user.username}</td>
+                                <td>${response.archivo.updated}</td>
+                                <td style="text-align: center;">
+                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.id }}">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        `);
+                    }
+                })
+            };
+
+            $(document).on('change', '#drive-files', function () {
+                uploadFile(this.files[0]);
+            });
+
+            $(document).on('click', '#bitacorabtn-add-comment', function () {
+                let comment = $('#bitacora-comentario-input').val();
+                if (comment.length > 0) {
+                    $.ajax("{% url 'trustseguros:comentarios' %}", {
+                        method: "post",
+                        data: {
+                            new: 'new', comentario: comment,
+                            app_label: 'cotizador', model: 'poliza',
+                            id: $('input[name="id"]').val()
+                        },
+                        success: function (response) {
+                            $('#bitacora-table').prepend(`
+                                <tr>
+                                    <td colspan="2">${response.instance.comentario}</td>
+                                    <td>${response.instance.created_user.username}</td>
+                                    <td>${response.instance.created}</td>
+                                </tr>
+                            `);
+                            $('#bitacora-comentario-input').val('')
+                        }
+                    })
+                }
+            });
+
+            $(document).on('click', '#btn-finish', function () {
+                $.ajax("{% url 'trustseguros:polizas' %}", {
+                    method: "POST",
+                    data: {
+                        id: $('input[name="id"]').val(), activar: 'activar'
+                    }, success: function (response) {
+                        redraw_object(response);
+                    }
+                })
+            });
+
+            $(document).on('click', '#campos_adicionales-import-button', function () {
+                $('#campos_adicionales-import-file').trigger('click')
+            });
+
+            $(document).on('change', '#campos_adicionales-import-file', function () {
+                let data = new FormData()
+                data.append('import_data', 'import_data');
+                data.append('file', this.files[0]);
+                data.append('id', $('input[name="id"]').val());
+                $.ajax("{% url 'trustseguros:polizas' %}", {
+                    method: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        $('#campos_adicionales-table').append(response.html);
+
+                        $.each($('#campos_adicionales-table').find('.campos_adicionales-value'), function (i, o) {
+                            {% comment %}const data = JSON.parse($(o).val());
+                            const $tr = $(o).parents('tr');
+                            Object.keys(data).forEach(function (k) {
+                                $($tr).find(`input[name="${k}"]`).val(data[k]);
+                            });{% endcomment %}
+                        });
+                    }
+                })
+            });
+
+        });
+
+    </script>
+
+    {% for script in media.js %}
+        <script src="{% static script %}"></script>
+    {% endfor %}
+{% endblock %}

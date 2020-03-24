@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cotizador.models import Referencia
+from backend.models import Referencia
 
 
 class ReferenciaSerializer(serializers.ModelSerializer):
