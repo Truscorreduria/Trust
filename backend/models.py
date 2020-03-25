@@ -786,6 +786,7 @@ class Poliza(Base):
 
     editable = models.BooleanField(default=True)
     perdir_comentarios = models.BooleanField(default=False)
+    pedir_soporte = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Pólizas"

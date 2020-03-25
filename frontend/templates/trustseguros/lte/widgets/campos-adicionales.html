@@ -9,12 +9,12 @@
         <td style="text-align: center">
             <input type="hidden" name="{{ widget.name }}_id" class="{{ widget.name }}-id">
             <input type="hidden" name="{{ widget.name }}" class="{{ widget.name }}-value">
-            {% ifequal widget.value.estado_poliza 0 %}
+            {% if widget.value.editable %}
                 <button type="button" class="btn btn-danger btn-table-delete" data-id="" data-model="datopoliza"
                         data-app="cotizador">
                     <i class="fa fa-trash"></i>
                 </button>
-            {% endifequal %}
+            {% endif %}
         </td>
     </tr>
 </table>
@@ -27,10 +27,10 @@
             <th>{{ field.label }}</th>
         {% endfor %}
         <th style="width: 120px; text-align: center">
-            {% ifequal widget.value.estado_poliza 0 %}
-                <input type="file" id="{{ widget.name }}-import-file" style="display:none;" />
+            {% if widget.value.editable %}
+                <input type="file" id="{{ widget.name }}-import-file" style="display:none;"/>
                 <button type="button" class="btn btn-info" title="Importar desde excell"
-                    id="{{ widget.name }}-import-button">
+                        id="{{ widget.name }}-import-button">
                     <i class="fa fa-upload"></i>
                 </button>
                 <button type="button" class="btn btn-info btn-table-add"
@@ -38,7 +38,7 @@
                         data-target="{{ widget.name }}-table" data-template="{{ widget.name }}-template">
                     <i class="fa fa-plus"></i>
                 </button>
-            {% endifequal %}
+            {% endif %}
         </th>
     </tr>
     </thead>
@@ -50,7 +50,7 @@
                 <td>
                     <input type="text" class="form-control {{ widget.name }}-input" value=""
                            name="{{ widget.name }}-{{ field.name }}"
-                            {% ifnotequal widget.value.estado_poliza 0 %}readonly{% endifnotequal %}>
+                           {% if not widget.value.editable %}readonly{% endif %}>
                 </td>
             {% endfor %}
 
@@ -59,12 +59,12 @@
                        class="{{ widget.name }}-id">
                 <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}"
                        class="{{ widget.name }}-value">
-                {% ifequal widget.value.estado_poliza 0 %}
+                {% if widget.value.editable %}
                     <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
                             data-model="datopoliza" data-app="cotizador">
                         <i class="fa fa-trash"></i>
                     </button>
-                {% endifequal %}
+                {% endif %}
             </td>
 
         </tr>
