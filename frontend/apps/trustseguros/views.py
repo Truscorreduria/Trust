@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from grappelli_extras.utils import Codec
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
+from backend.signals import RenovarPoliza
 
 
 def documentos(request):
@@ -736,14 +737,14 @@ class Tramites(Datatables):
             'id': 'drive',
             'name': 'Soportes',
             'fields': (
-                ('drive', ),
+                ('drive',),
             )
         },
         {
             'id': 'bita',
             'name': 'Bitácora',
             'fields': (
-                ('bitacora', ),
+                ('bitacora',),
             )
         },
     ]
@@ -905,6 +906,25 @@ class Polizas(Datatables):
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'cancelar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.CANCELADA
+            p.editable = False
+            p.perdir_comentarios = True
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'renovar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.RENOVADA
+            p.save()
+            nueva = RenovarPoliza.send(p, request=request)[0][1]
+            print(nueva)
+            print(dir(nueva))
+            form = self.get_form()(instance=nueva)
+            html_form = self.html_form(nueva, request, form, 'POST')
+            return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'import_data' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
             file = request.FILES['file']

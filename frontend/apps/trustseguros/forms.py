@@ -8,7 +8,7 @@ class ContactoAseguradoraForm(forms.ModelForm):
 
     class Meta:
         model = ContactoAseguradora
-        fields = ('name', )
+        fields = ('name',)
 
 
 class AseguradoraForm(forms.ModelForm):
@@ -419,6 +419,11 @@ class PolizaForm(forms.ModelForm):
         if instance:
             if instance.f_pago == FormaPago.CONTADO:
                 self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+        if instance and (instance.estado_poliza == EstadoPoliza.CANCELADA
+                         or instance.estado_poliza == EstadoPoliza.ANULADA):
+            self.fields['tipo_poliza'].required = False
+            self.fields['cliente'].required = False
+            self.fields['contratante'].required = False
 
     # def clean(self):
     #     if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:

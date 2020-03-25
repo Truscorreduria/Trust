@@ -144,3 +144,26 @@ def notificar_poliza_lista(sender, **kwargs):
 
 poliza_lista = Signal()
 poliza_lista.connect(notificar_poliza_lista)
+
+
+def renovar_poliza(sender, **kwargs):
+    request = kwargs.get('request')
+    nueva = Poliza(no_poliza=sender.no_poliza, aseguradora=sender.aseguradora,
+                   contratante=sender.contratante, cliente=sender.cliente,
+                   grupo=sender.grupo, ramo=sender.ramo, sub_ramo=sender.sub_ramo,
+                   tipo_poliza=sender.tipo_poliza, estado_poliza=EstadoPoliza.PENDIENTE,
+                   fecha_emision=datetime.now(), fecha_vence=datetime.now() + timedelta(days=365)
+                   )
+    nueva.user = request.user
+    nueva.save()
+
+    for cert in sender.datos_tecnicos.all():
+        dato = DatoPoliza(poliza=nueva, extra_data=cert.extra_data)
+        dato.save()
+
+    return nueva
+
+
+RenovarPoliza = Signal()
+RenovarPoliza.connect(renovar_poliza)
+

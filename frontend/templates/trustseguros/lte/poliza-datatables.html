@@ -236,6 +236,28 @@
                 })
             });
 
+            $(document).on('click', '#btn-null', function () {
+                $.ajax("{% url 'trustseguros:polizas' %}", {
+                    method: "POST",
+                    data: {
+                        id: $('input[name="id"]').val(), cancelar: 'cancelar'
+                    }, success: function (response) {
+                        redraw_object(response);
+                    }
+                })
+            });
+
+            $(document).on('click', '#btn-renew', function () {
+                $.ajax("{% url 'trustseguros:polizas' %}", {
+                    method: "POST",
+                    data: {
+                        id: $('input[name="id"]').val(), renovar: 'renovar'
+                    }, success: function (response) {
+                        redraw_object(response);
+                    }
+                })
+            });
+
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
                 if(_this.val().length > 50){
