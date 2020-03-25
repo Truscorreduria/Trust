@@ -52,3 +52,10 @@ class BitacoraWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class PedirComentarioWidget(Widget):
+    template_name = "trustseguros/lte/widgets/pedir-comentarios.html"
+
+    def format_value(self, value):
+        return value

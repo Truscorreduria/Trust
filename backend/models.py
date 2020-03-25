@@ -784,6 +784,9 @@ class Poliza(Base):
 
     total_pagos = models.FloatField(default=0.0)
 
+    editable = models.BooleanField(default=True)
+    perdir_comentarios = models.BooleanField(default=False)
+
     class Meta:
         verbose_name_plural = "Pólizas"
         verbose_name = "póliza"
@@ -823,10 +826,10 @@ class Poliza(Base):
 
     @property
     def dias_vigencia(self):
-        hoy = datetime.now()
-        emision = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month, day=self.fecha_emision.day)
-        vencimiento = datetime(year=self.fecha_vence.year, month=self.fecha_vence.month, day=self.fecha_vence.day)
-        if (emision and vencimiento) and (emision < vencimiento):
+        if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
+            hoy = datetime.now()
+            emision = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month, day=self.fecha_emision.day)
+            vencimiento = datetime(year=self.fecha_vence.year, month=self.fecha_vence.month, day=self.fecha_vence.day)
             return (vencimiento - hoy).days
         else:
             return None

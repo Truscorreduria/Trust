@@ -367,6 +367,8 @@ class PolizaForm(forms.ModelForm):
                                             'style': "min-width: 178px"
                                         }
                                     ))
+    pedir_comentarios = forms.Field(required=False,
+                                    widget=PedirComentarioWidget)
 
     class Meta:
         model = Poliza
@@ -382,9 +384,10 @@ class PolizaForm(forms.ModelForm):
             updated_initial['tabla_pagos'] = instance
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
+            updated_initial['pedir_comentarios'] = instance.perdir_comentarios
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
-        if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
+        if instance and not instance.editable:
             self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'

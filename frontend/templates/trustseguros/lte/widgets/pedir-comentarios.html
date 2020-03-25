@@ -1,0 +1,14 @@
+{% if widget.value %}
+    <div id="div_{{ widget.attrs.id }}" class="form-group">
+
+        <label for="{{ widget.attrs.id }}" class="col-form-label ">
+            Comentarios de modificación (Exigido 50 caracteres como mínimo)
+        </label>
+
+        <div>
+            <textarea name="{{ widget.name }}" cols="40" rows="4" required
+                      class="form-control" id="{{ widget.attrs.id }}"></textarea>
+        </div>
+
+    </div>
+{% endif %}

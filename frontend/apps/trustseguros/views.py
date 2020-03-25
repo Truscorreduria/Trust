@@ -749,8 +749,6 @@ class Tramites(Datatables):
     ]
 
 
-
-
 class DependientesSepelio(Datatables):
     model = benSepelio
     form = LteSepelioForm
@@ -883,7 +881,6 @@ class Polizas(Datatables):
                     ('Fecha fin', 'fecha_vence'), ('Dias para vencimiento', 'dias_vigencia'), 'grupo.name',
                     'suma_asegurada', ('Prima neta', 'total'), 'tipo_poliza.label', 'estado_poliza.label')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
-    # list_filter = ('grupo', 'ramo')
 
     media = {
         'js': ['trustseguros/lte/js/fecha-vence.js', ],
@@ -894,6 +891,16 @@ class Polizas(Datatables):
         if 'activar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
             p.estado_poliza = EstadoPoliza.ACTIVA
+            p.editable = False
+            p.perdir_comentarios = False
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'modificar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.editable = True
+            p.perdir_comentarios = True
             p.save()
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')

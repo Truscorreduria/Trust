@@ -99,6 +99,11 @@
                                         {{ form.concepto|as_crispy_field }}
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.pedir_comentarios }}
+                                    </div>
+                                </div>
                             </div>
                             <div id="{{ opts.model_name }}-coberturas"
                                  class="tab-pane fade">
@@ -132,7 +137,8 @@
                                                     <td><b>Prima neta</b></td>
                                                     <td class="float-right">
                                                         <input type="number" class="form-control" name="prima_neta"
-                                                               readonly value="{{ instance.prima_neta }}" id="id_prima_neta">
+                                                               readonly value="{{ instance.prima_neta }}"
+                                                               id="id_prima_neta">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -208,18 +214,42 @@
             <div class="row">
                 <div class="col-md-12 form-buttons">
                     {% block buttons %}
-                        {% ifequal instance.estado_poliza 0 %}
-                            <button type="button" class="btn btn-info" id="btn-save">
+                        {% if instance.perdir_comentarios %}
+                            <button type="button" class="btn btn-info" id="btn-save" disabled="disabled">
                                 <i class="fa fa-save"></i>
                                 Guardar
                             </button>
-                            {% if instance.id %}
-                                <button type="button" class="btn btn-success" id="btn-finish">
-                                    <i class="fa fa-suitcase"></i>
-                                    Finalizar
+                        {% else %}
+
+                            {% if instance.editable %}
+                                <button type="button" class="btn btn-info" id="btn-save">
+                                    <i class="fa fa-save"></i>
+                                    Guardar
                                 </button>
+                                {% if instance.id %}
+                                    <button type="button" class="btn btn-success" id="btn-finish">
+                                        <i class="fa fa-suitcase"></i>
+                                        Finalizar
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                {% if instance.id %}
+                                    <button type="button" class="btn btn-success" id="btn-renew">
+                                        <i class="fa fa-fan"></i>
+                                        Renovar
+                                    </button>
+                                    <button type="button" class="btn btn-warning" id="btn-edit">
+                                        <i class="fa fa-edit"></i>
+                                        Modificar
+                                    </button>
+                                    <button type="button" class="btn btn-danger" id="btn-null">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        Cancelar
+                                    </button>
+                                {% endif %}
                             {% endif %}
-                        {% endifequal %}
+
+                        {% endif %}
                     {% endblock %}
                 </div>
             </div>
