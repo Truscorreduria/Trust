@@ -442,39 +442,24 @@ class DatoImportForm(forms.ModelForm):
 class TramiteForm(forms.ModelForm):
     code = forms.CharField(required=False, label="Número trámite", widget=forms.TextInput(
         attrs={
-            'disabled': 'disabled',
+            'readonly': 'readonly',
         }
     ))
+
     fecha = forms.CharField(required=False, label="Fecha registro", widget=forms.TextInput(
         attrs={
-            'disabled': 'disabled',
+            'readonly': 'readonly'
         }
     ))
     hora = forms.CharField(required=False, label="Hora registro", widget=forms.TextInput(
         attrs={
-            'disabled': 'disabled',
+            'readonly': 'readonly'
         }
     ))
-    ramo = forms.CharField(required=False, label="Ramo", widget=forms.TextInput(
-        attrs={
-            'disabled': 'disabled',
-        }
-    ))
-    sub_ramo = forms.CharField(required=False, label="Sub ramo", widget=forms.TextInput(
-        attrs={
-            'disabled': 'disabled',
-        }
-    ))
-    grupo = forms.CharField(required=False, label="Grupo", widget=forms.TextInput(
-        attrs={
-            'disabled': 'disabled',
-        }
-    ))
-    aseguradora = forms.CharField(required=False, label="Aseguradora", widget=forms.TextInput(
-        attrs={
-            'disabled': 'disabled',
-        }
-    ))
+    ramo = forms.CharField(required=False, label="Ramo", widget=ReadOnlyWidget)
+    sub_ramo = forms.CharField(required=False, label="Sub ramo", widget=ReadOnlyWidget)
+    grupo = forms.CharField(required=False, label="Grupo", widget=ReadOnlyWidget)
+    aseguradora = forms.CharField(required=False, label="Aseguradora", widget=ReadOnlyWidget)
     descripcion = forms.CharField(widget=forms.Textarea(
         attrs={
             'rows': 4
@@ -485,6 +470,7 @@ class TramiteForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
+
 
     class Meta:
         model = Tramite
@@ -499,6 +485,12 @@ class TramiteForm(forms.ModelForm):
             updated_initial['hora'] = instance.created.strftime('%H:%M')
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
+            if instance.poliza:
+                updated_initial['aseguradora'] = instance.poliza.aseguradora
+                updated_initial['grupo'] = instance.poliza.grupo
+                updated_initial['ramo'] = instance.poliza.ramo
+                updated_initial['sub_ramo'] = instance.poliza.sub_ramo
+
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 

@@ -1,0 +1,17 @@
+{% extends 'adminlte/datatables-modal.html' %}
+
+{% block buttons %}
+    <button type="button" class="btn btn-danger" id="btn-null">
+        <i class="fa fa-exclamation-triangle"></i>
+        Cancelar
+    </button>
+    <button type="button" class="btn btn-warning" id="btn-edit">
+        <i class="fa fa-edit"></i>
+        Modificar
+    </button>
+    <button type="button" class="btn btn-info" id="btn-finish">
+        <i class="fa fa-edit"></i>
+        Finalizar
+    </button>
+    {{ block.super }}
+{% endblock %}

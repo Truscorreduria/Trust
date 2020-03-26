@@ -717,7 +717,8 @@ class Tramites(Datatables):
     modal_width = 1200
     model = Tramite
     form = TramiteForm
-    list_display = ('code', 'tipo_tramite', ('Cliente', 'cliente.name'),
+    form_template = "trustseguros/lte/tramite-modal.html"
+    list_display = ('code', 'tipo_tramite.name', ('Cliente', 'cliente.name'),
                     ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'))
     list_filter = ('tipo_tramite', 'estado', 'user')
     search_fields = ('code',)
@@ -729,7 +730,7 @@ class Tramites(Datatables):
                 ('code', 'fecha', 'hora', 'tipo_tramite'),
                 ('cliente', 'poliza', 'ramo'),
                 ('sub_ramo', 'grupo', 'aseguradora', 'contacto_aseguradora'),
-                ('estado', 'telefono'),
+                ('solicitado_por', 'medio_solicitud', 'estado', 'genera_endoso'),
                 ('user', 'descripcion'),
             )
         },
@@ -748,6 +749,9 @@ class Tramites(Datatables):
             )
         },
     ]
+    media = {
+        'js': ['trustseguros/js/tramite.anular.js', ]
+    }
 
 
 class DependientesSepelio(Datatables):

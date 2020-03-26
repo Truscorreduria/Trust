@@ -372,7 +372,7 @@ class Cliente(Persona, Empresa, Direccion):
         return Poliza.objects.filter(cliente=self)
 
     def tramites(self):
-        return Ticket.objects.filter(cliente=self)
+        return Tramite.objects.filter(cliente=self)
 
     def edad(self):
         try:
@@ -1054,12 +1054,12 @@ class Tramite(Base):
     contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    fechahora = models.DateTimeField(null=True)
+    fechahora = models.DateTimeField(null=True, blank=True)
     prioridad = models.PositiveIntegerField(choices=(
         (1, 'Baja'),
         (2, 'Media'),
         (3, 'Alta'),
-    ), default=2)
+    ), default=2, null=True, blank=True)
     vence = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(max_length=55, null=True, blank=True, default="Pendiente",
                               choices=(
@@ -1118,12 +1118,20 @@ class Tramite(Base):
     color = models.CharField(max_length=65, null=True, blank=True)
     uso = models.CharField(max_length=65, null=True, blank=True)
 
-    valor_nuevo = models.FloatField(default=0.0)
-    suma_asegurada = models.FloatField(default=0.0)
-    subtotal = models.FloatField(default=0.0)
-    emision = models.FloatField(default=0.0)
-    iva = models.FloatField(default=0.0)
-    total = models.FloatField(default=0.0)
+    valor_nuevo = models.FloatField(default=0.0, null=True, blank=True)
+    suma_asegurada = models.FloatField(default=0.0, null=True, blank=True)
+    subtotal = models.FloatField(default=0.0, null=True, blank=True)
+    emision = models.FloatField(default=0.0, null=True, blank=True)
+    iva = models.FloatField(default=0.0, null=True, blank=True)
+    total = models.FloatField(default=0.0, null=True, blank=True)
+
+    solicitado_por = models.CharField(max_length=150, null=True, blank=True)
+    medio_solicitud = models.PositiveSmallIntegerField(choices=(
+        (1, "Por correo"),
+        (2, "En físico"),
+    ), null=True, blank=True)
+
+    genera_endoso = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -1160,6 +1168,8 @@ class Tramite(Base):
 
     def to_json(self):
         o = super().to_json()
+        o['str'] = self.code
+        o['tipo_tramite'] = {'id': self.tipo_tramite, 'name': self.get_tipo_tramite_display()}
         if self.poliza:
             o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
         else:

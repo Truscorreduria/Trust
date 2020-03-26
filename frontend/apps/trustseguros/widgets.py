@@ -1,5 +1,6 @@
 from adminlte.widgets import *
 from backend.models import Cliente
+from django.forms import TextInput
 
 
 class JsonWidget(Widget):
@@ -59,3 +60,17 @@ class PedirComentarioWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class ReadOnlyWidget(TextInput):
+
+    def format_value(self, value):
+        try:
+            return value.name
+        except:
+            return "VACIO"
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        base_attrs['readonly'] = 'readonly'
+        return super().build_attrs(base_attrs, extra_attrs)
+
