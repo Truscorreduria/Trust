@@ -85,45 +85,45 @@ class PolizaAdmin(ImportExportModelAdmin):
     search_fields = ('code', 'nombres', 'apellidos', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
-
-    fieldsets = (
-        ('Datos Personales', {
-            'classes': ('grp-collapse', 'grp-open'),
-            'fields': (
-                ('fecha_emision', 'user'),
-                ('nombres', 'apellidos'),
-                ('cedula', 'tipo_cobertura'),
-                ('telefono', 'celular'),
-                ('cesion_derecho', 'beneficiario'),
-                'domicilio'
-            )
-        }),
-        ('Datos del Vehículo', {
-            'classes': ('grp-collapse', 'grp-open'),
-            'fields': (
-                ('marca', 'modelo', 'anno'),
-                ('chasis', 'motor', 'placa'),
-                ('color'),
-            )
-        }),
-        ('Datos de Pago', {
-            'classes': ('grp-collapse', 'grp-open'),
-            'fields': (
-                ('forma_pago', 'medio_pago'),
-                ('cuotas', 'monto_cuota'),
-                'valor_nuevo', 'suma_asegurada',
-                'subtotal', 'emision',
-                ('iva', 'monto_exceso'),
-                ('total', 'costo_exceso')
-            )
-        }),
-        ('Documentos', {
-            'classes': ('grp-collapse', 'grp-closed'),
-            'fields': (
-                'file_circulacion', 'file_cedula', 'file_carta'
-            )
-        }),
-    )
+    #
+    # fieldsets = (
+    #     ('Datos Personales', {
+    #         'classes': ('grp-collapse', 'grp-open'),
+    #         'fields': (
+    #             ('fecha_emision', 'user'),
+    #             ('nombres', 'apellidos'),
+    #             ('cedula', 'tipo_cobertura'),
+    #             ('telefono', 'celular'),
+    #             ('cesion_derecho', 'beneficiario'),
+    #             'domicilio'
+    #         )
+    #     }),
+    #     ('Datos del Vehículo', {
+    #         'classes': ('grp-collapse', 'grp-open'),
+    #         'fields': (
+    #             ('marca', 'modelo', 'anno'),
+    #             ('chasis', 'motor', 'placa'),
+    #             ('color'),
+    #         )
+    #     }),
+    #     ('Datos de Pago', {
+    #         'classes': ('grp-collapse', 'grp-open'),
+    #         'fields': (
+    #             ('forma_pago', 'medio_pago'),
+    #             ('cuotas', 'monto_cuota'),
+    #             'valor_nuevo', 'suma_asegurada',
+    #             'subtotal', 'emision',
+    #             ('iva', 'monto_exceso'),
+    #             ('total', 'costo_exceso')
+    #         )
+    #     }),
+    #     ('Documentos', {
+    #         'classes': ('grp-collapse', 'grp-closed'),
+    #         'fields': (
+    #             'file_circulacion', 'file_cedula', 'file_carta'
+    #         )
+    #     }),
+    # )
 
     readonly_fields = ('no_poliza', 'no_recibo')
 

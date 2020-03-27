@@ -11,8 +11,10 @@
     <link rel="stylesheet" href="{% static 'adminlte/plugins/bootstrap-select/dist/css/bootstrap-select.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/growl/stylesheets/jquery.growl.css' %}">
-
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/jquery-ui/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/css/main.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/datatables.trust.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/css/ui.theme.trust.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/buttons.css' %}">
     {% for link in media.css %}
         <link rel="stylesheet" href="{% static link %}">
@@ -49,6 +51,7 @@
     <script type="text/javascript">
         const $ajax_getCollection = "{% url 'ajax_getCollection' %}";
         const $ajax_autocomplete = "{% url 'ajax_autocomplete' %}";
+        const $ajax_execute = "{% url 'ajax_objectExecute' %}";
     </script>
 
     <script src="{% static 'adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>

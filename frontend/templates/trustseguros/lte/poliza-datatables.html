@@ -30,7 +30,7 @@
                 $.ajax("{% url 'ajax_getCollection' %}", {
                     method: 'POST',
                     data: {
-                        app_label: 'cotizador', model: 'subramo',
+                        app_label: 'backend', model: 'subramo',
                         filters: `{'ramo_id': '${_this.val()}'}`
                     },
                     success: function (response) {
@@ -48,7 +48,7 @@
                 $.ajax("{% url 'ajax_getCollection' %}", {
                     method: 'POST',
                     data: {
-                        app_label: 'cotizador', model: 'cobertura',
+                        app_label: 'backend', model: 'cobertura',
                         filters: `{'sub_ramo_id': '${_this.val()}'}`
                     },
                     success: function (response) {
@@ -161,7 +161,7 @@
                 const data = new FormData();
                 data.append('file', file);
                 data.append('new', 'new');
-                data.append('app_label', 'cotizador');
+                data.append('app_label', 'backend');
                 data.append('model', 'poliza');
                 data.append('id', $('input[name="id"]').val());
                 $.ajax("{% url 'trustseguros:documentos' %}", {
@@ -197,7 +197,7 @@
                         method: "post",
                         data: {
                             new: 'new', comentario: comment,
-                            app_label: 'cotizador', model: 'poliza',
+                            app_label: 'backend', model: 'poliza',
                             id: $('input[name="id"]').val()
                         },
                         success: function (response) {

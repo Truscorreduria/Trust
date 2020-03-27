@@ -493,6 +493,20 @@ class TramiteForm(forms.ModelForm):
 
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+        if instance and not instance.editable:
+            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cliente'].required = False
+            self.fields['tipo_tramite'].widget.attrs['disabled'] = 'disabled'
+            self.fields['tipo_tramite'].required = False
+            self.fields['poliza'].widget.attrs['disabled'] = 'disabled'
+            self.fields['contacto_aseguradora'].widget.attrs['disabled'] = 'disabled'
+            self.fields['solicitado_por'].widget.attrs['disabled'] = 'disabled'
+            self.fields['medio_solicitud'].widget.attrs['disabled'] = 'disabled'
+            self.fields['estado'].widget.attrs['disabled'] = 'disabled'
+            self.fields['genera_endoso'].widget.attrs['disabled'] = 'disabled'
+            self.fields['genera_endoso'].required = False
+            self.fields['user'].widget.attrs['disabled'] = 'disabled'
+            self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
 
 
 class LteAccidentetForm(forms.ModelForm):

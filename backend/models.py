@@ -784,9 +784,9 @@ class Poliza(Base):
 
     total_pagos = models.FloatField(default=0.0)
 
-    editable = models.BooleanField(default=True)
-    perdir_comentarios = models.BooleanField(default=False)
-    pedir_soporte = models.BooleanField(default=False)
+    editable = models.BooleanField(default=True, blank=True)
+    perdir_comentarios = models.BooleanField(default=False, blank=True)
+    pedir_soporte = models.BooleanField(default=False, blank=True)
 
     class Meta:
         verbose_name_plural = "Pólizas"
@@ -1132,6 +1132,7 @@ class Tramite(Base):
     ), null=True, blank=True)
 
     genera_endoso = models.BooleanField(default=False)
+    editable = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         if not self.code:

@@ -750,8 +750,18 @@ class Tramites(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/tramite.anular.js', ]
+        'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js', ]
     }
+
+    def post(self, request):
+        if 'finalizar' in request.POST:
+            p = Tramite.objects.get(id=request.POST.get('id'))
+            p.editable = False
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        return super().post(request)
 
 
 class DependientesSepelio(Datatables):
