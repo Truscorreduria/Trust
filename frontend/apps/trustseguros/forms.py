@@ -372,7 +372,7 @@ class PolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
-        fields = '__all__'
+        exclude = ('editable', )
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -471,10 +471,9 @@ class TramiteForm(forms.ModelForm):
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
-
     class Meta:
         model = Tramite
-        fields = '__all__'
+        exclude = ('editable', )
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

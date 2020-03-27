@@ -60,4 +60,8 @@ a {
   z-index: 9999 !important;
 }
 
+.swal2-container {
+  z-index: 1600;
+}
+
 /*# sourceMappingURL=main.css.map */

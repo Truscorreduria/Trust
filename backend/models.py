@@ -810,8 +810,8 @@ class Poliza(Base):
         if not self.fecha_pago and self.fecha_emision:
             self.fecha_pago = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month,
                                        day=self.fecha_emision.day) + timedelta(days=10)
-        if not self.id:
-            self.editable = True
+        if not self.estado_poliza == EstadoPoliza.PENDIENTE:
+            self.editable = False
         super(Poliza, self).save(*args, **kwargs)
 
     def print_code(self):
@@ -1070,7 +1070,8 @@ class Tramite(Base):
                                   ('Finalizado', 'Finalizado'),
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes')
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes',
+                             verbose_name="ingresado por")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name='tickets_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
@@ -1140,6 +1141,10 @@ class Tramite(Base):
         if not self.code:
             self.code = get_code(self, 6)
         super().save(*args, **kwargs)
+
+    @property
+    def bitacora(self):
+        return Comentario.bitacora(self)
 
     def valor_prima(self):
         return self.subtotal - 55

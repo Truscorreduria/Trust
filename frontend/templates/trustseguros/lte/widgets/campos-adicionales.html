@@ -61,7 +61,7 @@
                        class="{{ widget.name }}-value">
                 {% if widget.value.editable %}
                     <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
-                            data-model="datopoliza" data-app="cotizador">
+                            data-model="datopoliza" data-app="backend">
                         <i class="fa fa-trash"></i>
                     </button>
                 {% endif %}
@@ -77,6 +77,8 @@
 
     (function ($) {
         $(document).ready(function () {
+
+
 
             const $fieldset = $('#{{ widget.name }}-table');
 
@@ -94,7 +96,7 @@
                 let obj = {};
                 const $tr = $(this).parents('tr');
                 const $trvalue = $($tr).find('.{{ widget.name }}-value');
-                $.each($($tr).find('input'), function (i, o) {
+                $.each($($tr).find('.{{ widget.name }}-input'), function (i, o) {
                     obj[$(o).attr('name')] = $(o).val()
                 });
                 $($trvalue).val(JSON.stringify(obj));

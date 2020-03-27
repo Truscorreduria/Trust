@@ -248,21 +248,36 @@
             });
 
             $(document).on('click', '#btn-renew', function () {
-                $.ajax("{% url 'trustseguros:polizas' %}", {
-                    method: "POST",
-                    data: {
-                        id: $('input[name="id"]').val(), renovar: 'renovar'
-                    }, success: function (response) {
-                        redraw_object(response);
+                Swal.fire({
+                    title: 'Estas seguro?',
+                    text: "Esta acción no se puede revertir. Se generará un póliza nueva con esta de referencia.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, Renuevala',
+                    cancelButtonText: 'No, Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax("{% url 'trustseguros:polizas' %}", {
+                            method: "POST",
+                            data: {
+                                id: $('input[name="id"]').val(), renovar: 'renovar'
+                            }, success: function (response) {
+                                redraw_object(response);
+                            }
+                        });
+                    }else{
+                        $('#btn-renew').removeAttr('disabled')
                     }
-                })
+                });
             });
 
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
-                if(_this.val().length > 50){
+                if (_this.val().length > 50) {
                     $('#btn-save').removeAttr('disabled')
-                }else{
+                } else {
                     $('#btn-save').attr('disabled', 'disabled')
                 }
             });

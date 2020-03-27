@@ -750,7 +750,8 @@ class Tramites(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js', ]
+        'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
+               'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js', ]
     }
 
     def post(self, request):
@@ -934,8 +935,6 @@ class Polizas(Datatables):
             p.estado_poliza = EstadoPoliza.RENOVADA
             p.save()
             nueva = RenovarPoliza.send(p, request=request)[0][1]
-            print(nueva)
-            print(dir(nueva))
             form = self.get_form()(instance=nueva)
             html_form = self.html_form(nueva, request, form, 'POST')
             return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
@@ -968,8 +967,8 @@ class Polizas(Datatables):
             if data.getlist('campos_adicionales_id')[i] == '':
                 c = DatoPoliza(poliza=instance)
             else:
-                c = DatoPoliza.objects.get(id=int(data.getlist('contacto_id')[i]))
-            c.extra_data = data.getlist('campos_adicionales')[i]
+                c = DatoPoliza.objects.get(id=int(data.getlist('campos_adicionales_id')[i]))
+            c.extra_data = data.getlist('campos_adicionales')[i].replace('\\', '')
             c.save()
 
         for i in range(0, len(data.getlist('tabla_pagos_id'))):

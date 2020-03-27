@@ -1,7 +1,45 @@
 {% extends 'adminlte/datatables-modal.html' %}
 
 {% block buttons %}
-    <button type="button" class="btn btn-danger" id="btn-null">
+    {% if instance.perdir_comentarios %}
+        <button type="button" class="btn btn-info" id="btn-save" disabled="disabled">
+            <i class="fa fa-save"></i>
+            Guardar
+        </button>
+    {% else %}
+
+        {% if instance.editable %}
+            <button type="button" class="btn btn-info" id="btn-save">
+                <i class="fa fa-save"></i>
+                Guardar
+            </button>
+            {% if instance.id %}
+                <button type="button" class="btn btn-success" id="btn-finish">
+                    <i class="fa fa-suitcase"></i>
+                    Finalizar
+                </button>
+            {% endif %}
+        {% else %}
+            {% if instance.id %}
+                <button type="button" class="btn btn-success" id="btn-renew">
+                    <i class="fa fa-fan"></i>
+                    Renovar
+                </button>
+                <button type="button" class="btn btn-warning" id="btn-edit">
+                    <i class="fa fa-edit"></i>
+                    Modificar
+                </button>
+                <button type="button" class="btn btn-danger" id="btn-null">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    Cancelar
+                </button>
+            {% endif %}
+        {% endif %}
+
+    {% endif %}
+
+
+    {% comment %}<button type="button" class="btn btn-danger" id="btn-null">
         <i class="fa fa-exclamation-triangle"></i>
         Cancelar
     </button>
@@ -13,5 +51,5 @@
         <i class="fa fa-edit"></i>
         Finalizar
     </button>
-    {{ block.super }}
+    {{ block.super }}{% endcomment %}
 {% endblock %}

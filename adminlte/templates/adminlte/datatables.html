@@ -52,6 +52,8 @@
         const $ajax_getCollection = "{% url 'ajax_getCollection' %}";
         const $ajax_autocomplete = "{% url 'ajax_autocomplete' %}";
         const $ajax_execute = "{% url 'ajax_objectExecute' %}";
+        const $ajax_soporte = "{% url 'trustseguros:documentos' %}";
+        const $ajax_bitacora = "{% url 'trustseguros:comentarios' %}";
     </script>
 
     <script src="{% static 'adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
@@ -306,11 +308,11 @@
 
                 table.ajax.reload();
             });
-            $(document).on('focusout', 'input,textarea', function () {
+            {% comment %}$(document).on('focusout', 'input,textarea', function () {
                 const self = $(this);
                 let text = self.val().toUpperCase();
                 self.val(text);
-            });
+            });{% endcomment %}
 
             $(document).on('click', '.form-buttons button', function () {
                 $(this).attr('disabled', 'disabled')
