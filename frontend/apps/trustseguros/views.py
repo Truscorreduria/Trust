@@ -921,6 +921,28 @@ class Polizas(Datatables):
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'confirmar' in request.POST:
+            print(request.POST)
+            status = 200
+            errors = []
+            p = self.model.objects.get(id=int(request.POST.get('id')))
+            form = self.get_form()(request.POST, instance=p)
+            if form.is_valid():
+                form.save()
+                p = form.instance
+                p.editable = False
+                p.perdir_comentarios = False
+                p.save()
+                self.save_related(instance=p, data=request.POST)
+                form = self.get_form()(instance=p)
+            else:
+                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+                status = 203
+                print(errors)
+            html_form = self.html_form(p, request, form, 'POST')
+
+            return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
+                                encoder=Codec, status=status)
         if 'cancelar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
             p.estado_poliza = EstadoPoliza.CANCELADA

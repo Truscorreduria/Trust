@@ -247,6 +247,41 @@
                 })
             });
 
+            $(document).on('click', '#btn-confirm', function () {
+
+                const form = document.getElementById('poliza-form');
+                const data = new FormData(form);
+                data.append('confirmar', 'confirmar');
+                $.ajax('.', {
+                    method: 'POST',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response, textStatus, xhr) {
+                        redraw_object(response);
+                        if (xhr.status === 200) {
+                            update_table(response);
+                            $.growl.notice({
+                                title: `Notificación`,
+                                message: `<p>${response.instance.str} se guardó con éxito!</p>`
+                            });
+                        }
+                        $.each(response.errors, function (n, error) {
+                            $.growl.error({
+                                message: `<p>${error.key}</p>
+                                      <ul>${li_errors(error.errors)}</ul>`
+                            });
+                        });
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        $.growl.error({
+                            message: `<p>${error}</p>`
+                        });
+                    }
+                })
+            });
+
             $(document).on('click', '#btn-renew', function () {
                 Swal.fire({
                     title: 'Estas seguro?',
@@ -267,7 +302,7 @@
                                 redraw_object(response);
                             }
                         });
-                    }else{
+                    } else {
                         $('#btn-renew').removeAttr('disabled')
                     }
                 });
@@ -276,9 +311,9 @@
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
                 if (_this.val().length > 50) {
-                    $('#btn-save').removeAttr('disabled')
+                    $('#btn-confirm').removeAttr('disabled')
                 } else {
-                    $('#btn-save').attr('disabled', 'disabled')
+                    $('#btn-confirm').attr('disabled', 'disabled')
                 }
             });
 

@@ -810,8 +810,6 @@ class Poliza(Base):
         if not self.fecha_pago and self.fecha_emision:
             self.fecha_pago = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month,
                                        day=self.fecha_emision.day) + timedelta(days=10)
-        if not self.estado_poliza == EstadoPoliza.PENDIENTE:
-            self.editable = False
         super(Poliza, self).save(*args, **kwargs)
 
     def print_code(self):
