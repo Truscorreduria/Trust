@@ -229,7 +229,7 @@
                 $.ajax("{% url 'trustseguros:polizas' %}", {
                     method: "POST",
                     data: {
-                        id: $('input[name="id"]').val(), modificar: 'modificar'
+                        id: $('input[name="id"]').val(), modificando: 'modificando'
                     }, success: function (response) {
                         redraw_object(response);
                     }
@@ -240,18 +240,18 @@
                 $.ajax("{% url 'trustseguros:polizas' %}", {
                     method: "POST",
                     data: {
-                        id: $('input[name="id"]').val(), cancelar: 'cancelar'
+                        id: $('input[name="id"]').val(), cancelando: 'cancelando'
                     }, success: function (response) {
                         redraw_object(response);
                     }
                 })
             });
 
-            $(document).on('click', '#btn-confirm', function () {
-
+            const confirm = function () {
                 const form = document.getElementById('poliza-form');
                 const data = new FormData(form);
-                data.append('confirmar', 'confirmar');
+                let action = $(this).attr('id').replace('btn-', '');
+                data.append(action, action);
                 $.ajax('.', {
                     method: 'POST',
                     data: data,
@@ -280,7 +280,10 @@
                         });
                     }
                 })
-            });
+            };
+
+            $(document).on('click', '#btn-modificar', confirm);
+            $(document).on('click', '#btn-cancelar', confirm);
 
             $(document).on('click', '#btn-renew', function () {
                 Swal.fire({
@@ -311,9 +314,9 @@
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
                 if (_this.val().length > 50) {
-                    $('#btn-confirm').removeAttr('disabled')
+                    $('.form-buttons button').removeAttr('disabled')
                 } else {
-                    $('#btn-confirm').attr('disabled', 'disabled')
+                    $('.form-buttons button').attr('disabled', 'disabled')
                 }
             });
 

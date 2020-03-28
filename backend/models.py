@@ -785,6 +785,8 @@ class Poliza(Base):
     total_pagos = models.FloatField(default=0.0)
 
     editable = models.BooleanField(default=True, blank=True)
+    modificando = models.BooleanField(default=False)
+    cancelando = models.BooleanField(default=False)
     perdir_comentarios = models.BooleanField(default=False, blank=True)
     pedir_soporte = models.BooleanField(default=False, blank=True)
 

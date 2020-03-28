@@ -372,7 +372,7 @@ class PolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
-        exclude = ('editable', 'pedir_comentarios')
+        exclude = ('editable', 'pedir_comentarios', 'modificando', 'cancelando')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -438,12 +438,6 @@ class PolizaForm(forms.ModelForm):
             self.fields['total'].widget.attrs['readonly'] = 'readonly'
             self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
             self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
-
-
-    # def clean(self):
-    #     if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:
-    #         raise forms.ValidationError("La suma de pagos y el total de la póliza no son iguales")
-    #     return self.cleaned_data
 
 
 class DatoImportForm(forms.ModelForm):

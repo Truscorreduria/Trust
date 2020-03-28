@@ -214,8 +214,13 @@
             <div class="row">
                 <div class="col-md-12 form-buttons">
                     {% block buttons %}
-                        {% if instance.perdir_comentarios %}
-                            <button type="button" class="btn btn-info" id="btn-confirm" disabled="disabled">
+                        {% if instance.modificando %}
+                            <button type="button" class="btn btn-info" id="btn-modificar" disabled="disabled">
+                                <i class="fa fa-save"></i>
+                                Guardar
+                            </button>
+                        {% elif instance.cancelando %}
+                            <button type="button" class="btn btn-info" id="btn-cancelar" disabled="disabled">
                                 <i class="fa fa-save"></i>
                                 Guardar
                             </button>
