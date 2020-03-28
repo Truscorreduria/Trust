@@ -424,6 +424,21 @@ class PolizaForm(forms.ModelForm):
             self.fields['tipo_poliza'].required = False
             self.fields['cliente'].required = False
             self.fields['contratante'].required = False
+        if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
+            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
+            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
+            self.fields['fecha_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+            self.fields['total'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+
 
     # def clean(self):
     #     if not self.cleaned_data['total'] == self.cleaned_data['total_pagos']:

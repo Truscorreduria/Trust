@@ -25,7 +25,7 @@
                 <td class="cobertura-amount">
                     <input type="number" class="form-control" style="max-width: 150px" name="monto"
                            value="{{ widget.value|valor_cobertura:cobertura }}"
-                           {% ifnotequal widget.value.estado_poliza 0 %}readonly{% endifnotequal %}>
+                           {% if not widget.value.editable %}readonly{% endif%}>
                 </td>
             </tr>
         {% endfor %}
