@@ -491,6 +491,10 @@ class TramiteForm(forms.ModelForm):
                                      'readonly': 'readonly'
                                  }
                              ))
+    poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
+                                    widget=forms.Select(
+                                        choices=[]
+                                    ))
 
     class Meta:
         model = Tramite
@@ -498,7 +502,17 @@ class TramiteForm(forms.ModelForm):
 
     @staticmethod
     def get_contacto_choices(poliza):
-        return [(i.id, i.name) for i in ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)]
+        choices = [(None, '---------')]
+        for i in ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora):
+            choices.append((i.id, i.name))
+        return choices
+
+    @staticmethod
+    def get_poliza_choices(cliente):
+        choices = [(None, '---------')]
+        for i in Poliza.objects.filter(cliente=cliente, estado_poliza=EstadoPoliza.ACTIVA):
+            choices.append((i.id, i.no_poliza) )
+        return choices
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -517,35 +531,10 @@ class TramiteForm(forms.ModelForm):
                 updated_initial['sub_ramo'] = instance.poliza.sub_ramo
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
-        self.fields['contacto_aseguradora'].widget.choices = []
-        if instance and not instance.editable:
-            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
-            self.fields['cliente'].required = False
-            self.fields['tipo_tramite'].widget.attrs['disabled'] = 'disabled'
-            self.fields['tipo_tramite'].required = False
-            self.fields['poliza'].widget.attrs['disabled'] = 'disabled'
-            self.fields['contacto_aseguradora'].widget.attrs['disabled'] = 'disabled'
-            self.fields['solicitado_por'].widget.attrs['disabled'] = 'disabled'
-            self.fields['medio_solicitud'].widget.attrs['disabled'] = 'disabled'
-            self.fields['estado'].widget.attrs['disabled'] = 'disabled'
-            self.fields['genera_endoso'].widget.attrs['disabled'] = 'disabled'
-            self.fields['genera_endoso'].required = False
-            self.fields['user'].widget.attrs['disabled'] = 'disabled'
-            self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
-            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
-            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
-            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
-            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
-            self.fields['total'].widget.attrs['readonly'] = 'readonly'
-            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
-            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
-            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
-            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+        self.fields['contacto_aseguradora'].choices = []
+        self.fields['poliza'].choices = []
+        if instance and instance.cliente:
+            self.fields['poliza'].choices = self.get_poliza_choices(instance.cliente)
         if instance and instance.poliza:
             self.fields['contacto_aseguradora'].widget.choices = self.get_contacto_choices(instance.poliza)
 

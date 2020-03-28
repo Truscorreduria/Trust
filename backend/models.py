@@ -1048,6 +1048,7 @@ class Tramite(Base):
                               choices=(
                                   ('Pendiente', 'Pendiente'),
                                   ('En Proceso', 'En Proceso'),
+                                  ('Pendiente documentación', 'Pendiente documentación'),
                                   ('Finalizado', 'Finalizado'),
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
@@ -1104,10 +1105,6 @@ class Tramite(Base):
 
     valor_nuevo = models.FloatField(default=0.0, null=True, blank=True)
     suma_asegurada = models.FloatField(default=0.0, null=True, blank=True)
-    subtotal = models.FloatField(default=0.0, null=True, blank=True)
-    emision = models.FloatField(default=0.0, null=True, blank=True)
-    iva = models.FloatField(default=0.0, null=True, blank=True)
-    total = models.FloatField(default=0.0, null=True, blank=True)
 
     solicitado_por = models.CharField(max_length=150, null=True, blank=True)
     medio_solicitud = models.PositiveSmallIntegerField(choices=(
