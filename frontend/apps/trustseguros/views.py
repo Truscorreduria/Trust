@@ -73,6 +73,34 @@ def comentarios(request):
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
 
 
+def calcular_tabla_pagos_tramites(request):
+    total = float(request.POST.get('total'))
+    fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
+    cuotas = int(request.POST.get('cuotas'))
+    try:
+        poliza = Tramite.objects.get(id=int(request.POST.get('poliza')))
+        poliza.pagos_tramites.all().delete()
+    except:
+        pass
+    monto_cuota = round(total / cuotas, 2)
+    data = []
+    anno = fecha_pago.year
+    mes = fecha_pago.month
+    dia = fecha_pago.day
+    data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                 'estado': 'VIGENTE'})
+    for i in range(1, cuotas):
+        if mes != 12:
+            mes += 1
+        else:
+            mes = 1
+            anno += 1
+        fecha = valid_date(year=anno, month=mes, day=dia)
+        data.append({'numero': i+1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+                     'estado': 'VIGENTE'})
+    return JsonResponse(data, safe=False, encoder=Codec)
+
+
 # @staff_member_required
 # def certificados(request):
 #     return render(request, 'trustseguros/include/certificados.html', {
@@ -752,7 +780,7 @@ class Tramites(Datatables):
     media = {
         'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
                'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-               'trustseguros/js/tramite.poliza.js', ]
+               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ]
     }
 
     def post(self, request):
@@ -845,6 +873,17 @@ class Tramites(Datatables):
             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
                                                 for p in contactos]}, encoder=Codec, safe=False)
         return super().post(request)
+
+    def save_related(self, instance, data):
+        for i in range(0, len(data.getlist('tabla_pagos_id'))):
+            if data.getlist('tabla_pagos_id')[i] == '':
+                p = Pago(tramite=instance)
+            else:
+                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+            p.numero = data.getlist('tabla_pagos_numero')[i]
+            p.monto = data.getlist('tabla_pagos_monto')[i]
+            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.save()
 
 
 class DependientesSepelio(Datatables):

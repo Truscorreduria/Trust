@@ -985,27 +985,8 @@ class Poliza(Base):
     def coberturas(self):
         return CoberturaPoliza.objects.filter(poliza=self)
 
-
-class EstadoPago:
-    ANULADO = 0
-    VIGENTE = 1
-    VENCIDO = 2
-    PAGADO = 3
-
-    @classmethod
-    def choices(cls):
-        return (cls.ANULADO, "Anulado"), (cls.VIGENTE, "Vigente"), (cls.VENCIDO, "Vencido"), (cls.PAGADO, "Pagado")
-
-
-class Pago(Base):
-    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE,
-                               related_name="pagos")
-    monto = models.FloatField(default=0.0)
-    numero = models.PositiveSmallIntegerField(null=True, blank=True)
-    fecha_vence = models.DateField(null=True)
-    fecha_pago = models.DateField(null=True)
-    estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
-                                              default=EstadoPago.VIGENTE)
+    def pagos(self):
+        return Pago.objects.filter(poliza=self)
 
     class Meta:
         ordering = ['fecha_vence', ]
@@ -1135,6 +1116,22 @@ class Tramite(Base):
     genera_endoso = models.BooleanField(default=False)
     editable = models.BooleanField(default=True)
 
+    f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
+                                         verbose_name="forma de pago")
+    m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
+                                         verbose_name="medio de pago", )
+    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    fecha_pago = models.DateField(null=True, blank=True)
+    subtotal = models.FloatField(default=0.0, null=True, blank=True)
+    descuento = models.FloatField(default=0.0, null=True, blank=True)
+    emision = models.FloatField(default=0.0, null=True, blank=True)
+    iva = models.FloatField(default=0.0, null=True, blank=True)
+    otros = models.FloatField(default=0.0, null=True, blank=True)
+    total = models.FloatField(default=0.0, null=True, blank=True)
+    per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )
+    amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True, )
+    moneda = models.ForeignKey(Moneda, null=True, on_delete=models.SET_NULL, blank=True)
+
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = get_code(self, 6)
@@ -1190,8 +1187,35 @@ class Tramite(Base):
             o['cliente'] = {'id': '', 'name': ''}
         return o
 
+    def pagos(self):
+        return Pago.objects.filter(tramite=self)
+
     class Meta:
         verbose_name = "Trámite"
+
+
+class EstadoPago:
+    ANULADO = 0
+    VIGENTE = 1
+    VENCIDO = 2
+    PAGADO = 3
+
+    @classmethod
+    def choices(cls):
+        return (cls.ANULADO, "Anulado"), (cls.VIGENTE, "Vigente"), (cls.VENCIDO, "Vencido"), (cls.PAGADO, "Pagado")
+
+
+class Pago(Base):
+    poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE,
+                               related_name="pagos_polizas", null=True, blank=True)
+    tramite = models.ForeignKey(Tramite, on_delete=models.CASCADE,
+                                related_name="pagos_tramites", null=True, blank=True)
+    monto = models.FloatField(default=0.0)
+    numero = models.PositiveSmallIntegerField(null=True, blank=True)
+    fecha_vence = models.DateField(null=True)
+    fecha_pago = models.DateField(null=True)
+    estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
+                                              default=EstadoPago.VIGENTE)
 
 
 class benAbstract(Base):

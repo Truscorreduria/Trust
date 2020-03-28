@@ -470,6 +470,18 @@ class TramiteForm(forms.ModelForm):
                                      required=True, widget=SelectSearch)
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
+    tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
+    amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
+    total = forms.FloatField(label="Total", required=False, initial=0.0,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
 
     class Meta:
         model = Tramite
@@ -488,6 +500,7 @@ class TramiteForm(forms.ModelForm):
             updated_initial['hora'] = instance.created.strftime('%H:%M')
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
+            updated_initial['tabla_pagos'] = instance
             if instance.poliza:
                 updated_initial['aseguradora'] = instance.poliza.aseguradora
                 updated_initial['grupo'] = instance.poliza.grupo
@@ -510,6 +523,20 @@ class TramiteForm(forms.ModelForm):
             self.fields['genera_endoso'].required = False
             self.fields['user'].widget.attrs['disabled'] = 'disabled'
             self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
+            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+            self.fields['total'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
+            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
+            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
         if instance and instance.poliza:
             self.fields['contacto_aseguradora'].widget.choices = self.get_contacto_choices(instance.poliza)
 

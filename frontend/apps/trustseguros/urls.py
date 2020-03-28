@@ -21,4 +21,5 @@ urlpatterns = [
     path('tramites/', Tramites.as_view(), name="tramites"),
     path('documentos/', documentos, name="documentos"),
     path('comentarios/', comentarios, name="comentarios"),
+    path('calcular_tabla_pagos_tramites/', calcular_tabla_pagos_tramites, name="calcular_tabla_pagos_tramites"),
 ]
