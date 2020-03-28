@@ -876,7 +876,7 @@ def calcular_tabla_pagos(request):
     cuotas = int(request.POST.get('cuotas'))
     try:
         poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
-        poliza.pagos.all().delete()
+        poliza.pagos.delete()
     except:
         pass
     monto_cuota = round(total / cuotas, 2)

@@ -10,7 +10,9 @@ class Command(BaseCommand):
     help = 'Notificacion polizas a vencer'
 
     def handle(self, *args, **options):
+        print("comenzando envio...")
         today = datetime.now()
+        print("fecha --> ", today.strftime('%d%m%Y'))
         sixtydays = today + timedelta(days=60)
         output = BytesIO()
         book = Workbook()
@@ -24,6 +26,7 @@ class Command(BaseCommand):
                      'Grupo'
                       ])
         polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, fecha_vence__lte=sixtydays)
+        print("polizas: ", str(polizas.count()))
         html = render_to_string('cotizador/email/notificacion_vence.html')
         if len(polizas) > 0:
             for p in polizas:
@@ -43,6 +46,7 @@ class Command(BaseCommand):
 
         send_email('Polizas a vencer %s' % today.strftime('%d%m%Y'), config.EMAIL_TRUST,
                    html=html, files=files)
+        print("correo enviado con éxito")
 
 
 
