@@ -751,17 +751,99 @@ class Tramites(Datatables):
     ]
     media = {
         'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
-               'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js', ]
+               'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
+               'trustseguros/js/tramite.poliza.js', ]
     }
 
     def post(self, request):
         if 'finalizar' in request.POST:
             p = Tramite.objects.get(id=request.POST.get('id'))
             p.editable = False
+            p.estado = "En Proceso"
             p.save()
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'activar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.ACTIVA
+            p.editable = False
+            p.perdir_comentarios = False
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'modificar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.editable = True
+            p.perdir_comentarios = True
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'confirmar' in request.POST:
+            print(request.POST)
+            status = 200
+            errors = []
+            p = self.model.objects.get(id=int(request.POST.get('id')))
+            form = self.get_form()(request.POST, instance=p)
+            if form.is_valid():
+                form.save()
+                p = form.instance
+                p.editable = False
+                p.perdir_comentarios = False
+                p.save()
+                self.save_related(instance=p, data=request.POST)
+                form = self.get_form()(instance=p)
+            else:
+                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+                status = 203
+                print(errors)
+            html_form = self.html_form(p, request, form, 'POST')
+
+            return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
+                                encoder=Codec, status=status)
+        if 'cancelar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.CANCELADA
+            p.editable = False
+            p.perdir_comentarios = True
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'renovar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.RENOVADA
+            p.save()
+            nueva = RenovarPoliza.send(p, request=request)[0][1]
+            form = self.get_form()(instance=nueva)
+            html_form = self.html_form(nueva, request, form, 'POST')
+            return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'import_data' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            file = request.FILES['file']
+            data = pd.read_excel(file)
+            forms = []
+            for row in data.to_dict('records'):
+                d = DatoPoliza(poliza=p)
+                d.extra_data = str(row)
+                form = DatoImportForm(instance=d)
+                forms.append(form)
+            html = render_to_string('trustseguros/lte/widgets/import-rows.html', context={
+                'forms': forms, 'widget_name': 'campos_adicionales'
+            }, request=request)
+            return JsonResponse({'html': html}, encoder=Codec, safe=False)
+        if 'polizas' in request.POST:
+            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
+            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
+            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
+                                                for p in polizas]}, encoder=Codec, safe=False)
+        if 'contactos' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
+            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
+                                                for p in contactos]}, encoder=Codec, safe=False)
         return super().post(request)
 
 

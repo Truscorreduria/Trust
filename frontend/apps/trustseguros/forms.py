@@ -475,6 +475,10 @@ class TramiteForm(forms.ModelForm):
         model = Tramite
         exclude = ('editable', )
 
+    @staticmethod
+    def get_contacto_choices(poliza):
+        return [(i.id, i.name) for i in ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)]
+
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         updated_initial = {}
@@ -489,9 +493,9 @@ class TramiteForm(forms.ModelForm):
                 updated_initial['grupo'] = instance.poliza.grupo
                 updated_initial['ramo'] = instance.poliza.ramo
                 updated_initial['sub_ramo'] = instance.poliza.sub_ramo
-
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+        self.fields['contacto_aseguradora'].widget.choices = []
         if instance and not instance.editable:
             self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
             self.fields['cliente'].required = False
@@ -506,6 +510,8 @@ class TramiteForm(forms.ModelForm):
             self.fields['genera_endoso'].required = False
             self.fields['user'].widget.attrs['disabled'] = 'disabled'
             self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
+        if instance and instance.poliza:
+            self.fields['contacto_aseguradora'].widget.choices = self.get_contacto_choices(instance.poliza)
 
 
 class LteAccidentetForm(forms.ModelForm):

@@ -1,40 +1,168 @@
-{% extends 'adminlte/datatables-modal.html' %}
+{% load crispy_forms_tags crispy_forms_filters datatables mathfilters humanize %}
 
-{% block buttons %}
-    {% if instance.perdir_comentarios %}
-        <button type="button" class="btn btn-info" id="btn-save" disabled="disabled">
-            <i class="fa fa-save"></i>
-            Guardar
-        </button>
-    {% else %}
+{% block content %}
+    <div class="izimodal" id="{{ opts.model_name }}-modal">
 
-        {% if instance.editable %}
-            <button type="button" class="btn btn-info" id="btn-save">
-                <i class="fa fa-save"></i>
-                Guardar
-            </button>
-            {% if instance.id %}
-                <button type="button" class="btn btn-success" id="btn-finish">
-                    <i class="fa fa-suitcase"></i>
-                    Finalizar
-                </button>
-            {% endif %}
-        {% else %}
-            {% if instance.id %}
-                <button type="button" class="btn btn-success" id="btn-renew">
-                    <i class="fa fa-fan"></i>
-                    Renovar
-                </button>
-                <button type="button" class="btn btn-warning" id="btn-edit">
-                    <i class="fa fa-edit"></i>
-                    Modificar
-                </button>
-                <button type="button" class="btn btn-danger" id="btn-null">
-                    <i class="fa fa-exclamation-triangle"></i>
-                    Cancelar
-                </button>
-            {% endif %}
-        {% endif %}
+        <div class="modal-body" style="padding: 0; min-height: 700px">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-info" class="nav-link active">Información
+                        general</a>
+                </li>
+                {% if instance.id %}
+                    {% if instance.genera_endoso %}
+                        <li class="nav-item">
+                            <a data-toggle="tab" href="#{{ opts.model_name }}-endoso" class="nav-link">
+                                Datos del recibo</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#{{ opts.model_name }}-drive-files" class="nav-link">
+                            Soportes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a data-toggle="tab" href="#{{ opts.model_name }}-bitacora" class="nav-link">
+                            Bitácora</a>
+                    </li>
+                {% endif %}
+            </ul>
 
-    {% endif %}
+            <div class="card card-trust">
+                <div class="card-body">
+                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
+                          data-toggle="validator">
+                        <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+
+                        {% csrf_token %}
+                        <div class="tab-content">
+                            <div id="{{ opts.model_name }}-info"
+                                 class="tab-pane fade show active">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.code|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.fecha|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.hora|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.tipo_tramite|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.cliente|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.poliza|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.ramo|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.sub_ramo|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.grupo|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.aseguradora|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.contacto_aseguradora|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.solicitado_por|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.medio_solicitud|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.estado|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.genera_endoso|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.user|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.descripcion|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="{{ opts.model_name }}-drive-files"
+                                 class="tab-pane fade">
+                                {{ form.drive }}
+                            </div>
+                            <div id="{{ opts.model_name }}-bitacora"
+                                 class="tab-pane fade">
+                                {{ form.bitacora }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-md-12 form-buttons">
+                    {% block buttons %}
+                        {% if instance.perdir_comentarios %}
+                            <button type="button" class="btn btn-info" id="btn-confirm" disabled="disabled">
+                                <i class="fa fa-save"></i>
+                                Guardar
+                            </button>
+                        {% else %}
+
+                            {% if instance.editable %}
+                                <button type="button" class="btn btn-info" id="btn-save">
+                                    <i class="fa fa-save"></i>
+                                    Guardar
+                                </button>
+                                {% if instance.id %}
+                                    <button type="button" class="btn btn-success" id="btn-finish">
+                                        <i class="fa fa-suitcase"></i>
+                                        Finalizar
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                {% if instance.id %}
+                                    <button type="button" class="btn btn-success" id="btn-renew">
+                                        <i class="fa fa-fan"></i>
+                                        Renovar
+                                    </button>
+                                    <button type="button" class="btn btn-warning" id="btn-edit">
+                                        <i class="fa fa-edit"></i>
+                                        Modificar
+                                    </button>
+                                    <button type="button" class="btn btn-danger" id="btn-null">
+                                        <i class="fa fa-exclamation-triangle"></i>
+                                        Cancelar
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+
+                        {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+
+    </div>
 {% endblock %}
+
+{% block extra-content %}
+{% endblock %}
+
+

@@ -1,5 +1,12 @@
 $(document).ready(function () {
     $(document).on('click', '#btn-null', function () {
-        alert('funcka')
-    })
+        $.ajax(".", {
+            method: "POST",
+            data: {
+                id: $('input[name="id"]').val(), cancelar: 'cancelar'
+            }, success: function (response) {
+                redraw_object(response);
+            }
+        })
+    });
 });
