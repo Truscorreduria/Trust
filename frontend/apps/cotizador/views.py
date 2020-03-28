@@ -109,7 +109,7 @@ def cotizacion_manual(request):
     receipt = "cesarabel@deltacopiers.com,ventas@trustcorreduria.com,gcarrion@trustcorreduria.com"
     subject = "Se ha recibido una solicitud de cotización manual"
     send_email(subject=subject, receipt=receipt, html=html, files=files)
-    ticket = Ticket()
+    ticket = Tramite()
     ticket.user = request.user
     ticket.descripcion = "COTIZACIÓN DE SEGURO DE AUTOMOVIL"
     ticket.marca = marca
@@ -746,7 +746,7 @@ def solicitar_baja(request):
     if tipo == 'benaccidente':
         dependiente = benAccidente.objects.get(id=int(request.POST.get('beneficiario')))
         referente = "accidente"
-    t = Ticket()
+    t = Tramite()
     t.user = request.user
     t.descripcion = "Solicitud de baja de dependiente"
     t.nombres = " ".join([dependiente.empleado.primer_nombre, dependiente.empleado.segundo_nombre])
@@ -775,7 +775,7 @@ def solicitar_baja(request):
 @login_required(login_url="/cotizador/login/")
 def solicitar_baja_auto(request):
     poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
-    t = Ticket()
+    t = Tramite()
     t.user = request.user
     t.descripcion = "Solicitud de baja de seguro de vehículo"
     t.nombres = poliza.nombres
@@ -798,7 +798,7 @@ def solicitar_baja_auto(request):
 def contactanos(request):
     if request.method == "POST":
         print(request.POST)
-        t = Ticket()
+        t = Tramite()
         t.user = request.user
         t.nombres = request.POST.get('nombres', '')
         t.apellidos = request.POST.get('apellidos', '')
@@ -961,7 +961,7 @@ def ingresar_numero_poliza(request):
 
 
 def enviar_contacto(request):
-    ticket = Ticket.objects.get(id=int(request.POST.get('ticket')))
+    ticket = Tramite.objects.get(id=int(request.POST.get('ticket')))
     html = render_to_string('cotizador/email/contacto_directo.html', {
         'ticket': ticket, 'comentarios': request.POST.get('comentarios')
     })

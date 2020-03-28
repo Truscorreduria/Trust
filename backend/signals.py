@@ -167,3 +167,21 @@ def renovar_poliza(sender, **kwargs):
 RenovarPoliza = Signal()
 RenovarPoliza.connect(renovar_poliza)
 
+
+def add_comment(sender, **kwargs):
+    request = kwargs.get('request')
+    comentario = kwargs.get('comentario')
+    c = Comentario()
+    c.created_user = request.user
+    c.updated_user = request.user
+    c.type = ContentType.objects.get_for_model(sender.__class__)
+    c.key = sender.pk
+    c.comentario = comentario
+    c.save()
+    return c
+
+
+AddComment = Signal()
+AddComment.connect(add_comment)
+
+

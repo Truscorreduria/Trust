@@ -1393,9 +1393,7 @@ class Comentario(base):
 
     @classmethod
     def bitacora(cls, obj):
-        return Comentario.objects.filter(type=ContentType.objects.get(
-            app_label='backend', model=obj._meta.model_name
-        ), key=obj.id)
+        return Comentario.objects.filter(type=ContentType.objects.get_for_model(obj.__class__), key=obj.pk)
 
     def to_json(self):
         o = super().to_json()

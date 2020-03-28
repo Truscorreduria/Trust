@@ -372,7 +372,7 @@ class PolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
-        exclude = ('editable', )
+        exclude = ('editable', 'pedir_comentarios')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -485,7 +485,7 @@ class TramiteForm(forms.ModelForm):
 
     class Meta:
         model = Tramite
-        exclude = ('editable', )
+        exclude = ('editable',)
 
     @staticmethod
     def get_contacto_choices(poliza):

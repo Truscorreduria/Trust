@@ -9,6 +9,8 @@ from grappelli_extras.utils import Codec
 import pandas as pd
 from django.core.exceptions import ObjectDoesNotExist
 from backend.signals import RenovarPoliza
+from django.db import IntegrityError
+from backend.signals import AddComment
 
 
 def documentos(request):
@@ -96,7 +98,7 @@ def calcular_tabla_pagos_tramites(request):
             mes = 1
             anno += 1
         fecha = valid_date(year=anno, month=mes, day=dia)
-        data.append({'numero': i+1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
+        data.append({'numero': i + 1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
                      'estado': 'VIGENTE'})
     return JsonResponse(data, safe=False, encoder=Codec)
 
@@ -1024,18 +1026,53 @@ class Polizas(Datatables):
         'css': ['trustseguros/lte/css/coberturas-field.css', ]
     }
 
+    def put(self, request):
+        status = 203
+        instance = self.model()
+        form = self.get_form()()
+        html_form = self.html_form(instance, request, form, 'PUT')
+        errors = []
+
+        if 'save' in request.PUT:
+            try:
+                form = self.get_form()(request.PUT)
+                if form.is_valid():
+                    form.save()
+                    instance = form.instance
+                    status = 200
+                    self.save_related(instance=instance, data=request.PUT)
+                    form = self.get_form()(instance=instance)
+                    html_form = self.html_form(instance, request, form, "POST")
+                    AddComment.send(instance, request=request,
+                                    comentario="Creado en estado %s" % instance.get_estado_poliza_display())
+                else:
+                    errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+                    print(errors)
+                    html_form = self.html_form(instance, request, form, "PUT")
+            except IntegrityError as e:
+                print(e)
+
+        return JsonResponse({'instance': instance.to_json(), 'form': html_form,
+                             'errors': errors}, status=status, encoder=Codec)
+
     def post(self, request):
         if 'activar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
+            AddComment.send(p, request=request,
+                            comentario="Actualizado en estado %s" % p.get_estado_poliza_display())
             p.estado_poliza = EstadoPoliza.ACTIVA
             p.editable = False
             p.perdir_comentarios = False
             p.save()
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
+
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'modificar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
+
+            AddComment.send(p, request=request,
+                            comentario="Se habilita el modo de edición")
             p.editable = True
             p.perdir_comentarios = True
             p.save()
@@ -1043,7 +1080,6 @@ class Polizas(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'confirmar' in request.POST:
-            print(request.POST)
             status = 200
             errors = []
             p = self.model.objects.get(id=int(request.POST.get('id')))
@@ -1051,6 +1087,8 @@ class Polizas(Datatables):
             if form.is_valid():
                 form.save()
                 p = form.instance
+                AddComment.send(p, request=request,
+                                comentario=request.POST.get('pedir_comentarios'))
                 p.editable = False
                 p.perdir_comentarios = False
                 p.save()
@@ -1061,11 +1099,12 @@ class Polizas(Datatables):
                 status = 203
                 print(errors)
             html_form = self.html_form(p, request, form, 'POST')
-
             return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
                                 encoder=Codec, status=status)
         if 'cancelar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
+            AddComment.send(p, request=request,
+                            comentario="Poliza en estado cancelada")
             p.estado_poliza = EstadoPoliza.CANCELADA
             p.editable = False
             p.perdir_comentarios = True
@@ -1075,6 +1114,8 @@ class Polizas(Datatables):
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'renovar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
+            AddComment.send(p, request=request,
+                            comentario="Poliza en estado renovada")
             p.estado_poliza = EstadoPoliza.RENOVADA
             p.save()
             nueva = RenovarPoliza.send(p, request=request)[0][1]
