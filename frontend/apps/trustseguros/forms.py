@@ -390,18 +390,8 @@ class PolizaForm(forms.ModelForm):
         if instance and not instance.editable:
             self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
-            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
-            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
-            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
-            self.fields['total'].widget.attrs['readonly'] = 'readonly'
-            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
             self.fields['fecha_emision'].widget.attrs['readonly'] = 'readonly'
             self.fields['fecha_vence'].widget.attrs['readonly'] = 'readonly'
-            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['ramo'].widget.attrs['disabled'] = 'disabled'
             self.fields['sub_ramo'].widget.attrs['disabled'] = 'disabled'
             self.fields['aseguradora'].widget.attrs['disabled'] = 'disabled'
@@ -411,10 +401,6 @@ class PolizaForm(forms.ModelForm):
             self.fields['tipo_poliza'].widget.attrs['disabled'] = 'disabled'
             self.fields['cesion_derecho'].widget.attrs['disabled'] = 'disabled'
             self.fields['cesioinario'].widget.attrs['disabled'] = 'disabled'
-            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
-            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
             self.fields['concepto'].widget.attrs['disabled'] = 'disabled'
         if instance:
             if instance.f_pago == FormaPago.CONTADO:
@@ -425,11 +411,11 @@ class PolizaForm(forms.ModelForm):
             self.fields['cliente'].required = False
             self.fields['contratante'].required = False
         if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
-            self.fields['moneda'].widget.attrs['disabled'] = 'disabled'
-            self.fields['f_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['m_pago'].widget.attrs['disabled'] = 'disabled'
-            self.fields['cuotas'].widget.attrs['disabled'] = 'disabled'
-            self.fields['fecha_pago'].widget.attrs['disabled'] = 'disabled'
+            self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
+            self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
             self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
             self.fields['emision'].widget.attrs['readonly'] = 'readonly'
