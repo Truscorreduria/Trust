@@ -86,8 +86,8 @@ $(document).ready(function () {
         return (`<tr>
                     <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_materno}</td>
                     <td>Muerte por cualquier causa</td>
-                    <td>U$ {{ config.SUMA_SEPELIO|intcomma }}</td>
-                    <td>U$ {{ config.COSTO_SEPELIO|intcomma }}</td>
+                    <td>U$ {{ user.config.suma_sepelio|intcomma }}</td>
+                    <td>U$ {{ user.config.costo_sepelio|intcomma }}</td>
                 </tr>`)
     }
 
@@ -139,12 +139,8 @@ $(document).ready(function () {
         $.each(dependientes, function (i, o) {
             cotizacion.append(rowCotizacionSepelio(o));
         });
-        let suma =
-        {{ config.SUMA_SEPELIO }} *
-        dependientes.length;
-        let prima =
-        {{ config.COSTO_SEPELIO }} *
-        dependientes.length;
+        let suma = {{ user.config.suma_sepelio }} * dependientes.length;
+        let prima = {{ user.config.costo_sepelio }} * dependientes.length;
         $('#span-suma-asegurada-cotizacion-sepelio').empty().html(intcommas(suma.toFixed(1)));
         $('#span-total-cotizacion-sepelio').empty().html(intcommas(prima.toFixed(2)));
         $('#h2-anual-sepelio').empty().html(intcommas(prima.toFixed(2)));

@@ -18,7 +18,6 @@ from django.db.models import Sum
 from backend.decorators import profile_required
 import random
 import string
-from constance import config
 from openpyxl import Workbook
 from openpyxl.styles import Border, Side, Alignment, Font
 from django.contrib.auth import update_session_auth_hash
@@ -65,7 +64,8 @@ def _prepare_annos(anno):
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def cotizar(request):
-    soa_descontado = round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2)
+    config = get_config(request.user)
+    soa_descontado = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
     today = datetime.now()
     year = int(str(today.year))
     marcas = Referencia.objects.values('marca').annotate(annos=Count('anno')).order_by('marca')
@@ -193,14 +193,14 @@ def anno_mas_cercano(years, year):
 
 @csrf_exempt
 def get_data(request):
-    print(request.POST)
+    config = get_config(request.user)
     marca = request.POST.get('marca')
-    porcentaje_deducible = config.PORCENTAJE_DEDUCIBLE
-    porcentaje_deducible_extension = config.PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL
-    minimo_deducible = config.MINIMO_DEDUCIBLE
-    minimo_deducible_extension = config.MINIMO_DEDUCIBLE
-    porcentaje = str(round(config.PORCENTAJE_DEDUCIBLE * 100, 0)).replace('.0', '%')
-    porcentaje_extension = str(round(config.PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL * 100, 0)).replace('.0', '%')
+    porcentaje_deducible = config.porcentaje_deducible
+    porcentaje_deducible_extension = config.porcentaje_deducible_extencion_territorial
+    minimo_deducible = config.minimo_deducible
+    minimo_deducible_extension = config.minimo_deducible
+    porcentaje = str(round(config.porcentaje_deducible * 100, 0)).replace('.0', '%')
+    porcentaje_extension = str(round(config.porcentaje_deducible_extencion_territorial * 100, 0)).replace('.0', '%')
     if marca in Marca.objects.all().values_list('marca', flat=True):
         marca_recargo = Marca.objects.get(marca=marca)
         minimo_deducible = marca_recargo.minimo
@@ -245,10 +245,10 @@ def get_data(request):
                     valor_nuevo = {'marca': marca, 'modelo': modelo, 'anno': anno, 'valor': 0.0}
 
     aseguradora = Aseguradora.objects.get(name='ASSA')
-    prima = round((valor_nuevo['valor'] * config.TASA_AUTOMOVIL) / 1000, 2)
+    prima = round((valor_nuevo['valor'] * config.tasa_automovil) / 1000, 2)
     exceso = round((exceso / 2500) * 50, 2)
     vidrios = round((valor_nuevo['valor'] * 5) / 100, 2)
-    prima_total = prima + config.SOA_AUTOMOVIL + exceso
+    prima_total = prima + config.soa_automovil + exceso
     emision = round(((prima + exceso) * aseguradora.emision) / 100, 2)
     iva = round(((prima + exceso + emision) * 15) / 100, 2)
     total = round(prima_total + emision + iva, 2)
@@ -327,6 +327,8 @@ def generar_cotizacion(request):
 
 @csrf_exempt
 def guardar_poliza(request):
+    config = get_config(request.user)
+    cliente = get_profile(request.user)
     poliza = Poliza()
     str_date = request.POST.get('fecha_emision').split("-")
     now = datetime.now()
@@ -344,6 +346,7 @@ def guardar_poliza(request):
     poliza.telefono = request.POST.get('telefono')
     poliza.celular = request.POST.get('celular')
     poliza.domicilio = request.POST.get('domicilio')
+    poliza.cliente = cliente
     poliza.anno = request.POST.get('anno')
     poliza.marca = request.POST.get('marca')
     poliza.modelo = request.POST.get('modelo')
@@ -363,20 +366,20 @@ def guardar_poliza(request):
     poliza.costo_exceso = request.POST.get('costo_exceso')
 
     # DEL CONFIG
-    poliza.aseguradora = config.ASEGURADORA
-    poliza.ramo = config.RAMO
-    poliza.sub_ramo = config.SUBRAMO
-    poliza.contratante = config.CONTRATANTE
+    poliza.aseguradora = config.aseguradora_automovil
+    poliza.ramo = config.ramo_automovil
+    poliza.sub_ramo = config.sub_ramo_automovil
+    poliza.contratante = config.empresa
 
     poliza.tipo_cobertura = request.POST.get('tipo_cobertura')
     if poliza.tipo_cobertura == 'basica':
         poliza.suma_asegurada = 0.00
         poliza.valor_nuevo = 0.00
-        poliza.subtotal = round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2)
+        poliza.subtotal = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
         poliza.emision = 0.00
         poliza.iva = 0.00
-        poliza.total = round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2)
-        poliza.monto_cuota = round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2)
+        poliza.total = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
+        poliza.monto_cuota = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
     if poliza.tipo_cobertura == 'amplia':
         poliza.suma_asegurada = float(request.POST.get('valor_depreciado'))
         poliza.valor_nuevo = float(request.POST.get('valor_nuevo'))
@@ -419,6 +422,7 @@ def guardar_poliza(request):
 
 @csrf_exempt
 def guardar_sepelio(request):
+    config = get_config(request.user)
     o = OrdenTrabajo()
     o.tipo = "CF"
     o.user = request.user
@@ -459,26 +463,28 @@ def guardar_sepelio(request):
     files.append(("attachment", (o.nomeclatura() + ".pdf", ot)))
 
     send_email('Orden de Trabajo # %s' % o.nomeclatura(),
-               config.EMAIL_TRUST + config.EMAIL_SEPELIO, html=html, files=files)
+               config.email_automovil + config.email_sepelio, html=html, files=files)
     return JsonResponse({'beneficiarios': data, 'orden': o.to_json()}, encoder=Codec, safe=False)
 
 
 @csrf_exempt
 def costo_accidente(request):
+    config = get_config(request.user)
     inicio = datetime(day=1, month=1, year=datetime.now().year)
     vence = datetime(year=inicio.year + 1, month=1, day=1)
     dias = (vence - datetime.now()).days
-    prima = ((dias * config.COSTO_ACCIDENTE) / (vence - inicio).days)
-    costo = prima + config.COSTO_CARNET_ACCIDENTE
+    prima = ((dias * config.costo_accidente) / (vence - inicio).days)
+    costo = prima + config.costo_carnet_accidente
     emision = (costo) * 0.02
     return JsonResponse({'costo': round(costo, 2), 'emision': round(emision, 2),
-                         'dias': dias, 'prima': round(prima, 2), 'carnet': config.COSTO_CARNET_ACCIDENTE,
-                         'suma': config.SUMA_ACCIDENTE_DEPENDIENTE},
+                         'dias': dias, 'prima': round(prima, 2), 'carnet': config.costo_carnet_accidente,
+                         'suma': config.suma_accidente_dependiente},
                         encoder=Codec)
 
 
 @csrf_exempt
 def guardar_accidente(request):
+    config = get_config(request.user)
     o = OrdenTrabajo()
     o.tipo = "AP"
     o.user = request.user
@@ -526,7 +532,7 @@ def guardar_accidente(request):
     files.append(("attachment", (o.nomeclatura() + ".pdf", ot)))
 
     send_email('Orden de Trabajo # %s' % o.nomeclatura(),
-               config.EMAIL_TRUST + config.EMAIL_ACCIDENTE, html=html, files=files)
+               config.email_trust + config.email_accidente, html=html, files=files)
     return JsonResponse({'beneficiarios': data, 'orden': o.to_json()}, encoder=Codec, safe=False)
 
 
@@ -548,6 +554,7 @@ def print_cotizacion(request):
 
 @csrf_exempt
 def print_condiciones(request):
+    config = get_config(request.user)
     poliza = Poliza.objects.get(id=request.POST.get('id'))
     if poliza.tipo_cobertura == 'amplia':
         return render_to_pdf_response(request, 'cotizador/pdf/condiciones_particulares.html', {
@@ -561,9 +568,10 @@ def print_condiciones(request):
 
 @csrf_exempt
 def print_orden_trabajo(request):
+    config = get_config(request.user)
     poliza = Poliza.objects.get(id=request.POST.get('id'))
     return render_to_pdf_response(request, 'cotizador/pdf/orden_trabajo.html', {
-        'poliza': poliza, 'soa_descontado': round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2),
+        'poliza': poliza, 'soa_descontado': round((config.soa_automovil * (1 - config.soa_descuento)), 2),
         'config': config
     })
 
@@ -578,6 +586,7 @@ def print_documentos(request):
 
 @csrf_exempt
 def print_orden_trabajo_sepelio(request):
+    config = get_config(request.user)
     orden = OrdenTrabajo.objects.get(id=int(request.POST.get('orden')))
     beneficiarios = orden.beneficiarios()
     return render_to_pdf_response(request, 'cotizador/pdf/orden_trabajo_sepelio.html', {
@@ -961,11 +970,12 @@ def ingresar_numero_poliza(request):
 
 
 def enviar_contacto(request):
+    config = get_config(request.user)
     ticket = Tramite.objects.get(id=int(request.POST.get('ticket')))
     html = render_to_string('cotizador/email/contacto_directo.html', {
         'ticket': ticket, 'comentarios': request.POST.get('comentarios')
     })
-    send_email('Contacto directo', config.EMAIL_TRUST, html=html)
+    send_email('Contacto directo', config.email_trust, html=html)
     return JsonResponse(ticket.to_json(), encoder=Codec)
 
 

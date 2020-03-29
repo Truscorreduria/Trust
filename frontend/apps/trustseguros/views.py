@@ -1192,7 +1192,7 @@ class ConfiguracionCotizador(Datatables):
     modal_width = 1200
     model = CotizadorConfig
     form = CotizadorConfigForm
-    list_display = ('empresa.nombre',)
+    list_display = ('empresa.razon_social',)
     fieldsets = (
         {
             'id': 'info',

@@ -39,6 +39,11 @@ def get_profile(user):
         return None
 
 
+def get_config(user):
+    cliente = Cliente.objects.get(user=user)
+    return CotizadorConfig.objects.get(empresa=cliente.empresa)
+
+
 def valid_date(year, month, day):
     valid = False
     while valid == False:
@@ -56,6 +61,7 @@ def json_object(obj, tpe):
 
 
 User.add_to_class('profile', get_profile)
+User.add_to_class('config', get_config)
 
 
 # region Aseguradora
@@ -415,6 +421,10 @@ class Cliente(Persona, Empresa, Direccion):
         if self.tipo_cliente == TipoCliente.JURIDICO:
             self.nombre = self.razon_social
         super().save(*args, **kwargs)
+
+    @property
+    def tarifas(self):
+        return CotizadorConfig.objects.get(empresa=self.empresa)
 
 
 class ManagerProspecto(models.Manager):
@@ -1414,6 +1424,7 @@ class Comentario(base):
 
 class CotizadorConfig(base):
     empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
+    email_trust = models.CharField(max_length=255, null=True)
 
     # region automovil
     aseguradora_automovil = models.ForeignKey(Aseguradora, on_delete=models.CASCADE,
@@ -1470,7 +1481,7 @@ class CotizadorConfig(base):
                                        verbose_name='Suma asegurada para Seguros de Accidentes del Titular.')
     suma_accidente_dependiente = models.FloatField(default=10000.0,
                                                    verbose_name='Suma asegurada para Seguros de Accidentes del Dependiente.')
-    email_accidente = models.EmailField(default='luis.collado@mapfre.com.ni,',
+    email_accidente = models.CharField(max_length=300, default='luis.collado@mapfre.com.ni,',
                                         verbose_name='Lista de correos de accidente usados para las notificaciones del sistema')
 
     # endregion
@@ -1488,3 +1499,23 @@ class CotizadorConfig(base):
                                  verbose_name='Unicamente para la impresión del documento')
     
     # endregion
+
+    class Meta:
+        verbose_name = "configuración"
+        verbose_name_plural = "configuración del cotizador"
+
+    def __str__(self):
+        if self.empresa:
+            return self.empresa.razon_social
+        else:
+            return ""
+
+    def to_json(self):
+        o = super().to_json()
+        o['str'] = str(self)
+        if self.empresa:
+            o['empresa'] = {'id': self.empresa.id, 'razon_social': self.empresa.razon_social}
+        return o
+
+
+
