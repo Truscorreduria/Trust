@@ -113,6 +113,9 @@ class Aseguradora(BaseEntity, Base):
     address = models.TextField(max_length=600, verbose_name="dirección", null=True, blank=True)
     emision = models.FloatField(default=2.0, verbose_name="derecho de emision")
 
+    def __str__(self):
+        return self.name
+
     def depreciar(self, valor_nuevo, anno):
         today = datetime.now()
         antiguedad = today.year - int(anno)
@@ -935,6 +938,10 @@ class Poliza(Base):
             return round(self.subtotal - self.descuento, 2)
         except:
             return 0.0
+
+    @property
+    def tipo_poliza_display(self):
+        return self.get_tipo_poliza_display()
 
     def rotura_vidrios(self):
         try:
