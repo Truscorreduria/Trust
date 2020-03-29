@@ -1,3 +1,6 @@
+{% load poliza %}
+
+
 <table class="table-template" id="{{ widget.name }}-template" style="display: none">
     <tr>
         {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
@@ -48,7 +51,8 @@
 
             {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
                 <td>
-                    <input type="text" class="form-control {{ widget.name }}-input" value=""
+                    <input type="text" class="form-control {{ widget.name }}-input"
+                           value="{{ row|dato_tecnico:field }}"
                            name="{{ widget.name }}-{{ field.name }}"
                            {% if not widget.value.editable %}readonly{% endif %}>
                 </td>
@@ -78,31 +82,18 @@
     (function ($) {
         $(document).ready(function () {
 
-
-
             const $fieldset = $('#{{ widget.name }}-table');
-
-            const load_data = function () {
-                $.each($($fieldset).find('.{{ widget.name }}-value'), function (i, o) {
-                    const data = JSON.parse($(o).val());
-                    const $tr = $(o).parents('tr');
-                    Object.keys(data).forEach(function (k) {
-                        $($tr).find(`input[name="${k}"]`).val(data[k]);
-                    });
-                });
-            };
 
             $($fieldset).on('change', '.{{ widget.name }}-input', function () {
                 let obj = {};
                 const $tr = $(this).parents('tr');
                 const $trvalue = $($tr).find('.{{ widget.name }}-value');
                 $.each($($tr).find('.{{ widget.name }}-input'), function (i, o) {
-                    obj[$(o).attr('name')] = $(o).val()
+                    obj[$(o).attr('name').replace('{{ widget.name }}-', '')] = $(o).val()
                 });
                 $($trvalue).val(JSON.stringify(obj));
             });
 
-            load_data();
         })
     })(jQuery)
 

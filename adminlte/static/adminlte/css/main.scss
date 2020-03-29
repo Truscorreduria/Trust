@@ -71,3 +71,9 @@ a {
 .swal2-container {
   z-index: 1600;
 }
+
+input[readonly], .form-control[readonly] {
+  pointer-events: none;
+}
+
+

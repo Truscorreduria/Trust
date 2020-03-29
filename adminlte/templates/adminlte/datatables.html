@@ -309,11 +309,11 @@
 
                 table.ajax.reload();
             });
-            {% comment %}$(document).on('focusout', 'input,textarea', function () {
+            $(document).on('focusout', 'input,textarea', function () {
                 const self = $(this);
                 let text = self.val().toUpperCase();
                 self.val(text);
-            });{% endcomment %}
+            });
 
             $(document).on('click', '.form-buttons button', function () {
                 $(this).attr('disabled', 'disabled')
