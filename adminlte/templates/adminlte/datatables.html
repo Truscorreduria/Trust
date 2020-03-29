@@ -309,7 +309,7 @@
 
                 table.ajax.reload();
             });
-            $(document).on('focusout', 'input,textarea', function () {
+            $(document).on('keyup', 'input,textarea', function () {
                 const self = $(this);
                 let text = self.val().toUpperCase();
                 self.val(text);

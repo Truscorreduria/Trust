@@ -1046,10 +1046,10 @@ class Tramite(Base):
     vence = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(max_length=55, null=True, blank=True, default="Pendiente",
                               choices=(
-                                  ('Pendiente', 'Pendiente'),
                                   ('En Proceso', 'En Proceso'),
                                   ('Pendiente documentación', 'Pendiente documentación'),
                                   ('Finalizado', 'Finalizado'),
+                                  ('Anulado', 'Anulado'),
                               ))
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes',

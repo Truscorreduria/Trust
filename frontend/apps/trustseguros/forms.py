@@ -523,6 +523,30 @@ class TramiteForm(forms.ModelForm):
             self.fields['poliza'].choices = self.get_poliza_choices(instance.cliente)
         if instance and instance.poliza:
             self.fields['contacto_aseguradora'].widget.choices = self.get_contacto_choices(instance.poliza)
+        if instance and (instance.estado == 'Finalizado' or instance.estado == 'Anulado'):
+            self.fields['tipo_tramite'].widget.attrs['readonly'] = 'readonly'
+            self.fields['contacto_aseguradora'].widget.attrs['readonly'] = 'readonly'
+            self.fields['solicitado_por'].widget.attrs['readonly'] = 'readonly'
+            self.fields['medio_solicitud'].widget.attrs['readonly'] = 'readonly'
+            self.fields['estado'].widget.attrs['readonly'] = 'readonly'
+            self.fields['genera_endoso'].widget.attrs['readonly'] = 'readonly'
+            self.fields['user'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
+            self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+            self.fields['total'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
+            self.fields['poliza'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
 
 
 class LteAccidentetForm(forms.ModelForm):

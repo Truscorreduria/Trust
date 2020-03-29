@@ -1026,6 +1026,10 @@ class Polizas(Datatables):
         'css': ['trustseguros/lte/css/coberturas-field.css', ]
     }
 
+    def get_queryset(self, filters, search_value):
+        return super().get_queryset(filters, search_value).filter(
+            estado_poliza__in=[EstadoPoliza.PENDIENTE, EstadoPoliza.ACTIVA])
+
     def put(self, request):
         status = 203
         instance = self.model()

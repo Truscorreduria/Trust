@@ -221,6 +221,7 @@
                         id: $('input[name="id"]').val(), activar: 'activar'
                     }, success: function (response) {
                         redraw_object(response);
+                        update_table(response);
                     }
                 })
             });
@@ -260,6 +261,7 @@
                     success: function (response, textStatus, xhr) {
                         redraw_object(response);
                         if (xhr.status === 200) {
+                            redraw_object(response);
                             update_table(response);
                             $.growl.notice({
                                 title: `Notificación`,
@@ -303,6 +305,7 @@
                                 id: $('input[name="id"]').val(), renovar: 'renovar'
                             }, success: function (response) {
                                 redraw_object(response);
+                                update_table(response);
                             }
                         });
                     } else {

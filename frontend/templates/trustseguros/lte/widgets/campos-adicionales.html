@@ -82,9 +82,7 @@
     (function ($) {
         $(document).ready(function () {
 
-            const $fieldset = $('#{{ widget.name }}-table');
-
-            $($fieldset).on('change', '.{{ widget.name }}-input', function () {
+            $(document).on('change', '.{{ widget.name }}-input', function () {
                 let obj = {};
                 const $tr = $(this).parents('tr');
                 const $trvalue = $($tr).find('.{{ widget.name }}-value');

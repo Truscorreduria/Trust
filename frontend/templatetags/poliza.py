@@ -21,4 +21,6 @@ def dato_tecnico(row, field):
         return data[field.name]
     except KeyError as e:
         return ""
+    except json.decoder.JSONDecodeError as e:
+        return ""
 
