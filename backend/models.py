@@ -32,11 +32,8 @@ def get_media_url(model, filename):
 
 
 def get_profile(user):
-    try:
-        p, created = Cliente.objects.get_or_create(user=user)
-        return p
-    except:
-        return None
+    p, created = Cliente.objects.get_or_create(user=user)
+    return p
 
 
 def get_config(user):
