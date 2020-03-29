@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, render_to_response, Http404
 from django.http.response import JsonResponse
 from backend.signals import *
+from backend.utils import calcular_tabla_pagos
 from grappelli_extras.utils import Codec
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -879,33 +880,14 @@ def download(request):
         raise Http404
 
 
-def calcular_tabla_pagos(request):
+def calcular_tabla_pagos_polizas(request):
     total = float(request.POST.get('total'))
     fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cuotas'))
-    try:
-        poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
-        poliza.pagos().delete()
-    except:
-        pass
+    poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
     monto_cuota = round(total / cuotas, 2)
-    data = []
-    anno = fecha_pago.year
-    mes = fecha_pago.month
-    dia = fecha_pago.day
-    data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                 'estado': 'VIGENTE'})
-    for i in range(1, cuotas):
-        if mes != 12:
-            mes += 1
-        else:
-            mes = 1
-            anno += 1
-        fecha = valid_date(year=anno, month=mes, day=dia)
-        data.append({'numero': i+1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                     'estado': 'VIGENTE'})
+    data = calcular_tabla_pagos(total, fecha_pago, cuotas, poliza)
     return JsonResponse(data, safe=False, encoder=Codec)
-
 
 
 def reporte_inclusion(modelAdmin, request, queryset):

@@ -46,7 +46,7 @@ def get_config(user):
 
 def valid_date(year, month, day):
     valid = False
-    while valid == False:
+    while not valid:
         try:
             return datetime(year=year, month=month, day=day)
         except:
