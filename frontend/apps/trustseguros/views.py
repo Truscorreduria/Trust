@@ -749,7 +749,8 @@ class Tramites(Datatables):
     form = TramiteForm
     form_template = "trustseguros/lte/tramite-modal.html"
     list_display = ('code', 'tipo_tramite.name', ('Cliente', 'cliente.name'),
-                    ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'))
+                    ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
+                    ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
     list_filter = ('tipo_tramite', 'estado', 'user')
     search_fields = ('code',)
     fieldsets = [

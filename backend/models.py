@@ -1171,6 +1171,8 @@ class Tramite(Base):
     def to_json(self):
         o = super().to_json()
         o['str'] = self.code
+        o['created'] = self.created.strftime('%d/%m/%Y %H:%M')
+        o['estado'] = {'id': self.estado, 'name': self.get_estado_display()}
         o['tipo_tramite'] = {'id': self.tipo_tramite, 'name': self.get_tipo_tramite_display()}
         if self.poliza:
             o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
