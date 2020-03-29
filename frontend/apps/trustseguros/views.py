@@ -700,7 +700,10 @@ class PersonaJuridica(Datatables):
                 c = Contacto(contacto=instance)
             else:
                 c = Contacto.objects.get(id=int(data.getlist('contacto_id')[i]))
-            c.nombre = data.getlist('cliente_contacto-nombre')[i]
+            c.primer_nombre = data.getlist('cliente_contacto-primer_nombre')[i]
+            c.segundo_nombre = data.getlist('cliente_contacto-segundo_nombre')[i]
+            c.apellido_paterno = data.getlist('cliente_contacto-apellido_paterno')[i]
+            c.apellido_materno = data.getlist('cliente_contacto-apellido_materno')[i]
             c.cedula = data.getlist('cliente_contacto-cedula')[i]
             c.telefono = data.getlist('cliente_contacto-telefono')[i]
             c.celular = data.getlist('cliente_contacto-celular')[i]

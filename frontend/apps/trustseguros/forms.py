@@ -50,7 +50,9 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('nombre', 'cedula', 'telefono', 'celular', 'email_personal')
+        fields = (
+        'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula', 'telefono', 'celular',
+        'email_personal')
 
 
 class RepresentanteForm(forms.ModelForm):
@@ -497,7 +499,7 @@ class TramiteForm(forms.ModelForm):
     def get_poliza_choices(cliente):
         choices = [(None, '---------')]
         for i in Poliza.objects.filter(cliente=cliente, estado_poliza=EstadoPoliza.ACTIVA):
-            choices.append((i.id, i.no_poliza) )
+            choices.append((i.id, i.no_poliza))
         return choices
 
     def __init__(self, *args, **kwargs):
@@ -550,7 +552,6 @@ class TramiteForm(forms.ModelForm):
 
 
 class CotizadorConfigForm(forms.ModelForm):
-
     class Meta:
         model = CotizadorConfig
         fields = '__all__'
