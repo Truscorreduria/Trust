@@ -19,6 +19,7 @@ urlpatterns = [
     path('accidente/', DependientesAccidente.as_view(), name="accidente"),
     path('polizas/', Polizas.as_view(), name="polizas"),
     path('tramites/', Tramites.as_view(), name="tramites"),
+    path('configcotizador/', ConfiguracionCotizador.as_view(), name="configcotizador"),
     path('documentos/', documentos, name="documentos"),
     path('comentarios/', comentarios, name="comentarios"),
     path('calcular_tabla_pagos_tramites/', calcular_tabla_pagos_tramites, name="calcular_tabla_pagos_tramites"),

@@ -829,12 +829,12 @@ class Poliza(Base):
 
     @property
     def dias_vigencia(self):
-        if (self.fecha_emision and self.fecha_vence) and (self.fecha_emision < self.fecha_vence):
+        try:
             hoy = datetime.now()
             emision = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month, day=self.fecha_emision.day)
             vencimiento = datetime(year=self.fecha_vence.year, month=self.fecha_vence.month, day=self.fecha_vence.day)
             return (vencimiento - hoy).days
-        else:
+        except:
             return None
 
     @property
@@ -1401,3 +1401,81 @@ class Comentario(base):
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
         return o
+
+
+class CotizadorConfig(base):
+    empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
+
+    # region automovil
+    aseguradora_automovil = models.ForeignKey(Aseguradora, on_delete=models.CASCADE,
+                                              related_name="aseguradora_automovil")
+    ramo_automovil = models.ForeignKey(Ramo, on_delete=models.CASCADE, related_name="ramo_automovil")
+    sub_ramo_automovil = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="sub_ramo_automovil")
+    tasa_automovil = models.FloatField(default=10.4, verbose_name='Tarifa para el seguro de prima de vehículo')
+    soa_automovil = models.FloatField(default=55.0, verbose_name='Tarifa para el seguro obligatorio de vehículo')
+    porcentaje_deducible = models.FloatField(default=0.2,
+                                             verbose_name='Porcentaje deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')
+    porcentaje_deducible_extencion_territorial = models.FloatField(default=0.3,
+                                                                   verbose_name='Porcentaje deducible solo para la cobertura de extensión territorial. Para aplicar regargo vaya a Marcas con recargo.')
+    minimo_deducible = models.FloatField(default=100.0,
+                                         verbose_name='Mínimo deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')
+    soa_descuento = models.FloatField(default=0.05,
+                                      verbose_name='Descuento del Seguro Obligatorio de Vehículo. Por favor usar notación decimal (0.05 = 5%)')
+    email_automovil = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,',
+                                       verbose_name='Lista de correos de automovil usados para las notificaciones del sistema')
+
+    # endregion
+
+    # region sepelio
+    aseguradora_sepelio = models.ForeignKey(Aseguradora, related_name="aseguradora_sepelio", on_delete=models.CASCADE)
+    ramo_sepelio = models.ForeignKey(Ramo, related_name="ramo_sepelio", on_delete=models.CASCADE)
+    sub_ramo_sepelio = models.ForeignKey(SubRamo, related_name="sub_ramo_sepelio", on_delete=models.CASCADE)
+    cliente_sepelio = models.ForeignKey(Cliente, related_name="contratante_sepelio", on_delete=models.CASCADE,
+                                        verbose_name="el contratante que se usara en la poliza de sepelio")
+    poliza_sepelio = models.CharField(max_length=65, default='CF - 000521 - 0',
+                                      verbose_name='Número de Póliza para Seguros del Titular.')
+    poliza_sepelio_dependiente = models.CharField(max_length=65, default='CF - 000564 - 0',
+                                                  verbose_name='Número de Póliza para Seguros del Dependiente.')
+    costo_sepelio = models.FloatField(default=3.75, verbose_name='Costo del Seguro de Sepelio para empleados Banpro.')
+
+    suma_sepelio = models.FloatField(default=1000.0,
+                                     verbose_name='Suma asegurada para Seguros de Sepelio empleados Banpro.')
+    email_sepelio = models.CharField(max_length=1000, default='asanchez@segurosamerica.com,',
+                                     verbose_name='Lista de correos de sepelio usados para las notificaciones del sistema')
+    # endregion
+
+    # region accidente
+
+    aseguradora_accidente = models.ForeignKey(Aseguradora, related_name="aseguradora_accidente",
+                                              on_delete=models.CASCADE)
+    ramo_accidente = models.ForeignKey(Ramo, related_name="ramo_accidente", on_delete=models.CASCADE)
+    sub_ramo_accidente = models.ForeignKey(SubRamo, related_name="sub_ramo_accidente", on_delete=models.CASCADE)
+    cliente_accidente = models.ForeignKey(Cliente, related_name="cliente_accidente", on_delete=models.CASCADE,
+                                          verbose_name="el contratante que se usara en la poliza de sepelio")
+    poliza_accidente = models.CharField(max_length=65, default='APC - 13359 - 30977',
+                                        verbose_name='Número de Póliza para Seguros de Accidente Banpro.')
+    costo_accidente = models.FloatField(default=18.0,
+                                        verbose_name='Costo del Seguro de Accidentes para empleados Banpro.')
+    costo_carnet_accidente = models.FloatField(default=1.85, verbose_name='Costo del carnet para seguros de Accidente')
+    suma_accidente = models.FloatField(default=15000.0,
+                                       verbose_name='Suma asegurada para Seguros de Accidentes del Titular.')
+    suma_accidente_dependiente = models.FloatField(default=10000.0,
+                                                   verbose_name='Suma asegurada para Seguros de Accidentes del Dependiente.')
+    email_accidente = models.EmailField(default='luis.collado@mapfre.com.ni,',
+                                        verbose_name='Lista de correos de accidente usados para las notificaciones del sistema')
+
+    # endregion
+
+    # region vida
+
+    aseguradora_vida = models.ForeignKey(Aseguradora, related_name="aseguradora_vida", on_delete=models.CASCADE)
+    ramo_vida = models.ForeignKey(Ramo, related_name="ramo_vida", on_delete=models.CASCADE)
+    sub_ramo_vida = models.ForeignKey(SubRamo, related_name="sub_ramo_vida", on_delete=models.CASCADE)
+    cliente_vida = models.ForeignKey(Cliente, related_name="cliente_vida", on_delete=models.CASCADE,
+                                     verbose_name="el contratante que se usara en la poliza de sepelio")
+    poliza_vida = models.CharField(max_length=65, default='CV-000209-0',
+                                   verbose_name='Número de Póliza para Seguros de Vida Banpro.')
+    suma_vida = models.CharField(max_length=100, default="22 veces el salario",
+                                 verbose_name='Unicamente para la impresión del documento')
+    
+    # endregion

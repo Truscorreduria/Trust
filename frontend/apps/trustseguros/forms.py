@@ -549,6 +549,13 @@ class TramiteForm(forms.ModelForm):
             self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
 
 
+class CotizadorConfigForm(forms.ModelForm):
+
+    class Meta:
+        model = CotizadorConfig
+        fields = '__all__'
+
+
 class LteAccidentetForm(forms.ModelForm):
     empleado = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Titular',
                                       required=True, widget=SelectSearch)

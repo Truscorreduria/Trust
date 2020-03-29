@@ -1183,4 +1183,62 @@ class Polizas(Datatables):
             p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
             p.save()
 
+
+class ConfiguracionCotizador(Datatables):
+    modal_width = 1200
+    model = CotizadorConfig
+    form = CotizadorConfigForm
+    list_display = ('empresa.nombre',)
+    fieldsets = (
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('empresa',),
+            )
+        },
+        {
+            'id': 'auto',
+            'name': 'Polizas de vehiculos',
+            'fields': (
+                ('aseguradora_automovil', 'ramo_automovil',),
+                ('sub_ramo_automovil', 'tasa_automovil',),
+                ('soa_automovil', 'porcentaje_deducible',),
+                ('porcentaje_deducible_extencion_territorial', 'minimo_deducible',),
+                ('soa_descuento', 'email_automovil',),
+            )
+        },
+        {
+            'id': 'sepelio',
+            'name': 'Polizas de sepelio',
+            'fields': (
+                ('aseguradora_sepelio', 'ramo_sepelio',),
+                ('sub_ramo_sepelio', 'cliente_sepelio',),
+                ('poliza_sepelio', 'poliza_sepelio_dependiente',),
+                ('costo_sepelio', 'suma_sepelio',),
+                ('email_sepelio',),
+            )
+        },
+        {
+            'id': 'accidente',
+            'name': 'Polizas de accidentes',
+            'fields': (
+                ('aseguradora_accidente', 'ramo_accidente',),
+                ('sub_ramo_accidente', 'cliente_accidente',),
+                ('poliza_accidente', 'costo_accidente',),
+                ('costo_carnet_accidente', 'suma_accidente',),
+                ('suma_accidente_dependiente', 'email_accidente',),
+            )
+        },
+        {
+            'id': 'vida',
+            'name': 'Polizas de vida',
+            'fields': (
+                ('aseguradora_vida', 'ramo_vida',),
+                ('sub_ramo_vida', 'cliente_vida',),
+                ('poliza_vida', 'suma_vida',),
+            )
+        },
+    )
+
 # endregion
