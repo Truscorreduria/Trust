@@ -245,7 +245,7 @@ def get_data(request):
                 else:
                     valor_nuevo = {'marca': marca, 'modelo': modelo, 'anno': anno, 'valor': 0.0}
 
-    aseguradora = Aseguradora.objects.get(name='ASSA')
+    aseguradora = config.aseguradora_automovil
     prima = round((valor_nuevo['valor'] * config.tasa_automovil) / 1000, 2)
     exceso = round((exceso / 2500) * 50, 2)
     vidrios = round((valor_nuevo['valor'] * 5) / 100, 2)
