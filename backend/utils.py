@@ -2,7 +2,10 @@ from .models import *
 
 
 def calcular_tabla_pagos(total, fecha_pago, cuotas, instance):
-    instance.pagos().delete()
+    try:
+        instance.pagos().delete()
+    except:
+        pass
     monto_cuota = round(total / cuotas, 2)
     data = []
     anno = fecha_pago.year

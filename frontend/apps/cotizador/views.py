@@ -884,7 +884,10 @@ def calcular_tabla_pagos_polizas(request):
     total = float(request.POST.get('total'))
     fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cuotas'))
-    poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
+    try:
+        poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
+    except:
+        poliza = None
     monto_cuota = round(total / cuotas, 2)
     data = calcular_tabla_pagos(total, fecha_pago, cuotas, poliza)
     return JsonResponse(data, safe=False, encoder=Codec)
