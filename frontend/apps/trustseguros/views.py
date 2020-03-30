@@ -1180,7 +1180,7 @@ class ConfiguracionCotizador(Datatables):
             'id': 'info',
             'name': 'Información general',
             'fields': (
-                ('empresa',),
+                ('empresa', 'email_trust'),
             )
         },
         {
@@ -1192,6 +1192,7 @@ class ConfiguracionCotizador(Datatables):
                 ('soa_automovil', 'porcentaje_deducible',),
                 ('porcentaje_deducible_extencion_territorial', 'minimo_deducible',),
                 ('soa_descuento', 'email_automovil',),
+                ('fieldmap_automovil',),
             )
         },
         {
@@ -1203,6 +1204,7 @@ class ConfiguracionCotizador(Datatables):
                 ('poliza_sepelio', 'poliza_sepelio_dependiente',),
                 ('costo_sepelio', 'suma_sepelio',),
                 ('email_sepelio',),
+                ('fieldmap_sepelio',),
             )
         },
         {
@@ -1214,6 +1216,7 @@ class ConfiguracionCotizador(Datatables):
                 ('poliza_accidente', 'costo_accidente',),
                 ('costo_carnet_accidente', 'suma_accidente',),
                 ('suma_accidente_dependiente', 'email_accidente',),
+                ('fieldmap_accidente',),
             )
         },
         {
@@ -1226,5 +1229,11 @@ class ConfiguracionCotizador(Datatables):
             )
         },
     )
+
+    def save_related(self, instance, data):
+        for i in range(0, len(data.getlist('fieldmap'))):
+            f = FieldMap.objects.get(id=data.getlist('fieldmap')[i])
+            f.destiny_field = CampoAdicional.objects.get(id=data.getlist('destiny_field')[i])
+            f.save()
 
 # endregion

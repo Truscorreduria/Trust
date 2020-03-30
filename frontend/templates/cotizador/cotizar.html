@@ -781,24 +781,59 @@
                                             <div class="row">
                                                 <div class="col-lg-6">
 
-                                                    <div class="form-group">
-                                                        <label for="nombres">Nombres</label>
-                                                        <input type="text" class="form-control form-control-sm"
-                                                               name="nombres" readonly
-                                                               value="{{ user.profile.nombres }}"
-                                                               autocomplete="off"
-                                                               id="nombres" placeholder="NOMBRES" required>
-                                                        <div class="help-block with-errors"></div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="primer_nombre">Primer nombre</label>
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                       name="primer_nombre" readonly
+                                                                       value="{{ user.profile.primer_nombre }}"
+                                                                       autocomplete="off"
+                                                                       id="id_primer_nombre" placeholder="PRIMER NOMBRE"
+                                                                       required>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="segundo_nombre">Segundo nombre</label>
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                       name="segundo_nombre" readonly
+                                                                       value="{{ user.profile.segundo_nombre }}"
+                                                                       autocomplete="off"
+                                                                       id="id_segundo_nombre"
+                                                                       placeholder="SEGUNDO NOMBRE" required>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label for="apellidos">Apellidos</label>
-                                                        <input type="text" class="form-control form-control-sm"
-                                                               name="apellidos" readonly
-                                                               value="{{ user.profile.apellidos }}"
-                                                               autocomplete="off"
-                                                               id="apellidos" placeholder="APELLIDOS" required>
-                                                        <div class="help-block with-errors"></div>
+
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="apellido_paterno">Apellido paterno</label>
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                       name="apellidos" readonly
+                                                                       value="{{ user.profile.apellido_paterno }}"
+                                                                       autocomplete="off"
+                                                                       id="id_apellido_paterno"
+                                                                       placeholder="APELLIDO PATERNO" required>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-group">
+                                                                <label for="apellido_materno">Apellido materno</label>
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                       name="apellidos" readonly
+                                                                       value="{{ user.profile.apellido_materno }}"
+                                                                       autocomplete="off"
+                                                                       id="id_apellido_materno"
+                                                                       placeholder="APELLIDO MATERNO" required>
+                                                                <div class="help-block with-errors"></div>
+                                                            </div>
+                                                        </div>
                                                     </div>
 
                                                 </div>
@@ -952,7 +987,7 @@
                                                     <div class="form-group" style="display: none">
                                                         <label for="file-compraventa">Carta de compra venta</label>
                                                         <input type="file" class="form-control-file form-control-sm"
-                                                               id="file-carta"  multiple="true">
+                                                               id="file-carta" multiple="true">
                                                         <div class="help-block with-errors"></div>
                                                     </div>
 

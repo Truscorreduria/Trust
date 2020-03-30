@@ -51,8 +51,8 @@ class ContactoForm(forms.ModelForm):
     class Meta:
         model = Contacto
         fields = (
-        'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula', 'telefono', 'celular',
-        'email_personal')
+            'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula', 'telefono', 'celular',
+            'email_personal')
 
 
 class RepresentanteForm(forms.ModelForm):
@@ -374,7 +374,14 @@ class PolizaForm(forms.ModelForm):
 
     class Meta:
         model = Poliza
-        exclude = ('editable', 'pedir_comentarios', 'modificando', 'cancelando')
+        fields = (
+            'no_poliza', 'ramo', 'sub_ramo', 'fecha_emision', 'fecha_vence', 'aseguradora',
+            'cliente', 'contratante', 'grupo', 'tipo_poliza', 'cesion_derecho', 'cesioinario',
+            'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios', 'coberturas',
+            'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
+            'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
+            'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
+        )
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -551,10 +558,77 @@ class TramiteForm(forms.ModelForm):
             self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
 
 
+class FieldMapForm(forms.ModelForm):
+    origin_field = forms.CharField(widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
+    class Meta:
+        model = FieldMap
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+        self.fields['destiny_field'].queryset = CampoAdicional.objects.filter(id=0)
+        if instance and instance.fieldmap_type == FieldMapType.AUTOMOVIL:
+            self.fields['destiny_field'].queryset = CampoAdicional.objects.filter(
+                sub_ramo=instance.config.sub_ramo_automovil)
+        if instance and instance.fieldmap_type == FieldMapType.SEPELIO:
+            self.fields['destiny_field'].queryset = CampoAdicional.objects.filter(
+                sub_ramo=instance.config.sub_ramo_sepelio)
+        if instance and instance.fieldmap_type == FieldMapType.ACCIDENTE:
+            self.fields['destiny_field'].queryset = CampoAdicional.objects.filter(
+                sub_ramo=instance.config.sub_ramo_accidente)
+
+
 class CotizadorConfigForm(forms.ModelForm):
+    fieldmap_automovil = forms.Field(required=False, label="",
+                                     widget=FieldMapWidget(
+                                         attrs={
+                                             'origin_columns': ('marca', 'modelo', 'anno', 'chasis', 'motor',
+                                                                'placa', 'color',),
+                                             'type': FieldMapType.AUTOMOVIL,
+                                             'form': FieldMapForm
+                                         }
+                                     ))
+    fieldmap_sepelio = forms.Field(required=False, label="",
+                                   widget=FieldMapWidget(
+                                       attrs={
+                                           'origin_columns': ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
+                                                              'apellido_materno', 'costo', 'suma_asegurada',
+                                                              'tipo_identificacion', 'fecha_nacimiento',),
+                                           'type': FieldMapType.SEPELIO,
+                                           'form': FieldMapForm
+                                       }
+                                   ))
+    fieldmap_accidente = forms.Field(required=False, label="",
+                                     widget=FieldMapWidget(
+                                         attrs={
+                                             'origin_columns': ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
+                                                                'apellido_materno', 'costo', 'suma_asegurada',
+                                                                'tipo_identificacion', 'fecha_nacimiento',),
+                                             'type': FieldMapType.ACCIDENTE,
+                                             'form': FieldMapForm
+                                         }
+                                     ))
+
     class Meta:
         model = CotizadorConfig
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            kwargs.update(
+                initial={
+                    'fieldmap_automovil': instance,
+                    'fieldmap_sepelio': instance,
+                    'fieldmap_accidente': instance,
+                }
+            )
+        super().__init__(*args, **kwargs)
 
 
 class LteAccidentetForm(forms.ModelForm):

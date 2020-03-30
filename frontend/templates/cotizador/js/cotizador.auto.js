@@ -454,8 +454,11 @@ $(document).ready(function () {
                 data.append('aseguradora', $('#aseguradora_id').val());
                 data.append('fecha_emision', $('#fecha-emision').val());
 
-                data.append('nombres', $('#nombres').val());
-                data.append('apellidos', $('#apellidos').val());
+                data.append('cambio_asegurado', $('input[name="cambio_asegurado"]:checked').val());
+                data.append('primer_nombre', $('#id_primer_nombre').val());
+                data.append('segundo_nombre', $('#id_segundo_nombre').val());
+                data.append('apellido_paterno', $('#id_apellido_paterno').val());
+                data.append('apellido_materno', $('#id_apellido_materno').val());
                 data.append('cedula', $('#cedula').val());
                 data.append('email', $('#email').val());
                 data.append('telefono', $('#telefono').val());
@@ -832,8 +835,10 @@ $(document).ready(function () {
 
     const datos_asegurado = function () {
         if ($(this).val() == 'si') {
-            $('#nombres').removeAttr('readonly').val('');
-            $('#apellidos').removeAttr('readonly').val('');
+            $('#id_primer_nombre').removeAttr('readonly').val('');
+            $('#id_segundo_nombre').removeAttr('readonly').val('');
+            $('#id_apellido_paterno').removeAttr('readonly').val('');
+            $('#id_apellido_materno').removeAttr('readonly').val('');
             $('#telefono').removeAttr('readonly').val('');
             $('#celular').removeAttr('readonly').val('');
             $('#email').removeAttr('readonly').val('');

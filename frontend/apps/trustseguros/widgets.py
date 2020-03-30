@@ -1,6 +1,7 @@
 from adminlte.widgets import *
 from backend.models import Cliente
 from django.forms import TextInput
+from backend.models import FieldMapType, FieldMap
 
 
 class JsonWidget(Widget):
@@ -74,3 +75,12 @@ class ReadOnlyWidget(TextInput):
         base_attrs['readonly'] = 'readonly'
         return super().build_attrs(base_attrs, extra_attrs)
 
+
+class FieldMapWidget(Widget):
+    template_name = "trustseguros/lte/widgets/field-map.html"
+
+    def format_value(self, value):
+        if value:
+            return [self.attrs['form'](instance=instance) for instance in
+                    value.fieldmap.filter(fieldmap_type=self.attrs['type'])]
+        return value

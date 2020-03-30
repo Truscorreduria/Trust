@@ -368,7 +368,7 @@ class Cliente(Persona, Empresa, Direccion):
                 self.celular and self.codigo_empleado)
 
     def polizas_activas(self):
-        return Poliza.objects.filter(user=self.user, tramite__isnull=True)
+        return Poliza.objects.filter(user=self.user, estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE])
 
     def contactos(self):
         return Contacto.objects.filter(contacto=self)
@@ -540,6 +540,9 @@ class SubRamo(Base):
             o['ramo'] = {'id': '', 'name': ''}
         return o
 
+    def campos_adicionales(self):
+        return CampoAdicional.objects.filter(sub_ramo=self)
+
 
 class CampoAdicional(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="datos_tecnicos",
@@ -548,7 +551,7 @@ class CampoAdicional(Base):
     label = models.CharField(max_length=65, verbose_name="etiqueta")
 
     def __str__(self):
-        return self.name
+        return self.label
 
 
 class TipoCobertura:
@@ -642,6 +645,16 @@ class ConceptoPoliza:
         return (cls.NUEVA, 'Nueva Póliza'), (cls.RENOVACION, 'Renovación')
 
 
+class ProcedenciaPoliza:
+    TRUSTSEGUROS = 1
+    COTIZADOR = 2
+    BANCASEGUROS = 3
+
+    @classmethod
+    def choices(cls):
+        return (cls.TRUSTSEGUROS, "Trustseguros"), (cls.COTIZADOR, "Cotizador"), (cls.BANCASEGUROS, "Bancaseguros")
+
+
 class Cobertura(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
     name = models.CharField(max_length=75, null=True, verbose_name="nombre")
@@ -691,6 +704,7 @@ class Precio(Base):
 
 
 class Poliza(Base):
+    procedencia = models.PositiveSmallIntegerField(choices=ProcedenciaPoliza.choices(), null=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
 
@@ -1478,7 +1492,7 @@ class CotizadorConfig(base):
     suma_accidente_dependiente = models.FloatField(default=10000.0,
                                                    verbose_name='Suma asegurada para Seguros de Accidentes del Dependiente.')
     email_accidente = models.CharField(max_length=300, default='luis.collado@mapfre.com.ni,',
-                                        verbose_name='Lista de correos de accidente usados para las notificaciones del sistema')
+                                       verbose_name='Lista de correos de accidente usados para las notificaciones del sistema')
 
     # endregion
 
@@ -1493,7 +1507,7 @@ class CotizadorConfig(base):
                                    verbose_name='Número de Póliza para Seguros de Vida Banpro.')
     suma_vida = models.CharField(max_length=100, default="22 veces el salario",
                                  verbose_name='Unicamente para la impresión del documento')
-    
+
     # endregion
 
     class Meta:
@@ -1513,5 +1527,75 @@ class CotizadorConfig(base):
             o['empresa'] = {'id': self.empresa.id, 'razon_social': self.empresa.razon_social}
         return o
 
+    @property
+    def fieldmap(self):
+        return FieldMap.objects.filter(config=self)
+
+    @property
+    def fieldmap_count(self):
+        return self.fieldmap().count()
+
+    def fielmap_automovil(self, origin):
+        try:
+            return self.fieldmap.get(origin_field=origin, fieldmap_type=FieldMapType.AUTOMOVIL).destiny_field.name
+        except:
+            return origin
+
+    def fielmap_sepelio(self, origin):
+        try:
+            return self.fieldmap.get(origin_field=origin, fieldmap_type=FieldMapType.SEPELIO).destiny_field.name
+        except:
+            return origin
+
+    def fielmap_accidente(self, origin):
+        try:
+            return self.fieldmap.get(origin_field=origin, fieldmap_type=FieldMapType.ACCIDENTE).destiny_field.name
+        except:
+            return origin
+
+    def create_fieldmap(self):
+        auto = ('marca', 'modelo', 'anno', 'chasis', 'motor',
+                'placa', 'color',)
+        sepelio = ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
+                   'apellido_materno', 'costo', 'suma_asegurada', 'fecha_nacimiento',)
+        accidente = ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
+                     'apellido_materno', 'costo', 'suma_asegurada', 'fecha_nacimiento',)
+
+        for f in auto:
+            ff, _ = FieldMap.objects.get_or_create(config=self, fieldmap_type=FieldMapType.AUTOMOVIL,
+                                                   origin_field=f)
+            ff.save()
+
+        for f in sepelio:
+            ff, _ = FieldMap.objects.get_or_create(config=self, fieldmap_type=FieldMapType.SEPELIO,
+                                                   origin_field=f)
+            ff.save()
+
+        for f in accidente:
+            ff, _ = FieldMap.objects.get_or_create(config=self, fieldmap_type=FieldMapType.ACCIDENTE,
+                                                   origin_field=f)
+            ff.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.create_fieldmap()
 
 
+class FieldMapType:
+    AUTOMOVIL = 1
+    SEPELIO = 2
+    ACCIDENTE = 3
+    VIDA = 4
+
+    @classmethod
+    def choices(cls):
+        return (cls.AUTOMOVIL, "Automovil"), (cls.SEPELIO, "Sepelio"), (cls.ACCIDENTE, "Accidente"), (cls.VIDA, "Vida")
+
+
+class FieldMap(base):
+    config = models.ForeignKey(CotizadorConfig, null=True, on_delete=models.CASCADE)
+    fieldmap_type = models.PositiveSmallIntegerField(choices=FieldMapType.choices(),
+                                                     blank=True)
+    destiny_field = models.ForeignKey(CampoAdicional, on_delete=models.SET_NULL,
+                                      null=True)
+    origin_field = models.CharField(max_length=200)

@@ -331,6 +331,7 @@ def guardar_poliza(request):
     config = get_config(request.user)
     cliente = get_profile(request.user)
     poliza = Poliza()
+    poliza.procedencia = ProcedenciaPoliza.COTIZADOR
     str_date = request.POST.get('fecha_emision').split("-")
     now = datetime.now()
     fecha_emision = datetime(year=int(str_date[0]), month=int(str_date[1]), day=int(str_date[2]))
@@ -340,14 +341,23 @@ def guardar_poliza(request):
         poliza.fecha_emision = now
     else:
         poliza.fecha_emision = fecha_emision
-    poliza.nombres = request.POST.get('nombres')
-    poliza.apellidos = request.POST.get('apellidos')
-    poliza.email = request.POST.get('email')
-    poliza.cedula = request.POST.get('cedula')
-    poliza.telefono = request.POST.get('telefono')
-    poliza.celular = request.POST.get('celular')
-    poliza.domicilio = request.POST.get('domicilio')
-    poliza.cliente = cliente
+
+    cambio_asegurado = request.POST.get('cambio_asegurado')
+    if cambio_asegurado == 'no':
+        poliza.cliente = cliente
+    else:
+        c, created = ClienteNatural.objects.get_or_create(
+            cedula=request.POST.get('cedula')
+        )
+        c.primer_nombre = request.POST.get('primer_nombre')
+        c.segundo_nombre = request.POST.get('segundo_nombre')
+        c.apellido_paterno = request.POST.get('apellido_paterno')
+        c.apellido_materno = request.POST.get('apellido_materno')
+        c.email_personal = request.POST.get('email')
+        c.telefono = request.POST.get('telefono')
+        c.celular = request.POST.get('celular')
+        c.domicilio = request.POST.get('domicilio')
+        poliza.cliente = c
     poliza.anno = request.POST.get('anno')
     poliza.marca = request.POST.get('marca')
     poliza.modelo = request.POST.get('modelo')
@@ -431,7 +441,6 @@ def guardar_sepelio(request):
     add_log(o, request=request)
     data = []
     for i, name in enumerate(request.POST.getlist('primer_nombre')):
-
         ben = benSepelio()
         ben.orden = o
         ben.empleado = request.user.profile()
@@ -449,6 +458,21 @@ def guardar_sepelio(request):
             pass
         ben.save()
         data.append(ben.to_json())
+
+        poliza = Poliza.objects.get(cliente=config.empresa, estado_poliza=EstadoPoliza.ACTIVA,
+                                    no_poliza=config.poliza_sepelio)
+        json_obj = dict()
+        json_obj[config.fielmap_sepelio('primer_nombre')] = request.POST.getlist('primer_nombre')[i]
+        json_obj[config.fielmap_sepelio('segundo_nombre')] = request.POST.getlist('segundo_nombre')[i]
+        json_obj[config.fielmap_sepelio('apellido_paterno')] = request.POST.getlist('apellido_paterno')[i]
+        json_obj[config.fielmap_sepelio('apellido_materno')] = request.POST.getlist('apellido_materno')[i]
+        json_obj[config.fielmap_sepelio('fecha_nacimiento')] = request.POST.getlist('fecha_nacimiento')[i]
+        json_obj[config.fielmap_sepelio('parentesco')] = request.POST.getlist('parentesco')[i]
+
+        dd = DatoPoliza()
+        dd.poliza = poliza
+        dd.extra_data = json.dumps(json_obj)
+        dd.save()
     html = render_to_string('cotizador/email/notificacion_sepelio.html',
                             context={'object': o, 'opts': o._meta},
                             request=request)
