@@ -33,6 +33,7 @@ urlpatterns = [
     path('print_soa/', print_soa, name='print_soa'),
     path('enviar_contacto/', enviar_contacto, name='enviar_contacto'),
 
+
     path('guardar_sepelio/', guardar_sepelio, name='guardar_sepelio'),
     path('costo_accidente/', costo_accidente, name='costo_accidente'),
     path('guardar_accidente/', guardar_accidente, name='guardar_accidente'),
