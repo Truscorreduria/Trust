@@ -801,6 +801,7 @@ def misseguros(request):
 
 @login_required(login_url="/cotizador/login/")
 def solicitar_baja(request):
+    cliente = get_profile(request.user)
     tipo = request.POST.get('tipo')
     dependiente = None
     referente = None
@@ -812,6 +813,7 @@ def solicitar_baja(request):
         referente = "accidente"
     t = Tramite()
     t.user = request.user
+    t.cliente = cliente
     t.descripcion = "Solicitud de baja de dependiente"
     t.nombres = " ".join([dependiente.empleado.primer_nombre, dependiente.empleado.segundo_nombre])
     t.apellidos = " ".join([dependiente.empleado.apellido_materno, dependiente.apellido_paterno])
@@ -838,9 +840,11 @@ def solicitar_baja(request):
 
 @login_required(login_url="/cotizador/login/")
 def solicitar_baja_auto(request):
+    cliente = get_profile(request.user)
     poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
     t = Tramite()
     t.user = request.user
+    t.cliente = cliente
     t.descripcion = "Solicitud de baja de seguro de vehículo"
     t.nombres = poliza.nombres
     t.apellidos = poliza.apellidos
@@ -860,10 +864,11 @@ def solicitar_baja_auto(request):
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def contactanos(request):
+    cliente = get_profile(request.user)
     if request.method == "POST":
-        print(request.POST)
         t = Tramite()
         t.user = request.user
+        t.cliente = cliente
         t.nombres = request.POST.get('nombres', '')
         t.apellidos = request.POST.get('apellidos', '')
         t.email = request.POST.get('email', '')
