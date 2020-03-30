@@ -850,13 +850,16 @@ $(document).ready(function () {
             $('#group-parentezco-automovil').css('display', 'block');
         }
         if ($(this).val() == 'no') {
-            $('#nombres').attr('readonly', 'readonly').val('{{ user.profile.nombres }}');
-            $('#apellidos').attr('readonly', 'readonly').val('{{ user.profile.apellidos }}');
+            $('#id_primer_nombre').attr('readonly', 'readonly').val('{{ user.profile.primer_nombre }}');
+            $('#id_segundo_nombre').attr('readonly', 'readonly').val('{{ user.profile.segundo_nombre }}');
+            $('#id_apellido_paterno').attr('readonly', 'readonly').val('{{ user.profile.apellido_paterno }}');
+            $('#id_apellido_materno').attr('readonly', 'readonly').val('{{ user.profile.apellido_materno }}');
             $('#telefono').attr('readonly', 'readonly').val('{{ user.profile.telefono }}');
             $('#celular').attr('readonly', 'readonly').val('{{ user.profile.celular }}');
             $('#email').attr('readonly', 'readonly').val('{{ user.email }}');
             $('#cedula').attr('readonly', 'readonly').val('{{ user.profile.cedula }}');
             $('#departamento').attr('readonly', 'readonly').val('{{ user.profile.departamento.id }}');
+            $('#municipio').attr('readonly', 'readonly').val('{{ user.profile.municipio.id }}');
             $.ajax("{% url 'ajax_getCollection' %}", {
                 method: "POST",
                 data: {

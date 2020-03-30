@@ -426,7 +426,19 @@ def guardar_poliza(request):
     poliza.beneficiario = entidad
     poliza.save()
 
-    nueva_poliza.send(poliza, request=request)
+    json_obj = dict()
+    json_obj[config.fielmap_automovil('marca')] = request.POST.get('marca')
+    json_obj[config.fielmap_automovil('modelo')] = request.POST.get('modelo')
+    json_obj[config.fielmap_automovil('anno')] = request.POST.get('anno')
+    json_obj[config.fielmap_automovil('chasis')] = request.POST.get('chasis')
+    json_obj[config.fielmap_automovil('motor')] = request.POST.get('motor')
+    json_obj[config.fielmap_automovil('placa')] = request.POST.get('placa')
+    json_obj[config.fielmap_automovil('color')] = request.POST.get('color')
+
+    dd = DatoPoliza()
+    dd.poliza = poliza
+    dd.extra_data = json.dumps(json_obj)
+    dd.save()
 
     return JsonResponse(poliza.to_json(), encoder=Codec)
 
@@ -460,7 +472,7 @@ def guardar_sepelio(request):
         data.append(ben.to_json())
 
         poliza = Poliza.objects.get(cliente=config.empresa, estado_poliza=EstadoPoliza.ACTIVA,
-                                    no_poliza=config.poliza_sepelio)
+                                    no_poliza=config.poliza_sepelio_dependiente)
         json_obj = dict()
         json_obj[config.fielmap_sepelio('primer_nombre')] = request.POST.getlist('primer_nombre')[i]
         json_obj[config.fielmap_sepelio('segundo_nombre')] = request.POST.getlist('segundo_nombre')[i]
@@ -468,6 +480,8 @@ def guardar_sepelio(request):
         json_obj[config.fielmap_sepelio('apellido_materno')] = request.POST.getlist('apellido_materno')[i]
         json_obj[config.fielmap_sepelio('fecha_nacimiento')] = request.POST.getlist('fecha_nacimiento')[i]
         json_obj[config.fielmap_sepelio('parentesco')] = request.POST.getlist('parentesco')[i]
+        json_obj[config.fielmap_sepelio('costo')] = config.costo_sepelio
+        json_obj[config.fielmap_sepelio('suma_asegurada')] = config.suma_sepelio
 
         dd = DatoPoliza()
         dd.poliza = poliza
@@ -539,6 +553,22 @@ def guardar_accidente(request):
             pass
         ben.save()
         data.append(ben.to_json())
+        poliza = Poliza.objects.get(cliente=config.empresa, estado_poliza=EstadoPoliza.ACTIVA,
+                                    no_poliza=config.poliza_accidente)
+        json_obj = dict()
+        json_obj[config.fielmap_accidente('primer_nombre')] = request.POST.getlist('primer_nombre')[i]
+        json_obj[config.fielmap_accidente('segundo_nombre')] = request.POST.getlist('segundo_nombre')[i]
+        json_obj[config.fielmap_accidente('apellido_paterno')] = request.POST.getlist('apellido_paterno')[i]
+        json_obj[config.fielmap_accidente('apellido_materno')] = request.POST.getlist('apellido_materno')[i]
+        json_obj[config.fielmap_accidente('fecha_nacimiento')] = request.POST.getlist('fecha_nacimiento')[i]
+        json_obj[config.fielmap_accidente('parentesco')] = request.POST.getlist('parentesco')[i]
+        json_obj[config.fielmap_sepelio('costo')] = config.costo_accidente
+        json_obj[config.fielmap_sepelio('suma_asegurada')] = config.suma_accidente_dependiente
+
+        dd = DatoPoliza()
+        dd.poliza = poliza
+        dd.extra_data = json.dumps(json_obj)
+        dd.save()
 
     html = render_to_string('cotizador/email/notificacion_accidente.html',
                             context={'object': o, 'opts': o._meta},

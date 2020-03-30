@@ -1233,7 +1233,10 @@ class ConfiguracionCotizador(Datatables):
     def save_related(self, instance, data):
         for i in range(0, len(data.getlist('fieldmap'))):
             f = FieldMap.objects.get(id=data.getlist('fieldmap')[i])
-            f.destiny_field = CampoAdicional.objects.get(id=data.getlist('destiny_field')[i])
+            try:
+                f.destiny_field = CampoAdicional.objects.get(id=data.getlist('destiny_field')[i])
+            except:
+                pass
             f.save()
 
 # endregion

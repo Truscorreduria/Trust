@@ -1556,10 +1556,10 @@ class CotizadorConfig(base):
     def create_fieldmap(self):
         auto = ('marca', 'modelo', 'anno', 'chasis', 'motor',
                 'placa', 'color',)
-        sepelio = ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
-                   'apellido_materno', 'costo', 'suma_asegurada', 'fecha_nacimiento',)
+        sepelio = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'parentesco',
+                   'costo', 'suma_asegurada', 'fecha_nacimiento',)
         accidente = ('primer_nombre', 'segundo_nombre', 'apellido_paterno',
-                     'apellido_materno', 'costo', 'suma_asegurada', 'fecha_nacimiento',)
+                     'apellido_materno', 'parentesco', 'costo', 'suma_asegurada', 'fecha_nacimiento',)
 
         for f in auto:
             ff, _ = FieldMap.objects.get_or_create(config=self, fieldmap_type=FieldMapType.AUTOMOVIL,
@@ -1597,5 +1597,5 @@ class FieldMap(base):
     fieldmap_type = models.PositiveSmallIntegerField(choices=FieldMapType.choices(),
                                                      blank=True)
     destiny_field = models.ForeignKey(CampoAdicional, on_delete=models.SET_NULL,
-                                      null=True)
+                                      null=True, blank=True)
     origin_field = models.CharField(max_length=200)
