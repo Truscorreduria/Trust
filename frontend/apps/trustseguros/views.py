@@ -553,6 +553,46 @@ def profile(request):
     })
 
 
+def apply_filter(queryset, estado, cliente, poliza):
+    if estado:
+        queryset = queryset.filter(estado=estado)
+    if cliente:
+        queryset = queryset.filter(cliente=cliente)
+    if poliza:
+        queryset = queryset.filter(poliza=poliza)
+    return queryset
+
+
+@login_required(login_url="/cotizador/login/")
+def reportes(request):
+    form = ReportTramiteForm(request.POST)
+    raw_data = []
+    if request.method == "POST":
+        if form.is_valid():
+            qs = Tramite.objects.filter()
+            qs = apply_filter(qs, form.cleaned_data['estado'],
+                              form.cleaned_data['cliente'],
+                              form.cleaned_data['poliza'])
+            for q in qs:
+                o = {
+                    'Número de trámite': q.code,
+                    'Tipo de trámite': q.get_tipo_tramite_display(),
+                    'Fecha de registro': q.created.strftime('%d/%m/%Y'),
+                    'Ingresado por': q.user.username,
+                    'Estado': q.get_estado_display(),
+                }
+                if q.cliente:
+                    o['Cliente'] = q.cliente.nombre
+                if q.poliza:
+                    o['Poliza'] = q.poliza.code
+                raw_data.append(o)
+
+            return JsonResponse({'raw_data': raw_data})
+    return render(request, 'trustseguros/lte/reportes.html', {
+        'form': ReportTramiteForm
+    })
+
+
 class Prospectos(Datatables):
     modal_width = 1200
     model = ClienteProspecto

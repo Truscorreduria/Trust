@@ -1058,6 +1058,18 @@ class TipoTramite:
                (cls.RENOVACION, "Renovaciones"), (cls.LIQUIDACION, "Liquidaciones")
 
 
+class EstadoTramite:
+    ENPROCESO = 'En Proceso'
+    PENDIENTE = 'Pendiente documentación'
+    FINALIZADO = 'Finalizado'
+    ANULADO = 'Anulado'
+
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.ENPROCESO, 'En Proceso'), (cls.PENDIENTE, 'Pendiente documentación'), \
+               (cls.FINALIZADO, 'Finalizado'), (cls.ANULADO, 'Anulado')
+
+
 class Tramite(Base):
     tipo_tramite = models.PositiveSmallIntegerField(choices=TipoTramite.choices(), null=True)
 
@@ -1072,12 +1084,7 @@ class Tramite(Base):
     ), default=2, null=True, blank=True)
     vence = models.DateTimeField(null=True, blank=True)
     estado = models.CharField(max_length=55, null=True, blank=True, default="Pendiente",
-                              choices=(
-                                  ('En Proceso', 'En Proceso'),
-                                  ('Pendiente documentación', 'Pendiente documentación'),
-                                  ('Finalizado', 'Finalizado'),
-                                  ('Anulado', 'Anulado'),
-                              ))
+                              choices=EstadoTramite.choices())
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes',
                              verbose_name="ingresado por")

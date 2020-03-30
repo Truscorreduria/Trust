@@ -647,3 +647,12 @@ class LteSepelioForm(forms.ModelForm):
     class Meta:
         model = benSepelio
         fields = '__all__'
+
+
+class ReportTramiteForm(forms.Form):
+    estado = forms.ChoiceField(choices=EstadoTramite.choices(), required=False)
+    grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=False,
+                                     widget=SelectSearch)
+    poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
+                                    widget=SelectSearch)

@@ -1,0 +1,56 @@
+{% extends 'adminlte/index.html' %}
+{% load crispy_forms_filters static %}
+
+{% block style %}
+    {{ block.super }}
+
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/bootstrap-select/dist/css/bootstrap-select.min.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <form action="." id="form-report" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col">{{ form.estado|as_crispy_field }}</div>
+                    <div class="col">{{ form.grupo|as_crispy_field }}</div>
+                    <div class="col">{{ form.cliente|as_crispy_field }}</div>
+                    <div class="col">{{ form.poliza|as_crispy_field }}</div>
+                </div>
+                <div class="row">
+                    <button type="submit" class="btn btn-info">Generar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+    {{ block.super }}
+    <script src="{% static 'adminlte/plugins/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(document).on('submit', 'form', function (event) {
+                event.preventDefault();
+                const _this = $(this);
+                const data = new FormData(this);
+                $.ajax(_this.attr('action'), {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response);
+                        const book = XLSX.utils.book_new();
+                        const sheet = XLSX.utils.json_to_sheet(response.raw_data);
+                        XLSX.utils.book_append_sheet(book, sheet, event.target.value);
+                        XLSX.writeFile(book, "Reporte de tŕamites.xlsx");
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}
