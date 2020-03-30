@@ -12,6 +12,7 @@ import json
 from django.urls import reverse, resolve
 from django.utils.html import mark_safe
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
 
 
 class Base(base):
@@ -1224,6 +1225,12 @@ class Tramite(Base):
 
     def pagos(self):
         return Pago.objects.filter(tramite=self)
+
+    def duracion(self):
+        if self.estado not in [EstadoTramite.ENPROCESO, EstadoTramite.PENDIENTE]:
+            return (self.updated - self.created).days
+        else:
+            return (timezone.now() - self.created).days
 
     class Meta:
         verbose_name = "Trámite"

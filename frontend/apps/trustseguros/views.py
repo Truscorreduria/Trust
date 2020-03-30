@@ -585,6 +585,7 @@ def reportes(request):
                     o['Cliente'] = q.cliente.nombre
                 if q.poliza:
                     o['Poliza'] = q.poliza.code
+                o['Duracion'] = str(q.duracion()) + " dias"
                 raw_data.append(o)
 
             return JsonResponse({'raw_data': raw_data})
