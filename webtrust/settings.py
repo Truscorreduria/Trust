@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'backend',
     'frontend',
     'accounts',
+    'seguros',
     'api',
 
     'adminlte',

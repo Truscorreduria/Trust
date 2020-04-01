@@ -1,0 +1,308 @@
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        .logo {
+            height: 150px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
+            height: 1cm;
+        }
+
+        .bordered {
+            text-align: center;
+        }
+
+        .bordered th, .bordered td {
+            border: 1px solid #000000;
+            padding: 3px 0px 0px 0px
+        }
+
+        .nombre {
+            font-size: 16px;
+        }
+
+        .firma {
+            margin-top: 35px;
+        }
+
+        .highlight {
+            background-color: green;
+            color: white;
+            font-weight: 900;
+        }
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+
+    <table class="header">
+        <tbody>
+        <tr>
+            <td colspan="4"><img src="{% static 'seguros/images/trust-logo.png' %}" class="logo"></td>
+            <td colspan="8">
+                <div style="font-size: 2em"><strong>Trust Correduría de Seguros</strong></div>
+            </td>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td colspan="8">
+
+                <div>Comprometidos con tu tranquilidad!</div>
+            </td>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td colspan="12"></td>
+            <td colspan="4"> Managua, {{ cotizacion.created|date:'M' }} {{ cotizacion.created|date:'d' }}
+                de {{ cotizacion.created|date:'Y' }}.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="header">
+        <tbody>
+        <tr>
+            <td colspan="16"><h1 style="font-size: 1.5em">CONTIZACIÓN</h1></td>
+        </tr>
+        </tbody>
+    </table>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <p>
+        <strong class="nombre">Sr(a): {{ cotizacion.nombres }} {{ cotizacion.apellidos }}</strong>
+    </p>
+    <p><strong>Sus manos</strong></p>
+
+    <p style="text-align: justify">
+        Es muy grato para nosotros el que usted nos haya dado la confianza para ofrecerle alternativas
+        de programas de seguros y sobre todo la confianza para atenderle en todo lo concerniente a las mismas.
+    </p>
+
+    <p style="text-align: justify;">
+        Para esta cotización hemos buscado alternativas en compañías de seguros con prestigio nacional,
+        en base a la siguiente información:
+    </p>
+
+    <table class="bordered">
+        <thead>
+        <tr>
+            <th colspan="4" class="highlight">DATOS DEL VEHÍCULO</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="highlight">MARCA</td>
+            <td><strong>{{ cotizacion.marca }}</strong></td>
+            <td class="highlight">CHASIS</td>
+            <td><strong>{{ cotizacion.chasis }}</strong></td>
+        </tr>
+        <tr>
+            <td class="highlight">MODELO</td>
+            <td><strong>{{ cotizacion.modelo }}</strong></td>
+            <td class="highlight">MOTOR</td>
+            <td><strong>{{ cotizacion.motor }}</strong></td>
+        </tr>
+        <tr>
+            <td class="highlight">AÑO</td>
+            <td><strong>{{ cotizacion.anno }}</strong></td>
+            <td class="highlight">PLACA</td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>Comparativo de Suma Asegurada, Deducibles, Coaseguros y Prima:</p>
+
+
+    <table class="bordered">
+        <tbody>
+        <tr>
+            <td class="highlight"><strong>Compañía</strong></td>
+            {% for a in aseguradoras %}
+                {% if a in cotizacion.aseguradora.all %}
+                    <td><img src="{{ a.logo.url }}" alt=""></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="background-color: lightyellow"><strong>Suma Asegurada</strong></td>
+            {% for a in aseguradoras %}
+                {% for s in suma_asegurada %}
+                    {% ifequal a s.aseguradora %}
+                        <td style="background-color: lightyellow"><strong>U$ {{ s.valor_depreciado|intcomma }}</strong>
+                        </td>
+                    {% endifequal %}
+                {% endfor %}
+            {% endfor %}
+        </tr>
+
+        {% for costo in cotizacion.costos_basicos %}
+            <tr>
+                <td style="font-size: 0.9em">{{ costo.name }}</td>
+                {% for aseguradora in cotizacion.aseguradora.all %}
+
+                    {% for oferta in costo.ofertas.all %}
+
+                        {% ifequal oferta.aseguradora aseguradora %}
+                            {% if oferta.available %}
+                                <td><strong>{{ oferta.quota_seguro|intcomma }}</strong></td>
+                            {% else %}
+                                <td>NO DISPONIBLE</td>
+                            {% endif %}
+                        {% endifequal %}
+
+                    {% endfor %}
+
+                {% endfor %}
+            </tr>
+        {% endfor %}
+
+
+        {% for costo in cotizacion.costos_adicionales %}
+            {% ifnotequal costo.suma_asegurada 0.0 %}
+                <tr>
+                    <td>{{ costo.name }}</td>
+                    {% for aseguradora in cotizacion.aseguradora.all %}
+
+                        {% for oferta in costo.ofertas.all %}
+
+                            {% ifequal oferta.aseguradora aseguradora %}
+                                {% if oferta.available %}
+                                    <td><strong style="font-size: 0.9em">{{ oferta.quota_seguro|intcomma }}</strong>
+                                    </td>
+                                {% else %}
+                                    <td>NO DISPONIBLE</td>
+                                {% endif %}
+                            {% endifequal %}
+
+                        {% endfor %}
+
+                    {% endfor %}
+                </tr>
+            {% endifnotequal %}
+        {% endfor %}
+
+        <tr>
+            <td class="highlight">Derecho de emisión</td>
+            {% for aseguradora in cotizacion.aseguradora.all %}
+                {% for total in totales %}
+                    {% ifequal total.aseguradora aseguradora %}
+                        <td style="background-color: lightyellow"><strong
+                                style="color: red; font-size: 1.2em;">U$ {{ total.emision|intcomma }}</strong></td>
+                    {% endifequal %}
+                {% endfor %}
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td class="highlight">IVA</td>
+            {% for aseguradora in cotizacion.aseguradora.all %}
+                {% for total in totales %}
+                    {% ifequal total.aseguradora aseguradora %}
+                        <td style="background-color: lightyellow"><strong
+                                style="color: red; font-size: 1.2em;">U$ {{ total.iva|intcomma }}</strong></td>
+                    {% endifequal %}
+                {% endfor %}
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td class="highlight">Totales</td>
+            {% for aseguradora in cotizacion.aseguradora.all %}
+                {% for total in totales %}
+                    {% ifequal total.aseguradora aseguradora %}
+                        <td style="background-color: lightyellow"><strong
+                                style="color: red; font-size: 1.2em;">U$ {{ total.total|intcomma }}</strong></td>
+                    {% endifequal %}
+                {% endfor %}
+            {% endfor %}
+        </tr>
+
+
+        </tbody>
+    </table>
+
+    {% comment %}<p>Las siguientes coberturas son adicionales y tiene cobro extra de Prima:</p>
+
+    <table>
+        <tbody>
+        <tr>
+            <td>
+                <ul>
+                    <li>Responsabilidad Civil en Exceso</li>
+                    <li>Robo de Equipo Especial a Consecuencia del Robo Total</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Menor de Edad</li>
+                    <li>Taller Elegido</li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>{% endcomment %}
+
+    <p>
+        La forma de pago de la póliza puede ser en cuotas debitadas a una tarjeta de crédito
+        o débito, o pagada de contado
+    </p>
+    <p style="margin-bottom: 45px">Gracias nuevamente por la confianza, quedamos atentos a sus comentarios.</p>
+
+    <table style="text-align: center">
+        <tbody>
+        <tr>
+            <td>
+                <div style="text-align: left">
+                    <div>{{ cotizacion.user }}</div>
+                    <div>Trust Correduría de Seguros</div>
+                    <div>Teléfono: {{ cotizacion.user.phone }}</div>
+                    <div>Email: {{ cotizacion.user.email }}</div>
+                </div>
+            </td>
+            <td>_______________________________________</td>
+        </tr>
+        <tr>
+            <td>
+                <div style="text-align: left">
+                </div>
+            </td>
+            <td> Firma y Sello</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+{% endblock %}

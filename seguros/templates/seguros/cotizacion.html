@@ -1,0 +1,262 @@
+{% extends 'admin/change_form.html' %}
+{% load static %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <style type="text/css">
+        #id_marca, #id_modelo, #id_anno, #id_tipo_auto,
+        #id_valor_nuevo {
+            min-width: 278px;
+            max-width: 278px;
+        }
+
+        #id_coberturas_adicionales tbody td input {
+            width: 75px;
+            text-align: right;
+        }
+
+        #id_coberturas_adicionales thead th {
+            text-align: center;
+        }
+
+        .button-referencias {
+            position: relative;
+            display: inline-block;
+            margin: 0 0 0 -25px;
+            padding: 0;
+            width: 25px;
+            height: 25px;
+            -moz-border-radius-topright: 3px;
+            -webkit-border-top-right-radius: 3px;
+            border-top-right-radius: 3px;
+            -moz-border-radius-bottomright: 3px;
+            -webkit-border-bottom-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            cursor: pointer;
+            overflow: hidden;
+            vertical-align: top;
+        }
+
+        .tabla-referencias {
+            text-align: center;
+        }
+
+        #tabla-refenrecias th, #tabla-refenrecias td {
+            font-size: 16pt !important;
+        }
+
+        #tabla-refenrecias input.chasis{
+            min-width: 250px;
+        }
+
+        #tabla-refenrecias input.valor{
+            text-align: right;
+        }
+        p{
+            color: green;
+        }
+    </style>
+{% endblock %}
+
+{% block object-tools-items %}
+    <li><a href="{% url 'seguros:generar_cotizacion' %}?contizacion={{ original.id }}" target="_blank">Generar PDF</a>
+    </li>
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <div id="modal-referencias" data-iziModal-fullscreen="true" class="iziModal"
+         data-iziModal-title="Valores de Referencia"
+         data-iziModal-subtitle="Estos son los valores de referencias que coinciden con tus datos"
+         data-iziModal-icon="">
+        <article id="grp-content" style="top: 0!important; padding: 0 20px 90px">
+
+            <div id="grp-content-container">
+
+                <header id="grp-content-title">
+
+                    <h1>Elige el valor que creas conveniente.</h1>
+
+                </header>
+
+                <form enctype="multipart/form-data" novalidate="">
+
+                    <div>
+
+
+                        <fieldset class="module grp-module ">
+
+                            <div class="form-row grp-row grp-cells-1 grp-cells">
+
+                                <div class="field-box grp-cell l-2c-fluid l-d-12 tabla-referencias">
+                                    <table id="tabla-refenrecias" class="grp-table">
+                                        <thead>
+                                        <tr>
+                                            <th>Año</th>
+                                            <th>Chasis</th>
+                                            <th>Valor</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </fieldset>
+
+
+                        <footer class="grp-module grp-submit-row grp-fixed-footer">
+                        </footer>
+
+
+                    </div>
+                </form>
+
+            </div>
+
+        </article>
+    </div>
+{% endblock %}
+
+{% block extrahead %}
+    {% if original.id %}
+        <script src="{% static 'ajax/grp-token.js' %}"></script>
+        <script src="{% static 'mustache.js/mustache.min.js' %}"></script>
+        <script id="suma-asegurada-head" type="x-tmpl-mustache">
+            {% templatetag openvariable %} letter {% templatetag closevariable %}
+
+        </script>
+        <script type="text/javascript">
+            var original = {{ original.id }};
+            (function ($) {
+                $(document).ready(function () {
+                    var modal = $('#modal-referencias').iziModal({
+                        headerColor: '#222222', zindex: 9999,
+                        width: 1000
+                    });
+
+                    var cargar_depreciacion = function (suma_asegurada) {
+                        var head = $('#id_suma_asegurada_head').empty();
+                        var suma = $('#id_suma_asegurada_suma').empty();
+                        $.each(suma_asegurada, function (i, o) {
+                            var th = $('<th></th>').html(o.aseguradora.name);
+                            $(head).append(th);
+                            var insu = $('<input type="text" class="suma_asegurada" step="any" readonly/>');
+                            $(insu).val(o.valor_depreciado);
+                            var td = $('<td></td>').append(insu);
+                            $(suma).append(td);
+                        })
+                    };
+
+                    var cambiar_valor = function () {
+
+                        var tr = $(this).parent().parent();
+                        var valor_nuevo = parseFloat($(tr).find('.valor').val());
+
+                        $('#id_valor_nuevo')
+                            .val(valor_nuevo)
+                            .trigger('change');
+
+                        $.ajax("{% url 'seguros:suma_asegurada' %}", {
+                            method: "POST",
+                            data: {original: original, valor_nuevo: valor_nuevo,
+                            'anno': $('#id_anno').val()},
+                            success: function (response) {
+                                cargar_depreciacion(response.suma_asegurada);
+                                $(modal).iziModal('close');
+                            }
+                        });
+
+                    };
+
+                    var cargar_referencias = function (referencias) {
+                        var data = $('#tabla-refenrecias>tbody').empty();
+                        $.each(referencias, function (i, o) {
+                            var tr = $('<tr></tr>');
+
+                            var ianno = $('<input type="text" class="anno" step="any" readonly/>');
+                            $(ianno).val(o.anno);
+                            var anno = $('<td></td>')
+                                .append(ianno);
+
+                            var ichasis = $('<input type="text" class="chasis" step="any" readonly/>');
+                            $(ichasis).val(o.chasis);
+                            var chasis = $('<td></td>').append(ichasis);
+
+                            var ivalor = $('<input type="text" class="valor" step="any" readonly/>');
+                            $(ivalor).val(o.valor);
+                            var valor = $('<td></td>').append(ivalor);
+
+                            var ibutton = $('<input type="button" value="Elegir"></input>');
+                            $(ibutton).on('click', cambiar_valor);
+                            var button = $('<td></td>').append(ibutton);
+
+                            $(tr).append(anno);
+                            $(tr).append(chasis);
+                            $(tr).append(valor);
+                            $(tr).append(button);
+                            $(data).append(tr);
+                        })
+                    };
+
+                    var cargar_modelos = function () {
+                        var modelo = $('#id_modelo').val();
+                        $.ajax("{% url 'seguros:get_modelos' %}", {
+                            method: "POST",
+                            data: {marca: $('#id_marca').val()},
+                            success: function (response) {
+                                var select = $('#id_modelo').empty();
+                                $.each(response, function (i, o) {
+                                    var option = $('<option></option>')
+                                        .val(o)
+                                        .html(o);
+                                    if (o == modelo) {
+                                        $(option).attr('selected', "");
+                                    }
+                                    select.append(option);
+                                });
+                                //calcular();
+                            }
+                        });
+                    };
+
+                    var mostrar_referencias = function () {
+                        $(modal).iziModal('open');
+                    };
+
+                    var calcular = function () {
+                        var m = $('#id_marca').val();
+                        var mo = $('#id_modelo').val();
+                        var year = $('#id_anno').val();
+                        $.ajax("{% url 'seguros:get_valor' %}", {
+                            method: "POST",
+                            data: {marca: m, modelo: mo, anno: year, original: original},
+                            success: function (response) {
+                                var button = $('<button type="button" class="button-referencias"></button>');
+                                $(button).on('click', mostrar_referencias);
+                                $('.valor_nuevo>.c-2').append(button);
+                                $('#id_valor_nuevo').val(response.valor_nuevo.valor)
+                                    .trigger('change');
+                                cargar_depreciacion(response.suma_asegurada);
+                                cargar_referencias(response.referencias);
+                            }
+                        })
+                    };
+
+                    $(document).on('change', '#id_marca', cargar_modelos);
+                    $(document).on('change', '#id_modelo', calcular);
+                    $(document).on('change', '#id_anno', calcular);
+
+                    cargar_modelos();
+                });
+            })(grp.jQuery)
+        </script>
+    {% endif %}
+    {{ block.super }}
+{% endblock %}

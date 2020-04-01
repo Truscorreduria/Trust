@@ -1,0 +1,540 @@
+{% extends 'admin/change_form.html' %}
+{% load static productos %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <style type="text/css">
+        #id_description {
+            width: 100%;
+            height: 200px;
+        }
+
+        .description > textarea {
+            width: 165px;
+        }
+
+        .precio > input[type=text] {
+            width: 50px;
+        }
+
+        .iziModal .grp-row {
+            padding-right: 15px !important;
+        }
+
+        .iziModal textarea {
+            width: 800px !important;
+        }
+
+        .row-description {
+            overflow: hidden;
+            width: 250px;
+            text-overflow: ellipsis;
+        }
+
+        .row-name {
+            overflow: hidden;
+            width: 200px;
+            text-overflow: ellipsis;
+        }
+
+        .cobertura-row:hover {
+            box-shadow: 0 0 10px rgba(81, 203, 238, 1);
+            padding: 3px 0px 3px 3px;
+            margin: 5px 1px 3px 0px;
+            border: 1px solid rgba(81, 203, 238, 1);
+            color: yellowgreen;
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+    {{ block.super }}
+
+    {% if original %}
+
+
+        <div class="inline-group grp-group grp-tabular grp-collapse grp-open" id="cobertura_set-group">
+            <h2 class="grp-collapse-handler">Coberturas ofrecidas en el producto</h2>
+            <ul class="grp-tools">
+                <li><a href="javascript://" class="grp-icon grp-add-handler" title="Add Another"> </a></li>
+            </ul>
+
+            <div class="tabular inline-related grp-module grp-table">
+
+                <div class="module grp-module grp-thead">
+                    <div class="grp-tr">
+                        <div class="grp-th name required">Name</div>
+
+                        <div class="grp-th descripcion-detallada">
+                            Descripción detallada
+
+                        </div>
+                        <div class="grp-th tipo-calculo required">Tipo calculo</div>
+                        <div class="grp-th iva">Aplica IVA</div>
+
+                        {% for a in aseguradoras %}
+                            <div class="grp-th {{ a.code }} required">{{ a.name }}</div>
+                        {% endfor %}
+
+                        <div class="grp-th">&nbsp;</div>
+                    </div>
+                </div>
+
+
+                {% for c in original.coberturas.all %}
+                    <div class="form-row grp-module grp-tbody cobertura-row">
+
+                        <div class="grp-tr cobertura-tr" data-id="{{ c.id }}">
+
+                            <div class="grp-td name ">
+
+                                <div class="row-name">{{ c.code }} - {{ c.name }}</div>
+
+                            </div>
+
+
+                            <div class="grp-td tipo_cobertura">
+
+                                <select disabled>
+                                    <option value="1" {% ifequal c.tipo_cobertura 1 %} selected="" {% endifequal %}> Básica
+                                    </option>
+
+                                    <option value="2" {% ifequal c.tipo_cobertura 2 %} selected="" {% endifequal %}> Ampliada
+                                    </option>
+
+                                    <option value="3" {% ifequal c.tipo_cobertura 3 %} selected="" {% endifequal %}> Adicional
+                                    </option>
+
+                                    <option value="4" {% ifequal c.tipo_cobertura 4 %} selected="" {% endifequal %}> Opcional
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="grp-td tipo_calculo ">
+
+                                <select disabled>
+                                    <option value="1" {% ifequal c.tipo_calculo 1 %} selected="" {% endifequal %}>PRECIO
+                                        FIJO
+                                    </option>
+
+                                    <option value="2" {% ifequal c.tipo_calculo 2 %} selected="" {% endifequal %}>TASA
+                                        PORCENTUAL
+                                    </option>
+
+                                    <option value="3" {% ifequal c.tipo_calculo 3 %} selected="" {% endifequal %}>TASA
+                                        PORMILLAR
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="grp-td iva ">
+
+                                <input type="checkbox"
+                                       {% ifequal c.iva 1 %}checked=""{% endifequal %} disabled>
+
+                            </div>
+
+                            {% for a in aseguradoras %}
+
+                                <div class="grp-td precio">
+                                    {% precio c a as p %}
+                                    {% if p.available %}
+                                        <span>{{ p.valor }}</span>
+                                    {% else %}
+                                        <span>No Disponible</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="grp-td grp-tools-container">
+                                <ul class="grp-tools">
+                                    <li><a href="javascript://" class="grp-icon grp-remove-handler"
+                                           title="Delete Item" data-cobertura="{{ c.id }}"></a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+            <div class="grp-module grp-transparent grp-dynamic-form">
+                <div class="grp-row">
+                    <a href="javascript://" class="grp-add-handler"><strong>Agregar cobertura adicional.</strong></a>
+                    <ul class="grp-tools">
+                        <li><a href="javascript://" class="grp-icon grp-add-handler" title="Add Item"></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="cobertura" data-iziModal-fullscreen="true" class="iziModal"
+             data-iziModal-title="Cobertura"
+             data-iziModal-subtitle="Por favor complete todos los datos"
+             data-iziModal-icon="">
+
+
+            <article id="grp-content" style="top: 0!important; padding: 0 20px 90px">
+
+                <div id="grp-content-container">
+
+                    <header id="grp-content-title">
+
+                        <h1>Datos de Cobertura</h1>
+
+
+                    </header>
+
+                    <form enctype="multipart/form-data" id="cobertura_form" novalidate="" data-cobertura="">
+
+                        <div>
+
+
+                            <fieldset class="module grp-module ">
+
+                                <div class="form-row grp-row grp-cells-2 grp-cells name tipo_calculo">
+
+                                    <div class="field-box grp-cell l-2c-fluid l-d-4 name">
+                                        <div class="c-1"><label class="required" for="id_name">Nombre</label></div>
+                                        <div class="c-2"><input type="text" class="vTextField"
+                                                                maxlength="100" required=""
+                                                                id="cobertura-name"></div>
+                                    </div>
+
+                                    <div class="field-box grp-cell l-2c-fluid l-d-4 tipo_calculo">
+                                        <div class="c-1">Tipo de Calculo</div>
+                                        <div class="c-2">
+                                            <select id="cobertura-tipo_calculo">
+                                                <option value="1" selected="">PRECIO
+                                                    FIJO
+                                                </option>
+
+                                                <option value="2">TASA
+                                                    PORCENTUAL
+                                                </option>
+
+                                                <option value="3">TASA
+                                                    PORMILLAR
+                                                </option>
+
+                                            </select></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row grp-row grp-cells-2 grp-cells iva tipo_exceso">
+
+                                    <div class="field-box grp-cell l-2c-fluid l-d-4 tipo_cobertura">
+                                        <div class="c-1">Tipo de Cobertura</div>
+                                        <div class="c-2">
+                                            <select id="cobertura-tipo_cobertura">
+                                                <option value="1" selected=""> Básica
+                                                </option>
+
+                                                <option value="2"> Ampliada
+                                                </option>
+
+                                                <option value="3"> Adicional
+                                                </option>
+
+                                                <option value="4"> Opcional
+                                                </option>
+
+                                            </select></div>
+                                    </div>
+
+                                    <div class="field-box grp-cell l-2c-fluid l-d-4 tipo_exceso">
+                                        <div class="c-1">Tipo de Exeso / Variable de calculo</div>
+                                        <div class="c-2">
+                                            <select id="cobertura-tipo_exceso">
+                                                <option value="0.0" selected="">0.0
+                                                </option>
+
+                                                <option value="valor_nuevo"> Igual al Valor de Nuevo
+                                                </option>
+
+                                                <option value="valor_depreciado"> Igual al Valor Depreciado
+                                                </option>
+
+                                                <option value="otro"> Otro / Ingreso Manual
+                                                </option>
+
+                                            </select></div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row grp-row grp-cells-1 grp-cells iva">
+                                    <div class="field-box grp-cell l-2c-fluid l-d-4 iva">
+                                        <div class="c-1">
+                                            <label class="required" for="id_emision"></label>
+                                        </div>
+                                        <div class="c-2">
+                                            <input type="checkbox" id="cobertura-iva"
+                                                   checked="">
+                                            <label for="">Aplica IVA</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row grp-row grp-cells-1 description ">
+                                    <div class="field-box l-2c-fluid l-d-4">
+                                        <div class="c-1">
+                                            <label for="id_address">Descripción</label>
+                                        </div>
+                                        <div class="c-2">
+                                            <textarea cols="40" rows="10"
+                                                      class="vLargeTextField"
+                                                      maxlength="1500" id="cobertura-description"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-row grp-row grp-cells-1 precios ">
+
+
+                                    <div class="field-box l-2c-fluid l-d-4">
+                                        <div class="c-1">
+                                            <label class="required" for=""></label>
+                                        </div>
+
+                                        <div class="c-2">
+                                            <table class="grp-table">
+                                                <thead>
+                                                <tr>
+                                                    {% for a in aseguradoras %}
+                                                        <th>{{ a.name }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+
+                                                </tr>
+                                                {% for a in aseguradoras %}
+                                                    <td class="grp-td precio" data-aseguradora="{{ a.id }}"
+                                                        data-cobertura="">
+
+                                                        <input type="checkbox" class="precio-available" checked="">
+
+                                                        <input type="text" step="any" class="precio-valor">
+
+                                                    </td>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </fieldset>
+
+
+                            <footer class="grp-module grp-submit-row grp-fixed-footer">
+                                <header style="display:none"><h1>Submit Options</h1></header>
+                                <ul>
+
+
+                                    <li class="grp-float-left"><a href="javascript://"
+                                                                  class="grp-button grp-delete-link"
+                                                                  id="btn-borrar">Borrar</a></li>
+
+
+                                    <li><input type="submit" value="Grabar" class="grp-button grp-default">
+                                    </li>
+
+
+                                    {% comment %}<li><input type="submit" value="Grabar y añadir otro" class="grp-button"></li>
+
+
+                                    <li><input type="submit" value="Grabar y continuar editando" class="grp-button">
+                                    </li>{% endcomment %}
+
+                                </ul>
+                            </footer>
+
+
+                        </div>
+                    </form>
+
+                </div>
+
+            </article>
+
+
+        </div>
+
+        <script type="text/javascript">
+            (function ($) {
+                $(document).ready(function () {
+                    var producto = {{ original.id }};
+                    var cobertura = $('#cobertura').iziModal({
+                        headerColor: '#222222', zindex: 9999,
+                        width: 1000
+                    });
+
+                    var show = function (e) {
+                        if (e.target.localName != 'a') {
+                            id = $(this).data('id');
+                            $.ajax('{% url 'ajax_getObject' %}', {
+                                method: "POST",
+                                data: {app_label: 'seguros', model: 'cobertura', id: id},
+                                success: function (response) {
+                                    console.log(response);
+                                    $('#cobertura_form').data('cobertura', response.id);
+                                    $('#btn-borrar').data('cobertura', response.id);
+                                    $('#cobertura-description').val(response.description);
+                                    $('#cobertura-name').val(response.name);
+                                    $('#cobertura-tipo_calculo').val(response.tipo_calculo);
+                                    $('#cobertura-tipo_exceso').val(response.tipo_exceso);
+                                    $('#cobertura-tipo_cobertura').val(response.tipo_cobertura);
+                                    if (response.iva) {
+                                        $('#cobertura-iva').prop("checked", "checked");
+                                    } else {
+                                        $('#cobertura-iva').removeAttr('checked');
+                                    }
+
+                                    $.each(response.precios, function (i, p) {
+                                        $('td.precio').each(function (n, t) {
+
+                                            if (parseInt($(t).data('aseguradora')) == p.aseguradora) {
+
+
+                                                $(t).find('.precio-valor').val(p.valor);
+                                                if (p.available) {
+                                                    $(t).find('.precio-available').prop("checked", "checked");
+                                                    $(t).find('.precio-valor').removeAttr('readonly');
+                                                } else {
+                                                    $(t).find('.precio-available').removeAttr('checked');
+                                                    $(t).find('.precio-valor').attr('readonly', true);
+                                                }
+
+
+                                            }
+                                        });
+                                    });
+
+                                    $(cobertura).iziModal('open');
+                                },
+                                error: function (error) {
+                                    alert("un error");
+                                }
+                            })
+                        }
+
+                    };
+
+                    var nuevo = function () {
+                        $('#cobertura_form').data('cobertura', "");
+                        $('#btn-borrar').data('cobertura', "");
+                        $('#cobertura-description').val("");
+                        $('#cobertura-name').val("");
+                        $('#cobertura-tipo_calculo').val("");
+                        $('#cobertura-tipo_exceso').val("");
+                        $('#cobertura-tipo_cobertura').val("");
+                        $('#cobertura-iva').removeAttr('checked');
+
+                        $('td.precio').each(function (n, t) {
+                            $(t).data('cobertura', "");
+                            $(t).find('.precio-valor').val(0.0);
+                            $(t).find('.precio-available').val(0.0);
+                        });
+
+                        $(cobertura).iziModal('open');
+                    };
+
+                    var borrar = function () {
+                        var cf = confirm("¿Estas seguro que deseas borrar esta cobertura?");
+                        var _this = $(this);
+                        if (cf) {
+                            $.ajax("{% url 'seguros:eliminar_cobertura' %}", {
+                                method: "POST",
+                                data: {cobertura: $(_this).data('cobertura')},
+                                success: function (response) {
+                                    console.log(response);
+                                    location.reload();
+                                }
+                            });
+
+                            $(cobertura).iziModal('close');
+                        }
+                    };
+
+                    var grabar = function (e) {
+                        e.preventDefault();
+                        var data = {};
+                        if ($(this).data('cobertura') != "") {
+                            data['cobertura'] = $(this).data('cobertura');
+                        }
+                        data['producto'] = producto;
+                        data['name'] = $('#cobertura-name').val();
+                        data['description'] = $('#cobertura-description').val();
+                        data['tipo_calculo'] = $('#cobertura-tipo_calculo').val();
+                        data['tipo_exceso'] = $('#cobertura-tipo_exceso').val();
+                        data['tipo_cobertura'] = $('#cobertura-tipo_cobertura').val();
+                        if ($('#cobertura-iva').is(':checked')) {
+                            data['iva'] = 1;
+                        } else {
+                            data['iva'] = 0;
+                        }
+                        var precios = [];
+                        $('td.precio').each(function (i, p) {
+                            var pre = {};
+                            pre['aseguradora'] = $(p).data('aseguradora');
+                            pre['cobertura'] = $(p).data('cobertura');
+                            pre['valor'] = $(p).find('.precio-valor').val();
+                            var una = $(p).find('.precio-available');
+                            if ($(una).is(':checked')) {
+                                pre['available'] = 1;
+                            } else {
+                                pre['available'] = 0;
+                            }
+                            precios.push(pre);
+                        });
+                        data['precios'] = precios;
+                        $.ajax("{% url 'seguros:grabar_cobertura' %}", {
+                            method: "POST",
+                            data: data,
+                            success: function (response) {
+                                console.log(response);
+                                location.reload();
+                            }
+                        });
+
+                        $(cobertura).iziModal('close');
+                    };
+
+                    var activar_precio = function () {
+                        var ck = $(this);
+                        if ($(ck).is(':checked')) {
+                            $(ck).parent().find('.precio-valor').removeAttr('readonly');
+                        } else {
+                            $(ck).parent().find('.precio-valor').attr('readonly', true);
+                        }
+                    };
+
+                    $(document).on('click', '.cobertura-tr', show);
+                    $(document).on('click', '.grp-add-handler', nuevo);
+                    $(document).on('click', '.grp-remove-handler', borrar);
+                    $(document).on('click', '#btn-borrar', borrar);
+                    $(document).on('submit', '#cobertura_form', grabar);
+                    $(document).on('change', '.precio-available', activar_precio);
+
+                });
+            })(grp.jQuery)
+        </script>
+
+    {% endif %}
+
+{% endblock %}
+
