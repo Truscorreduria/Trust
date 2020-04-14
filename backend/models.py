@@ -1532,16 +1532,17 @@ class CotizadorConfig(base):
         verbose_name_plural = "configuración del cotizador"
 
     def __str__(self):
-        if self.empresa:
-            return self.empresa.razon_social
-        else:
-            return ""
+        if self.id:
+            if self.empresa:
+                return self.empresa.razon_social
+        return ""
 
     def to_json(self):
         o = super().to_json()
         o['str'] = str(self)
-        if self.empresa:
-            o['empresa'] = {'id': self.empresa.id, 'razon_social': self.empresa.razon_social}
+        if self.id:
+            if self.empresa:
+                o['empresa'] = {'id': self.empresa.id, 'razon_social': self.empresa.razon_social}
         return o
 
     @property
