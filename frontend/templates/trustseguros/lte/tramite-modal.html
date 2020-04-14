@@ -39,6 +39,9 @@
                                  class="tab-pane fade show active">
                                 <div class="row">
                                     <div class="col">
+                                        {{ form.tipo_tramite|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
                                         {{ form.code|as_crispy_field }}
                                     </div>
                                     <div class="col">
@@ -46,9 +49,6 @@
                                     </div>
                                     <div class="col">
                                         {{ form.hora|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.tipo_tramite|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="row">
