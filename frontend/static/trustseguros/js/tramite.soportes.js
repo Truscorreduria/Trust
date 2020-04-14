@@ -19,7 +19,7 @@ $(document).ready(function () {
                                 <td>${response.archivo.created_user.username}</td>
                                 <td>${response.archivo.updated}</td>
                                 <td style="text-align: center;">
-                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.id }}">
+                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="${ response.archivo.id }">
                                         <span class="fa fa-trash"></span>
                                     </button>
                                 </td>

@@ -1176,6 +1176,10 @@ class Tramite(Base):
     def bitacora(self):
         return Comentario.bitacora(self)
 
+    @property
+    def media_files(self):
+        return Archivo.media_files(self)
+
     def valor_prima(self):
         return self.subtotal - 55
 

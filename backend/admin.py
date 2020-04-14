@@ -244,7 +244,9 @@ class MonedaAdmin(admin.ModelAdmin):
     pass
 
 
-
 @admin.register(Pago)
 class MonedaAdmin(admin.ModelAdmin):
     pass
+
+
+

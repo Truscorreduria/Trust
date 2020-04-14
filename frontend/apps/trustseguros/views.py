@@ -18,13 +18,9 @@ def documentos(request):
     if request.method == "POST":
         if 'new' in request.POST:
             file = None
-            try:
-                type = ContentType.objects.get(app_label=request.POST.get('app_label'),
-                                               model=request.POST.get('model'))
-                original = type.get_object_for_this_type(id=int(request.POST.get('id')))
-            except:
-                type = None
-                original = None
+            type = ContentType.objects.get(app_label=request.POST.get('app_label'),
+                                           model=request.POST.get('model'))
+            original = type.get_object_for_this_type(id=int(request.POST.get('id')))
             if original:
                 file = Archivo()
                 file.created_user = request.user
@@ -36,6 +32,7 @@ def documentos(request):
                 file.type = type
                 file.key = original.id
                 file.save()
+                print(file.type)
             return JsonResponse({'archivo': file.to_json()}, encoder=Codec)
 
         if 'update' in request.POST:
