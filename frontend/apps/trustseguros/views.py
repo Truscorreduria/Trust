@@ -900,7 +900,8 @@ class Tramites(Datatables):
             poliza = Poliza.objects.get(id=request.POST.get('poliza'))
             contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
-                                                for p in contactos]}, encoder=Codec, safe=False)
+                                                for p in contactos],
+                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
         return super().post(request)
 
     def save_related(self, instance, data):

@@ -884,6 +884,7 @@ class Poliza(Base):
         o['cliente'] = json_object(self.cliente, Cliente)
         o['aseguradora'] = json_object(self.aseguradora, Aseguradora)
         o['ramo'] = json_object(self.ramo, Ramo)
+        o['sub_ramo'] = json_object(self.sub_ramo, SubRamo)
         o['grupo'] = json_object(self.grupo, Grupo)
         o['dias_vigencia'] = self.dias_vigencia
         o['tipo_poliza'] = {'value': self.tipo_poliza, 'label': self.get_tipo_poliza_display()}

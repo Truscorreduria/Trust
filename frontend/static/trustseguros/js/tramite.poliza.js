@@ -23,7 +23,11 @@ $(document).ready(function () {
                 $contacto.append(`<option value="" selected="">---------</option>`);
                 $.each(response.collection, function (i, o) {
                     $contacto.append(`<option value="${o.id}">${o.name}</option>`)
-                })
+                });
+                $('#id_ramo').val(response.instance.ramo.name);
+                $('#id_sub_ramo').val(response.instance.sub_ramo.name);
+                $('#id_grupo').val(response.instance.grupo.name);
+                $('#id_aseguradora').val(response.instance.aseguradora.name);
             }
         })
     });
