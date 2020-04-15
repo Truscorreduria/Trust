@@ -1,7 +1,7 @@
 $(document).on('keyup', '#id_cliente_representante-cedula', function () {
     $(this).autocomplete({
         minLength: 2,
-        source: $ajax_autocomplete + "?app_label=cotizador&model=clientenatural&column_name=cedula&column_value=cedula",
+        source: $ajax_autocomplete + "?app_label=backend&model=clientenatural&column_name=cedula&column_value=cedula",
         select: function (i, o) {
             $('#id_cliente_representante-primer_nombre').val(o.item.obj.primer_nombre).removeAttr('readonly');
             $('#id_cliente_representante-segundo_nombre').val(o.item.obj.segundo_nombre).removeAttr('readonly');
