@@ -135,7 +135,7 @@ class ClienteJuridicioForm(forms.ModelForm):
         attrs={
             'columns': (
                 ('no_poliza', 'Número de póliza'),
-                ('aseguradora.name', 'Aseguradora'),
+                ('aseguradora', 'Aseguradora'),
                 ('ramo', 'Ramo'),
                 ('fecha_emision', 'Fecha inicio'),
                 ('fecha_vence', 'Fecha fin'),
@@ -143,7 +143,7 @@ class ClienteJuridicioForm(forms.ModelForm):
                 ('grupo', 'Grupo'),
                 ('suma_asegurada', 'Suma asegurada'),
                 ('total', 'Prima neta'),
-                ('tipo_poliza', 'Tipo póliza'),
+                ('tipo_poliza_display', 'Tipo póliza'),
                 ('estado', 'Estado'),
                 ('ver', ''),
             )
