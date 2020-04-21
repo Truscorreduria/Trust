@@ -511,6 +511,7 @@ class TramiteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
         updated_initial = {}
         if instance:
             updated_initial['campos_adicionales'] = instance
@@ -524,6 +525,9 @@ class TramiteForm(forms.ModelForm):
                 updated_initial['grupo'] = instance.poliza.grupo
                 updated_initial['ramo'] = instance.poliza.ramo
                 updated_initial['sub_ramo'] = instance.poliza.sub_ramo
+        else:
+            if request:
+                updated_initial['user'] = request.user
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         self.fields['contacto_aseguradora'].choices = []
@@ -564,6 +568,7 @@ class FieldMapForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
+
     class Meta:
         model = FieldMap
         fields = "__all__"
