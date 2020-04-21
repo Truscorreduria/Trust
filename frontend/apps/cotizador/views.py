@@ -623,8 +623,8 @@ def print_condiciones(request):
 
 @csrf_exempt
 def print_orden_trabajo(request):
-    config = get_config(request.user)
     poliza = Poliza.objects.get(id=request.POST.get('id'))
+    config = get_config(poliza.user)
     return render_to_pdf_response(request, 'cotizador/pdf/orden_trabajo.html', {
         'poliza': poliza, 'soa_descontado': round((config.soa_automovil * (1 - config.soa_descuento)), 2),
         'config': config

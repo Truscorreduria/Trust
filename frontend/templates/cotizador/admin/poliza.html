@@ -1,5 +1,5 @@
 {% extends 'admin/change_form.html' %}
-
+{% load static %}
 
 {% block object-tools-items %}
     <li><a href="#" id="btn-documentos"> Documentos</a></li>
@@ -84,7 +84,7 @@
 {% block extrahead %}
 
     {{ block.super }}
-
+    <script type="text/javascript" src="{% static 'seguros/modal/js/iziModal.js' %}"></script>
     <script type="text/javascript">
         (function ($) {
             $(document).ready(function () {
