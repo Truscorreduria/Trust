@@ -104,7 +104,7 @@
         <tr>
             <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
             border-bottom: 0.1px solid black; line-height: 0">Asegurado/Contratante: codigo-pendiente
-                {{ poliza.nombres }} {{ poliza.apellidos }}
+                {{ poliza.cliente.get_full_name }}
             </td>
         </tr>
     </table>
@@ -118,14 +118,14 @@
         </tr>
         <tr>
             <td>Cédula o RUC:</td>
-            <td>{{ poliza.cedula }}</td>
+            <td>{{ poliza.cliente.cedula }}</td>
             <td>Desde:</td>
             <td style="color: blue">{{ poliza.fecha_emision }}</td>
             <td>(00:01 Horas)</td>
         </tr>
         <tr>
             <td>Teléfono:</td>
-            <td>{{ poliza.telefono }}</td>
+            <td>{{ poliza.cliente.telefono }}</td>
             <td>Hasta:</td>
             <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
             <td>(24:00 Horas)</td>
@@ -158,7 +158,7 @@
         </tr>
         <tr>
             <td style="border-bottom: 1px solid black;">Dirección:</td>
-            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.cliente.domicilio }}
             </td>
         </tr>
     </table>
@@ -332,17 +332,17 @@
                     </tr>
                     <tr>
                         <td colspan="4">
-                            Asegurado: {{ poliza.nombres }} {{ poliza.apellidos }}
+                            Asegurado: {{ poliza.cliente.get_full_name }}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
-                            Dirección: {{ poliza.domicilio }}
+                            Dirección: {{ poliza.cliente.domicilio }}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
-                            Cédula Identidad: {{ poliza.cedula }}
+                            Cédula Identidad: {{ poliza.cliente.cedula }}
                         </td>
                     </tr>
                     <tr>

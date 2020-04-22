@@ -105,17 +105,17 @@
                     <tr>
                         <td style="width: 205px">CONTRATANTE/ASEGURADO</td>
                         <td style="text-align: right; width: 3px;">:</td>
-                        <td>{{ poliza.nombres }} {{ poliza.apellidos }}</td>
+                        <td>{{ poliza.cliente.get_full_name }}</td>
                     </tr>
                     <tr>
                         <td style="width: 205px">CEDULA/RUC</td>
                         <td style="text-align: right; width: 3px;">:</td>
-                        <td>{{ poliza.cedula }}</td>
+                        <td>{{ poliza.cliente.cedula }}</td>
                     </tr>
                     <tr>
                         <td style="width: 205px">DIRECCIÓN COBRO</td>
                         <td style="text-align: right; width: 3px;">:</td>
-                        <td>{{ poliza.domicilio }}</td>
+                        <td>{{ poliza.cliente.domicilio }}</td>
                     </tr>
                 </table>
             </td>
@@ -369,8 +369,8 @@
     <table style="font-weight: 900; font-size: 1.2em">
         <tr>
             <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
-            border-bottom: 0.1px solid black; line-height: 0">Asegurado/Contratante: codigo-pendiente
-                {{ poliza.nombres }} {{ poliza.apellidos }}
+            border-bottom: 0.1px solid black; line-height: 0">Asegurado/Contratante:
+                {{ poliza.cliente.get_full_name }}
             </td>
         </tr>
     </table>
@@ -424,7 +424,7 @@
         </tr>
         <tr>
             <td style="border-bottom: 1px solid black;">Dirección:</td>
-            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.cliente.domicilio }}
             </td>
         </tr>
     </table>
@@ -657,7 +657,7 @@
                 <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
             </tr>
             <tr>
-                <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                <td style="font-size: 0.5em">Firma digital: </td>
                 <td style="padding: 3px 25%; text-align: center;
                 border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
                 </td>
@@ -853,7 +853,7 @@
                     <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
                 </tr>
                 <tr>
-                    <td style="font-size: 0.5em">Firma digital: 4967BE3559DA84863CE20D53</td>
+                    <td style="font-size: 0.5em">Firma digital: </td>
                     <td style="padding: 3px 25%; text-align: center;
                 border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
                     </td>
