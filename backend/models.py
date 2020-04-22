@@ -412,11 +412,14 @@ class Cliente(Persona, Empresa, Direccion):
         u.save()
         messages.info(request, 'Usuario inactivado con éxito')
 
-    def save(self, *args, **kwargs):
+    def get_full_name(self):
         if self.tipo_cliente == TipoCliente.NATURAL:
-            self.nombre = self.full_name
+            return self.full_name
         if self.tipo_cliente == TipoCliente.JURIDICO:
-            self.nombre = self.razon_social
+            return self.razon_social
+
+    def save(self, *args, **kwargs):
+        self.name = self.get_full_name()
         super().save(*args, **kwargs)
 
     @property
@@ -975,7 +978,7 @@ class Poliza(Base):
         return numero_a_letras(self.suma_asegurada)
 
     def nombre_asegurado(self):
-        return "%s %s" % (self.nombres or "", self.apellidos or "")
+        return self.cliente.get_full_name()
 
     def vehiculo(self):
         return "%s %s %s" % (self.marca or "", self.modelo or "", str(self.anno) or "")

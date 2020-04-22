@@ -78,6 +78,7 @@ def notificar_nueva_poliza(sender, **kwargs):
     html = render_to_string('cotizador/email/notificacion_automovil.html',
                             context={'object': sender, 'opts': sender._meta},
                             request=request)
+    print('html listo')
 
     if sender.forma_pago == 'mensual' and sender.medio_pago == 'deduccion_nomina':
         deduccion = render_to_pdf('cotizador/pdf/deduccion.html', {
@@ -89,16 +90,20 @@ def notificar_nueva_poliza(sender, **kwargs):
         'poliza': sender, 'soa_descontado': round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2),
         'config': config
     })
+    print('ot')
 
     esquela = render_to_pdf('cotizador/pdf/esquela.html', {
         'poliza': sender
     })
+    print('esquela')
 
     files.append(("attachment", ("Orden de Trabajo.pdf", ot)))
     files.append(("attachment", ("Esquela.pdf", esquela)))
+    print('archivos adjuntados')
 
-    send_email('Nueva solicitud - %s' % sender.nombre_asegurado(), config.EMAIL_TRUST + config.EMAIL_AUTOMOVIL,
+    send_email('Nueva solicitud - %s' % sender.nombre_asegurado(), config.email_trust + config.EMAIL_AUTOMOVIL,
                html=html, files=files)
+    print('notificado')
 
 
 def notificar_debito_automatico(sender, **kwargs):
@@ -125,11 +130,11 @@ def notificar_debito_automatico(sender, **kwargs):
 nueva_poliza = Signal()
 nueva_poliza.connect(add_log)
 nueva_poliza.connect(notificar_nueva_poliza)
-#nueva_poliza.connect(notificar_debito_automatico)
+nueva_poliza.connect(notificar_debito_automatico)
 
 
 def notificar_poliza_lista(sender, **kwargs):
-    request = kwargs['request']
+    request = kwargs.get('request', None)
     html = render_to_string('cotizador/email/notificacion_poliza.html',
                             context={'object': sender, 'opts': sender._meta},
                             request=request)
@@ -185,5 +190,3 @@ def add_comment(sender, **kwargs):
 
 AddComment = Signal()
 AddComment.connect(add_comment)
-
-
