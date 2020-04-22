@@ -52,7 +52,7 @@ def add_log(sender, **kwargs):
 
 
 def notificar_nueva_poliza(sender, **kwargs):
-    request = kwargs['request']
+    request = kwargs.get('request')
 
     files = []
     try:
@@ -101,7 +101,7 @@ def notificar_nueva_poliza(sender, **kwargs):
     files.append(("attachment", ("Esquela.pdf", esquela)))
     print('archivos adjuntados')
 
-    send_email('Nueva solicitud - %s' % sender.nombre_asegurado(), config.email_trust + config.EMAIL_AUTOMOVIL,
+    send_email('Nueva solicitud - %s' % sender.nombre_asegurado(), config.email_trust + config.email_automovil,
                html=html, files=files)
     print('notificado')
 
@@ -123,7 +123,7 @@ def notificar_debito_automatico(sender, **kwargs):
         files.append(("attachment", ("Orden de Trabajo.pdf", ot)))
         files.append(("attachment", ("Esquela.pdf", esquela)))
 
-        send_email('Nueva solicitud con débito automático', config.EMAIL_DEBITO_AUTOMATICO,
+        send_email('Nueva solicitud con débito automático', config.email_debito_automatico,
                    html=html, files=files)
 
 
