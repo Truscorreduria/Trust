@@ -440,6 +440,8 @@ def guardar_poliza(request):
     dd.extra_data = json.dumps(json_obj)
     dd.save()
 
+    nueva_poliza.send(poliza, request=request)
+
     return JsonResponse(poliza.to_json(), encoder=Codec)
 
 

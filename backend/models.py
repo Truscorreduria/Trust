@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, date
 from django.contrib.auth.models import User
 from .numero_letra import numero_a_letras
 from image_cropping import ImageRatioField
-from constance import config
 from datetime import date
 from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
@@ -827,6 +826,9 @@ class Poliza(Base):
             ("reporte_polizas_vencer", "reporte_polizas_vencer"),
         )
 
+    def get_config(self):
+        return get_config(self.user)
+
     def data_load(self):
         try:
             return json.loads(self.extra_data)
@@ -953,7 +955,7 @@ class Poliza(Base):
 
     def valor_prima(self):
         try:
-            return round(float(self.subtotal) - (config.SOA_AUTOMOVIL + float(self.costo_exceso)), 2)
+            return round(float(self.subtotal) - (self.get_config().soa_automovil + float(self.costo_exceso)), 2)
         except:
             return 0.0
 
@@ -1317,16 +1319,20 @@ class benAbstract(Base):
         return datetime(day=self.created.day, month=self.created.month, year=self.created.year) + \
                timedelta(days=365)
 
+    def get_config(self):
+        return get_config(self.empleado.user)
+
 
 class benSepelio(benAbstract):
 
     def save(self, *args, **kwargs):
+        config = self.get_config()
         if not self.numero_poliza:
-            self.numero_poliza = config.POLIZA_SEPELIO_DEPENDIENTE
+            self.numero_poliza = config.poliza_sepelio_dependiente
         if not self.costo:
-            self.costo = config.COSTO_SEPELIO
+            self.costo = config.costo_sepelio
         if not self.suma_asegurada:
-            self.suma_asegurada = config.SUMA_SEPELIO
+            self.suma_asegurada = config.suma_sepelio
         super(benSepelio, self).save(*args, **kwargs)
 
 
@@ -1336,10 +1342,11 @@ class benAccidente(benAbstract):
     emision = models.FloatField(default=0.0)
 
     def save(self, *args, **kwargs):
+        config = self.get_config()
         if not self.numero_poliza:
-            self.numero_poliza = config.POLIZA_ACCIDENTE
+            self.numero_poliza = config.poliza_accidente
         if not self.suma_asegurada:
-            self.suma_asegurada = config.SUMA_ACCIDENTE_DEPENDIENTE
+            self.suma_asegurada = config.suma_accidente_dependiente
         super(benAccidente, self).save(*args, **kwargs)
 
 

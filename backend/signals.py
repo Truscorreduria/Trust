@@ -5,7 +5,6 @@ from utils.utils import send_email
 from django.contrib import messages
 from openpyxl import Workbook
 from io import BytesIO
-from constance import config
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from easy_pdf.rendering import render_to_pdf
@@ -18,7 +17,7 @@ def get_extension(file):
 
 
 def add_log(sender, **kwargs):
-    request = kwargs['request']
+    request = kwargs.get('request')
     ct = ContentType.objects.get_for_model(sender.__class__)
 
     message = "El usuario ha aceptado los términos y condiciones y autorizó el manejo de datos y envío por correo electrónico."
@@ -52,7 +51,8 @@ def add_log(sender, **kwargs):
 
 
 def notificar_nueva_poliza(sender, **kwargs):
-    request = kwargs.get('request')
+    request = kwargs.get('request', None)
+    config = get_config(sender.user)
 
     files = []
     try:
@@ -87,7 +87,7 @@ def notificar_nueva_poliza(sender, **kwargs):
         files.append(("attachment", ("Consentimiento.pdf", deduccion)))
 
     ot = render_to_pdf('cotizador/pdf/orden_trabajo.html', {
-        'poliza': sender, 'soa_descontado': round((config.SOA_AUTOMOVIL * (1 - config.SOA_DESCUENTO)), 2),
+        'poliza': sender, 'soa_descontado': round((config.soa_automovil * (1 - config.soa_descuento)), 2),
         'config': config
     })
     print('ot')
@@ -101,14 +101,15 @@ def notificar_nueva_poliza(sender, **kwargs):
     files.append(("attachment", ("Esquela.pdf", esquela)))
     print('archivos adjuntados')
 
-    send_email('Nueva solicitud - %s' % sender.nombre_asegurado(), config.email_trust + config.email_automovil,
+    send_email('Nueva solicitud - %s' % sender.cliente.get_full_name(), config.email_trust + config.email_automovil,
                html=html, files=files)
     print('notificado')
 
 
 def notificar_debito_automatico(sender, **kwargs):
+    config = get_config(sender.user)
     if sender.medio_pago == 'debito_automatico':
-        request = kwargs['request']
+        request = kwargs.get('request', None)
         html = render_to_string('cotizador/email/notificacion_automovil.html',
                                 context={'object': sender, 'opts': sender._meta},
                                 request=request)
