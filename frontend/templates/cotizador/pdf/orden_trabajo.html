@@ -65,7 +65,7 @@
             <td colspan="5" style="padding: 1px; margin: 0; border-top:0.1px solid black;
                 border-bottom: 0.1px solid black; line-height: 0; background-color: #b9ffc1;
                 font-size: 11pt">Asegurado/Contratante: codigo-pendiente
-                {{ cliente.name }}
+                {{ poliza.cliente }}
             </td>
         </tr>
     </table>
@@ -79,7 +79,7 @@
         </tr>
         <tr>
             <td>Cédula o RUC:</td>
-            <td>{{ poliza.cedula }}</td>
+            <td>{{ poliza.cliente.cedula }}</td>
             <td>Desde:</td>
             <td style="color: blue">{{ poliza.fecha_emision|date:'j' }} de {{ poliza.fecha_emision|date:'F' }}
                 de {{ poliza.fecha_emision|date:'Y' }}</td>
@@ -87,14 +87,14 @@
         </tr>
         <tr>
             <td>Teléfono:</td>
-            <td>{{ poliza.telefono }}</td>
+            <td>{{ poliza.cliente.telefono }}</td>
             <td>Hasta:</td>
             <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
             <td>(24:00 Horas)</td>
         </tr>
         <tr>
             <td>Celular:</td>
-            <td>{{ poliza.user.profile.celular }}</td>
+            <td>{{ poliza.cliente.celular }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -120,7 +120,7 @@
         </tr>
         <tr>
             <td style="border-bottom: 1px solid black;">Dirección:</td>
-            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.domicilio }}
+            <td style="border-bottom: 1px solid black;" colspan="4">{{ poliza.cliente.domicilio }}
             </td>
         </tr>
     </table>
@@ -308,9 +308,9 @@
             <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
             <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
                 {% ifequal poliza.tipo_cobertura 'basica' %}
-                    ${{ soa_descontado|floatformat:2|intcomma }}
+                    ${{ poliza.soa_descontado|floatformat:2|intcomma }}
                 {% else %}
-                    ${{ config.SOA_AUTOMOVIL|floatformat:2|intcomma }}
+                    ${{ config.soa_automovil|floatformat:2|intcomma }}
                 {% endifequal %}
             </td>
         </tr>
