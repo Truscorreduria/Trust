@@ -317,7 +317,7 @@
 
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
-                if (_this.val().length > 50) {
+                if (_this.val().length > 0) {
                     $('.form-buttons button').removeAttr('disabled')
                 } else {
                     $('.form-buttons button').attr('disabled', 'disabled')
