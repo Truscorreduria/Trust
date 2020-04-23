@@ -285,7 +285,10 @@ def get_data(request):
 
 @csrf_exempt
 def generar_cotizacion(request):
+    user = request.user
+    cliente = get_profile(user)
     ticket = Poliza()
+    ticket.cliente = cliente
     ticket.fecha_emision = datetime.now()
     ticket.user = request.user
     ticket.nombres = request.POST.get('nombres', '')
