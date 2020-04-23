@@ -329,7 +329,7 @@
             });
 
             $(document).on('change', '#campos_adicionales-import-file', function () {
-                let data = new FormData()
+                let data = new FormData();
                 data.append('import_data', 'import_data');
                 data.append('file', this.files[0]);
                 data.append('id', $('input[name="id"]').val());
@@ -341,13 +341,13 @@
                     success: function (response) {
                         $('#campos_adicionales-table').append(response.html);
 
-                        $.each($('#campos_adicionales-table').find('.campos_adicionales-value'), function (i, o) {
-                            {% comment %}const data = JSON.parse($(o).val());
+                        {% comment %}$.each($('#campos_adicionales-table').find('.campos_adicionales-value'), function (i, o) {
+                            const data = JSON.parse($(o).val());
                             const $tr = $(o).parents('tr');
                             Object.keys(data).forEach(function (k) {
                                 $($tr).find(`input[name="${k}"]`).val(data[k]);
-                            });{% endcomment %}
-                        });
+                            });
+                        });{% endcomment %}
                     }
                 })
             });

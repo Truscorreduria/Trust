@@ -1176,7 +1176,7 @@ class Polizas(Datatables):
                 form = DatoImportForm(instance=d)
                 forms.append(form)
             html = render_to_string('trustseguros/lte/widgets/import-rows.html', context={
-                'forms': forms, 'widget_name': 'campos_adicionales'
+                'forms': forms, 'widget': {'name': 'campos_adicionales'}
             }, request=request)
             return JsonResponse({'html': html}, encoder=Codec, safe=False)
         return super().post(request)

@@ -1043,6 +1043,11 @@ class DatoPoliza(base):
     extra_data = models.CharField(max_length=1000000, null=True, blank=True,
                                   verbose_name="datos técnicos")
 
+    @property
+    def data(self):
+        extra_data = self.extra_data.replace("'", '"')
+        return json.loads(extra_data)
+
 
 class TipoTramite:
     ENDOSO = 1

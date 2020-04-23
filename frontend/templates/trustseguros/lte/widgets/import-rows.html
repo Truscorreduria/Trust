@@ -1,17 +1,20 @@
+{% load datatables %}
+
 {% for form in forms %}
     <tr>
-        {% for foo in form.instance.poliza.sub_ramo.datos_tecnicos.all %}
+        {% for field in form.instance.poliza.sub_ramo.datos_tecnicos.all %}
             <td>
-                <input type="text" class="form-control {{ widget.name }}-input" value=""
+                <input type="text" class="form-control {{ widget.name }}-input"
+                       value="{{ form.instance.data|datatables_field:field.name }}"
                        name="{{ widget.name }}-{{ field.name }}">
             </td>
         {% endfor %}
 
         <td style="text-align: center">
-            <input type="hidden" name="{{ widget_name }}_id" value=""
-                   class="{{ widget_name }}-id">
-            <input type="hidden" name="{{ widget_name }}" class="{{ widget_name }}-value"
-            value="{{ form.extra_data.value }}">
+            <input type="hidden" name="{{ widget.name }}_id" value=""
+                   class="{{ widget.name }}-id">
+            <input type="hidden" name="{{ widget.name }}" class="{{ widget.name }}-value"
+                   value="{{ form.extra_data.value }}">
             <button type="button" class="btn btn-danger btn-table-delete" data-id=""
                     data-model="datopoliza" data-app="cotizador">
                 <i class="fa fa-trash"></i>

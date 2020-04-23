@@ -1,4 +1,4 @@
-{% load poliza %}
+{% load datatables %}
 
 
 <table class="table-template" id="{{ widget.name }}-template" style="display: none">
@@ -49,10 +49,11 @@
     {% for row in widget.value.datos_tecnicos.all %}
         <tr>
 
+
             {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
                 <td>
                     <input type="text" class="form-control {{ widget.name }}-input"
-                           value="{{ row|dato_tecnico:field }}"
+                           value="{{ row.data|datatables_field:field.name }}"
                            name="{{ widget.name }}-{{ field.name }}"
                            {% if not widget.value.editable %}readonly{% endif %}>
                 </td>
