@@ -215,7 +215,7 @@ class Datatables(View):
     def put(self, request):
         status = 203
         instance = self.model()
-        form = self.get_form()()
+        form = self.get_form()(request=request)
         html_form = self.html_form(instance, request, form, 'PUT')
         errors = []
 
