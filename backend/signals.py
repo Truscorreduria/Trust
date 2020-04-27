@@ -184,8 +184,9 @@ def add_comment(sender, **kwargs):
     request = kwargs.get('request')
     comentario = kwargs.get('comentario')
     c = Comentario()
-    c.created_user = request.user
-    c.updated_user = request.user
+    if request:
+        c.created_user = request.user
+        c.updated_user = request.user
     c.type = ContentType.objects.get_for_model(sender.__class__)
     c.key = sender.pk
     c.comentario = comentario
