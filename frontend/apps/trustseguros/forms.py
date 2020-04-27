@@ -87,7 +87,8 @@ class RepresentanteForm(forms.ModelForm):
                   'telefono', 'celular')
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance')
+        instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         if not instance:
             self.fields['primer_nombre'].widget.attrs['readonly'] = 'readonly'
@@ -173,8 +174,9 @@ class ClienteJuridicioForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super(ClienteJuridicioForm, self).__init__(*args, **kwargs)
         instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
+        super(ClienteJuridicioForm, self).__init__(*args, **kwargs)
         updated_initial = {}
         if instance:
             updated_initial['contactos'] = instance.contactos()
@@ -262,6 +264,7 @@ class ClienteNaturalForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
         updated_initial = {}
         if instance:
             updated_initial['polizas'] = instance.polizas()
