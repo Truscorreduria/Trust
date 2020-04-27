@@ -1054,7 +1054,8 @@ def autorenovar_polizas():
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
-                               cliente__isnull=False, fecha_vence__lte=datetime.now(), aseguradora__isnull=False)
+                               cliente__isnull=False, fecha_vence__lte=datetime.now(), aseguradora__isnull=False,
+                               estado_poliza=EstadoPoliza.ACTIVA)
     for p in ps:
         nueva = RenovarPoliza.send(p, fecha_renovacion=p.fecha_vence)[0][1]
         nueva.user = p.user
@@ -1094,5 +1095,8 @@ def iniciar_proc():
         nueva.moneda_cobro = p.moneda_cobro
         nueva.banco_emisor = p.banco_emisor
         nueva.file_circulacion = p.file_circulacion
+        nueva.estado_poliza = EstadoPoliza.PENDIENTE
         nueva.save()
         print(nueva)
+        p.estado_poliza = EstadoPoliza.RENOVADA
+        p.save()
