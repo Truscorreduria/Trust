@@ -154,11 +154,14 @@ poliza_lista.connect(notificar_poliza_lista)
 
 def renovar_poliza(sender, **kwargs):
     request = kwargs.get('request')
+    fecha_renovacion = kwargs.pop('fecha_renovacion', None)
+    if not fecha_renovacion:
+        fecha_renovacion = datetime.now()
     nueva = Poliza(no_poliza=sender.no_poliza, aseguradora=sender.aseguradora,
                    contratante=sender.contratante, cliente=sender.cliente,
                    grupo=sender.grupo, ramo=sender.ramo, sub_ramo=sender.sub_ramo,
                    tipo_poliza=sender.tipo_poliza, estado_poliza=EstadoPoliza.PENDIENTE,
-                   fecha_emision=datetime.now(), fecha_vence=datetime.now() + timedelta(days=365)
+                   fecha_emision=fecha_renovacion, fecha_vence=fecha_renovacion + timedelta(days=365)
                    )
     nueva.fecha_pago = None
     nueva.user = request.user

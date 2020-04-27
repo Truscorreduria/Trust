@@ -1637,3 +1637,7 @@ class FieldMap(base):
     destiny_field = models.ForeignKey(CampoAdicional, on_delete=models.SET_NULL,
                                       null=True, blank=True)
     origin_field = models.CharField(max_length=200)
+
+
+
+

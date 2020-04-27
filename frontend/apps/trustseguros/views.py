@@ -1280,3 +1280,13 @@ class ConfiguracionCotizador(Datatables):
 
 
 # endregion
+
+
+# renovacion
+
+
+def iniciar_proc():
+    ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
+                               cliente__isnull=False, fecha_vence__lte=datetime.now())
+    for p in ps:
+        np = RenovarPoliza.send(p)
