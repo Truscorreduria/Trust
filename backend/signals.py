@@ -163,8 +163,9 @@ def renovar_poliza(sender, **kwargs):
                    tipo_poliza=sender.tipo_poliza, estado_poliza=EstadoPoliza.PENDIENTE,
                    fecha_emision=fecha_renovacion, fecha_vence=fecha_renovacion + timedelta(days=365)
                    )
+    if request:
+        nueva.user = request.user
     nueva.fecha_pago = None
-    nueva.user = request.user
     nueva.save()
     AddComment.send(nueva, request=request, comentario="Creada en estado pendiente mendiante proceso de renovación")
 
