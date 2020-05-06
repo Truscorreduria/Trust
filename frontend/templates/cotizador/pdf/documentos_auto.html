@@ -647,8 +647,8 @@
 
     <p style="font-size: 0.9em; text-align: justify; margin: 2px 0">En fe de lo cual se firman las presentes Condiciones
         Particulares
-        en la ciudad de Managua, Nicaragua, a los 28
-        días del mes de Febrero del año 2019</p>
+        en la ciudad de Managua, Nicaragua, a los {{ poliza.fecha_emision|date:'d' }}
+        días del mes de {{ poliza.fecha_emision|date:'b' }} del año {{ poliza.fecha_emision|date:'Y' }}</p>
 
     <div style="position: relative; width: 100%;">
         <table style="margin-top: 0">
