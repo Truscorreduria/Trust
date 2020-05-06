@@ -384,14 +384,14 @@
         </tr>
         <tr>
             <td>Cédula o RUC:</td>
-            <td>{{ poliza.cedula }}</td>
+            <td>{{ poliza.cliente.cedula }}</td>
             <td>Desde:</td>
             <td style="color: blue">{{ poliza.fecha_emision }}</td>
             <td>(00:01 Horas)</td>
         </tr>
         <tr>
             <td>Teléfono:</td>
-            <td>{{ poliza.telefono }}</td>
+            <td>{{ poliza.cliente.telefono }}</td>
             <td>Hasta:</td>
             <td style="color: blue">{{ poliza.fecha_vencimiento }}</td>
             <td>(24:00 Horas)</td>
@@ -412,12 +412,12 @@
                 <td></td>
             {% else %}
                 <td>Acreedor/Beneficiario</td>
-                <td colspan="2">{{ poliza.beneficiario.name }}</td>
+                <td colspan="2">{{ poliza.cesionario.name }}</td>
             {% endif %}
         </tr>
         <tr>
             <td>Email:</td>
-            <td>{{ poliza.email }}</td>
+            <td>{{ poliza.cliente.email_personal }}</td>
             <td></td>
             <td></td>
             <td></td>
@@ -489,7 +489,7 @@
         </thead>
         <tbody>
 
-        {% ifequal poliza.tipo_cobertura 'amplia' %}
+        {% ifequal poliza.tipo_cobertura 2 %}
             <tr>
                 <td style="background-color: rgba(243,243,245,0.84)" colspan="4">Responsabilidad Civil Del Conductor Por
                     Muerte O Lesiones A Pasajeros
@@ -577,12 +577,13 @@
     <table style="margin-top: 20px">
         <tr>
             <td>
-                {% ifequal poliza.tipo_cobertura 'amplia' %}
+                {% ifequal poliza.tipo_cobertura 2 %}
                     <p>Gastos de Salvamento (US$150.00).</p>
                 {% endifequal %}
             </td>
             <td>
                 <table>
+
                     <tr>
                         <td>Prima</td>
                         <td></td>
