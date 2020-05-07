@@ -563,10 +563,10 @@ class CampoAdicional(Base):
 
 
 class TipoCobertura:
-    BASICA = 1
-    AMPLIA = 2
-    ADICIONAL = 3
-    OPCIONAL = 4
+    BASICA = '1'
+    AMPLIA = '2'
+    ADICIONAL = '3'
+    OPCIONAL = '4'
 
     @classmethod
     def choices(cls):

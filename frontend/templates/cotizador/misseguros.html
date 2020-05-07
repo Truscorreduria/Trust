@@ -13,6 +13,17 @@
         #content aside {
             display: none !important;
         }
+
+
+        #table-cuentas-bancarias {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        #table-cuentas-bancarias th, #table-cuentas-bancarias td {
+            border: 1px solid black;
+            padding: 0 5px;
+        }
     </style>
 {% endblock %}
 
@@ -66,15 +77,15 @@
                                             data-poliza="{{ o.id }}">Renovación
                                     </button>
                                 {% endif %}
-                            {%  ifequal o.tipo_cobertura 'amplia' %}
-                                <a class="btn btn-trust btn-trust-sm condiciones"
-                                   href="{% url 'cotizador:download' %}?file_name=CONDICIONES_DANOS_PROPIOS.pdf"
-                                >Condiciones genereales</a>
-                            {% else %}
-                                <a class="btn btn-trust btn-trust-sm condiciones"
-                                   href="{% url 'cotizador:download' %}?file_name=CONDICIONES_SOA.pdf"
-                                >Condiciones genereales</a>
-                            {% endifequal %}
+                                {% ifequal o.tipo_cobertura 'amplia' %}
+                                    <a class="btn btn-trust btn-trust-sm condiciones"
+                                       href="{% url 'cotizador:download' %}?file_name=CONDICIONES_DANOS_PROPIOS.pdf"
+                                    >Condiciones genereales</a>
+                                {% else %}
+                                    <a class="btn btn-trust btn-trust-sm condiciones"
+                                       href="{% url 'cotizador:download' %}?file_name=CONDICIONES_SOA.pdf"
+                                    >Condiciones genereales</a>
+                                {% endifequal %}
 
                                 <button class="btn btn-trust btn-trust-sm imprimir-auto"
                                         data-poliza="{{ o.id }}"
@@ -444,7 +455,7 @@
 
     <div class="modal fade" id="modal-renovacion" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <form id="form-renovacion" method="post"
                       enctype="multipart/form-data">
@@ -460,60 +471,211 @@
 
                         <fieldset>
                             <input type="hidden" id="poliza-renovacion">
+                            <input type="hidden" id="poliza-total">
 
+                            <br><label><b>Medio de pago</b></label><br>
+                            <p>Usa el medio de pago de tu preferencia.</p>
                             <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="marca">Marca</label>
-                                        <input type="text" class="form-control" name="marca"
-                                               id="marca-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="debito-automatico"
+                                               value="debito_automatico" name="medio-pago" required>
+                                        <label class="custom-control-label" for="debito-automatico">
+                                            Débito automatico<br>
+                                        </label><br>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="modelo">Modelo</label>
-                                        <input type="text" class="form-control" name="modelo"
-                                               id="modelo-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="deduccion-nomina"
+                                               name="medio-pago" value="deduccion_nomina">
+                                        <label class="custom-control-label" for="deduccion-nomina">
+                                            Deducción por nómina<br>
+                                        </label><br>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="anno">Año</label>
-                                        <input type="text" class="form-control" name="anno"
-                                               id="anno-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
+                                <div class="col-md-4">
+                                    <div class="custom-control custom-radio custom-control-inline"
+                                         id="custom-radio-deposito-referenciado">
+                                        <input type="radio" class="custom-control-input"
+                                               id="deposito-referenciado"
+                                               name="medio-pago" value="deposito_referenciado">
+                                        <label class="custom-control-label" for="deposito-referenciado">
+                                            Depósito referenciado<br>
+                                        </label><br>
                                     </div>
                                 </div>
                             </div>
 
+                            <div class="row zona-debito" style="display: none">
+                                <div class="col-md-6 col-xs-12">
+                                    <form id="form-card">
+                                        <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Nombre*</span>
+                                                    </span>
+                                            <input type="text" class="form-control"
+                                                   placeholder="TITULAR DE LA TARJETA"
+                                                   id="name">
+                                        </div>
+
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Número*</span>
+                                                    </span>
+                                                    <input type="text" class="form-control"
+                                                           placeholder="•••• •••• •••• ••••"
+                                                           id="number">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Vencimiento*</span>
+                                                    </span>
+                                                    <input type="text" class="form-control"
+                                                           placeholder="•• / ••"
+                                                           id="expiry">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                            <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Cobrar en*</span>
+                                                    </span>
+                                                    <select class="form-control" id="moneda-cobro">
+                                                        <option value="USD">Dólares</option>
+                                                        <option value="NIO">Córdobas</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group">
+                                                            <span class="input-group-addon">
+                                                        <span class="input-icon input-icon-user"></span>
+                                                        <span class="input-text">Banco emisor*</span>
+                                                    </span>
+                                                    <select class="form-control" id="banco-emisor">
+                                                        <option value="BANPRO">BANPRO</option>
+                                                        <option value="BAC">BAC</option>
+                                                        <option value="BDF">BDF</option>
+                                                        <option value="BANCENTRO">BANCENTRO</option>
+                                                        <option value="FICOHSA">FICOHSA</option>
+                                                        <option value="OTROS">OTROS</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="col-md-6 col-xs-12">
+                                    <div class="card-widget" style="margin-top: 30px"></div>
+                                </div>
+                            </div>
+
+                            <div class="row zona-deduccion" style="min-height: 200px">
+                            </div>
+
+                            <div class="row zona-deposito" style="display: none;">
+                                <div class="container"
+                                     style="margin-top: 50px; padding: 5%; text-align: center">
+                                    <p>Enviar cheque a ASSA compañia de seguros a realizar pagos directo a
+                                        caja.</p>
+                                    <p>Efectuar sus pagos, depositando en las cuentas bancaras de cualquier
+                                        sucursal
+                                        de los siguientes bancos:</p>
+                                    <table id="table-cuentas-bancarias">
+                                        <thead>
+                                        <tr>
+                                            <th>BANCO</th>
+                                            <th>CUENTA DÓLARES</th>
+                                            <th>CUENTA CÓRDOBAS</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>Banco de Finanzas</td>
+                                            <td>203-3018226</td>
+                                            <td>202-3016497</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Banco de America Central</td>
+                                            <td>012-065900</td>
+                                            <td>012-065892</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Banco de la Produción</td>
+                                            <td>1002-0010313835</td>
+                                            <td>1002-0009712379</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ficohsa Nicaragua</td>
+                                            <td>1560176-23-001</td>
+                                            <td>1560176-21-002</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <p>(Si el pago es realizado mediante una de las cuentas aquí detalladas,
+                                        favor indicar al cajero que detalle en el concepto el Número de
+                                        Póliza)</p>
+                                </div>
+                            </div>
+
+                            <br><label><b>Forma de Pago</b></label><br>
+                            <p>Elige entre las formas de pago disponibles.</p>
                             <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="chasis">No. chasis</label>
-                                        <input type="text" class="form-control" name="chasis"
-                                               id="chasis-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
+                                <div class="col-md-6">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="pago-anual"
+                                               value="anual" name="forma-pago" checked>
+                                        <label class="custom-control-label" for="pago-anual">
+                                            <b>1 PAGO</b> ANUAL TOTAL DE<br>
+                                            <h2 id="h2-anual" class="dollar"></h2>
+                                        </label><br>
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="motor">No. motor</label>
-                                        <input type="text" class="form-control" name="motor"
-                                               id="motor-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="placa">No. placa</label>
-                                        <input type="text" class="form-control" name="placa"
-                                               id="placa-renovacion" readonly>
-                                        <div class="help-block with-errors"></div>
+                                <div class="col-md-6">
+                                    <div class="custom-control custom-radio custom-control-inline"
+                                         id="custom-radio-pago-mensual">
+                                        <input type="radio" class="custom-control-input" id="pago-mensual"
+                                               name="forma-pago" value="mensual">
+                                        <label class="custom-control-label" for="pago-mensual">
+                                            <b id="cuotas-text">En cuotas quincenales</b><br>
+
+
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <select name="cantidad_cuotas" id="cantidad_cuotas"
+                                                            class="form-control" style="min-width: 65px"
+                                                            disabled>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="hidden" id="valor-cuota" name="valor_cuota"
+                                                           value="0.0">
+                                                    <h2 id="h2-mensual" class="dollar"
+                                                        style="display: flex"></h2>
+                                                </div>
+
+                                            </div>
+
+                                        </label><br>
+
                                     </div>
                                 </div>
                             </div>
+
                         </fieldset>
                         <input class="btn btn-primary float-right" type="submit" value="Enviar">
                     </div>
