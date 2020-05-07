@@ -801,7 +801,9 @@ def referenciados(request):
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def misseguros(request):
-    return render(request, 'cotizador/misseguros.html')
+    config = get_config(request.user)
+    return render(request, 'cotizador/misseguros.html',
+                  {'config': config})
 
 
 @login_required(login_url="/cotizador/login/")
