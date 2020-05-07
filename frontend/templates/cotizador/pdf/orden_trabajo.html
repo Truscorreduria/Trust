@@ -198,7 +198,7 @@
         </thead>
         <tbody>
 
-        {% ifequal poliza.tipo_cobertura 'amplia' %}
+        {% ifequal poliza.tipo_cobertura 2 %}
             {% if poliza.monto_exceso %}
                 {% ifnotequal poliza.monto_exceso '0.00' %}
                     <tr>

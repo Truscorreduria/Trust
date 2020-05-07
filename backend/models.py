@@ -1423,12 +1423,31 @@ class Archivo(base):
     archivo = models.FileField(upload_to="archivos", null=True, blank=True)
     type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     key = models.PositiveIntegerField(null=True)
+    tag = models.CharField(max_length=35, null=True, blank=True)
 
     @classmethod
     def media_files(cls, obj):
         return Archivo.objects.filter(type=ContentType.objects.get(
             app_label='backend', model=obj._meta.model_name
         ), key=obj.id).order_by('-updated')
+
+    @classmethod
+    def add_file(cls, obj, file, name, fecha_caducidad=None, request=None, tag=None):
+        archivo = Archivo()
+        archivo.type = ContentType.objects.get_for_model(obj.__class__)
+        archivo.key = obj.id
+        archivo.file = file
+        archivo.name = name
+        if request:
+            archivo.created_user = request.user
+            archivo.updated_user = request.user
+        if fecha_caducidad:
+            archivo.tiene_caducidad = True
+            archivo.fecha_caducidad = fecha_caducidad
+        if tag:
+            archivo.tag = tag
+        archivo.save()
+        return archivo
 
     def __str__(self):
         return self.nombre
@@ -1637,7 +1656,3 @@ class FieldMap(base):
     destiny_field = models.ForeignKey(CampoAdicional, on_delete=models.SET_NULL,
                                       null=True, blank=True)
     origin_field = models.CharField(max_length=200)
-
-
-
-

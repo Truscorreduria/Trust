@@ -2,20 +2,19 @@
 
 
 function option_municipio(municipio) {
-            return (`
+    return (`
             <option value="${municipio.id}">${municipio.name}</option>
             `)
-        }
+}
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
-
 async function go_top() {
-  await sleep(300);
-  $("#modal-auto").scrollTop(0);
+    await sleep(300);
+    $("#modal-auto").scrollTop(0);
 }
 
 
@@ -44,23 +43,23 @@ $(document).ready(function () {
         })
     });
     {% if user.profile.departamento and user.profile.municipio %}
-        tag_departamento.val({{ user.profile.departamento.id }});
+    tag_departamento.val("{{ user.profile.departamento.id }}");
 
-        $.ajax("{% url 'ajax_getCollection' %}", {
-            method: "POST",
-            data: {
-                app_label: 'utils',
-                model: 'municipio',
-                filters: "{'departamento_id': " + tag_departamento.val() + "}"
-            },
-            success: function (response) {
-                tag_municipio.empty();
-                $.each(response, function (i, municipio) {
-                    tag_municipio.append($(option_municipio(municipio)));
-                });
-                tag_municipio.val({{ user.profile.municipio.id }})
-            }
-        });
+    $.ajax("{% url 'ajax_getCollection' %}", {
+        method: "POST",
+        data: {
+            app_label: 'utils',
+            model: 'municipio',
+            filters: "{'departamento_id': " + tag_departamento.val() + "}"
+        },
+        success: function (response) {
+            tag_municipio.empty();
+            $.each(response, function (i, municipio) {
+                tag_municipio.append($(option_municipio(municipio)));
+            });
+            tag_municipio.val("{{ user.profile.municipio.id }}")
+        }
+    });
 
     {% endif %}
 
@@ -147,7 +146,7 @@ $(document).ready(function () {
 
     const calcular_cuota = function () {
         let tipo_cobertura = $('#tipo-cobertura').val();
-        if (tipo_cobertura === 'amplia') {
+        if (tipo_cobertura === '2') {
             var total = parseFloat($('#total-pagar').val());
         } else {
             var total = parseFloat($('#total-pagar-basica').val());
@@ -241,20 +240,20 @@ $(document).ready(function () {
                         text: "El número de chasis de tu vehículo ya se encuentra registrado. Hemos corregido la cotización en base al valor nuevo de tu vehículo. Tu nuevo total a pagar es " + intcommas((response.total).toFixed(2)),
                         imageUrl: "{% static 'cotizador/images/trusty/cool.png' %}"
                     })
-                };
+                }
+                ;
                 const $cantidadCuotas = $('#cantidad_cuotas').empty();
-                if($('#tipo-cobertura').val() === 'basica'){
-                    for(let i=2; i<=12; i++){
-                            $cantidadCuotas.append(optionCuota(i));
-                        }
-                }else{
-                    for(let i=2; i<=24; i++){
-                            $cantidadCuotas.append(optionCuota(i));
-                        }
+                if ($('#tipo-cobertura').val() === '1') {
+                    for (let i = 2; i <= 12; i++) {
+                        $cantidadCuotas.append(optionCuota(i));
+                    }
+                } else {
+                    for (let i = 2; i <= 24; i++) {
+                        $cantidadCuotas.append(optionCuota(i));
+                    }
                 }
 
                 calcular_cuota();
-
 
 
             }
@@ -324,23 +323,23 @@ $(document).ready(function () {
     $('.nav-link').on('click', function () {
         var valor = $(this).attr('href').replace('#', '');
         $('#tipo-cobertura').val(valor);
-        if (valor == 'basica') {
+        if (valor == '1') {
             $('#card-cesion-derecho').css('display', 'none');
             $('#custom-radio-deposito-referenciado').css('display', 'none');
             $('#custom-radio-pago-mensual').css('display', 'block');
             $('#col-dannos').css('display', 'none');
             const $cantidadCuotas = $('#cantidad_cuotas').empty();
-            for(let i=2; i<=12; i++){
+            for (let i = 2; i <= 12; i++) {
                 $cantidadCuotas.append(optionCuota(i));
             }
 
-        } else if (valor == 'amplia') {
+        } else if (valor == '2') {
             $('#card-cesion-derecho').css('display', 'block');
             $('#custom-radio-deposito-referenciado').css('display', 'block');
             $('#custom-radio-pago-mensual').css('display', 'block');
             $('#col-dannos').css('display', 'block');
             const $cantidadCuotas = $('#cantidad_cuotas').empty();
-            for(let i=2; i<=24; i++){
+            for (let i = 2; i <= 24; i++) {
                 $cantidadCuotas.append(optionCuota(i));
             }
 
@@ -499,34 +498,40 @@ $(document).ready(function () {
                 data.append('monto_exceso', $('#monto-exceso').val());
                 data.append('costo_exceso', $('#costo-exceso').val());
 
-                if (card_number.hasClass('visa')){
+                if (card_number.hasClass('visa')) {
                     data.append('card_type', 'visa');
                 }
-                if (card_number.hasClass('amex')){
+                if (card_number.hasClass('amex')) {
                     data.append('card_type', 'amex');
                 }
-                if (card_number.hasClass('discover')){
+                if (card_number.hasClass('discover')) {
                     data.append('card_type', 'discover');
                 }
-                if (card_number.hasClass('jcb')){
+                if (card_number.hasClass('jcb')) {
                     data.append('card_type', 'jcb');
                 }
-                if (card_number.hasClass('mastercard')){
+                if (card_number.hasClass('mastercard')) {
                     data.append('card_type', 'mastercard');
                 }
 
 
                 const file_cedula = document.getElementById('file-cedula');
-                if (file_cedula.files[0]) {
-                    data.append('file_cedula', file_cedula.files[0])
+                if (file_cedula.files) {
+                    $.each(file_cedula.files, function (i, file) {
+                        data.append('file_cedula', file)
+                    });
                 }
                 const file_circulacion = document.getElementById('file-circulacion');
-                if (file_circulacion.files[0]) {
-                    data.append('file_circulacion', file_circulacion.files[0])
+                if (file_circulacion.files) {
+                    $.each(file_circulacion.files, function (i, file) {
+                        data.append('file_circulacion', file)
+                    });
                 }
                 const file_carta = document.getElementById('file-carta');
-                if (file_carta.files[0]) {
-                    data.append('file_carta', file_carta.files[0])
+                if (file_carta.files) {
+                    $.each(file_cedula.files, function (i, file) {
+                        data.append('file_carta', file)
+                    })
                 }
 
                 $.ajax("{% url 'cotizador:guardar_poliza' %}", {
@@ -596,7 +601,7 @@ $(document).ready(function () {
             enableAnchorOnDoneStep: true
         },
         showStepURLhash: false,
-                keyNavigation: false,
+        keyNavigation: false,
     })
         .on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
             const elmForm = $("#form-step-" + stepNumber);
@@ -652,7 +657,7 @@ $(document).ready(function () {
                 ocultar_notas();
             }
 
-            if(stepNumber === 2){
+            if (stepNumber === 2) {
                 $("#modal-auto").scrollTop(0);
             }
 
@@ -750,7 +755,7 @@ $(document).ready(function () {
         debug: false // optional - default false
     });
 
-    $('input[name="medio-pago"]').on('change', function (){
+    $('input[name="medio-pago"]').on('change', function () {
         $('.zona-debito').css('display', 'none');
         $('.zona-deduccion').css('display', 'none');
         $('.zona-deposito').css('display', 'none');
@@ -782,9 +787,9 @@ $(document).ready(function () {
     });
 
     $('input[name="forma-pago"]').on('change', function () {
-        if($(this).val() === "mensual"){
+        if ($(this).val() === "mensual") {
             $('#cantidad_cuotas').removeAttr('disabled');
-        }else{
+        } else {
             $('#cantidad_cuotas').attr('disabled', 'disabled');
         }
     });
@@ -872,7 +877,7 @@ $(document).ready(function () {
                     $.each(response, function (i, municipio) {
                         tag_municipio.append($(option_municipio(municipio)));
                     });
-                    $('#municipio').attr('readonly', 'readonly').val({{ user.profile.municipio.id }})
+                    $('#municipio').attr('readonly', 'readonly').val("{{ user.profile.municipio.id }}")
                 }
             });
             $('#domicilio').attr('readonly', 'readonly').html('{{ user.profile.domicilio }}');

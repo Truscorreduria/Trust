@@ -489,7 +489,7 @@
         </thead>
         <tbody>
 
-        {% ifequal poliza.tipo_cobertura 2 %}
+        {% ifequal poliza.tipo_cobertura '2' %}
             <tr>
                 <td style="background-color: rgba(243,243,245,0.84)" colspan="4">Responsabilidad Civil Del Conductor Por
                     Muerte O Lesiones A Pasajeros
@@ -512,7 +512,7 @@
                 <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)">20% Mínimo U$
                     100.00
                 </td>
-                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">{{ poliza.prima }}</td>
+                <td style="text-align: right; background-color: rgba(243,243,245,0.84)">{{ poliza.subtotal|intcomma }}</td>
             </tr>
             <tr>
                 <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Rotura De Vidrios</td>
@@ -577,13 +577,12 @@
     <table style="margin-top: 20px">
         <tr>
             <td>
-                {% ifequal poliza.tipo_cobertura 2 %}
+                {% ifequal poliza.tipo_cobertura '2' %}
                     <p>Gastos de Salvamento (US$150.00).</p>
                 {% endifequal %}
             </td>
             <td>
                 <table>
-
                     <tr>
                         <td>Prima</td>
                         <td></td>

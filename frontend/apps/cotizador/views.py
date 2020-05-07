@@ -386,7 +386,7 @@ def guardar_poliza(request):
     poliza.contratante = config.empresa
 
     poliza.tipo_cobertura = request.POST.get('tipo_cobertura')
-    if poliza.tipo_cobertura == 'basica':
+    if poliza.tipo_cobertura == '1':
         poliza.suma_asegurada = 0.00
         poliza.valor_nuevo = 0.00
         poliza.subtotal = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
@@ -394,7 +394,7 @@ def guardar_poliza(request):
         poliza.iva = 0.00
         poliza.total = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
         poliza.monto_cuota = round((config.soa_automovil * (1 - config.soa_descuento)), 2)
-    if poliza.tipo_cobertura == 'amplia':
+    if poliza.tipo_cobertura == '2':
         poliza.suma_asegurada = float(request.POST.get('valor_depreciado'))
         poliza.valor_nuevo = float(request.POST.get('valor_nuevo'))
         poliza.subtotal = float(request.POST.get('prima_total'))
