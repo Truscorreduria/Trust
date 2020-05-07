@@ -1041,7 +1041,7 @@ class Polizas(Datatables):
     form = PolizaForm
     list_template = 'trustseguros/lte/poliza-datatables.html'
     form_template = 'trustseguros/lte/poliza-modal.html'
-    list_display = ('no_poliza', 'aseguradora.name', 'ramo.name', ('Fecha de inicio', 'fecha_emision'),
+    list_display = ('no_poliza', 'cliente.name', 'aseguradora.name', 'ramo.name', ('Fecha de inicio', 'fecha_emision'),
                     ('Fecha fin', 'fecha_vence'), ('Dias para vencimiento', 'dias_vigencia'), 'grupo.name',
                     'suma_asegurada', ('Prima neta', 'total'), 'tipo_poliza.label', 'estado_poliza.label')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')

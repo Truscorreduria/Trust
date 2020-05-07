@@ -79,10 +79,12 @@ class ReferenciaAdmin(ImportExportModelAdmin):
 @admin.register(Poliza)
 class PolizaAdmin(ImportExportModelAdmin):
     date_hierarchy = 'fecha_emision'
-    list_display = (
-    'print_code', 'fecha_emision', 'no_poliza', 'marca', 'modelo', 'anno', 'user', 'chasis', 'valor_nuevo',
-    'suma_asegurada', 'subtotal', 'emision', 'iva', 'total', 'medio_pago', 'fecha_vence')
-    search_fields = ('code', 'nombres', 'apellidos', 'marca', 'modelo', 'chasis', 'no_poliza')
+    list_display = ('cliente',
+                    'no_poliza', 'fecha_emision', 'marca', 'modelo', 'anno', 'user', 'chasis',
+                    'valor_nuevo',
+                    'suma_asegurada', 'subtotal', 'emision', 'iva', 'total', 'medio_pago', 'fecha_vence')
+    search_fields = ('code', 'cliente__primer_nombre', 'cliente__segundo_nombre', 'cliente__apellido_materno',
+                     'cliente__apellido_paterno', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
     #
@@ -247,6 +249,14 @@ class MonedaAdmin(admin.ModelAdmin):
 @admin.register(Pago)
 class MonedaAdmin(admin.ModelAdmin):
     pass
+    pass
 
 
-
+@admin.register(Archivo)
+class ArchivoAdmin(admin.ModelAdmin):
+    list_display = (
+        'nombre',
+        'archivo',
+        'type',
+        'key',
+        'tag',)

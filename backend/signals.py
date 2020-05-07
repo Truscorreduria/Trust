@@ -56,22 +56,25 @@ def notificar_nueva_poliza(sender, **kwargs):
 
     files = []
     try:
+        for n, f in enumerate(request.FILES.getlist('file_cedula')):
+            file = Archivo.add_file(sender, f, 'cedula', tag='cedula', request=request)
+            files.append(("attachment", ("Cedula %s" % n + get_extension(file.archivo), file.archivo.read())))
         sender.file_cedula = request.FILES['file_cedula']
-        files.append(("attachment", ("Cedula" + get_extension(sender.file_cedula),
-                                     sender.file_cedula.read())))
+
     except:
         pass
     try:
+        for n, f in enumerate(request.FILES.getlist('file_circulacion')):
+            file = Archivo.add_file(sender, f, 'circulacion', tag='circulacion', request=request)
+            files.append(("attachment", ("Circulacion %s" % n + get_extension(file.archivo), file.archivo.read())))
         sender.file_circulacion = request.FILES['file_circulacion']
-        files.append(
-            ("attachment", ("Circulacion" + get_extension(sender.file_circulacion),
-                            sender.file_circulacion.read())))
     except:
         pass
     try:
         sender.file_carta = request.FILES['file_carta']
         files.append(("attachment", ("Compra Venta" + get_extension(sender.file_carta),
                                      sender.file_carta.read())))
+        Archivo.add_file(sender, sender.file_carta, 'compraventa', tag='compraventa', request=request)
     except:
         pass
 

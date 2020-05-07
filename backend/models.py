@@ -425,6 +425,11 @@ class Cliente(Persona, Empresa, Direccion):
     def tarifas(self):
         return CotizadorConfig.objects.get(empresa=self.empresa)
 
+    def to_json(self):
+        o = super().to_json()
+        o['name'] = self.get_full_name()
+        return o
+
 
 class ManagerProspecto(models.Manager):
     def get_queryset(self):
@@ -1436,8 +1441,8 @@ class Archivo(base):
         archivo = Archivo()
         archivo.type = ContentType.objects.get_for_model(obj.__class__)
         archivo.key = obj.id
-        archivo.file = file
-        archivo.name = name
+        archivo.archivo = file
+        archivo.nombre = name
         if request:
             archivo.created_user = request.user
             archivo.updated_user = request.user
