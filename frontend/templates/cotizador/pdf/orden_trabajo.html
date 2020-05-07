@@ -198,7 +198,7 @@
         </thead>
         <tbody>
 
-        {% ifequal poliza.tipo_cobertura 2 %}
+        {% ifequal poliza.tipo_cobertura '2' %}
             {% if poliza.monto_exceso %}
                 {% ifnotequal poliza.monto_exceso '0.00' %}
                     <tr>
@@ -307,7 +307,7 @@
             <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$2,500.00</td>
             <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
             <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
-                {% ifequal poliza.tipo_cobertura 'basica' %}
+                {% ifequal poliza.tipo_cobertura '1' %}
                     ${{ poliza.soa_descontado|floatformat:2|intcomma }}
                 {% else %}
                     ${{ config.soa_automovil|floatformat:2|intcomma }}
@@ -338,7 +338,7 @@
     <table style="margin-top: 20px">
         <tr>
             <td>
-                {% ifequal poliza.tipo_cobertura 'amplia' %}
+                {% ifequal poliza.tipo_cobertura '2' %}
                     <table>
                         <tr>
                             <td>Gastos de salvamento (US$ 150.00)</td>
