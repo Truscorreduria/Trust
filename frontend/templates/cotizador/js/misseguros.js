@@ -336,5 +336,7 @@ $(document).ready(function () {
             }
         });
 
+        $('#cantidad_cuotas').on('change', calcular_cuota);
+
     }
 );
