@@ -240,9 +240,8 @@ $(document).ready(function () {
                         text: "El número de chasis de tu vehículo ya se encuentra registrado. Hemos corregido la cotización en base al valor nuevo de tu vehículo. Tu nuevo total a pagar es " + intcommas((response.total).toFixed(2)),
                         imageUrl: "{% static 'cotizador/images/trusty/cool.png' %}"
                     })
-                }
-                ;
-                const $cantidadCuotas = $('#cantidad_cuotas').empty();
+                };
+                /*const $cantidadCuotas = $('#cantidad_cuotas').empty();
                 if ($('#tipo-cobertura').val() === '1') {
                     for (let i = 2; i <= 12; i++) {
                         $cantidadCuotas.append(optionCuota(i));
@@ -251,7 +250,7 @@ $(document).ready(function () {
                     for (let i = 2; i <= 24; i++) {
                         $cantidadCuotas.append(optionCuota(i));
                     }
-                }
+                }*/
 
                 calcular_cuota();
 
@@ -761,6 +760,7 @@ $(document).ready(function () {
         $('.zona-deposito').css('display', 'none');
         $('#group-autoriza-banpro').css('display', 'none');
         $('#custom-radio-pago-mensual').css('display', 'none');
+        const $cantidadCuotas = $('#cantidad_cuotas').empty();
         var valor = $(this).val();
         if (valor == 'debito_automatico') {
             $('.zona-debito').css('display', 'flex');
@@ -769,6 +769,10 @@ $(document).ready(function () {
             $('#name').attr('required', 'required');
             $('#number').attr('required', 'required');
             $('#expiry').attr('required', 'required');
+            $('#cuotas-text').html("En cuotas mensuales");
+            for (let i = 2; i <= 12; i++) {
+                $cantidadCuotas.append(optionCuota(i));
+            }
         } else if (valor == 'deduccion_nomina') {
             $('.zona-deduccion').css('display', 'flex');
             $('#custom-radio-pago-mensual').css('display', 'block');
@@ -777,6 +781,10 @@ $(document).ready(function () {
             $('#name').removeAttr('required');
             $('#number').removeAttr('required');
             $('#expiry').removeAttr('required');
+            $('#cuotas-text').html("En cuotas quincenales")
+            for (let i = 2; i <= 24; i++) {
+                $cantidadCuotas.append(optionCuota(i));
+            }
         } else if (valor == 'deposito_referenciado') {
             $('.zona-deposito').css('display', 'flex');
             $('#autoriza-banpro').removeAttr('required');
@@ -784,6 +792,7 @@ $(document).ready(function () {
             $('#number').removeAttr('required');
             $('#expiry').removeAttr('required');
         }
+        calcular_cuota()
     });
 
     $('input[name="forma-pago"]').on('change', function () {

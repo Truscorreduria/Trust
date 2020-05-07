@@ -1230,7 +1230,8 @@ class ConfiguracionCotizador(Datatables):
                 ('sub_ramo_automovil', 'tasa_automovil',),
                 ('soa_automovil', 'porcentaje_deducible',),
                 ('porcentaje_deducible_extencion_territorial', 'minimo_deducible',),
-                ('soa_descuento', 'email_automovil',),
+                ('soa_descuento', ),
+                ('email_cobranza', 'email_automovil'),
                 ('fieldmap_automovil',),
             )
         },

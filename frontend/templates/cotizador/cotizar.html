@@ -1145,50 +1145,6 @@
 
                                 <div id="form-step-3" role="form" data-toggle="validator">
 
-                                    <br><label><b>Forma de Pago</b></label><br>
-                                    <p>Elige entre las formas de pago disponibles.</p>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="custom-control custom-radio custom-control-inline">
-                                                <input type="radio" class="custom-control-input" id="pago-anual"
-                                                       value="anual" name="forma-pago" checked>
-                                                <label class="custom-control-label" for="pago-anual">
-                                                    <b>1 PAGO</b> ANUAL TOTAL DE<br>
-                                                    <h2 id="h2-anual" class="dollar"></h2>
-                                                </label><br>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="custom-control custom-radio custom-control-inline"
-                                                 id="custom-radio-pago-mensual">
-                                                <input type="radio" class="custom-control-input" id="pago-mensual"
-                                                       name="forma-pago" value="mensual">
-                                                <label class="custom-control-label" for="pago-mensual">
-                                                    <b>En cuotas quincenales</b><br>
-
-
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <select name="cantidad_cuotas" id="cantidad_cuotas"
-                                                                    class="form-control" style="min-width: 65px"
-                                                                    disabled>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <input type="hidden" id="valor-cuota" name="valor_cuota"
-                                                                   value="0.0">
-                                                            <h2 id="h2-mensual" class="dollar"
-                                                                style="display: flex"></h2>
-                                                        </div>
-
-                                                    </div>
-
-                                                </label><br>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <br><label><b>Medio de pago</b></label><br>
                                     <p>Usa el medio de pago de tu preferencia.</p>
                                     <div class="row">
@@ -1347,6 +1303,52 @@
                                                 Póliza)</p>
                                         </div>
                                     </div>
+
+                                    <br><label><b>Forma de Pago</b></label><br>
+                                    <p>Elige entre las formas de pago disponibles.</p>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" class="custom-control-input" id="pago-anual"
+                                                       value="anual" name="forma-pago" checked>
+                                                <label class="custom-control-label" for="pago-anual">
+                                                    <b>1 PAGO</b> ANUAL TOTAL DE<br>
+                                                    <h2 id="h2-anual" class="dollar"></h2>
+                                                </label><br>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-radio custom-control-inline"
+                                                 id="custom-radio-pago-mensual">
+                                                <input type="radio" class="custom-control-input" id="pago-mensual"
+                                                       name="forma-pago" value="mensual">
+                                                <label class="custom-control-label" for="pago-mensual">
+                                                    <b id="cuotas-text">En cuotas quincenales</b><br>
+
+
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <select name="cantidad_cuotas" id="cantidad_cuotas"
+                                                                    class="form-control" style="min-width: 65px"
+                                                                    disabled>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <input type="hidden" id="valor-cuota" name="valor_cuota"
+                                                                   value="0.0">
+                                                            <h2 id="h2-mensual" class="dollar"
+                                                                style="display: flex"></h2>
+                                                        </div>
+
+                                                    </div>
+
+                                                </label><br>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
 
                                     <div class="row">
                                         <div class="col-md-12">

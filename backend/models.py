@@ -1514,6 +1514,8 @@ class CotizadorConfig(base):
                                       verbose_name='Descuento del Seguro Obligatorio de Vehículo. Por favor usar notación decimal (0.05 = 5%)')
     email_automovil = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,',
                                        verbose_name='Lista de correos de automovil usados para las notificaciones del sistema')
+    email_cobranza = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
+                                       verbose_name='Lista de correos de automovil usados para las notificaciones de cobranza')
 
     # endregion
 

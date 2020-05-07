@@ -35,7 +35,7 @@ $(document).ready(function () {
             $('#row-sepelio').css('display', 'none');
             $('#row-accidente').css('display', 'none');
 
-            if ($('#movimiento').val() === '2') {
+            if ($('#movimiento').val() === '2' && $('#referente').val() === 'auto') {
                 $('#row-motivo').css('display', 'flex')
             } else{
                 $('#row-motivo').css('display', 'none')
