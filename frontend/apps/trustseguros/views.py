@@ -1268,6 +1268,14 @@ class ConfiguracionCotizador(Datatables):
                 ('poliza_vida', 'suma_vida',),
             )
         },
+        {
+            'id': 'email',
+            'name': 'Correo de renovación',
+            'fields': (
+                ('email_renovacion',),
+                ('email_texto',),
+            )
+        },
     )
 
     def save_related(self, instance, data):

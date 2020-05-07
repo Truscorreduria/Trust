@@ -1515,7 +1515,7 @@ class CotizadorConfig(base):
     email_automovil = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,',
                                        verbose_name='Lista de correos de automovil usados para las notificaciones del sistema')
     email_cobranza = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
-                                       verbose_name='Lista de correos de automovil usados para las notificaciones de cobranza')
+                                      verbose_name='Lista de correos de automovil usados para las notificaciones de cobranza')
 
     # endregion
 
@@ -1572,6 +1572,11 @@ class CotizadorConfig(base):
                                  verbose_name='Unicamente para la impresión del documento')
 
     # endregion
+
+    email_renovacion = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
+                                        verbose_name='Lista de correos adicionales que se incluiran en la notificación del cliente')
+    email_texto = models.TextField(max_length=10000, default='', null=True, blank=True,
+                                   verbose_name='Contenido del correo')
 
     class Meta:
         verbose_name = "configuración"
