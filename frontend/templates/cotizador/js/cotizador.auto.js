@@ -765,6 +765,7 @@ $(document).ready(function () {
         if (valor == 'debito_automatico') {
             $('.zona-debito').css('display', 'flex');
             $('#custom-radio-pago-mensual').css('display', 'block');
+            $('#custom-radio-pago-anual').css('display', 'none');
             $('#autoriza-banpro').removeAttr('required');
             $('#name').attr('required', 'required');
             $('#number').attr('required', 'required');
@@ -776,6 +777,7 @@ $(document).ready(function () {
         } else if (valor == 'deduccion_nomina') {
             $('.zona-deduccion').css('display', 'flex');
             $('#custom-radio-pago-mensual').css('display', 'block');
+            $('#custom-radio-pago-anual').css('display', 'block');
             $('#group-autoriza-banpro').css('display', 'block');
             $('#autoriza-banpro').attr('required', 'required');
             $('#name').removeAttr('required');
@@ -791,6 +793,8 @@ $(document).ready(function () {
             $('#name').removeAttr('required');
             $('#number').removeAttr('required');
             $('#expiry').removeAttr('required');
+            $('#custom-radio-pago-anual').css('display', 'block');
+            $('#custom-radio-pago-mensual').css('display', 'none');
         }
         calcular_cuota()
     });
