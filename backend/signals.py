@@ -127,7 +127,7 @@ def notificar_debito_automatico(sender, **kwargs):
         files.append(("attachment", ("Orden de Trabajo.pdf", ot)))
         files.append(("attachment", ("Esquela.pdf", esquela)))
 
-        send_email('Nueva solicitud con débito automático', config.email_debito_automatico,
+        send_email('Nueva solicitud con débito automático', config.email_cobranza,
                    html=html, files=files)
 
 
