@@ -490,6 +490,50 @@
         <tbody>
 
         {% ifequal poliza.tipo_cobertura '2' %}
+
+            {% if poliza.monto_exceso %}
+                {% ifnotequal poliza.monto_exceso '0.00' %}
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Muerte
+                            O
+                            Lesiones
+                            Causadas A Una Persona
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.costo_exceso|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Muerte
+                            O
+                            Lesiones
+                            Causadas A Dos O Mas Personas
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso_ampliado|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="background-color: rgba(243,243,245,0.84)">Exceso en R. Civil Obligatoria
+                            X
+                            Daños
+                            Materiales
+                            Causados A Terceras Personas
+                        </td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">
+                            ${{ poliza.monto_exceso|floatformat:2|intcomma }}</td>
+                        <td colspan="2" style="text-align: center; background-color: rgba(243,243,245,0.84)"></td>
+                        <td style="text-align: right; background-color: rgba(243,243,245,0.84)">$0.00</td>
+                    </tr>
+                {% endifnotequal %}
+            {% endif %}
             <tr>
                 <td style="background-color: rgba(243,243,245,0.84)" colspan="4">Responsabilidad Civil Del Conductor Por
                     Muerte O Lesiones A Pasajeros
@@ -657,7 +701,7 @@
                 <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
             </tr>
             <tr>
-                <td style="font-size: 0.5em">Firma digital: </td>
+                <td style="font-size: 0.5em">Firma digital:</td>
                 <td style="padding: 3px 25%; text-align: center;
                 border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
                 </td>
@@ -853,7 +897,7 @@
                     <td><img src="{% static 'cotizador/images/sello.assa.png' %}" alt=""></td>
                 </tr>
                 <tr>
-                    <td style="font-size: 0.5em">Firma digital: </td>
+                    <td style="font-size: 0.5em">Firma digital:</td>
                     <td style="padding: 3px 25%; text-align: center;
                 border-top: 0.1px solid black; font-weight: 900; font-size: 1.2em">Firma Autorizada
                     </td>
