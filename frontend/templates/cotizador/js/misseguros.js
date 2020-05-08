@@ -144,7 +144,7 @@ $(document).ready(function () {
             $.ajax("{% url 'ajax_getObject' %}", {
                 method: "POST",
                 data: {
-                    app_label: 'cotizador', model: 'poliza',
+                    app_label: 'backend', model: 'poliza',
                     id: $(_this).data('poliza')
                 },
                 success: function (response) {
@@ -192,7 +192,7 @@ $(document).ready(function () {
             $.ajax("{% url 'ajax_getObject' %}", {
                 method: "POST",
                 data: {
-                    app_label: 'cotizador', model: model,
+                    app_label: 'backend', model: model,
                     id: $(_this).data('beneficiario')
                 },
                 success: function (response) {
