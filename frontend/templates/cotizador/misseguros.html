@@ -79,11 +79,11 @@
                                 {% endif %}
                                 {% ifequal o.tipo_cobertura 'amplia' %}
                                     <a class="btn btn-trust btn-trust-sm condiciones"
-                                       href="{% url 'cotizador:download' %}?file_name=CONDICIONES_DANOS_PROPIOS.pdf"
+                                       href="{% url 'cotizador:download' %}?file_name=FULLCOVER.pdf"
                                     >Condiciones genereales</a>
                                 {% else %}
                                     <a class="btn btn-trust btn-trust-sm condiciones"
-                                       href="{% url 'cotizador:download' %}?file_name=CONDICIONES_SOA.pdf"
+                                       href="{% url 'cotizador:download' %}?file_name=SOA.pdf"
                                     >Condiciones genereales</a>
                                 {% endifequal %}
 
