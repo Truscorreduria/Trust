@@ -852,7 +852,7 @@ def solicitar_baja_auto(request):
     poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
     t = Tramite()
     t.user = request.user
-    t.cliente = cliente
+    t.cliente = poliza.cliente
     t.descripcion = "Solicitud de baja de seguro de vehículo"
     t.nombres = poliza.nombres
     t.apellidos = poliza.apellidos
