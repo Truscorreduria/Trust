@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'frontend',
     'accounts',
     'seguros',
+    'reports',
     'api',
 
     'adminlte',
@@ -67,6 +68,21 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
 
+]
+
+EXTRA_MENUS = [
+    {'menu': 'Reportería', 'link': '#',
+     'options': [
+         {'link': '/reportes/reporte_cotizacion_auto', 'label': 'Cotizaciónes de Automovil',
+          'perm':'cotizador.report_cotizaciones'},
+         {'link': '/reportes/reporte_debito_automatico', 'label': 'Débito Automático',
+          'perm': 'cotizador.report_debito_automatico'},
+         {'link': '/reportes/reporte_deduccion_nomina', 'label': 'Deducción de Nómina',
+          'perm': 'cotizador.reporte_deduccion_nomina'},
+         {'link': '/reportes/reporte_polizas_vencer', 'label': 'Póliza a vencer',
+          'perm': 'cotizador.reporte_polizas_vencer'},
+     ]
+     },
 ]
 
 REST_FRAMEWORK = {  # added
@@ -228,6 +244,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'grappelli_extras.context_processors.applist',
+                'grappelli_extras.context_processors.extra_menus',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'backend.context_processors.Entidades',
