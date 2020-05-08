@@ -360,6 +360,7 @@ def guardar_poliza(request):
         c.telefono = request.POST.get('telefono')
         c.celular = request.POST.get('celular')
         c.domicilio = request.POST.get('domicilio')
+        c.save()
         poliza.cliente = c
     poliza.anno = request.POST.get('anno')
     poliza.marca = request.POST.get('marca')
