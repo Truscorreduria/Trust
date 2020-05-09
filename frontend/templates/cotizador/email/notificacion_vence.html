@@ -23,11 +23,12 @@
 {{ body }}
 
 Datos de la póliza:
+Fecha vence: {{ poliza.fecha_vence }}
 Número: {{ poliza.no_poliza }}
 Marca: {{ poliza.marca }}
 Modelo: {{ poliza.modelo }}
-Aseguradora: {{ poliza.aseguradora.nombre }}
-Prima: {{ poliza.prima }}
+Aseguradora: {{ poliza.aseguradora.name }}
+Prima: {{ poliza.total|intcomma }}
 
 </body>
 </html>

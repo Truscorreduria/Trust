@@ -30,7 +30,9 @@ class Command(BaseCommand):
                     'body': config.email_texto, 'poliza': p
                 })
                 send_email('Tu póliza está cerca de vencer', config.email_trust, html=html)
-                print('correo enviado')
+                print('%s correo enviado ' % p.no_poliza)
+            else:
+                print('%s el cliente esta mal configurado' % p.no_poliza)
 
 
 
