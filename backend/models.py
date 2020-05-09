@@ -1029,6 +1029,12 @@ class Poliza(Base):
     def pagos(self):
         return Pago.objects.filter(poliza=self)
 
+    def get_config(self):
+        if self.cliente.empresa:
+            return CotizadorConfig.objects.get(empresa=self.cliente.empresa)
+        else:
+            print('el cliente esta mal configurado')
+
     class Meta:
         ordering = ['fecha_vence', ]
 

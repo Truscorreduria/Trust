@@ -3,12 +3,13 @@
       xmlns:v="urn:schemas-microsoft-com:vml"
       xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-    <!--[if gte mso 9]><xml>
-   <o:OfficeDocumentSettings>
-    <o:AllowPNG/>
-    <o:PixelsPerInch>96</o:PixelsPerInch>
-   </o:OfficeDocumentSettings>
-  </xml><![endif]-->
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml><![endif]-->
     <!-- fix outlook zooming on 120 DPI windows devices -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- So that mobile will display zoomed in -->
@@ -19,6 +20,14 @@
 </head>
 {% load humanize %}
 <body style="margin:0; padding:0;" bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+{{ body }}
+
+Datos de la póliza:
+Número: {{ poliza.no_poliza }}
+Marca: {{ poliza.marca }}
+Modelo: {{ poliza.modelo }}
+Aseguradora: {{ poliza.aseguradora.nombre }}
+Prima: {{ poliza.prima }}
 
 </body>
 </html>

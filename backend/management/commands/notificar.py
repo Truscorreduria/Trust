@@ -4,6 +4,7 @@ from utils.utils import send_email
 from django.template.loader import render_to_string
 from openpyxl import Workbook
 from io import BytesIO
+from constance import config
 
 
 class Command(BaseCommand):
