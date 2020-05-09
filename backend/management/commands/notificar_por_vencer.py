@@ -17,11 +17,6 @@ class Command(BaseCommand):
                                    fecha_vence__day=day.day,
                                    aseguradora__isnull=False,
                                    estado_poliza=EstadoPoliza.ACTIVA)
-        ps = Poliza.objects.filter(fecha_emision__isnull=False,
-                                   cliente__isnull=False,
-                                   fecha_vence__lte=day,
-                                   aseguradora__isnull=False,
-                                   estado_poliza=EstadoPoliza.ACTIVA)
         print(ps.count())
         for p in ps:
             config = p.get_config()

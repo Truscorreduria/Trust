@@ -1054,12 +1054,28 @@ def autorenovar_polizas():
 
 # renovacion
 
+def solicitud_renovacion_auto(request):
+    poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
+    s, _ = SolicitudRenovacion.objects.get_or_create(poliza=poliza)
+    s.medio_pago = request.POST.get('medio-pago')
+    s.forma_pago = request.POST.get('forma-pago')
+    s.cuotas = request.POST.get('cantidad_cuotas')
+    s.monto_cuota = request.POST.get('valor_cuota')
+    s.save()
+    return JsonResponse({})
+
+    # 'medio-pago': ['deduccion_nomina'], 'forma-pago': ['mensual'], 'cantidad_cuotas': ['6'], 'valor_cuota': ['46.17']
+
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
                                cliente__isnull=False, fecha_vence__lte=datetime.now(), aseguradora__isnull=False,
                                estado_poliza=EstadoPoliza.ACTIVA)
     for p in ps:
+        try:
+            s = SolicitudRenovacion.objects.get(poliza=p)
+        except:
+            s = None
         nueva = RenovarPoliza.send(p, fecha_renovacion=p.fecha_vence)[0][1]
         nueva.user = p.user
         nueva.suma_asegurada = p.aseguradora.depreciar(p.valor_nuevo, p.anno)
@@ -1102,4 +1118,11 @@ def iniciar_proc():
         nueva.save()
         print(nueva)
         p.estado_poliza = EstadoPoliza.RENOVADA
+
+        if s:
+            nueva.forma_pago = s.forma_pago
+            nueva.f_pago = s.f_pago
+            nueva.medio_pago = s.medio_pago
+            nueva.m_pago = s.m_pago
+            nueva.cuotas = s.cuotas
         p.save()

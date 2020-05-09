@@ -1674,3 +1674,37 @@ class FieldMap(base):
     destiny_field = models.ForeignKey(CampoAdicional, on_delete=models.SET_NULL,
                                       null=True, blank=True)
     origin_field = models.CharField(max_length=200)
+
+
+class SolicitudRenovacion(base):
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.CASCADE)
+    forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
+    f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
+                                         verbose_name="forma de pago")
+    medio_pago = models.CharField(max_length=25, null=True, blank=True,
+                                  choices=(
+                                      ('debito_automatico', 'Débito automático'),
+                                      ('deduccion_nomina', 'Deducción de nómina'),
+                                      ('deposito_referenciado', 'Depósito referenciado'),
+                                  ))
+    m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
+                                         verbose_name="medio de pago", )
+    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
+    moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
+    banco_emisor = models.CharField(max_length=25, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.forma_pago == 'anual':
+            self.f_pago = FormaPago.CONTADO
+        if self.forma_pago == 'mensual':
+            self.f_pago = FormaPago.CREDITO
+        if self.medio_pago == 'debito_automatico':
+            self.m_pago = MedioPago.TARJETA_CREDITO
+        if self.medio_pago == 'deduccion_nomina':
+            self.m_pago = MedioPago.NOMINA
+        if self.medio_pago == 'deposito_referenciado':
+            self.m_pago = MedioPago.DEPOSITO
+        super().save(*args, **kwargs)

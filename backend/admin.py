@@ -260,3 +260,13 @@ class ArchivoAdmin(admin.ModelAdmin):
         'type',
         'key',
         'tag',)
+
+
+@admin.register(SolicitudRenovacion)
+class SolicitudRenovacionAdmin(admin.ModelAdmin):
+    date_hierarchy = 'created'
+    list_display = (
+        'poliza',
+        'forma_pago',
+        'medio_pago',
+        'monto_cuota')

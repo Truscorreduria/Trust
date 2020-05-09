@@ -14,6 +14,7 @@ urlpatterns = [
     path('misseguros', misseguros, name='misseguros'),
     path('solicitar_baja', solicitar_baja, name='solicitar_baja'),
     path('solicitar_baja_auto', solicitar_baja_auto, name='solicitar_baja_auto'),
+    path('solicitud_renovacion_auto', solicitud_renovacion_auto, name='solicitud_renovacion_auto'),
     path('contactanos/', contactanos, name='contactanos'),
     path('get_data/', get_data, name='get_data'),
     path('get_modelos/', get_modelos, name='get_modelos'),

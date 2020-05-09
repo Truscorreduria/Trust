@@ -338,5 +338,20 @@ $(document).ready(function () {
 
         $('#cantidad_cuotas').on('change', calcular_cuota);
 
+        $('#form-renovacion').on('submit', function (e) {
+            e.preventDefault();
+            let data = new FormData(this);
+            $.ajax("{% url 'cotizador:solicitud_renovacion_auto' %}", {
+                method: "POST",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    $('#modal-renovacion').modal('hide');
+                }
+            })
+
+        })
+
     }
 );
