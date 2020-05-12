@@ -508,7 +508,7 @@ def guardar_sepelio(request):
     files.append(("attachment", (o.nomeclatura() + ".pdf", ot)))
 
     send_email('Orden de Trabajo # %s' % o.nomeclatura(),
-               config.email_automovil + config.email_sepelio, html=html, files=files)
+               config.email_sepelio, html=html, files=files)
     return JsonResponse({'beneficiarios': data, 'orden': o.to_json()}, encoder=Codec, safe=False)
 
 
