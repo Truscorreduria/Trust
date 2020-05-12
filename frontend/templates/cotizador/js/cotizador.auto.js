@@ -661,6 +661,7 @@ $(document).ready(function () {
             }
 
             if (stepNumber === 3) {
+                $("#modal-auto").scrollTop(0);
                 $('.btn-finish').removeClass('disabled');
             } else {
                 $('.btn-finish').addClass('disabled');
