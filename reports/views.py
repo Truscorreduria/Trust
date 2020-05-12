@@ -261,7 +261,7 @@ def reporte_polizas_vencer(request):
                     p.cedula,
                     p.no_poliza,
                     p.celular,
-                    p.user.email,
+                    p.cliente.email_personal,
                 ])
             return render_to_excell(data, 'Deducción de nómina.xlsx')
     if not form:
