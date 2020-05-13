@@ -417,6 +417,7 @@ def guardar_poliza(request):
         poliza.banco_emisor = request.POST.get('banco_emisor')
         poliza.card_number = request.POST.get('card_number')
         poliza.card_expiry = request.POST.get('card_expiry')
+        poliza.card_type = request.POST.get('card_type')
 
     cesion = False
     if request.POST.get('cesion_derecho') == 'si':
