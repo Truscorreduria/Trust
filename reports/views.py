@@ -189,7 +189,6 @@ def reporte_deduccion_nomina(request):
 
             data = [
                 ['# EMPL.',
-                 'fecha de solicitud',
                  'Nombre',
                  'Monto',
                  'Moneda',
