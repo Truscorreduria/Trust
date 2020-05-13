@@ -188,34 +188,32 @@ def reporte_deduccion_nomina(request):
         if form.is_valid():
 
             data = [
-                ['numero de orden',
+                ['# EMPL.',
                  'fecha de solicitud',
-                 'nombre del asegurado',
-                 'cédula',
-                 'número de cuotas',
-                 'monto de cuotas',
-                 'numero de poliza',
-                 'telefono',
-                 'email'],
+                 'Nombre',
+                 'Monto',
+                 'Moneda',
+                 'Cant. Cuotas a deducir',
+                 '# POLIZA',
+                 'VIGENCIA'],
             ]
 
             inicial = datetime.strptime(request.POST.get('fecha_inicio'), '%d/%m/%Y').strftime('%Y-%m-%d')
             final = (datetime.strptime(request.POST.get('fecha_fin'), '%d/%m/%Y')
                      + timedelta(days=1)).strftime('%Y-%m-%d')
 
-            polizas = Poliza.objects.filter(created__gte=inicial, created__lte=final, medio_pago='deduccion_nomina')
+            polizas = Poliza.objects.filter(created__gte=inicial, created__lte=final, medio_pago='deduccion_nomina',
+                                            cliente__isnull=False)
 
             for p in polizas:
                 data.append([
-                    p.print_code(),
-                    p.created.strftime('%d/%m/%Y'),
-                    p.nombre_asegurado(),
-                    p.cedula,
+                    p.cliente.codigo_empleado,
+                    p.cliente.full_name,
+                    p.total,
+                    p.moneda_cobro,
                     p.cuotas,
-                    p.monto_cuota,
                     p.no_poliza,
-                    p.celular,
-                    p.user.email,
+                    p.fecha_vence
                 ])
             return render_to_excell(data, 'Deducción de nómina.xlsx')
     if not form:
