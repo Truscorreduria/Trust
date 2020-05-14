@@ -297,3 +297,49 @@ def reporte_polizas_vencer(request):
 
     data.update(csrf(request))
     return render_to_response('reports/form.html', data)
+
+
+def reporte_renovaciones(request):
+    message = ""
+    form = None
+
+    if 'apply' in request.POST:
+        form = ReporteFecha(request.POST)
+        if form.is_valid():
+
+            data = [
+                ['Fecha',
+                 '# Empl.',
+                 '# Poliza',
+                 'Forma de pago',
+                 'Medio de pago',
+                 'Monto',
+                 'Cuotas'],
+            ]
+
+            inicial = datetime.strptime(request.POST.get('fecha_inicio'), '%d/%m/%Y').strftime('%Y-%m-%d')
+            final = (datetime.strptime(request.POST.get('fecha_fin'), '%d/%m/%Y')
+                     + timedelta(days=1)).strftime('%Y-%m-%d')
+
+            ss = SolicitudRenovacion.objects.filter(fecha_vence__gte=inicial, fecha_vence__lte=final)
+
+            for p in ss:
+                data.append([
+                    p.created.strftime('%d/%m/%Y'),
+                    p.poliza.cliente.codigo_empleado,
+                    p.poliza.no_poliza,
+                    p.get_f_pago_display(),
+                    p.get_m_pago_display(),
+                    p.monto_cuota,
+                    p.cuotas,
+                ])
+            return render_to_excell(data, 'Solicitudes de renovacion.xlsx')
+    if not form:
+        referer = request.META.get('HTTP_REFERER')
+        form = ReporteFecha(initial={'_referer': referer})
+
+    data = {'form': form,
+            'header_tittle': 'Por Favor seleccione las fechas en las cual desea generar el reporte'}
+
+    data.update(csrf(request))
+    return render_to_response('reports/form.html', data)

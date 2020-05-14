@@ -829,6 +829,7 @@ class Poliza(Base):
             ("report_cotizaciones", "report_cotizaciones"),
             ("reporte_deduccion_nomina", "reporte_deduccion_nomina"),
             ("reporte_polizas_vencer", "reporte_polizas_vencer"),
+            ("reporte_renovaciones", "reporte_renovaciones"),
         )
 
     def get_config(self):

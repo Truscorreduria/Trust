@@ -81,6 +81,8 @@ EXTRA_MENUS = [
           'perm': 'cotizador.reporte_deduccion_nomina'},
          {'link': '/reportes/reporte_polizas_vencer', 'label': 'Póliza a vencer',
           'perm': 'cotizador.reporte_polizas_vencer'},
+         {'link': '/reportes/reporte_renovaciones', 'label': 'Solicitud de renovación',
+          'perm': 'cotizador.reporte_renovaciones'},
      ]
      },
 ]
