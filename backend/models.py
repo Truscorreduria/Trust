@@ -616,7 +616,7 @@ class MedioPago:
     @classmethod
     def choices(cls):
         return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depositos'), \
-               (cls.TARJETA_CREDITO, 'Tarjeta de Credito')
+               (cls.TARJETA_CREDITO, 'Tarjeta de Credito'), (cls.NOMINA, 'Deducción por Nómina'),
 
 
 class EstadoPoliza:
