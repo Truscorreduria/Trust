@@ -197,6 +197,8 @@ $(document).ready(function () {
             data.append('fecha_nacimiento', o.fecha_nacimiento);
             data.append('tipo_identificacion', o.tipo_identificacion);
             data.append('documento_adjunto_' + i, o.documento_adjunto);
+            data.append('cuotas', $('#cantidad_cuotas_sepelio').val());
+            data.append('monto_cuota', $('#valor-cuota-sepelio').val());
         });
 
         return data;

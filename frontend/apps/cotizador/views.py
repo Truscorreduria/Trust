@@ -553,6 +553,8 @@ def guardar_accidente(request):
         ben.prima = request.POST.getlist('prima')[i]
         ben.carnet = request.POST.getlist('carnet')[i]
         ben.emision = request.POST.getlist('emision')[i]
+        ben.cuotas = request.POST.getlist('cuotas')[i]
+        ben.monto_cuota = request.POST.getlist('monto_cuota')[i]
         ben.costo = request.POST.getlist('costo')[i]
         try:
             ben.file_cedula = request.FILES['documento_adjunto_%s' % i]

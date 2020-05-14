@@ -1312,6 +1312,8 @@ class benAbstract(Base):
     apellido_materno = models.CharField(max_length=125, null=True, blank=True)
     costo = models.FloatField(null=True, blank=True)
     suma_asegurada = models.FloatField(null=True, blank=True)
+    cuotas = models.PositiveIntegerField(default=1)
+    monto_cuota = models.FloatField(default=0.0)
     tipo_identificacion = models.CharField(max_length=25, null=True, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     tramite = models.ForeignKey(Tramite, null=True, blank=True, on_delete=models.SET_NULL)

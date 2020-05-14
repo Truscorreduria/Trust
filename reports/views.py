@@ -188,13 +188,15 @@ def reporte_deduccion_nomina(request):
         if form.is_valid():
 
             data = [
-                ['# EMPL.',
-                 'Nombre',
-                 'Monto',
-                 'Moneda',
-                 'Cant. Cuotas a deducir',
-                 '# POLIZA',
-                 'VIGENCIA'],
+                [
+                    'Fecha',
+                    '# EMPL.',
+                    'Nombre',
+                    'Monto',
+                    'Moneda',
+                    'Cant. Cuotas a deducir',
+                    '# POLIZA',
+                    'VIGENCIA'],
             ]
 
             inicial = datetime.strptime(request.POST.get('fecha_inicio'), '%d/%m/%Y').strftime('%Y-%m-%d')
@@ -214,6 +216,30 @@ def reporte_deduccion_nomina(request):
                     p.cuotas,
                     p.no_poliza,
                     p.fecha_vence
+                ])
+            accidente = benAccidente.objects.filter(created__gte=inicial, created__lte=final)
+            for a in accidente:
+                data.append([
+                    a.created,
+                    a.empleado.codigo_empleado,
+                    a.empleado.full_name,
+                    a.monto_cuota,
+                    'DOLARES',
+                    a.cuotas,
+                    a.no_poliza,
+                    a.fecha_vence
+                ])
+            sepelio = benSepelio.objects.filter(created__gte=inicial, created__lte=final)
+            for s in sepelio:
+                data.append([
+                    s.created,
+                    s.empleado.codigo_empleado,
+                    s.empleado.full_name,
+                    s.monto_cuota,
+                    'DOLARES',
+                    s.cuotas,
+                    s.no_poliza,
+                    s.fecha_vence
                 ])
             return render_to_excell(data, 'Deducción de nómina.xlsx')
     if not form:
