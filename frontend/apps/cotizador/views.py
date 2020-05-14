@@ -471,6 +471,8 @@ def guardar_sepelio(request):
         ben.apellido_paterno = request.POST.getlist('apellido_paterno')[i]
         ben.apellido_materno = request.POST.getlist('apellido_materno')[i]
         ben.tipo_identificacion = request.POST.getlist('tipo_identificacion')[i]
+        ben.cuotas = request.POST.getlist('cuotas')[i]
+        ben.monto_cuota = request.POST.getlist('monto_cuota')[i]
         try:
             ben.file_cedula = request.FILES['documento_adjunto_%s' % i]
         except:

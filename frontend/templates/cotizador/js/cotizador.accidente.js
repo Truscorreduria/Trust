@@ -202,6 +202,8 @@ $(document).ready(function () {
             data.append('emision', o.emision);
             data.append('costo', o.costo);
             data.append('suma_asegurada', o.suma);
+            data.append('cuotas', $('#cantidad_cuotas_accidente').val());
+            data.append('monto_cuota', $('#valor-cuota-accidente').val());
             data.append('documento_adjunto_' + i, o.documento_adjunto);
         });
 
