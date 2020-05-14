@@ -227,7 +227,7 @@ def reporte_deduccion_nomina(request):
                     'DOLARES',
                     a.cuotas,
                     a.no_poliza,
-                    a.fecha_vence
+                    a.fecha_vencimiento()
                 ])
             sepelio = benSepelio.objects.filter(created__gte=inicial, created__lte=final)
             for s in sepelio:
@@ -239,7 +239,7 @@ def reporte_deduccion_nomina(request):
                     'DOLARES',
                     s.cuotas,
                     s.no_poliza,
-                    s.fecha_vence
+                    s.fecha_vencimiento()
                 ])
             return render_to_excell(data, 'Deducción de nómina.xlsx')
     if not form:
