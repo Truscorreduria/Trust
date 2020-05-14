@@ -310,6 +310,7 @@ def reporte_renovaciones(request):
             data = [
                 ['Fecha',
                  '# Empl.',
+                 'Nombre',
                  '# Poliza',
                  'Forma de pago',
                  'Medio de pago',
@@ -327,6 +328,7 @@ def reporte_renovaciones(request):
                 data.append([
                     p.created.strftime('%d/%m/%Y'),
                     p.poliza.cliente.codigo_empleado,
+                    p.poliza.cliente.full_name(),
                     p.poliza.no_poliza,
                     p.get_f_pago_display(),
                     p.get_m_pago_display(),
