@@ -321,7 +321,7 @@ def reporte_renovaciones(request):
             final = (datetime.strptime(request.POST.get('fecha_fin'), '%d/%m/%Y')
                      + timedelta(days=1)).strftime('%Y-%m-%d')
 
-            ss = SolicitudRenovacion.objects.filter(fecha_vence__gte=inicial, fecha_vence__lte=final)
+            ss = SolicitudRenovacion.objects.filter(created__gte=inicial, created__lte=final)
 
             for p in ss:
                 data.append([
