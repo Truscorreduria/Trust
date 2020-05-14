@@ -127,7 +127,6 @@ def generar_cotizacion(request):
     # return render(request, 'pdf/cotizacion.html', context)
 
 
-
 @csrf_exempt
 def guardar_cotizacion(request):
     data = {

@@ -206,9 +206,10 @@ def reporte_deduccion_nomina(request):
 
             for p in polizas:
                 data.append([
+                    p.fecha_emision,
                     p.cliente.codigo_empleado,
                     p.cliente.full_name,
-                    p.total,
+                    p.monto_cuota,
                     p.moneda_cobro,
                     p.cuotas,
                     p.no_poliza,
