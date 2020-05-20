@@ -282,10 +282,10 @@ def reporte_polizas_vencer(request):
                 data.append([
                     p.print_code(),
                     p.created.strftime('%d/%m/%Y'),
-                    p.nombre_asegurado(),
-                    p.cedula,
+                    p.cliente.full_name(),
+                    p.cliente.cedula,
                     p.no_poliza,
-                    p.celular,
+                    p.cliente.celular,
                     p.cliente.email_personal,
                 ])
             return render_to_excell(data, 'Reporte de pólizas a vencer.xlsx')
