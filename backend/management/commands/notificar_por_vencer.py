@@ -24,7 +24,7 @@ class Command(BaseCommand):
                 html = render_to_string('cotizador/email/notificacion_vence.html', {
                     'body': config.email_texto, 'poliza': p
                 })
-                send_email('Tu póliza está cerca de vencer', config.email_trust, html=html)
+                send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza, config.email_trust, html=html)
                 print('%s correo enviado ' % p.no_poliza)
             else:
                 print('%s el cliente esta mal configurado' % p.no_poliza)
