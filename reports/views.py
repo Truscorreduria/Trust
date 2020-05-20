@@ -217,7 +217,7 @@ def reporte_deduccion_nomina(request):
                     p.no_poliza,
                     p.fecha_vence
                 ])
-            accidente = benAccidente.objects.filter(created__gte=inicial, created__lte=final)
+            accidente = benAccidente.objects.filter(created__gte=inicial, created__lte=final).distinct('orden')
             for a in accidente:
                 data.append([
                     a.created,
