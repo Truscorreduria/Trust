@@ -229,7 +229,7 @@ def reporte_deduccion_nomina(request):
                     a.numero_poliza,
                     a.fecha_vencimiento()
                 ])
-            sepelio = benSepelio.objects.filter(created__gte=inicial, created__lte=final)
+            sepelio = benSepelio.objects.filter(created__gte=inicial, created__lte=final).distinct('orden')
             for s in sepelio:
                 data.append([
                     s.created,
