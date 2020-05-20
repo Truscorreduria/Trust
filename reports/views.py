@@ -282,7 +282,7 @@ def reporte_polizas_vencer(request):
                 data.append([
                     p.print_code(),
                     p.created.strftime('%d/%m/%Y'),
-                    p.cliente.full_name(),
+                    p.cliente.full_name,
                     p.cliente.cedula,
                     p.no_poliza,
                     p.cliente.celular,
