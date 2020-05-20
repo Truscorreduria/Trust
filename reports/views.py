@@ -275,7 +275,8 @@ def reporte_polizas_vencer(request):
             final = (datetime.strptime(request.POST.get('fecha_fin'), '%d/%m/%Y')
                      + timedelta(days=1)).strftime('%Y-%m-%d')
 
-            polizas = Poliza.objects.filter(fecha_vence__gte=inicial, fecha_vence__lte=final)
+            polizas = Poliza.objects.filter(fecha_vence__gte=inicial, fecha_vence__lte=final,
+                                            procedencia=ProcedenciaPoliza.COTIZADOR)
 
             for p in polizas:
                 data.append([
@@ -287,7 +288,7 @@ def reporte_polizas_vencer(request):
                     p.celular,
                     p.cliente.email_personal,
                 ])
-            return render_to_excell(data, 'Deducción de nómina.xlsx')
+            return render_to_excell(data, 'Reporte de pólizas a vencer.xlsx')
     if not form:
         referer = request.META.get('HTTP_REFERER')
         form = ReporteFecha(initial={'_referer': referer})

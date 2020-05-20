@@ -7,6 +7,7 @@ function option_municipio(municipio) {
             `)
 }
 
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
