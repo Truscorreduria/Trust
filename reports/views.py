@@ -192,7 +192,7 @@ def reporte_deduccion_nomina(request):
                     'Fecha',
                     '# EMPL.',
                     'Nombre',
-                    'Monto',
+                    'Monto cuota',
                     'Moneda',
                     'Cant. Cuotas a deducir',
                     '# POLIZA',
