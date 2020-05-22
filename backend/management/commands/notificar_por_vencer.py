@@ -9,15 +9,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         day = datetime.now() + timedelta(days=30)
-        print(day)
-        ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
-                                   cliente__isnull=False,
-                                   fecha_vence__year=day.year,
-                                   fecha_vence__month=day.month,
-                                   fecha_vence__day=day.day,
-                                   aseguradora__isnull=False,
-                                   estado_poliza=EstadoPoliza.ACTIVA)
-        print(ps.count())
+        # ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
+        #                            cliente__isnull=False,
+        #                            fecha_vence__year=day.year,
+        #                            fecha_vence__month=day.month,
+        #                            fecha_vence__day=day.day,
+        #                            aseguradora__isnull=False,
+        #                            estado_poliza=EstadoPoliza.ACTIVA)
+        ps = Poliza.objects.filter(fecha_vence__lte=day)
         for p in ps:
             config = p.get_config()
             if config:
@@ -25,9 +24,6 @@ class Command(BaseCommand):
                     'body': config.email_texto, 'poliza': p
                 })
                 send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza, config.email_trust, html=html)
-                print('%s correo enviado ' % p.no_poliza)
-            else:
-                print('%s el cliente esta mal configurado' % p.no_poliza)
 
 
 
