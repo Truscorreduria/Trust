@@ -179,7 +179,7 @@ class beneficiarios_accidente(admin.TabularInline):
 
 
 @admin.register(Cliente)
-class PerfilEmpleadoAdmin(ImageCroppingMixin, admin.ModelAdmin):
+class PerfilEmpleadoAdmin(ImageCroppingMixin, ImportExportModelAdmin):
     search_fields = ('nombre', 'user__first_name', 'user__last_name', 'cedula', 'celular', 'user__email')
     list_display = ('user', 'cedula', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
     list_filter = ('entidad',)
