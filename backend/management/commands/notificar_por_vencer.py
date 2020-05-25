@@ -18,6 +18,7 @@ class Command(BaseCommand):
         #                            estado_poliza=EstadoPoliza.ACTIVA)
         ps = Poliza.objects.filter(fecha_vence__lte=day)
         for p in ps:
+            print(p.no_poliza)
             config = p.get_config()
             if config:
                 html = render_to_string('cotizador/email/notificacion_vence.html', {

@@ -262,13 +262,13 @@ def reporte_polizas_vencer(request):
         if form.is_valid():
 
             data = [
-                ['numero de orden',
-                 'fecha de solicitud',
-                 'nombre del asegurado',
-                 'cédula',
-                 'numero de poliza',
-                 'telefono',
-                 'email'],
+                ['Número de póliza',
+                 'Fecha de vencimiento',
+                 'Nombre del asegurado',
+                 'Nombre del empleado',
+                 'Cédula asegurado',
+                 'Teléfono',
+                 'Email'],
             ]
 
             inicial = datetime.strptime(request.POST.get('fecha_inicio'), '%d/%m/%Y').strftime('%Y-%m-%d')
@@ -280,11 +280,11 @@ def reporte_polizas_vencer(request):
 
             for p in polizas:
                 data.append([
-                    p.print_code(),
-                    p.created.strftime('%d/%m/%Y'),
-                    p.cliente.full_name,
-                    p.cliente.cedula,
                     p.no_poliza,
+                    p.fecha_vencimiento().strftime('%d/%m/%Y'),
+                    p.cliente.full_name,
+                    get_profile(p.user).full_name,
+                    p.cliente.cedula,
                     p.cliente.celular,
                     p.cliente.email_personal,
                 ])

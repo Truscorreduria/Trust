@@ -3,8 +3,6 @@ from .models import *
 from django.template.loader import render_to_string
 from utils.utils import send_email
 from django.contrib import messages
-from openpyxl import Workbook
-from io import BytesIO
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from easy_pdf.rendering import render_to_pdf
@@ -138,7 +136,7 @@ nueva_poliza.connect(notificar_debito_automatico)
 
 
 def notificar_poliza_lista(sender, **kwargs):
-    request = kwargs.get('request', None)
+    request = kwargs.get('request')
     html = render_to_string('cotizador/email/notificacion_poliza.html',
                             context={'object': sender, 'opts': sender._meta},
                             request=request)
@@ -199,3 +197,16 @@ def add_comment(sender, **kwargs):
 
 AddComment = Signal()
 AddComment.connect(add_comment)
+
+
+def notificar_tramite(sender, **kwargs):
+    request = kwargs.get('request')
+    config = get_config(sender.user)
+    html = render_to_string('cotizador/email/notificaion_tramite.html',
+                            context={'object': sender, 'opts': sender._meta},
+                            request=request)
+    send_email('Solicitud de baja %s', config.email_trust, html=html)
+
+
+NotificarTramite = Signal()
+NotificarTramite.connect(notificar_tramite)

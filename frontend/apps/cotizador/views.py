@@ -841,12 +841,7 @@ def solicitar_baja(request):
     dependiente.ticket = t
     dependiente.save()
 
-    # fixme crear una plantilla nueva para notificar este evento por email
-    # html = render_to_string('cotizador/email/nuevo_objeto.html',
-    #                         context={'object': t, 'opts': t._meta},
-    #                         request=request)
-    #
-    # send_email('Nuevo ticket de solicitud de baja.', config.EMAIL_TRUST, html=html)
+    NotificarTramite.send(t)
 
     return JsonResponse({'ticket': t.to_json()}, encoder=Codec)
 
@@ -871,6 +866,8 @@ def solicitar_baja_auto(request):
     t.save()
     poliza.ticket = t
     poliza.save()
+
+    NotificarTramite.send(t)
     return JsonResponse({'ticket': t.to_json()}, encoder=Codec)
 
 
@@ -894,12 +891,7 @@ def contactanos(request):
         except:
             pass
         t.save()
-        # fixme crear nueva plantilla para notificar por correo este evento
-        # html = render_to_string('cotizador/email/nuevo_objeto.html',
-        #                         context={'object': t, 'opts': t._meta},
-        #                         request=request)
-        #
-        # send_email('Nueva ticket de servicio', config.EMAIL_TRUST, html=html)
+        NotificarTramite.send(t)
     response = render(request, 'cotizador/contactanos.html')
     response.set_cookie('user', request.user.id)
     return response
