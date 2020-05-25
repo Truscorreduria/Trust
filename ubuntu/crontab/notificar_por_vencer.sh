@@ -1,5 +1,5 @@
 #!/bin/bash
-SHELL=/bin/sh PATH=/bin:/sbin:/usr/bin:/usr/sbin
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/www/webtrust/ubuntu/crontab
 set -e
 cd ../..
 . venv/bin/activate
