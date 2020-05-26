@@ -39,6 +39,7 @@ urlpatterns = [
     path('costo_accidente/', costo_accidente, name='costo_accidente'),
     path('guardar_accidente/', guardar_accidente, name='guardar_accidente'),
     path('restablecer_password/', restablecer_password, name='restablecer_password'),
+    path('invitacion/', invitacion, name='invitacion'),
 
     path('download/', download, name="download"),
     path('login/', LoginView.as_view(template_name='cotizador/login.html'), name="login"),

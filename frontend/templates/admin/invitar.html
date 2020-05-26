@@ -48,12 +48,20 @@
 
         }).call(this);
 
+        $(document).ready(function () {
+            $('.btn-delete').on('click', function () {
+                $(this).parents('tr').remove()
+            })
+        })
+
     </script>
 {% endblock %}
 
 
 {% block content %}
-    <form action="." method="post" enctype="multipart/form-data">
+    <form action="{% url 'cotizador:invitacion' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
         <div class="grp-module">
             <div class="grp-row">
                 <input type="submit" name="enviar" value="Confirmar envio">
@@ -61,8 +69,8 @@
         </div>
 
         <div class="grp-module">
-            <textarea id="id_html" data-autosave="editor-content"
-                      autofocus><p>Estimado Sr.(a) [[ cliente.full_name ]]</p>
+            <textarea id="id_html" name="email_content" data-autosave="editor-content"
+                      autofocus><p>Estimado Sr.(a) [[ cliente.name ]]</p>
                     <p>&nbsp;</p>
                     <p>En&nbsp;<i><span
                             style="color: black;">Trust correduria de seguros</span></i>&nbsp;tenemos el privilegio de haber sido nombrados por el área de RRHH de Banpro como los intermediarios que le asesorarán en la administración de los programas de seguros de colaboradores.</p>
@@ -138,6 +146,7 @@
                 </div>
             </div>
         </div>
+
         <div class="grp-module">
             <div class="grp-row">
                 <label for="">Destinatarios</label>
@@ -149,14 +158,21 @@
                         <th>Cliente</th>
                         <th>Usuario</th>
                         <th>Email</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody style="background-color: white">
                     {% for row in queryset %}
                         <tr>
-                            <td>{{ row.full_name }}</td>
+                            <td>
+                                <input type="hidden" name="customer" value="{{ row.id }}">
+                                {{ row.full_name }}
+                            </td>
                             <td>{{ row.user.username }}</td>
                             <td>{{ row.user.email }}</td>
+                            <td>
+                                <input type="button" value="borrar" class="btn-delete">
+                            </td>
                         </tr>
                     {% endfor %}
 
@@ -164,5 +180,6 @@
                 </table>
             </div>
         </div>
+
     </form>
 {% endblock %}

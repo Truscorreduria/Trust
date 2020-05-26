@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, render_to_response, Http404
+from django.shortcuts import render, HttpResponse, render_to_response, Http404, HttpResponseRedirect
 from django.http.response import JsonResponse
 from backend.signals import *
 from backend.utils import calcular_tabla_pagos
@@ -22,6 +22,8 @@ import string
 from openpyxl import Workbook
 from openpyxl.styles import Border, Side, Alignment, Font
 from django.contrib.auth import update_session_auth_hash
+import secrets
+from django.template import Template, Context
 
 
 # region views cotizador
@@ -1123,3 +1125,24 @@ def iniciar_proc():
             nueva.m_pago = s.m_pago
             nueva.cuotas = s.cuotas
         p.save()
+
+
+def invitacion(request):
+    if request.method == 'POST':
+        customers = request.POST.getlist('customer')
+        content = request.POST.get('email_content').replace('[[', '{{').replace(']]', '}}')
+        template = Template(content)
+        for i in range(0, len(customers)):
+            secret = secrets.token_urlsafe(15)
+            c = Cliente.objects.get(id=customers[i])
+            c.user.set_password(secret)
+            c.cambiar_pass = True
+            context = {}
+            context['cliente'] = c.to_json()
+            context['user'] = {'id': c.user.id, 'username': c.user.username}
+            context['password'] = secret
+            context = Context(context)
+            html = template.render(context)
+            send_email('Bienvenido a Trust Correduría de Seguros',
+                       "cesarabel@deltacopiers.com,sistemas@trustcorreduria.com,egurdian@trustcorreduria.com,gcarrion@trustcorrduria.com", html)
+    return HttpResponseRedirect('/admin/backend/cliente/')

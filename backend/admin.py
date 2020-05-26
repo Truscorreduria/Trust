@@ -187,9 +187,12 @@ class PerfilEmpleadoAdmin(ImageCroppingMixin, ImportExportModelAdmin):
 
     inlines = [beneficiarios_sepelio, beneficiarios_accidente]
     change_form_template = 'cotizador/admin/perfil.html'
-    #change_list_template = 'admin/clientes.html'
+
+    # change_list_template = 'admin/clientes.html'
 
     def invitar(self, request, queryset):
+        if 'enviar' in request.POST:
+            print(request.POST)
         return render(request, 'admin/invitar.html',
                       {'form': InvitationForm, 'queryset': queryset})
 
