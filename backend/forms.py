@@ -74,3 +74,7 @@ class MarcaRecargoForm(forms.ModelForm):
     class Meta:
         model = Marca
         fields = '__all__'
+
+
+class InvitationForm(forms.Form):
+    html = forms.CharField(widget=forms.Textarea)

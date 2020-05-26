@@ -1,0 +1,168 @@
+{% extends 'admin/change_form.html' %}
+
+{% load static %}
+
+{% block breadcrumbs %}
+
+{% endblock %}
+
+
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'simditor/site/assets/styles/simditor.css' %}">
+    <style type="text/css">
+        #preview {
+            background-color: white;
+        }
+    </style>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/uploader.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/hotkeys.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/dompurify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/simditor.js' %}"></script>
+    <script type="text/javascript">
+
+        (function () {
+            $(function () {
+                var $preview, editor, mobileToolbar, toolbar;
+                Simditor.locale = 'en-US';
+                toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
+                editor = new Simditor({
+                    textarea: $('#id_html'),
+                    placeholder: 'Ingresar cuerpo del correo...',
+                    toolbar: toolbar,
+                    pasteImage: true,
+                    defaultImage: 'assets/images/image.png',
+                    upload: location.search === '?upload' ? {
+                        url: '/upload'
+                    } : false
+                });
+                $preview = $('#preview');
+                if ($preview.length > 0) {
+                    return editor.on('valuechanged', function (e) {
+                        return $preview.html(editor.getValue());
+                    });
+                }
+            });
+
+        }).call(this);
+
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    <form action="." method="post" enctype="multipart/form-data">
+        <div class="grp-module">
+            <div class="grp-row">
+                <input type="submit" name="enviar" value="Confirmar envio">
+            </div>
+        </div>
+
+        <div class="grp-module">
+            <textarea id="id_html" data-autosave="editor-content"
+                      autofocus><p>Estimado Sr.(a) [[ cliente.full_name ]]</p>
+                    <p>&nbsp;</p>
+                    <p>En&nbsp;<i><span
+                            style="color: black;">Trust correduria de seguros</span></i>&nbsp;tenemos el privilegio de haber sido nombrados por el área de RRHH de Banpro como los intermediarios que le asesorarán en la administración de los programas de seguros de colaboradores.</p>
+                    <p>
+                        <br>Para brindar el servicio que usted merece, hemos diseñado una herramienta tecnológica e innovadora desde donde podrá cotizar y administrar&nbsp; los distintos programas de seguros que se han creado exclusivamente para los colaboradores de Banpro.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Para acceder&nbsp;a la plataforma, por favor haga click en el siguiente enlace:</p>
+                    <p><a
+                            href="https://www.trustcorreduria.com/cotizador/login/" target="_blank">
+                        <span
+                                style="color: blue;">https://www.trustcorreduria.com/cotizador/login/</span>
+                    </a>
+                        &nbsp;
+                        <u>&nbsp;</u>
+                        &nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;usuario: [[user.username]]&nbsp;</p>
+                    <p>&nbsp;contraseña: [[password]]&nbsp;&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Como método de seguridad en tu primer ingreso al portal, será necesario que actualice la contraseña.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Le recomendamos abrir el enlace desde cualquier navegador excepto explorer.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Atentamente</p>
+                    <p>&nbsp;</p>
+                    <p>
+                        <span
+                                style="color: rgb(136, 136, 136);"><b><span style="color: rgb(47, 85, 151);">Maria Gabriela Carrion&nbsp;</span></b></span>
+                        <font color="#2f5597">Cuentas Corporativas<br></font>
+                    </p>
+                    <p><b><span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span></b><br>Teléfono: + 505.2251-0108, Ext.1013</p>
+                    <p>Celular: + 505.5871-3408<br>Email:&nbsp;<a
+                            href="mailto:gcarrion@trustcorreduria.com"
+                            target="_blank">gcarrion@trustcorreduria.com</a></p>
+                    <p><a href="http://www.trustcorreduria.com/"
+                          target="_blank">www.trustcorreduria.com</a></p></textarea>
+        </div>
+
+        <div class="grp-module">
+            <div id="preview">
+                <div id="preview"><p>Estimado Sr.(a) [[cliente.full_name]]</p>
+                    <p>&nbsp;</p>
+                    <p>En&nbsp;<i><span style="color: black;">Trust correduria de seguros</span></i>&nbsp;tenemos el
+                        privilegio de haber sido nombrados por el área de RRHH de Banpro como los intermediarios que
+                        le asesorarán en la administración de los programas de seguros de colaboradores.</p>
+                    <p><br>Para brindar el servicio que usted merece, hemos diseñado una herramienta tecnológica e
+                        innovadora desde donde podrá cotizar y administrar&nbsp; los distintos programas de seguros
+                        que se han creado exclusivamente para los colaboradores de Banpro.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Para acceder&nbsp;a la plataforma, por favor haga click en el siguiente enlace:</p>
+                    <p><a href="https://www.trustcorreduria.com/cotizador/login/" target="_blank"><span
+                            style="color: blue;">https://www.trustcorreduria.com/cotizador/login/</span></a>&nbsp;<u>&nbsp;</u>&nbsp;
+                    </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;usuario: [[user.username]]&nbsp;</p>
+                    <p>&nbsp;contraseña: [[password]]&nbsp;&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Como método de seguridad en tu primer ingreso al portal, será necesario que actualice la
+                        contraseña.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Le recomendamos abrir el enlace desde cualquier navegador excepto explorer.&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>Atentamente</p>
+                    <p>&nbsp;</p>
+                    <p><span style="color: rgb(136, 136, 136);"><b><span style="color: rgb(47, 85, 151);">Maria Gabriela Carrion&nbsp;</span></b></span><font
+                            color="#2f5597">Cuentas Corporativas<br></font></p>
+                    <p><b><span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span></b><br>Teléfono:
+                        + 505.2251-0108, Ext.1013</p>
+                    <p>Celular: + 505.5871-3408<br>Email:&nbsp;<a href="mailto:gcarrion@trustcorreduria.com"
+                                                                  target="_blank">gcarrion@trustcorreduria.com</a>
+                    </p>
+                    <p><a href="http://www.trustcorreduria.com/" target="_blank">www.trustcorreduria.com</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="grp-module">
+            <div class="grp-row">
+                <label for="">Destinatarios</label>
+            </div>
+            <div class="grp-row">
+                <table class="grp-table">
+                    <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody style="background-color: white">
+                    {% for row in queryset %}
+                        <tr>
+                            <td>{{ row.full_name }}</td>
+                            <td>{{ row.user.username }}</td>
+                            <td>{{ row.user.email }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+{% endblock %}

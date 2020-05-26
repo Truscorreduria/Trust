@@ -3,7 +3,8 @@ from image_cropping.admin import ImageCroppingMixin
 from grappelli_extras.admin import entidad_admin
 from import_export.admin import ImportExportModelAdmin
 from .models import *
-from .forms import MarcaRecargoForm
+from .forms import MarcaRecargoForm, InvitationForm
+from django.shortcuts import render
 
 
 @admin.register(Aseguradora)
@@ -186,6 +187,13 @@ class PerfilEmpleadoAdmin(ImageCroppingMixin, ImportExportModelAdmin):
 
     inlines = [beneficiarios_sepelio, beneficiarios_accidente]
     change_form_template = 'cotizador/admin/perfil.html'
+    #change_list_template = 'admin/clientes.html'
+
+    def invitar(self, request, queryset):
+        return render(request, 'admin/invitar.html',
+                      {'form': InvitationForm, 'queryset': queryset})
+
+    actions = [invitar, ]
 
 
 class beneficiarios_sepelio_tabular(admin.TabularInline):

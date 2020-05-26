@@ -74,7 +74,7 @@ EXTRA_MENUS = [
     {'menu': 'Reportería', 'link': '#',
      'options': [
          {'link': '/reportes/reporte_cotizacion_auto', 'label': 'Cotizaciónes de Automovil',
-          'perm':'cotizador.report_cotizaciones'},
+          'perm': 'cotizador.report_cotizaciones'},
          {'link': '/reportes/reporte_debito_automatico', 'label': 'Débito Automático',
           'perm': 'cotizador.report_debito_automatico'},
          {'link': '/reportes/reporte_deduccion_nomina', 'label': 'Deducción de Nómina',
@@ -347,7 +347,7 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 # BOWER_PATH = '/usr/local/bin/bower'
 
 BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
-                        'bootstrap-select#1.13.12',
+                        'bootstrap-select#1.13.15',
                         'bootstrap-validator#0.11.9',
                         'datatables#1.10.19',
                         'datatables.net#1.10.20',
@@ -373,6 +373,7 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
                         'morris.js#0.5.1',
                         'mustache.js#3.0.1',
                         'raphael#2.2.7',
+                        'simditor#2.3.28',
                         'smartwizard#4.3.1',
                         'sweetalert2#7.33.1',
                         'tipsy#0.1.7']
