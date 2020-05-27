@@ -1144,5 +1144,5 @@ def invitacion(request):
             context = Context(context)
             html = template.render(context)
             send_email('Bienvenido a Trust Correduría de Seguros',
-                       "cesarabel@deltacopiers.com,sistemas@trustcorreduria.com,egurdian@trustcorreduria.com,gcarrion@trustcorrduria.com", html)
+                       c.user.email, html)
     return HttpResponseRedirect('/admin/backend/cliente/')
