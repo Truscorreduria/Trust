@@ -1135,7 +1135,9 @@ def invitacion(request):
         for i in range(0, len(customers)):
             secret = secrets.token_urlsafe(15)
             c = Cliente.objects.get(id=customers[i])
-            c.user.set_password(secret)
+            user = c.user
+            user.set_password(secret)
+            user.save()
             c.cambiar_pass = True
             context = {}
             context['cliente'] = c.to_json()
