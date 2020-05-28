@@ -1143,6 +1143,6 @@ def invitacion(request):
             context['password'] = secret
             context = Context(context)
             html = template.render(context)
-            send_email('Bienvenido a Trust Correduría de Seguros',
+            send_email('Plan colaborador Banpro/Trust Correduría de Seguros',
                        c.user.email, html)
     return HttpResponseRedirect('/admin/backend/cliente/')
