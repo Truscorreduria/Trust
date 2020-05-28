@@ -1133,7 +1133,7 @@ def invitacion(request):
         content = request.POST.get('email_content').replace('[[', '{{').replace(']]', '}}')
         template = Template(content)
         for i in range(0, len(customers)):
-            secret = secrets.token_urlsafe(15)
+            secret = secrets.token_urlsafe(8)
             c = Cliente.objects.get(id=customers[i])
             user = c.user
             user.set_password(secret)
