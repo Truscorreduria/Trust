@@ -24,6 +24,7 @@ from openpyxl.styles import Border, Side, Alignment, Font
 from django.contrib.auth import update_session_auth_hash
 import secrets
 from django.template import Template, Context
+from django.contrib import messages
 
 
 # region views cotizador
@@ -1127,6 +1128,26 @@ def iniciar_proc():
         p.save()
 
 
+def iniciar_notificacion_vencer():
+    day = datetime.now() + timedelta(days=30)
+    ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
+                               cliente__isnull=False,
+                               fecha_vence__year=day.year,
+                               fecha_vence__month=day.month,
+                               fecha_vence__day=day.day,
+                               aseguradora__isnull=False,
+                               estado_poliza=EstadoPoliza.ACTIVA)
+    # ps = Poliza.objects.filter(fecha_vence__lte=day)
+    for p in ps:
+        print(p.no_poliza)
+        config = p.get_config()
+        if config:
+            html = render_to_string('cotizador/email/notificacion_vence.html', {
+                'body': config.email_texto, 'poliza': p
+            })
+            send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza, config.email_trust, html=html)
+
+
 def invitacion(request):
     if request.method == 'POST':
         customers = request.POST.getlist('customer')
@@ -1148,3 +1169,15 @@ def invitacion(request):
             send_email('Plan colaborador Banpro/Trust Correduría de Seguros',
                        c.user.email, html)
     return HttpResponseRedirect('/admin/backend/cliente/')
+
+
+def admin_tasks(request):
+    if request.method == "POST":
+        if request.POST.get('task') == 'Renovación automática':
+            iniciar_proc()
+            messages.success(request, "El proceso de renovación automática se ha iniciado con éxito!")
+            return JsonResponse({})
+        if request.POST.get('task') == 'Notificar pólizas a vencer':
+            iniciar_notificacion_vencer()
+            messages.success(request, "El proceso de notificacón de pólizas a vencer se ha iniciado con éxito!")
+            return JsonResponse({})
