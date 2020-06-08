@@ -12,9 +12,25 @@
             <h2>Tareas administrativas</h2>
         </div>
         <div class="grp-row">
-            <input type="button" value="Renovación automática">
-            <input type="button" value="Notificar pólizas a vencer">
+            <input type="button" value="Renovación automática" name="task" class="task-btn">
+            <input type="button" value="Notificar pólizas a vencer" name="task" class="task-btn">
         </div>
     </div>
+    <script type="text/javascript">
+        (function ($) {
+            $('.task-btn').on('click', function () {
+                const _this = $(this);
+                $.ajax("{% url 'cotizador:admin_tasks' %}", {
+                    method: "POST",
+                    data: {
+                        task: _this.val()
+                    },
+                    success: function (response) {
+                        location.reload()
+                    }
+                })
+            })
+        })(grp.jQuery)
+    </script>
     {{ block.super }}
 {% endblock %}

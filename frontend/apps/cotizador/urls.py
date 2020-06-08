@@ -33,6 +33,7 @@ urlpatterns = [
     path('print_cesion/', print_cesion, name='print_cesion'),
     path('print_soa/', print_soa, name='print_soa'),
     path('enviar_contacto/', enviar_contacto, name='enviar_contacto'),
+    path('admin_tasks/', admin_tasks, name='admin_tasks'),
 
 
     path('guardar_sepelio/', guardar_sepelio, name='guardar_sepelio'),
