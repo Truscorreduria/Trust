@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'frontend',
     'grappelli_extras',
     'grappelli',
     'import_export',
@@ -55,7 +56,6 @@ INSTALLED_APPS = [
     'home',
     'utils',
     'backend',
-    'frontend',
     'accounts',
     'seguros',
     'reports',
