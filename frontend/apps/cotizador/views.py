@@ -1130,14 +1130,14 @@ def iniciar_proc():
 
 def iniciar_notificacion_vencer():
     day = datetime.now() + timedelta(days=30)
-    # ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
-    #                            cliente__isnull=False,
-    #                            fecha_vence__year=day.year,
-    #                            fecha_vence__month=day.month,
-    #                            fecha_vence__day=day.day,
-    #                            aseguradora__isnull=False,
-    #                            estado_poliza=EstadoPoliza.ACTIVA)
-    ps = Poliza.objects.filter(fecha_vence__lte=day)
+    ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
+                               cliente__isnull=False,
+                               fecha_vence__year=day.year,
+                               fecha_vence__month=day.month,
+                               fecha_vence__day=day.day,
+                               aseguradora__isnull=False,
+                               estado_poliza=EstadoPoliza.ACTIVA)
+    # ps = Poliza.objects.filter(fecha_vence__lte=day)
     for p in ps:
         print(p.no_poliza)
         config = p.get_config()
