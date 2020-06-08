@@ -105,3 +105,13 @@ class OportunityStatusWidget(Widget):
             'choices': OportunityStatus.choices()
         }
         return super().build_attrs(base_attrs, extra_attrs)
+
+
+class FormWidget(Widget):
+    template_name = "trustseguros/lte/widgets/form-field.html"
+
+    def format_value(self, value):
+        try:
+            return self.attrs['form'](instance=value)
+        except:
+            return self.attrs['form']

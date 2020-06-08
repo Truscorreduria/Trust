@@ -1808,6 +1808,7 @@ class OportunityStatus:
 
 
 class Oportunity(BasePoliza):
+    campain = models.ForeignKey(Campain, on_delete=models.CASCADE, verbose_name=_("campaña"), null=True)
     linea = models.ForeignKey(Linea, on_delete=models.CASCADE, verbose_name=_("linea"), null=True)
     prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"))
     aseguradoras = models.ManyToManyField(Aseguradora, verbose_name=_("aseguradoras"))

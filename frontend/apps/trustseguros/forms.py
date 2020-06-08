@@ -689,10 +689,54 @@ class UserForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
+class ProspectForm(forms.ModelForm):
+    domicilio = forms.CharField(label="Dirección", required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4',
+        }
+    ))
+    class Meta:
+        model = Prospect
+        fields = '__all__'
+
+
 class OportunityForm(forms.ModelForm):
     status = forms.ChoiceField(widget=OportunityStatusWidget, label="")
     aseguradoras = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradoras",
                                           widget=forms.CheckboxSelectMultiple, empty_label=None)
+    aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradora", required=False)
+    days = forms.CharField(label="Dias transcurridos", required=False, widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
+    prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="", required=False, widget=FormWidget(
+        attrs={
+            'form': ProspectForm,
+            'fields': (
+                ('primer_nombre', 'segundo_nombre'),
+                ('apellido_paterno', 'apellido_materno'),
+                ('cedula', 'email_personal'),
+                ('telefono', 'celular'),
+                ('genero', 'estado_civil'),
+                ('departamento', 'municipio'),
+                ('domicilio',),
+            )
+        }
+    ))
+
+    marca = forms.CharField(required=False)
+    modelo = forms.CharField(required=False)
+    anno = forms.CharField(required=False, label="Año")
+    chasis = forms.CharField(required=False)
+    motor = forms.CharField(required=False)
+    valor_nuevo = forms.FloatField(required=False, label="Valor de nuevo")
+    rc_exceso = forms.BooleanField(required=False, label="RC en exceso")
+    valor_exceso = forms.FloatField(required=False, label="Valor exceso")
+
+
+    drive = forms.Field(label="", required=False, widget=DriveWidget)
+    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
     class Meta:
         model = Oportunity
