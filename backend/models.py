@@ -1,6 +1,6 @@
 from django.db import models
 from grappelli_extras.models import base, BaseEntity, get_code
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from .numero_letra import numero_a_letras
 from image_cropping import ImageRatioField
@@ -8,10 +8,12 @@ from datetime import date
 from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
 import json
-from django.urls import reverse, resolve
+from django.urls import reverse
 from django.utils.html import mark_safe
 from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
+from django.forms.models import model_to_dict
+from django.utils.translation import gettext as _
 
 
 class Base(base):
@@ -56,8 +58,19 @@ def json_object(obj, tpe):
         return tpe().to_json()
 
 
+def user_to_json(user):
+    o = model_to_dict(user)
+    o['app_label'] = "auth"
+    o['model'] = "user"
+    o['str'] = user.get_full_name()
+    o['user_permissions'] = []
+    o['groups'] = []
+    return o
+
+
 User.add_to_class('profile', get_profile)
 User.add_to_class('config', get_config)
+User.add_to_class('to_json', user_to_json)
 
 
 # region Aseguradora
@@ -114,17 +127,21 @@ class Aseguradora(BaseEntity, Base):
     email = models.EmailField(max_length=165, verbose_name="email de contacto", null=True, blank=True)
     address = models.TextField(max_length=600, verbose_name="dirección", null=True, blank=True)
     emision = models.FloatField(default=2.0, verbose_name="derecho de emision")
+    exceso = models.FloatField(default=0.0, verbose_name="Porcentaje Exceso")
 
     def __str__(self):
         return self.name
+
+    def depreciacion(self):
+        return Anno.objects.filter(aseguradora=self)
 
     def depreciar(self, valor_nuevo, anno):
         today = datetime.now()
         antiguedad = today.year - int(anno)
         if antiguedad < 0:
             antiguedad = 0
-        tabla = self.tabla_depreciacion.all()[0]
-        factor = tabla.annos.filter(antiguedad=antiguedad)[0].factor
+        tabla = self.depreciacion()
+        factor = tabla.filter(antiguedad=antiguedad)[0].factor
         return round((valor_nuevo * factor), 2)
 
     def depreciar_post(self, request):
@@ -163,6 +180,8 @@ class Depreciacion(Base):
 
 
 class Anno(Base):
+    aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE, related_name="depreciacion_anno",
+                                    null=True)
     depreciacion = models.ForeignKey(Depreciacion, on_delete=models.CASCADE, related_name="annos")
     antiguedad = models.PositiveSmallIntegerField(default=0)
     factor = models.FloatField(default=0.0)
@@ -173,6 +192,7 @@ class Anno(Base):
     class Meta:
         verbose_name = "año"
         verbose_name_plural = "Años de antiguedad"
+        ordering = ['antiguedad', ]
 
 
 class Referencia(Base):
@@ -327,10 +347,7 @@ class Entidad(BaseEntity, Base):
         verbose_name_plural = "entidades"
 
 
-class Cliente(Persona, Empresa, Direccion):
-    '''
-        Esta clase se convertirá en el cliente de trustseguros
-    '''
+class BaseCliente(Base):
     nombre = models.CharField(max_length=600, null=True, blank=True)
     tipo_identificacion = models.PositiveSmallIntegerField(choices=TipoDoc.choices(), default=TipoDoc.CEDULA, null=True,
                                                            blank=True)
@@ -352,6 +369,15 @@ class Cliente(Persona, Empresa, Direccion):
     codigo_empleado = models.CharField(max_length=25, null=True, blank=True)
     cargo = models.CharField(max_length=125, null=True, blank=True)
     es_cesionario = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+
+class Cliente(BaseCliente, Persona, Empresa, Direccion):
+    '''
+        Esta clase se convertirá en el cliente de trustseguros
+    '''
 
     class Meta:
         verbose_name = "cliente"
@@ -711,22 +737,28 @@ class Precio(Base):
         return "%s - %s" % (self.cobertura.name, self.aseguradora.name)
 
 
-class Poliza(Base):
-    procedencia = models.PositiveSmallIntegerField(choices=ProcedenciaPoliza.choices(), null=True)
+class BasePoliza(base):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
-
-    tipo_poliza = models.PositiveSmallIntegerField(choices=TipoPoliza.choices(), default=TipoPoliza.INDIVIDUAL,
-                                                   null=True)
+    no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
     grupo = models.ForeignKey(Grupo, null=True, on_delete=models.SET_NULL, blank=True)
     ramo = models.ForeignKey(Ramo, null=True, on_delete=models.SET_NULL, blank=True)
     sub_ramo = models.ForeignKey(SubRamo, null=True, on_delete=models.SET_NULL, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Poliza(BasePoliza):
+    procedencia = models.PositiveSmallIntegerField(choices=ProcedenciaPoliza.choices(), null=True)
+
+    tipo_poliza = models.PositiveSmallIntegerField(choices=TipoPoliza.choices(), default=TipoPoliza.INDIVIDUAL,
+                                                   null=True)
 
     fecha_emision = models.DateField(null=True, blank=True, verbose_name="fecha de inicio vigencia")
     fecha_vence = models.DateField(null=True, blank=True, verbose_name="fecha fin de vigencia")
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
-    no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
     no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
     concepto = models.PositiveSmallIntegerField(choices=ConceptoPoliza.choices(), default=ConceptoPoliza.NUEVA,
                                                 null=True, blank=True)
@@ -822,14 +854,25 @@ class Poliza(Base):
     pedir_soporte = models.BooleanField(default=False, blank=True)
 
     class Meta:
+        ordering = ['fecha_vence', ]
         verbose_name_plural = "Pólizas"
         verbose_name = "póliza"
         permissions = (
-            ("report_debito_automatico", "report_debito_automatico"),
-            ("report_cotizaciones", "report_cotizaciones"),
-            ("reporte_deduccion_nomina", "reporte_deduccion_nomina"),
-            ("reporte_polizas_vencer", "reporte_polizas_vencer"),
-            ("reporte_renovaciones", "reporte_renovaciones"),
+            ("trust_clientes_natural", "Clientes Naturales"),
+            ("trust_clientes_juridico", "Clientes Jurídicos"),
+            ("trust_polizas_poliza", "Pólizas"),
+            ("trust_polizas_tramite", "Trámites"),
+            ("trust_catalogos_aseguradora", "Catálogos Aseguradoras"),
+            ("trust_catalogos_linea", "Línea de negocios"),
+            ("trust_catalogos_campain", "Campañas"),
+            ("trust_catalogos_grupo", "Catálogos Grupos"),
+            ("trust_catalogos_ramo", "Catálogos Ramos"),
+            ("trust_catalogos_subramo", "Catálogos Sub Ramos"),
+            ("trust_cotizador_empresa", "Cotizador Empresas Afiliadas"),
+            ("trust_cotizador_marca", "Cotizador Marcas con Recargo"),
+            ("trust_usuarios_usuario", "Administrar Usuarios"),
+            ("trust_usuarios_grupo", "Perfiles y Roles"),
+            ("trust_crm_oportunidad", "CRM Oportunidades"),
         )
 
     def get_config(self):
@@ -1035,9 +1078,6 @@ class Poliza(Base):
             return CotizadorConfig.objects.get(empresa=self.cliente.empresa)
         except:
             return None
-
-    class Meta:
-        ordering = ['fecha_vence', ]
 
 
 class CoberturaPoliza(Base):
@@ -1423,6 +1463,9 @@ class Notificacion(Base):
 # endregion
 
 
+# region Utils
+
+
 class Archivo(base):
     created = models.DateTimeField(auto_now_add=True)
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
@@ -1501,6 +1544,11 @@ class Comentario(base):
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
         return o
 
+
+# endregion
+
+
+# region Cotizador
 
 class CotizadorConfig(base):
     empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
@@ -1711,3 +1759,68 @@ class SolicitudRenovacion(base):
         if self.medio_pago == 'deposito_referenciado':
             self.m_pago = MedioPago.DEPOSITO
         super().save(*args, **kwargs)
+
+
+# endregion
+
+
+# region CRM
+
+class Linea(Base):
+    name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
+
+    def __str__(self):
+        return self.name
+
+
+class LineaUser(Base):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    linea = models.ForeignKey(Linea, on_delete=models.CASCADE)
+
+
+class Campain(Base):
+    name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "campaña"
+
+
+class Prospect(BaseCliente, Persona, Direccion):
+    pass
+
+
+class OportunityStatus:
+    PENDIENTE = 1
+    COTIZAZDO = 2
+    CONTACTADO = 3
+    EMISION = 4
+    VENDIDO = 5
+    NOVENDIDO = 6
+
+    @classmethod
+    def choices(cls):
+        return (cls.PENDIENTE, "No gestionado"), (cls.COTIZAZDO, "Cotizado"), \
+               (cls.CONTACTADO, "Contactado"), (cls.EMISION, "En emisión"), \
+               (cls.VENDIDO, "Vendido"), (cls.NOVENDIDO, "No vendido")
+
+
+class Oportunity(BasePoliza):
+    linea = models.ForeignKey(Linea, on_delete=models.CASCADE, verbose_name=_("linea"), null=True)
+    prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"))
+    aseguradoras = models.ManyToManyField(Aseguradora, verbose_name=_("aseguradoras"))
+    status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
+
+    class Meta:
+        verbose_name = "oportunidad"
+        verbose_name_plural = "oportunidades"
+
+
+def user_lines(user):
+    return LineaUser.objects.filter(user=user)
+
+User.add_to_class('lineas', user_lines)
+
+# endregion

@@ -2,24 +2,17 @@
     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
         data-accordion="true">
 
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Clientes
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Clientes
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
+        {% if perms.backend.trust_clientes_natural or perms.backend.trust_clientes_juridico %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Clientes
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_clientes_natural %}
                         <li class="nav-item">
                             <a href="{% url 'trustseguros:persona_natural' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"
@@ -27,6 +20,8 @@
                                 <p>Persona natural</p>
                             </a>
                         </li>
+                    {% endif %}
+                    {% if perms.backend.trust_clientes_juridico %}
                         <li class="nav-item">
                             <a href="{% url 'trustseguros:persona_juridica' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"
@@ -34,119 +29,161 @@
                                 <p>Persona jurídica</p>
                             </a>
                         </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
 
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Pólizas
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:polizas' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Pólizas
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:tramites' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Trámites
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Catálogos
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Aseguradoras
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:ramos' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Ramos
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:subramos' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Sub ramos
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:grupos' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Grupos
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Aplicaciones
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Cotizador
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
+        {% if perms.backend.trust_polizas_poliza or perms.backend.trust_polizas_tramite %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Pólizas
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_polizas_poliza %}
                         <li class="nav-item">
-                            <a href="{% url 'trustseguros:configcotizador' %}" class="nav-link">
-                                <i class="far fa-circle nav-icon"
-                                   style="font-size: .3em; vertical-align: middle"></i>
-                                <p>Empresas afiliadas</p>
+                            <a href="{% url 'trustseguros:polizas' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Pólizas
+                                </p>
                             </a>
                         </li>
+                    {% endif %}
+                    {% if perms.backend.trust_polizas_tramite %}
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-circle nav-icon"
-                                   style="font-size: .3em; vertical-align: middle"></i>
-                                <p>Marcas con regargo</p>
+                            <a href="{% url 'trustseguros:tramites' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Trámites
+                                </p>
                             </a>
                         </li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {% if perms.backend.trust_catalogos_aseguradora or perms.backend.trust_catalogos_grupo or perms.backend.trust_catalogos_ramo or perms.backend.trust_catalogos_subramo or perms.backend.trust_catalogos_linea %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Catálogos
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_catalogos_linea %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:lineas' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Líneas de negocio
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_campain %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:campains' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Campañas
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_aseguradora %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Aseguradoras
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_grupo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:ramos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Ramos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_ramo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:subramos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Sub ramos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_subramo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:grupos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Grupos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {% if perms.backend.trust_cotizador_empresa or perms.backend.trust_cotizador_marca %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Aplicaciones
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="far fa-dot-circle nav-icon"></i>
+                            <p>
+                                Cotizador
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            {% if perms.backend.trust_cotizador_empresa %}
+                                <li class="nav-item">
+                                    <a href="{% url 'trustseguros:configcotizador' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>Empresas afiliadas</p>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if perms.backend.trust_cotizador_marca %}
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>Marcas con regargo</p>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        {% endif %}
 
         <li class="nav-item has-treeview">
             <a href="#" class="nav-link active">
@@ -167,6 +204,84 @@
                 </li>
             </ul>
         </li>
+
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-circle"></i>
+                <p>
+                    Consumo BANPRO
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        {% if perms.backend.trust_usuarios_usuario or perms.backend.trust_usuarios_grupo %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Usuarios
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_polizas_tramite %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:usuarios' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Administrar usuarios
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_polizas_tramite %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:roles' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Perfiles y Roles
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {% if user.lineas %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Consumo BANPRO
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% for linea in user.lineas %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:oportunidades' linea.id %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    {{ linea.linea.name }}
+                                </p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
 
     </ul>
 </nav>

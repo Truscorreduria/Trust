@@ -1,0 +1,59 @@
+{% load crispy_forms_tags crispy_forms_filters datatables mathfilters humanize %}
+
+{% block content %}
+    <div class="izimodal" id="{{ opts.model_name }}-modal">
+
+        <div class="modal-body" style="padding: 0; min-height: 700px">
+            <div class="card card-trust">
+                <div class="card-body">
+                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
+                          data-toggle="validator">
+                        <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+
+                        {% csrf_token %}
+                        <div class="row">
+                            {{ form.status|as_crispy_field }}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">Información principal</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.ramo|as_crispy_field }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">Póliza actual</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.no_poliza|as_crispy_field }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-md-12 form-buttons">
+                    <button type="button" class="btn btn-info" id="btn-modificar" disabled="disabled">
+                        <i class="fa fa-save"></i>
+                        Guardar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+

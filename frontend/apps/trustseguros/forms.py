@@ -3,6 +3,12 @@ from .widgets import *
 from backend.models import *
 
 
+class LteFormMixing:
+
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request')
+
+
 class ContactoAseguradoraForm(forms.ModelForm):
     prefix = 'contacto_aseguradora'
 
@@ -11,7 +17,20 @@ class ContactoAseguradoraForm(forms.ModelForm):
         fields = ('name',)
 
 
+class ValorDepreciacion(forms.ModelForm):
+    class Meta:
+        model = Anno
+        fields = ('antiguedad', 'factor')
+
+
 class AseguradoraForm(forms.ModelForm):
+    depreciacion = forms.Field(required=False, label="",
+                               widget=TableBorderedInput(
+                                   attrs={
+                                       'form': ValorDepreciacion
+                                   }
+                               ))
+
     contactos = forms.Field(required=False, label="",
                             widget=TableBorderedInput(
                                 attrs={
@@ -27,7 +46,8 @@ class AseguradoraForm(forms.ModelForm):
         instance = kwargs.get('instance')
         if instance:
             kwargs.update(initial={
-                'contactos': instance.contactos()
+                'contactos': instance.contactos(),
+                'depreciacion': instance.depreciacion()
             })
         super(AseguradoraForm, self).__init__(*args, **kwargs)
 
@@ -639,24 +659,6 @@ class CotizadorConfigForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
-class LteAccidentetForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Titular',
-                                      required=True, widget=SelectSearch)
-
-    class Meta:
-        model = benAccidente
-        fields = '__all__'
-
-
-class LteSepelioForm(forms.ModelForm):
-    empleado = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Titular',
-                                      required=True, widget=SelectSearch)
-
-    class Meta:
-        model = benSepelio
-        fields = '__all__'
-
-
 class ReportTramiteForm(forms.Form):
     estado = forms.ChoiceField(choices=EstadoTramite.choices(), required=False)
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
@@ -664,3 +666,46 @@ class ReportTramiteForm(forms.Form):
                                      widget=SelectSearch)
     poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
                                     widget=SelectSearch)
+
+
+class UserForm(forms.ModelForm):
+    username = forms.CharField(label="Usuario", widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
+    lineas = forms.Field(label="líneas de negocio autorizadas", widget=LineaWidget, required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            kwargs.update(initial={
+                'lineas': instance
+            })
+        super().__init__(*args, **kwargs)
+
+
+class OportunityForm(forms.ModelForm):
+    status = forms.ChoiceField(widget=OportunityStatusWidget, label="")
+    aseguradoras = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradoras",
+                                          widget=forms.CheckboxSelectMultiple, empty_label=None)
+
+    class Meta:
+        model = Oportunity
+        fields = '__all__'
+
+
+class LineaForm(forms.ModelForm):
+    class Meta:
+        model = Linea
+        fields = '__all__'
+
+
+class CampainForm(forms.ModelForm):
+    class Meta:
+        model = Campain
+        fields = '__all__'

@@ -1,5 +1,5 @@
 from adminlte.widgets import *
-from backend.models import Cliente
+from backend.models import Cliente, Linea, OportunityStatus
 from django.forms import TextInput
 from backend.models import FieldMapType, FieldMap
 
@@ -84,3 +84,24 @@ class FieldMapWidget(Widget):
             return [self.attrs['form'](instance=instance) for instance in
                     value.fieldmap.filter(fieldmap_type=self.attrs['type'])]
         return value
+
+
+class LineaWidget(Widget):
+    template_name = "trustseguros/lte/widgets/linea.html"
+
+    def format_value(self, value):
+        return value
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        extra_attrs = {'choices': Linea.objects.all()}
+        return super().build_attrs(base_attrs, extra_attrs)
+
+
+class OportunityStatusWidget(Widget):
+    template_name = "trustseguros/lte/widgets/oportunidad-status.html"
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        extra_attrs = {
+            'choices': OportunityStatus.choices()
+        }
+        return super().build_attrs(base_attrs, extra_attrs)

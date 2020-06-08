@@ -1,0 +1,8 @@
+<div class="oportunity-status">
+    {% for choice in widget.attrs.choices %}
+        <article class="status">
+            <span>{{ choice.1 }}</span>
+            <div class="status-circle" passed="on"></div>
+        </article>
+    {% endfor %}
+</div>

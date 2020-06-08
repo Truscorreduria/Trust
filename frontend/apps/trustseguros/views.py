@@ -12,6 +12,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from backend.signals import RenovarPoliza
 from django.db import IntegrityError
 from backend.signals import AddComment
+from django.contrib.auth.models import Group
+from django.forms.models import model_to_dict
+
+
+def group_to_json(group):
+    return model_to_dict(group)
+
+
+Group.add_to_class('to_json', group_to_json)
 
 
 def documentos(request):
@@ -591,19 +600,7 @@ def reportes(request):
     })
 
 
-class Prospectos(Datatables):
-    modal_width = 1200
-    model = ClienteProspecto
-    form = ProspectoForm
-    form_template = "trustseguros/lte/prospecto-form.html"
-    list_display = ('nombre', 'telefono')
-    list_filter = ('tipo_cliente',)
-    search_fields = ('razon_social', 'ruc', 'cedula', 'primer_nombre', 'segundo_nombre',
-                     'apellido_materno', 'apellido_materno')
-    media = {
-        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/tipo.cliente.js']
-    }
-
+# region Clientes
 
 class PersonaNatural(Datatables):
     modal_width = 1200
@@ -731,10 +728,29 @@ class PersonaJuridica(Datatables):
             c.save()
 
 
+# endregion
+
+
+# region Catálogos
+
+
+class Lineas(Datatables):
+    model = Linea
+    form = LineaForm
+    list_display = ('name',)
+
+
+class Campains(Datatables):
+    model = Campain
+    form = CampainForm
+    list_display = ('name',)
+
+
 class Aseguradoras(Datatables):
+    modal_width = 900
     model = Aseguradora
     form = AseguradoraForm
-    list_display = ('name', 'phone', 'address', 'emision',)
+    list_display = ('name', 'phone', 'address', 'emision', 'exceso')
     fieldsets = [
         {
             'id': 'info',
@@ -742,8 +758,15 @@ class Aseguradoras(Datatables):
             'fields': (
                 ('name', 'ruc'),
                 ('phone', 'email'),
-                ('emision',),
+                ('emision', 'exceso'),
                 ('address',),
+            )
+        },
+        {
+            'id': 'tabla-depreciacion',
+            'name': 'Tabla de depreciación',
+            'fields': (
+                ('depreciacion',),
             )
         },
         {
@@ -764,192 +787,6 @@ class Aseguradoras(Datatables):
                 c = ContactoAseguradora.objects.get(id=int(data.getlist('contactoaseguradora_id')[i]))
             c.name = data.getlist('contacto_aseguradora-name')[i]
             c.save()
-
-
-class Tramites(Datatables):
-    modal_width = 1200
-    model = Tramite
-    form = TramiteForm
-    form_template = "trustseguros/lte/tramite-modal.html"
-    list_display = ('code', 'tipo_tramite.name', ('Cliente', 'cliente.name'),
-                    ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
-                    ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
-    list_filter = ('tipo_tramite', 'estado', 'user')
-    search_fields = ('code',)
-    fieldsets = [
-        {
-            'id': 'info',
-            'name': 'Datos del cliente',
-            'fields': (
-                ('code', 'fecha', 'hora', 'tipo_tramite'),
-                ('cliente', 'poliza', 'ramo'),
-                ('sub_ramo', 'grupo', 'aseguradora', 'contacto_aseguradora'),
-                ('solicitado_por', 'medio_solicitud', 'estado', 'genera_endoso'),
-                ('user', 'descripcion'),
-            )
-        },
-        {
-            'id': 'drive',
-            'name': 'Soportes',
-            'fields': (
-                ('drive',),
-            )
-        },
-        {
-            'id': 'bita',
-            'name': 'Bitácora',
-            'fields': (
-                ('bitacora',),
-            )
-        },
-    ]
-    media = {
-        'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
-               'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ]
-    }
-
-    def post(self, request):
-        if 'finalizar' in request.POST:
-            p = Tramite.objects.get(id=request.POST.get('id'))
-            p.editable = False
-            p.estado = "En Proceso"
-            p.save()
-            form = self.get_form()(instance=p)
-            html_form = self.html_form(p, request, form, 'POST')
-            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
-        if 'activar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            p.estado_poliza = EstadoPoliza.ACTIVA
-            p.editable = False
-            p.perdir_comentarios = False
-            p.save()
-            form = self.get_form()(instance=p)
-            html_form = self.html_form(p, request, form, 'POST')
-            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
-        if 'modificar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            p.editable = True
-            p.perdir_comentarios = True
-            p.save()
-            form = self.get_form()(instance=p)
-            html_form = self.html_form(p, request, form, 'POST')
-            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
-        if 'confirmar' in request.POST:
-            print(request.POST)
-            status = 200
-            errors = []
-            p = self.model.objects.get(id=int(request.POST.get('id')))
-            form = self.get_form()(request.POST, instance=p)
-            if form.is_valid():
-                form.save()
-                p = form.instance
-                p.editable = False
-                p.perdir_comentarios = False
-                p.save()
-                self.save_related(instance=p, data=request.POST)
-                form = self.get_form()(instance=p)
-            else:
-                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                status = 203
-                print(errors)
-            html_form = self.html_form(p, request, form, 'POST')
-
-            return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
-                                encoder=Codec, status=status)
-        if 'cancelar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            p.estado_poliza = EstadoPoliza.CANCELADA
-            p.editable = False
-            p.perdir_comentarios = True
-            p.save()
-            form = self.get_form()(instance=p)
-            html_form = self.html_form(p, request, form, 'POST')
-            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
-        if 'renovar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            p.estado_poliza = EstadoPoliza.RENOVADA
-            p.save()
-            nueva = RenovarPoliza.send(p, request=request)[0][1]
-            form = self.get_form()(instance=nueva)
-            html_form = self.html_form(nueva, request, form, 'POST')
-            return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
-        if 'import_data' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            file = request.FILES['file']
-            data = pd.read_excel(file)
-            forms = []
-            for row in data.to_dict('records'):
-                d = DatoPoliza(poliza=p)
-                d.extra_data = str(row)
-                form = DatoImportForm(instance=d)
-                forms.append(form)
-            html = render_to_string('trustseguros/lte/widgets/import-rows.html', context={
-                'forms': forms, 'widget_name': 'campos_adicionales'
-            }, request=request)
-            return JsonResponse({'html': html}, encoder=Codec, safe=False)
-        if 'polizas' in request.POST:
-            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
-            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
-            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
-                                                for p in polizas]}, encoder=Codec, safe=False)
-        if 'contactos' in request.POST:
-            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
-            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
-            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
-                                                for p in contactos],
-                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
-        return super().post(request)
-
-    def save_related(self, instance, data):
-        for i in range(0, len(data.getlist('tabla_pagos_id'))):
-            if data.getlist('tabla_pagos_id')[i] == '':
-                p = Pago(tramite=instance)
-            else:
-                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
-            p.numero = data.getlist('tabla_pagos_numero')[i]
-            p.monto = data.getlist('tabla_pagos_monto')[i]
-            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
-            p.save()
-
-
-class DependientesSepelio(Datatables):
-    model = benSepelio
-    form = LteSepelioForm
-    list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    search_fields = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    list_filter = ('empleado',)
-    fieldsets = [
-        {
-            'id': 'info',
-            'name': 'Datos del dependiente',
-            'fields': (
-                ('parentesco', 'empleado'),
-                ('primer_nombre', 'segundo_nombre'),
-                ('apellido_paterno', 'apellido_materno'),
-                ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
-            )
-        },
-    ]
-
-
-class DependientesAccidente(Datatables):
-    model = benAccidente
-    form = LteAccidentetForm
-    list_display = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    search_fields = ('parentesco', 'primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno')
-    fieldsets = [
-        {
-            'id': 'info',
-            'name': 'Datos del dependiente',
-            'fields': (
-                ('parentesco', 'empleado'),
-                ('primer_nombre', 'segundo_nombre'),
-                ('apellido_paterno', 'apellido_materno'),
-                ('fecha_nacimiento', 'suma_asegurada', 'numero_poliza'),
-            )
-        },
-    ]
 
 
 class Ramos(Datatables):
@@ -1034,6 +871,11 @@ class SubRamos(Datatables):
             if f.is_valid():
                 f.save()
 
+
+# endregion
+
+
+# region Pólizas
 
 class Polizas(Datatables):
     modal_width = 1600
@@ -1209,6 +1051,159 @@ class Polizas(Datatables):
             p.save()
 
 
+class Tramites(Datatables):
+    modal_width = 1200
+    model = Tramite
+    form = TramiteForm
+    form_template = "trustseguros/lte/tramite-modal.html"
+    list_display = ('code', 'tipo_tramite.name', ('Cliente', 'cliente.name'),
+                    ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
+                    ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
+    list_filter = ('tipo_tramite', 'estado', 'user')
+    search_fields = ('code',)
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Datos del cliente',
+            'fields': (
+                ('code', 'fecha', 'hora', 'tipo_tramite'),
+                ('cliente', 'poliza', 'ramo'),
+                ('sub_ramo', 'grupo', 'aseguradora', 'contacto_aseguradora'),
+                ('solicitado_por', 'medio_solicitud', 'estado', 'genera_endoso'),
+                ('user', 'descripcion'),
+            )
+        },
+        {
+            'id': 'drive',
+            'name': 'Soportes',
+            'fields': (
+                ('drive',),
+            )
+        },
+        {
+            'id': 'bita',
+            'name': 'Bitácora',
+            'fields': (
+                ('bitacora',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
+               'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
+               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ]
+    }
+
+    def post(self, request):
+        if 'finalizar' in request.POST:
+            p = Tramite.objects.get(id=request.POST.get('id'))
+            p.editable = False
+            p.estado = "En Proceso"
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'activar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.ACTIVA
+            p.editable = False
+            p.perdir_comentarios = False
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'modificar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.editable = True
+            p.perdir_comentarios = True
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'confirmar' in request.POST:
+            print(request.POST)
+            status = 200
+            errors = []
+            p = self.model.objects.get(id=int(request.POST.get('id')))
+            form = self.get_form()(request.POST, instance=p)
+            if form.is_valid():
+                form.save()
+                p = form.instance
+                p.editable = False
+                p.perdir_comentarios = False
+                p.save()
+                self.save_related(instance=p, data=request.POST)
+                form = self.get_form()(instance=p)
+            else:
+                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+                status = 203
+                print(errors)
+            html_form = self.html_form(p, request, form, 'POST')
+
+            return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
+                                encoder=Codec, status=status)
+        if 'cancelar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.CANCELADA
+            p.editable = False
+            p.perdir_comentarios = True
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'renovar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.RENOVADA
+            p.save()
+            nueva = RenovarPoliza.send(p, request=request)[0][1]
+            form = self.get_form()(instance=nueva)
+            html_form = self.html_form(nueva, request, form, 'POST')
+            return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'import_data' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            file = request.FILES['file']
+            data = pd.read_excel(file)
+            forms = []
+            for row in data.to_dict('records'):
+                d = DatoPoliza(poliza=p)
+                d.extra_data = str(row)
+                form = DatoImportForm(instance=d)
+                forms.append(form)
+            html = render_to_string('trustseguros/lte/widgets/import-rows.html', context={
+                'forms': forms, 'widget_name': 'campos_adicionales'
+            }, request=request)
+            return JsonResponse({'html': html}, encoder=Codec, safe=False)
+        if 'polizas' in request.POST:
+            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
+            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
+            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
+                                                for p in polizas]}, encoder=Codec, safe=False)
+        if 'contactos' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
+            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
+                                                for p in contactos],
+                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
+        return super().post(request)
+
+    def save_related(self, instance, data):
+        for i in range(0, len(data.getlist('tabla_pagos_id'))):
+            if data.getlist('tabla_pagos_id')[i] == '':
+                p = Pago(tramite=instance)
+            else:
+                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+            p.numero = data.getlist('tabla_pagos_numero')[i]
+            p.monto = data.getlist('tabla_pagos_monto')[i]
+            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.save()
+
+
+# endregion
+
+
+# region Aplicaciones
+
+
 class ConfiguracionCotizador(Datatables):
     modal_width = 1200
     model = CotizadorConfig
@@ -1230,7 +1225,7 @@ class ConfiguracionCotizador(Datatables):
                 ('sub_ramo_automovil', 'tasa_automovil',),
                 ('soa_automovil', 'porcentaje_deducible',),
                 ('porcentaje_deducible_extencion_territorial', 'minimo_deducible',),
-                ('soa_descuento', ),
+                ('soa_descuento',),
                 ('email_cobranza', 'email_automovil'),
                 ('fieldmap_automovil',),
             )
@@ -1291,7 +1286,80 @@ class ConfiguracionCotizador(Datatables):
 # endregion
 
 
-# renovacion
+# region Usuarios
+
+
+class Usuarios(Datatables):
+    model = User
+    list_display = ('username', 'first_name', 'last_name', 'email')
+    search_fields = ('username',)
+    modal_width = 900
+    form = UserForm
+
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general del usuario',
+            'fields': (
+                ('username', 'email'),
+                ('first_name', 'last_name'),
+                ('lineas',),
+            )
+        },
+    ]
+
+    def get_queryset(self, filters, search_value):
+        return super().get_queryset(filters, search_value).filter(is_staff=True)
+
+    def save_related(self, instance, data):
+        for line in Linea.objects.all():
+            if str(line.id) in data.getlist('lineas'):
+                LineaUser.objects.get_or_create(user=instance, linea=line)
+            else:
+                try:
+                    LineaUser.objects.get(user=instance, linea=line).delete()
+                except ObjectDoesNotExist:
+                    pass
+
+        super().save_related(instance, data)
+
+
+class Roles(Datatables):
+    model = Group
+    list_display = ('name',)
+    search_fields = ('name',)
+    fields = ('name',)
+
+
+class Oportunidades(Datatables):
+    modal_width = 1200
+    model = Oportunity
+    form = OportunityForm
+    list_display = ('prospect',)
+    search_fields = ('prospect',)
+    linea = None
+    form_template = "trustseguros/lte/oportunity.html"
+
+    media = {
+        'css': ('trustseguros/lte/css/oportunity-status.css', )
+    }
+
+    def get_queryset(self, filters, search_value):
+        if self.linea:
+            return super().get_queryset(filters, search_value).filter(linea=self.linea)
+        return super().get_queryset(filters, search_value)
+
+    def get(self, request, linea):
+        self.linea = linea
+        return super().get(request)
+
+    def put(self, request, linea):
+        # self.linea = linea
+        return super().put(request)
+
+    def post(self, request, linea):
+        # self.linea = linea
+        return super().post(request)
 
 
 def iniciar_proc():

@@ -1,0 +1,13 @@
+{% load oportunidad %}
+<div style="padding: 5%">
+    {% for choice in widget.attrs.choices %}
+        <div>
+            <label for="id_is_active" class="form-check-label">
+                <input type="checkbox" name="{{ widget.name }}"
+                       class="checkboxinput form-check-input" {{ widget.value|has_line:choice }}
+                value="{{ choice.id }}">
+                {{ choice.name }}
+            </label>
+        </div>
+    {% endfor %}
+</div>
