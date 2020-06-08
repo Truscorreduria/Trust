@@ -9,7 +9,6 @@
                     <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
                           data-toggle="validator">
                         <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
-
                         {% csrf_token %}
                         <div class="row">
                             {{ form.status|as_crispy_field }}
@@ -20,7 +19,15 @@
                                     <div class="card-header">Información principal</div>
                                     <div class="card-body">
                                         <div class="row">
+                                            <div class="col">{{ form.campain|as_crispy_field }}</div>
+                                            <div class="col">{{ form.days|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col">{{ form.ramo|as_crispy_field }}</div>
+                                            <div class="col">{{ form.sub_ramo|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.prospect }}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -32,8 +39,77 @@
                                         <div class="row">
                                             <div class="col">{{ form.no_poliza|as_crispy_field }}</div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.aseguradora|as_crispy_field }}</div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="card">
+                                    <div class="card-header">Datos del bien</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.marca|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.modelo|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.anno|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.chasis|as_crispy_field }}</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">{{ form.motor|as_crispy_field }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">Comentarios</div>
+                                    <div class="card-body">
+                                        {{ form.bitacora }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">Archivos</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.drive }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">Compañias a cotizar</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.aseguradoras|as_crispy_field }}</div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col">{{ form.valor_nuevo|as_crispy_field }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">{{ form.rc_exceso|as_crispy_field }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">{{ form.valor_exceso|as_crispy_field }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+
                             </div>
                         </div>
                     </form>

@@ -205,25 +205,29 @@
             </ul>
         </li>
 
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Consumo BANPRO
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        {% if user.lineas %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Consumo BANPRO
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% for linea in user.lineas %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:oportunidades' linea.id %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    {{ linea.linea.name }}
+                                </p>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
 
         {% if perms.backend.trust_usuarios_usuario or perms.backend.trust_usuarios_grupo %}
             <li class="nav-item has-treeview">
@@ -255,30 +259,6 @@
                             </a>
                         </li>
                     {% endif %}
-                </ul>
-            </li>
-        {% endif %}
-
-        {% if user.lineas %}
-            <li class="nav-item has-treeview">
-                <a href="#" class="nav-link active">
-                    <i class="nav-icon fas fa-circle"></i>
-                    <p>
-                        Consumo BANPRO
-                        <i class="right fas fa-angle-left"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    {% for linea in user.lineas %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:oportunidades' linea.id %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    {{ linea.linea.name }}
-                                </p>
-                            </a>
-                        </li>
-                    {% endfor %}
                 </ul>
             </li>
         {% endif %}

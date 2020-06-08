@@ -1,0 +1,11 @@
+{% load datatables crispy_forms_filters %}
+
+{% for row in widget.attrs.fields %}
+    <div class="row">
+        {% for column in row %}
+            <div class="col">
+                {{ widget.value|datatables_field:column|as_crispy_field }}
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
