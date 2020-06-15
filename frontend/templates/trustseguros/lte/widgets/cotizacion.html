@@ -1,0 +1,53 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th></th>
+        {% for company in widget.attrs.companies %}
+            <th>{{ company.name }}</th>
+        {% endfor %}
+    </tr>
+    <tr>
+        <th></th>
+
+        {% for company in widget.attrs.companies %}
+            <th style="text-align: right">
+                <input type="checkbox" name="{{ widget.name }}_{{ company.name }}" value="{{ company.pk }}">
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>DEDUCIBLE</td>
+        {% for company in widget.attrs.companies %}
+            <td style="text-align: right; padding-right: 7px">
+                <span class="dollar">-</span>
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td>COASEGURO</td>
+        {% for company in widget.attrs.companies %}
+            <td style="text-align: right; padding-right: 7px">
+                <span class="dollar">-</span>
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td>COASEGURO ROBO</td>
+        {% for company in widget.attrs.companies %}
+            <td style="text-align: right; padding-right: 7px">
+                <span class="dollar">-</span>
+            </td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td>PRIMA TOTAL</td>
+        {% for company in widget.attrs.companies %}
+            <td style="text-align: right; padding-right: 7px">
+                <span class="dollar">-</span>
+            </td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>

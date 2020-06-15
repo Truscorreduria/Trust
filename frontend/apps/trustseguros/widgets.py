@@ -117,3 +117,10 @@ class FormWidget(Widget):
             return self.attrs['form'](instance=instance)
         except:
             return self.attrs['form']
+
+
+class CotizacionWidget(Widget):
+    template_name = "trustseguros/lte/widgets/cotizacion.html"
+
+    def format_value(self, value):
+        return value

@@ -723,9 +723,6 @@ class ProspectForm(forms.ModelForm):
 
 class OportunityForm(forms.ModelForm):
     status = forms.Field(widget=OportunityStatusWidget, label="", initial=OportunityStatus.PENDIENTE)
-    # aseguradoras = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradoras",
-    #                                       required=False,
-    #                                       widget=forms.CheckboxSelectMultiple, empty_label=None)
     aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradora", required=False)
     days = forms.CharField(label="Dias transcurridos", required=False, widget=forms.TextInput(
         attrs={
@@ -756,6 +753,12 @@ class OportunityForm(forms.ModelForm):
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
     json_data = forms.Field(label="", required=False, widget=JsonWidget)
+
+    cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
+        attrs={
+            'companies': Aseguradora.objects.all()
+        }
+    ))
 
     class Meta:
         model = Oportunity
