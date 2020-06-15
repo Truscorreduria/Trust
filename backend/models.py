@@ -1789,7 +1789,9 @@ class Campain(Base):
 
 
 class Prospect(BaseCliente, Persona, Direccion):
-    pass
+
+    def __str__(self):
+        return ""
 
 
 class OportunityStatus:
@@ -1810,17 +1812,32 @@ class OportunityStatus:
 class Oportunity(BasePoliza):
     campain = models.ForeignKey(Campain, on_delete=models.CASCADE, verbose_name=_("campaña"), null=True)
     linea = models.ForeignKey(Linea, on_delete=models.CASCADE, verbose_name=_("linea"), null=True)
-    prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"))
-    aseguradoras = models.ManyToManyField(Aseguradora, verbose_name=_("aseguradoras"))
+    prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"),
+                                 null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
 
     class Meta:
         verbose_name = "oportunidad"
         verbose_name_plural = "oportunidades"
 
+    def __str__(self):
+        return ""
+
+    def to_json(self):
+        o = super().to_json()
+        o['prospect'] = json_object(self.prospect, Prospect)
+        return o
+
+
+class OportunityQuotation(Base):
+    oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE)
+    aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
+    emision = models.FloatField(default=0.0)
+
 
 def user_lines(user):
     return LineaUser.objects.filter(user=user)
+
 
 User.add_to_class('lineas', user_lines)
 

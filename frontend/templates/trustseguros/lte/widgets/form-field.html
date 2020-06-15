@@ -1,10 +1,25 @@
 {% load datatables crispy_forms_filters %}
 
+
 {% for row in widget.attrs.fields %}
     <div class="row">
         {% for column in row %}
             <div class="col">
                 {{ widget.value|datatables_field:column|as_crispy_field }}
+                {% ifequal column widget.attrs.primary_key %}
+                    <button type="button" class="{{ widget.name }}-button-clear"
+                            style="
+                                    {% if not widget.value.instance %}
+                                        display: none;
+                                    {% endif %}
+                                    color: red;
+                                    background-color: pink;
+                                    position: absolute;
+                                    right: 15px;
+                                    top: 41px;">
+                        <i class="fa fa-times"></i>
+                    </button>
+                {% endifequal %}
             </div>
         {% endfor %}
     </div>

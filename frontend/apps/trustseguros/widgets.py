@@ -112,6 +112,8 @@ class FormWidget(Widget):
 
     def format_value(self, value):
         try:
-            return self.attrs['form'](instance=value)
+            model = self.attrs['form']._meta.model
+            instance = model.objects.get(pk=value)
+            return self.attrs['form'](instance=instance)
         except:
             return self.attrs['form']

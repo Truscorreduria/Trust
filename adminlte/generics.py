@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from grappelli_extras.utils import Codec
+from .utils import Codec
 from django.views.generic import View
 from django.forms import modelform_factory
 from django.contrib.admin.utils import flatten

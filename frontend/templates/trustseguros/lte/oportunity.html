@@ -26,6 +26,11 @@
                                             <div class="col">{{ form.ramo|as_crispy_field }}</div>
                                             <div class="col">{{ form.sub_ramo|as_crispy_field }}</div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">Información del prospecto</div>
+                                    <div class="card-body">
                                         <div class="row">
                                             <div class="col">{{ form.prospect }}</div>
                                         </div>
@@ -46,22 +51,8 @@
                                 </div>
                                 <div class="card">
                                     <div class="card-header">Datos del bien</div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">{{ form.marca|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.modelo|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.anno|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.chasis|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.motor|as_crispy_field }}</div>
-                                        </div>
+                                    <div class="card-body" style="max-height: 757px; overflow-y: auto;">
+                                        {{ form.json_data }}
                                     </div>
                                 </div>
                             </div>
@@ -92,7 +83,7 @@
                                     <div class="card-header">Compañias a cotizar</div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col">{{ form.aseguradoras|as_crispy_field }}</div>
+                                            {% comment %}<div class="col">{{ form.aseguradoras|as_crispy_field }}</div>{% endcomment %}
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col">{{ form.valor_nuevo|as_crispy_field }}</div>
@@ -121,7 +112,7 @@
         <div class="modal-footer">
             <div class="row">
                 <div class="col-md-12 form-buttons">
-                    <button type="button" class="btn btn-info" id="btn-modificar" disabled="disabled">
+                    <button type="button" class="btn btn-info" id="btn-save">
                         <i class="fa fa-save"></i>
                         Guardar
                     </button>

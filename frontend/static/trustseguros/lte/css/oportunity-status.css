@@ -34,8 +34,13 @@
   height: 100px;
   width: 100px;
   border-radius: 50%;
-  background-color: white;
+  background-color: #d3ffd0;
   z-index: 20;
+  cursor: pointer;
+  box-shadow: 0px 0px 26px 3px #51972d;
+}
+#div_id_status .oportunity-status article.status .status-circle[passed=on] {
+  background-color: #51972d;
 }
 #div_id_status .oportunity-status article.status:after {
   content: "";

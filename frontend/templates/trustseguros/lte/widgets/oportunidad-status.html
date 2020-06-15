@@ -1,8 +1,13 @@
+{% load oportunidad %}
+
 <div class="oportunity-status">
+    <input type="hidden" name="{{ widget.name }}" id="id_{{ widget.name }}" value="{{ widget.value }}">
     {% for choice in widget.attrs.choices %}
         <article class="status">
             <span>{{ choice.1 }}</span>
-            <div class="status-circle" passed="on"></div>
+            <div class="status-circle"
+                 passed="{{ choice|passed:widget.value }}">
+            </div>
         </article>
     {% endfor %}
 </div>

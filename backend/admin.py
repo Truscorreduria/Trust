@@ -281,3 +281,13 @@ class SolicitudRenovacionAdmin(admin.ModelAdmin):
         'forma_pago',
         'medio_pago',
         'monto_cuota')
+
+
+@admin.register(Oportunity)
+class OportunityAdmin(admin.ModelAdmin):
+    date_hierarchy = 'created'
+    list_display = (
+        'campain',
+        'linea',
+        'prospect',
+        'status')

@@ -1332,16 +1332,17 @@ class Roles(Datatables):
 
 
 class Oportunidades(Datatables):
+    linea = None
     modal_width = 1200
     model = Oportunity
     form = OportunityForm
     list_display = ('prospect',)
     search_fields = ('prospect',)
-    linea = None
     form_template = "trustseguros/lte/oportunity.html"
+    list_template = "trustseguros/lte/oportunity-table.html"
 
     media = {
-        'css': ('trustseguros/lte/css/oportunity-status.css', )
+        'css': ('trustseguros/lte/css/oportunity-status.css',),
     }
 
     def get_queryset(self, filters, search_value):
@@ -1360,6 +1361,20 @@ class Oportunidades(Datatables):
     def post(self, request, linea):
         # self.linea = linea
         return super().post(request)
+
+    def save_related(self, instance, data):
+        try:
+            prospect_form = ProspectForm(data,
+                                         instance=Prospect.objects.get(
+                                             cedula=data.get('cedula')))
+        except ObjectDoesNotExist as error:
+            prospect_form = ProspectForm(data)
+        if prospect_form.is_valid():
+            prospect_form.save()
+        else:
+            print(prospect_form.errors)
+        instance.prospect = prospect_form.instance
+        instance.save()
 
 
 def iniciar_proc():

@@ -12,3 +12,13 @@ def has_line(user, linea):
         return 'checked="checked"'
     except ObjectDoesNotExist:
         return ""
+
+
+@register.filter('passed')
+def passed(choice, status):
+    try:
+        if int(choice[0]) <= int(status):
+            return "on"
+        return "off"
+    except:
+        return "off"

@@ -690,20 +690,23 @@ class UserForm(forms.ModelForm):
 
 
 class ProspectForm(forms.ModelForm):
+    cedula = forms.CharField(required=True, label="Cédula")
     domicilio = forms.CharField(label="Dirección", required=False, widget=forms.Textarea(
         attrs={
             'rows': '4',
         }
     ))
+
     class Meta:
         model = Prospect
         fields = '__all__'
 
 
 class OportunityForm(forms.ModelForm):
-    status = forms.ChoiceField(widget=OportunityStatusWidget, label="")
-    aseguradoras = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradoras",
-                                          widget=forms.CheckboxSelectMultiple, empty_label=None)
+    status = forms.Field(widget=OportunityStatusWidget, label="", initial=OportunityStatus.PENDIENTE)
+    # aseguradoras = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradoras",
+    #                                       required=False,
+    #                                       widget=forms.CheckboxSelectMultiple, empty_label=None)
     aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradora", required=False)
     days = forms.CharField(label="Dias transcurridos", required=False, widget=forms.TextInput(
         attrs={
@@ -714,33 +717,41 @@ class OportunityForm(forms.ModelForm):
         attrs={
             'form': ProspectForm,
             'fields': (
+                ('cedula', 'email_personal'),
                 ('primer_nombre', 'segundo_nombre'),
                 ('apellido_paterno', 'apellido_materno'),
-                ('cedula', 'email_personal'),
                 ('telefono', 'celular'),
                 ('genero', 'estado_civil'),
                 ('departamento', 'municipio'),
                 ('domicilio',),
-            )
+            ),
+            'primary_key': 'cedula'
         }
     ))
 
-    marca = forms.CharField(required=False)
-    modelo = forms.CharField(required=False)
-    anno = forms.CharField(required=False, label="Año")
-    chasis = forms.CharField(required=False)
-    motor = forms.CharField(required=False)
     valor_nuevo = forms.FloatField(required=False, label="Valor de nuevo")
     rc_exceso = forms.BooleanField(required=False, label="RC en exceso")
     valor_exceso = forms.FloatField(required=False, label="Valor exceso")
 
-
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
+    json_data = forms.Field(label="", required=False, widget=JsonWidget)
+
     class Meta:
         model = Oportunity
-        fields = '__all__'
+        exclude = ('linea',)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            kwargs.update(
+                initial={
+                    'json_data': instance,
+                    'prospect': instance.prospect
+                }
+            )
+        super().__init__(*args, **kwargs)
 
 
 class LineaForm(forms.ModelForm):
