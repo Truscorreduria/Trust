@@ -701,6 +701,25 @@ class ProspectForm(forms.ModelForm):
         model = Prospect
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        super().__init__(*args, **kwargs)
+        if not instance:
+            self.fields['primer_nombre'].widget.attrs['readonly'] = 'readonly'
+            self.fields['segundo_nombre'].widget.attrs['readonly'] = 'readonly'
+            self.fields['apellido_paterno'].widget.attrs['readonly'] = 'readonly'
+            self.fields['apellido_materno'].widget.attrs['readonly'] = 'readonly'
+            self.fields['telefono'].widget.attrs['readonly'] = 'readonly'
+            self.fields['celular'].widget.attrs['readonly'] = 'readonly'
+            self.fields['domicilio'].widget.attrs['readonly'] = 'readonly'
+            self.fields['departamento'].widget.attrs['disabled'] = 'disabled'
+            self.fields['municipio'].widget.attrs['disabled'] = 'disabled'
+            self.fields['genero'].widget.attrs['disabled'] = 'disabled'
+            self.fields['estado_civil'].widget.attrs['disabled'] = 'disabled'
+            self.fields['tipo_identificacion'].required = True
+        else:
+            self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
+
 
 class OportunityForm(forms.ModelForm):
     status = forms.Field(widget=OportunityStatusWidget, label="", initial=OportunityStatus.PENDIENTE)
