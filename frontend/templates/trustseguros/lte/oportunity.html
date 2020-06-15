@@ -78,12 +78,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col-md-4">
                                 <div class="card">
-                                    <div class="card-header">Compañias a cotizar</div>
+                                    <div class="card-header">Datos cotización de vehículos</div>
                                     <div class="card-body">
                                         <div class="row">
-                                            {% comment %}<div class="col">{{ form.aseguradoras|as_crispy_field }}</div>{% endcomment %}
                                             <div class="col">
                                                 <div class="row">
                                                     <div class="col">{{ form.valor_nuevo|as_crispy_field }}</div>
@@ -99,8 +98,13 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col">
-
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">Valores de cotización</div>
+                                    <div class="card-body">
+                                        {{ aseguradoras }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
