@@ -716,7 +716,7 @@ class ProspectForm(forms.ModelForm):
             self.fields['municipio'].widget.attrs['disabled'] = 'disabled'
             self.fields['genero'].widget.attrs['disabled'] = 'disabled'
             self.fields['estado_civil'].widget.attrs['disabled'] = 'disabled'
-            self.fields['tipo_identificacion'].required = True
+            self.fields['email_personal'].widget.attrs['disabled'] = 'disabled'
         else:
             self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
 
