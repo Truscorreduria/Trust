@@ -758,7 +758,8 @@ class Aseguradoras(Datatables):
             'fields': (
                 ('name', 'ruc'),
                 ('phone', 'email'),
-                ('emision', 'exceso'),
+                ('emision', 'exceso', 'tarifa'),
+                ('coaseguro_robo', 'coaseguro_dano', 'deducible'),
                 ('address',),
             )
         },

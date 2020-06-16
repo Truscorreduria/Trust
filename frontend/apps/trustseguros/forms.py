@@ -24,6 +24,12 @@ class ValorDepreciacion(forms.ModelForm):
 
 
 class AseguradoraForm(forms.ModelForm):
+    address = forms.CharField(required=False, label="", widget=forms.Textarea(
+        attrs={
+            'rows': 4
+        }
+    ))
+
     depreciacion = forms.Field(required=False, label="",
                                widget=TableBorderedInput(
                                    attrs={
@@ -723,7 +729,6 @@ class ProspectForm(forms.ModelForm):
 
 class OportunityForm(forms.ModelForm):
     status = forms.Field(widget=OportunityStatusWidget, label="", initial=OportunityStatus.PENDIENTE)
-    aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), label="Aseguradora", required=False)
     days = forms.CharField(label="Dias transcurridos", required=False, widget=forms.TextInput(
         attrs={
             'readonly': 'readonly'

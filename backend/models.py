@@ -127,7 +127,11 @@ class Aseguradora(BaseEntity, Base):
     email = models.EmailField(max_length=165, verbose_name="email de contacto", null=True, blank=True)
     address = models.TextField(max_length=600, verbose_name="dirección", null=True, blank=True)
     emision = models.FloatField(default=2.0, verbose_name="derecho de emision")
-    exceso = models.FloatField(default=0.0, verbose_name="Porcentaje Exceso")
+    exceso = models.FloatField(default=6.666, verbose_name="Porcentaje Exceso")
+    tarifa = models.FloatField(default=11.0, verbose_name="Tarifa por millar")
+    coaseguro_robo = models.FloatField(default=20.0, verbose_name="Coaseguro robo")
+    coaseguro_dano = models.FloatField(default=20.0, verbose_name="Coaseguro daño")
+    deducible = models.FloatField(default=100.0, verbose_name="Mínimo deducible")
 
     def __str__(self):
         return self.name
@@ -1815,6 +1819,7 @@ class Oportunity(BasePoliza):
     prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"),
                                  null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
+    aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "oportunidad"
