@@ -1857,7 +1857,12 @@ class Oportunity(BasePoliza):
 class OportunityQuotation(Base):
     oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE)
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
-    emision = models.FloatField(default=0.0)
+    emision = models.FloatField(null=True, verbose_name="Derecha de emision")
+    exceso = models.FloatField(null=True, verbose_name="Porcentaje Exceso")
+    tarifa = models.FloatField(null=True, verbose_name="Tarifa por millar")
+    coaseguro_robo = models.FloatField(null=True, verbose_name="Coaseguro robo")
+    coaseguro_dano = models.FloatField(null=True, verbose_name="Coaseguro daño")
+    deducible = models.FloatField(null=True, verbose_name="Mínimo deducible")
 
 
 def user_lines(user):
