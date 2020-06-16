@@ -283,6 +283,12 @@ class SolicitudRenovacionAdmin(admin.ModelAdmin):
         'monto_cuota')
 
 
+class OportunityRows(admin.TabularInline):
+    model = OportunityQuotation
+    extra = 0
+    classes = ('grp-collapse', 'grp-open')
+
+
 @admin.register(Oportunity)
 class OportunityAdmin(admin.ModelAdmin):
     date_hierarchy = 'created'
@@ -291,3 +297,4 @@ class OportunityAdmin(admin.ModelAdmin):
         'linea',
         'prospect',
         'status')
+    inlines = [OportunityRows, ]

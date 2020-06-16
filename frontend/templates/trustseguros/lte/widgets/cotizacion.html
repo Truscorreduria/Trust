@@ -1,54 +1,64 @@
-<table class="table">
-    <thead>
-    <tr>
-        <th></th>
-        {% for company in widget.attrs.companies %}
-            <th>{{ company.name }}</th>
-        {% endfor %}
-    </tr>
-    <tr>
-        <th></th>
+{% load oportunidad %}
+{{ widget.attrs.instance }}
+{% with widget.attrs.instance as oportunity %}
 
-        {% for company in widget.attrs.companies %}
-            <th style="text-align: right; padding: 0 7px 0 0;">
-                <input type="checkbox" name="{{ widget.name }}_{{ company.name }}" value="{{ company.pk }}"
-                data-tafifa="{{ company.tarifa }}" data-tafifa="" data-tafifa="" data-tafifa="" >
-            </th>
-        {% endfor %}
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>DEDUCIBLE</td>
-        {% for company in widget.attrs.companies %}
-            <td style="text-align: right; padding-right: 7px">
-                <span class="dollar">-</span>
-            </td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td>COASEGURO</td>
-        {% for company in widget.attrs.companies %}
-            <td style="text-align: right; padding-right: 7px">
-                <span class="dollar">-</span>
-            </td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td>COASEGURO ROBO</td>
-        {% for company in widget.attrs.companies %}
-            <td style="text-align: right; padding-right: 7px">
-                <span class="dollar">-</span>
-            </td>
-        {% endfor %}
-    </tr>
-    <tr>
-        <td>PRIMA TOTAL</td>
-        {% for company in widget.attrs.companies %}
-            <td style="text-align: right; padding-right: 7px">
-                <span class="dollar">-</span>
-            </td>
-        {% endfor %}
-    </tr>
-    </tbody>
-</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            {% for company in widget.attrs.companies %}
+                <th>{{ company.name }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            <th></th>
+
+            {% for company in widget.attrs.companies %}
+                <th style="text-align: right; padding: 0 7px 0 0;">
+                    <input type="checkbox" name="{{ widget.name }}_{{ company.name }}" value="{{ company.pk }}"
+                           data-tafifa="{{ company.tarifa }}" data-deducible="{{ company.deducible }}"
+                           data-emision="{{ company.emision }}"
+                           data-exceso="{{ company.exceso }}"
+                           data-coaseguro-dano="{{ company.coaseguro_dano }}"
+                           data-coaseguro-robo="{{ company.coaseguro_robo }}"
+                           data-tafifa="" {{ company|checked:oportunity }}>
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>DEDUCIBLE</td>
+            {% for company in widget.attrs.companies %}
+                <td style="text-align: right; padding-right: 7px">
+                    <span class="dollar">{{ company|deducible:oportunity }}</span>
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>COASEGURO</td>
+            {% for company in widget.attrs.companies %}
+                <td style="text-align: right; padding-right: 7px">
+                    <span class="dollar">{{ company|coaseguro_dano:oportunity }}</span>
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>COASEGURO ROBO</td>
+            {% for company in widget.attrs.companies %}
+                <td style="text-align: right; padding-right: 7px">
+                    <span class="dollar">{{ company|coaseguro_robo:oportunity }}</span>
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>PRIMA TOTAL</td>
+            {% for company in widget.attrs.companies %}
+                <td style="text-align: right; padding-right: 7px">
+                    <span class="dollar">{{ company|prima:oportunity }}</span>
+                </td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+{% endwith %}

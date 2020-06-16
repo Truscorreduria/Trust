@@ -1864,6 +1864,9 @@ class OportunityQuotation(Base):
     coaseguro_dano = models.FloatField(null=True, verbose_name="Coaseguro daño")
     deducible = models.FloatField(null=True, verbose_name="Mínimo deducible")
 
+    @property
+    def prima(self):
+        return 0.0
 
 def user_lines(user):
     return LineaUser.objects.filter(user=user)

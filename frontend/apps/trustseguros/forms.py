@@ -764,7 +764,8 @@ class OportunityForm(forms.ModelForm):
 
     cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
         attrs={
-            'companies': Aseguradora.objects.all()
+            'companies': Aseguradora.objects.all(),
+            'instance': None
         }
     ))
 
@@ -782,6 +783,8 @@ class OportunityForm(forms.ModelForm):
                 }
             )
         super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['cotizacion'].widget.attrs['instance'] = instance
 
 
 class LineaForm(forms.ModelForm):
