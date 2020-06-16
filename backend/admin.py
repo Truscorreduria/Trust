@@ -283,6 +283,11 @@ class SolicitudRenovacionAdmin(admin.ModelAdmin):
         'monto_cuota')
 
 
+@admin.register(Linea)
+class LineaAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+
+
 class OportunityRows(admin.TabularInline):
     model = OportunityQuotation
     extra = 0

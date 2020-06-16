@@ -1367,20 +1367,21 @@ class Oportunidades(Datatables):
     }
 
     def get_queryset(self, filters, search_value):
+        print(self.linea)
         if self.linea:
             return super().get_queryset(filters, search_value).filter(linea=self.linea)
         return super().get_queryset(filters, search_value)
 
     def get(self, request, linea):
-        self.linea = linea
+        self.linea = Linea.objects.get(id=linea)
         return super().get(request)
 
     def put(self, request, linea):
-        # self.linea = linea
+        self.linea = Linea.objects.get(id=linea)
         return super().put(request)
 
     def post(self, request, linea):
-        # self.linea = linea
+        self.linea = Linea.objects.get(id=linea)
         return super().post(request)
 
     def save_related(self, instance, data):

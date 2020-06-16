@@ -227,7 +227,7 @@
                 <ul class="nav nav-treeview">
                     {% for linea in user.lineas %}
                         <li class="nav-item">
-                            <a href="{% url 'trustseguros:oportunidades' linea.id %}" class="nav-link">
+                            <a href="{% url 'trustseguros:oportunidades' linea.linea.id %}" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>
                                     {{ linea.linea.name }}
