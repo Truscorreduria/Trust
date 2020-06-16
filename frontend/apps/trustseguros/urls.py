@@ -14,6 +14,7 @@ urlpatterns = [
     path('lineas/', Lineas.as_view(), name="lineas"),
     path('campains/', Campains.as_view(), name="campains"),
     path('aseguradoras/', Aseguradoras.as_view(), name="aseguradoras"),
+    path('tarifas/', Tarifas.as_view(), name="tarifas"),
     path('grupos/', Grupos.as_view(), name="grupos"),
     path('ramos/', Ramos.as_view(), name="ramos"),
     path('subramos/', SubRamos.as_view(), name="subramos"),

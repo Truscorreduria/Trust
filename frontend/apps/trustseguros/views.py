@@ -873,6 +873,26 @@ class SubRamos(Datatables):
                 f.save()
 
 
+class Tarifas(Datatables):
+    model = Tarifa
+    form = TarifaForm
+    list_display = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano', 'deducible')
+    list_filter = ('aseguradora',)
+    search_fields = ('marca', 'modelo')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('aseguraroda', 'tarifa'),
+                ('marca', 'modelo'),
+                ('exceso', 'deducible'),
+                ('coaseguro_robo', 'coaseguro_dano'),
+            )
+        },
+    ]
+
+
 # endregion
 
 

@@ -199,6 +199,7 @@ class Anno(Base):
         ordering = ['antiguedad', ]
 
 
+# esto es exclusivo para el uso del cotizador
 class Referencia(Base):
     marca = models.CharField(max_length=65)
     modelo = models.CharField(max_length=65)
@@ -217,6 +218,7 @@ class Referencia(Base):
         return "%s, %s" % (self.marca, self.modelo)
 
 
+# esto es exclusivo para el uso del cotizador
 class Marca(Base):
     marca = models.CharField(max_length=65)
     porcentaje_deducible = models.FloatField(default=0.25,
@@ -232,6 +234,20 @@ class Marca(Base):
 
     class Meta:
         verbose_name_plural = "marcas con recargo"
+
+
+class Tarifa(Base):
+    aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE, related_name="tarifa_aseguradora_referencia")
+    marca = models.CharField(max_length=65)
+    modelo = models.CharField(max_length=65)
+    exceso = models.FloatField(default=6.666, verbose_name="Porcentaje Exceso")
+    tarifa = models.FloatField(default=11.0, verbose_name="Tarifa por millar")
+    coaseguro_robo = models.FloatField(default=20.0, verbose_name="Coaseguro robo")
+    coaseguro_dano = models.FloatField(default=20.0, verbose_name="Coaseguro daño")
+    deducible = models.FloatField(default=100.0, verbose_name="Mínimo deducible")
+
+    def __str__(self):
+        return self.marca
 
 
 # endregion
@@ -867,6 +883,7 @@ class Poliza(BasePoliza):
             ("trust_polizas_poliza", "Pólizas"),
             ("trust_polizas_tramite", "Trámites"),
             ("trust_catalogos_aseguradora", "Catálogos Aseguradoras"),
+            ("trust_catalogos_tarifa", "Catálogos Tarifas"),
             ("trust_catalogos_linea", "Línea de negocios"),
             ("trust_catalogos_campain", "Campañas"),
             ("trust_catalogos_grupo", "Catálogos Grupos"),

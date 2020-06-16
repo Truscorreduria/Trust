@@ -58,6 +58,13 @@ class AseguradoraForm(forms.ModelForm):
         super(AseguradoraForm, self).__init__(*args, **kwargs)
 
 
+class TarifaForm(forms.ModelForm):
+
+    class Meta:
+        model = Tarifa
+        fields = '__all__'
+
+
 class ContactoForm(forms.ModelForm):
     prefix = 'cliente_contacto'
 
