@@ -757,10 +757,6 @@ class OportunityForm(forms.ModelForm):
         }
     ))
 
-    valor_nuevo = forms.FloatField(required=False, label="Valor de nuevo")
-    rc_exceso = forms.BooleanField(required=False, label="RC en exceso")
-    valor_exceso = forms.FloatField(required=False, label="Valor exceso")
-
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 

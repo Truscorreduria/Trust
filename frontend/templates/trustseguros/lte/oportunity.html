@@ -58,26 +58,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-header">Comentarios</div>
-                                    <div class="card-body">
-                                        {{ form.bitacora }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="card">
-                                    <div class="card-header">Archivos</div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">{{ form.drive }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-header">Datos cotización de vehículos</div>
@@ -107,6 +87,28 @@
                                 </div>
                             </div>
                         </div>
+                        {% if instance.id %}
+                            <div class="row">
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header">Comentarios</div>
+                                        <div class="card-body">
+                                            {{ form.bitacora }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card">
+                                        <div class="card-header">Archivos</div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col">{{ form.drive }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </form>
                 </div>
             </div>

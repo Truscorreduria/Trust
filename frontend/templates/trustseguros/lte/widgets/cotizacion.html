@@ -10,7 +10,7 @@
         <th></th>
 
         {% for company in widget.attrs.companies %}
-            <th style="text-align: right">
+            <th style="text-align: right; padding: 0 7px 0 0;">
                 <input type="checkbox" name="{{ widget.name }}_{{ company.name }}" value="{{ company.pk }}">
             </th>
         {% endfor %}

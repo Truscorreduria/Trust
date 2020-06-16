@@ -1837,6 +1837,9 @@ class Oportunity(BasePoliza):
                                  null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
+    valor_nuevo = models.FloatField(default=0.0, verbose_name="Valor de nuevo")
+    rc_exceso = models.BooleanField(default=False, verbose_name="RC en exceso")
+    valor_exceso = models.FloatField(default=0.0, verbose_name="Valor exceso")
 
     class Meta:
         verbose_name = "oportunidad"
