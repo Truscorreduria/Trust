@@ -1363,6 +1363,7 @@ class Oportunidades(Datatables):
     list_template = "trustseguros/lte/oportunity-table.html"
 
     media = {
+        'js': ['trustseguros/lte/js/municipio.js', ],
         'css': ('trustseguros/lte/css/oportunity-status.css',),
     }
 
