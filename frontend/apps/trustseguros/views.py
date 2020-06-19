@@ -1406,6 +1406,8 @@ class Oportunidades(Datatables):
                                                             oportunity=instance).delete()
                         except ObjectDoesNotExist:
                             pass
+                instance = form.instance
+                form = self.get_form()(instance=instance)
                 html_form = self.html_form(instance, request, form, 'POST')
             else:
                 errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
