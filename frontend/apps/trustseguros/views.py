@@ -1368,7 +1368,6 @@ class Oportunidades(Datatables):
     }
 
     def get_queryset(self, filters, search_value):
-        print(self.linea)
         if self.linea:
             return super().get_queryset(filters, search_value).filter(linea=self.linea)
         return super().get_queryset(filters, search_value)
@@ -1429,6 +1428,7 @@ class Oportunidades(Datatables):
         else:
             print(prospect_form.errors)
         instance.prospect = prospect_form.instance
+        instance.linea = self.linea
         instance.save()
 
 
