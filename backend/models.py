@@ -1837,9 +1837,11 @@ class Oportunity(BasePoliza):
                                  null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
-    valor_nuevo = models.FloatField(default=0.0, verbose_name="Valor de nuevo")
-    rc_exceso = models.BooleanField(default=False, verbose_name="RC en exceso")
-    valor_exceso = models.FloatField(default=0.0, verbose_name="Valor exceso")
+    valor_nuevo = models.FloatField(default=0.0, verbose_name="Valor de nuevo", null=True, blank=True)
+    rc_exceso = models.BooleanField(default=False, verbose_name="RC en exceso", null=True, blank=True)
+    valor_exceso = models.FloatField(default=0.0, verbose_name="Valor exceso", null=True, blank=True)
+    extra_data = models.CharField(max_length=1000000, null=True, blank=True,
+                                  verbose_name="datos técnicos")
 
     class Meta:
         verbose_name = "oportunidad"
@@ -1867,6 +1869,7 @@ class OportunityQuotation(Base):
     @property
     def prima(self):
         return 0.0
+
 
 def user_lines(user):
     return LineaUser.objects.filter(user=user)

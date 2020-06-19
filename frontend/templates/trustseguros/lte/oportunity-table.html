@@ -52,7 +52,7 @@
                         filters: `{'sub_ramo_id': '${_this.val()}'}`
                     },
                     success: function (response) {
-                        const $fieldset = $('.json_data_fieldset').empty();
+                        const $fieldset = $('.extra_data_fieldset').empty();
                         console.log(response)
                         $.each(response, function (i, o) {
                             $fieldset.append(`

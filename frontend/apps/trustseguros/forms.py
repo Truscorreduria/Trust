@@ -760,7 +760,7 @@ class OportunityForm(forms.ModelForm):
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
-    json_data = forms.Field(label="", required=False, widget=JsonWidget)
+    extra_data = forms.Field(label="", required=False, widget=JsonWidget)
 
     cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
         attrs={
@@ -778,7 +778,7 @@ class OportunityForm(forms.ModelForm):
         if instance:
             kwargs.update(
                 initial={
-                    'json_data': instance,
+                    'extra_data': instance,
                     'prospect': instance.prospect
                 }
             )

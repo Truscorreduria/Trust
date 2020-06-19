@@ -1,7 +1,8 @@
 {% with widget.value.sub_ramo as sub_ramo %}
 
+
     <input type="hidden" id="id_{{ widget.name }}" name="{{ widget.name }}"
-           value="{{ widget.value.json_data }}">
+           value="{{ widget.value.extra_data }}">
 
     <div class="container {{ widget.name }}_fieldset">
         {% for field in sub_ramo.campos_adicionales %}
@@ -39,7 +40,7 @@
                 });
             };
 
-            {% if widget.value.json_data %}
+            {% if widget.value.extra_data %}
 
                 load_data();
 
