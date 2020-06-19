@@ -15,7 +15,8 @@
 
             {% for company in widget.attrs.companies %}
                 <th style="text-align: right; padding: 0 7px 0 0;">
-                    <input type="checkbox" name="{{ widget.name }}_{{ company.name }}" value="{{ company.pk }}"
+                    <input type="checkbox" name="{{ widget.name }}" value="{{ company.pk }}"
+                           class="aseguradora-check"
                            data-tafifa="{{ company.tarifa }}" data-deducible="{{ company.deducible }}"
                            data-emision="{{ company.emision }}"
                            data-exceso="{{ company.exceso }}"

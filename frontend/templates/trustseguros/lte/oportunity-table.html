@@ -118,7 +118,6 @@
                 }
             });
 
-
             $(document).on('click', '.prospect-button-clear', function () {
                 $('#id_primer_nombre').val('').attr('readonly', 'readonly');
                 $('#id_segundo_nombre').val('').attr('readonly', 'readonly');
@@ -136,6 +135,34 @@
                 //$('#id_tipo_identificacion').removeAttr('disabled', 'disabled');
                 $(this).css('display', 'none');
             });
+
+            $(document).on('change', '.aseguradora-check', function () {
+                const form = document.getElementById('{{ opts.model_name }}-form');
+                const data = new FormData(form);
+                data.append('cotizar', 'cotizar');
+                $.ajax('.', {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response, textStatus, xhr) {
+                        redraw_object(response);
+                        if (xhr.status === 200) {
+                            update_table(response);
+                            $.growl.notice({
+                                title: `Notificación`,
+                                message: `<p>${response.instance.str} se guardó con éxito!</p>`
+                            });
+                        }
+                        $.each(response.errors, function (n, error) {
+                            $.growl.error({
+                                message: `<p>${error.key}</p>
+                                      <ul>${li_errors(error.errors)}</ul>`
+                            });
+                        });
+                    },
+                })
+            })
 
         })
     </script>
