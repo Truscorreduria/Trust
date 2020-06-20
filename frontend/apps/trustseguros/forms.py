@@ -725,11 +725,11 @@ class ProspectForm(forms.ModelForm):
             self.fields['telefono'].widget.attrs['readonly'] = 'readonly'
             self.fields['celular'].widget.attrs['readonly'] = 'readonly'
             self.fields['domicilio'].widget.attrs['readonly'] = 'readonly'
-            self.fields['departamento'].widget.attrs['disabled'] = 'disabled'
-            self.fields['municipio'].widget.attrs['disabled'] = 'disabled'
-            self.fields['genero'].widget.attrs['disabled'] = 'disabled'
-            self.fields['estado_civil'].widget.attrs['disabled'] = 'disabled'
-            self.fields['email_personal'].widget.attrs['disabled'] = 'disabled'
+            self.fields['departamento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['municipio'].widget.attrs['readonly'] = 'readonly'
+            self.fields['genero'].widget.attrs['readonly'] = 'readonly'
+            self.fields['estado_civil'].widget.attrs['readonly'] = 'readonly'
+            self.fields['email_personal'].widget.attrs['readonly'] = 'readonly'
         else:
             self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
 

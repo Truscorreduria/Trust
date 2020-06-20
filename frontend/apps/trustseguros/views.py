@@ -1382,38 +1382,6 @@ class Oportunidades(Datatables):
 
     def post(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
-        if 'cotizar' in request.POST:
-            errors = []
-            status = 200
-            instance = Oportunity.objects.get(id=request.POST.get('id'))
-            form = self.get_form()(request.POST, instance=instance)
-            if form.is_valid():
-                for aseguradora in Aseguradora.objects.all():
-                    if str(aseguradora.id) in request.POST.getlist('cotizacion'):
-                        cotizacion, _ = OportunityQuotation.objects.get_or_create(aseguradora=aseguradora,
-                                                                                  oportunity=instance)
-                        cotizacion.emision = aseguradora.emision
-                        cotizacion.exceso = aseguradora.exceso
-                        cotizacion.tarifa = aseguradora.tarifa
-                        cotizacion.coaseguro_robo = aseguradora.coaseguro_robo
-                        cotizacion.coaseguro_dano = aseguradora.coaseguro_dano
-                        cotizacion.deducible = aseguradora.deducible
-                        cotizacion.save()
-                    else:
-                        try:
-                            OportunityQuotation.objects.get(aseguradora=aseguradora,
-                                                            oportunity=instance).delete()
-                        except ObjectDoesNotExist:
-                            pass
-                instance = form.instance
-                form = self.get_form()(instance=instance)
-                html_form = self.html_form(instance, request, form, 'POST')
-            else:
-                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                status = 203
-            return JsonResponse({'instance': instance.to_json(),
-                                 'form': html_form, 'errors': errors}, encoder=Codec,
-                                status=status)
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -1430,6 +1398,34 @@ class Oportunidades(Datatables):
         instance.prospect = prospect_form.instance
         instance.linea = self.linea
         instance.save()
+
+        if 'cotizar' in data:
+            for aseguradora in Aseguradora.objects.all():
+                if str(aseguradora.id) in data.getlist('cotizacion'):
+                    try:
+                        cotizacion, _ = OportunityQuotation.objects.get_or_create(aseguradora=aseguradora,
+                                                                                  oportunity=instance)
+                        cotizacion.marca = data.get('MARCA')
+                        cotizacion.modelo = data.get('MODELO')
+                        cotizacion.anno = int(data.get('ANIO'))
+
+                        cotizacion.suma_asegurada = aseguradora.depreciar(instance.valor_nuevo, cotizacion.anno)
+                        cotizacion.emision = aseguradora.emision
+                        cotizacion.exceso = aseguradora.exceso
+                        cotizacion.tarifa = aseguradora.tarifa
+                        cotizacion.coaseguro_robo = aseguradora.coaseguro_robo
+                        cotizacion.coaseguro_dano = aseguradora.coaseguro_dano
+                        cotizacion.deducible = aseguradora.deducible
+                        cotizacion.save()
+                    except:
+                        OportunityQuotation.objects.get(aseguradora=aseguradora,
+                                                        oportunity=instance).delete()
+                else:
+                    try:
+                        OportunityQuotation.objects.get(aseguradora=aseguradora,
+                                                        oportunity=instance).delete()
+                    except ObjectDoesNotExist:
+                        pass
 
 
 def iniciar_proc():

@@ -149,7 +149,6 @@ class Aseguradora(BaseEntity, Base):
         return round((valor_nuevo * factor), 2)
 
     def depreciar_post(self, request):
-        print(request.POST)
         valor_nuevo = float(request.POST.get('valor_nuevo'))
         anno = int(request.POST.get('anno'))
         today = datetime.now()
@@ -1859,16 +1858,35 @@ class Oportunity(BasePoliza):
 class OportunityQuotation(Base):
     oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE)
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
-    emision = models.FloatField(null=True, verbose_name="Derecha de emision")
-    exceso = models.FloatField(null=True, verbose_name="Porcentaje Exceso")
-    tarifa = models.FloatField(null=True, verbose_name="Tarifa por millar")
-    coaseguro_robo = models.FloatField(null=True, verbose_name="Coaseguro robo")
-    coaseguro_dano = models.FloatField(null=True, verbose_name="Coaseguro daño")
-    deducible = models.FloatField(null=True, verbose_name="Mínimo deducible")
+
+    marca = models.CharField(max_length=65, null=True, blank=True)
+    modelo = models.CharField(max_length=65, null=True, blank=True)
+    anno = models.CharField(max_length=65, null=True, blank=True)
+
+    factor_depreciacion = models.FloatField(default=0.0, blank=True)
+    suma_asegurada = models.FloatField(default=0.0, blank=True, verbose_name="Derecha de emision")
+    emision = models.FloatField(default=0.0, blank=True, verbose_name="Derecha de emision")
+    exceso = models.FloatField(default=0.0, blank=True, verbose_name="Porcentaje Exceso")
+    tarifa = models.FloatField(default=0.0, blank=True, verbose_name="Tarifa por millar")
+    coaseguro_robo = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro robo")
+    coaseguro_dano = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro daño")
+    deducible = models.FloatField(default=0.0, blank=True, verbose_name="Mínimo deducible")
 
     @property
     def prima(self):
-        return 0.0
+        return round((self.oportunity.valor_nuevo * self.tarifa) / 1000, 2)
+
+    @property
+    def emision_total(self):
+        return round((self.emision * self.prima) / 100, 2)
+
+    @property
+    def iva(self):
+        return round((self.prima + self.emision_total) * 0.15, 2)
+
+    @property
+    def prima_total(self):
+        return round(self.prima + self.emision_total + 55 + self.iva, 2)
 
 
 def user_lines(user):

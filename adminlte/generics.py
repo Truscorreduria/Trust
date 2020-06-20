@@ -172,7 +172,7 @@ class Datatables(View):
         status = 200
         errors = []
         instance = None
-
+        html_form = ""
         if 'list' in request.POST:
             order = None
             start = int(request.POST.get('start', 0))
@@ -205,7 +205,6 @@ class Datatables(View):
             else:
                 errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
                 status = 203
-                print(errors)
             html_form = self.html_form(instance, request, form, 'POST')
 
         return JsonResponse({'instance': instance.to_json(),

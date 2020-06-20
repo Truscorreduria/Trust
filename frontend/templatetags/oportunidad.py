@@ -33,6 +33,14 @@ def checked(company, oportunity):
         return ''
 
 
+@register.filter('suma')
+def suma(company, oportunity):
+    try:
+        return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).suma_asegurada
+    except:
+        return '-'
+
+
 @register.filter('deducible')
 def deducible(company, oportunity):
     try:
@@ -60,6 +68,6 @@ def coaseguro_robo(company, oportunity):
 @register.filter('prima')
 def prima(company, oportunity):
     try:
-        return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).prima
+        return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).prima_total
     except:
         return '-'

@@ -1,5 +1,18 @@
-{% load oportunidad %}
-{{ widget.attrs.instance }}
+{% load oportunidad humanize %}
+
+<style type="text/css">
+    .dollar:before{
+        content: "U$";
+        padding-right: 3px;
+        font-size: .9em;
+    }
+    .percent:after{
+        content: "%";
+        padding-left: 3px;
+        font-size: .8em;
+    }
+</style>
+
 {% with widget.attrs.instance as oportunity %}
 
     <table class="table">
@@ -17,17 +30,20 @@
                 <th style="text-align: right; padding: 0 7px 0 0;">
                     <input type="checkbox" name="{{ widget.name }}" value="{{ company.pk }}"
                            class="aseguradora-check"
-                           data-tafifa="{{ company.tarifa }}" data-deducible="{{ company.deducible }}"
-                           data-emision="{{ company.emision }}"
-                           data-exceso="{{ company.exceso }}"
-                           data-coaseguro-dano="{{ company.coaseguro_dano }}"
-                           data-coaseguro-robo="{{ company.coaseguro_robo }}"
                            data-tafifa="" {{ company|checked:oportunity }}>
                 </th>
             {% endfor %}
         </tr>
         </thead>
         <tbody>
+        <tr>
+            <td>SUMA ASEGURADA</td>
+            {% for company in widget.attrs.companies %}
+                <td style="text-align: right; padding-right: 7px">
+                    <span class="dollar">{{ company|suma:oportunity|intcomma }}</span>
+                </td>
+            {% endfor %}
+        </tr>
         <tr>
             <td>DEDUCIBLE</td>
             {% for company in widget.attrs.companies %}
@@ -40,7 +56,7 @@
             <td>COASEGURO</td>
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right; padding-right: 7px">
-                    <span class="dollar">{{ company|coaseguro_dano:oportunity }}</span>
+                    <span class="percent">{{ company|coaseguro_dano:oportunity }}</span>
                 </td>
             {% endfor %}
         </tr>
@@ -48,7 +64,7 @@
             <td>COASEGURO ROBO</td>
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right; padding-right: 7px">
-                    <span class="dollar">{{ company|coaseguro_robo:oportunity }}</span>
+                    <span class="percent">{{ company|coaseguro_robo:oportunity }}</span>
                 </td>
             {% endfor %}
         </tr>
@@ -56,7 +72,7 @@
             <td>PRIMA TOTAL</td>
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right; padding-right: 7px">
-                    <span class="dollar">{{ company|prima:oportunity }}</span>
+                    <span class="dollar">{{ company|prima:oportunity|intcomma }}</span>
                 </td>
             {% endfor %}
         </tr>

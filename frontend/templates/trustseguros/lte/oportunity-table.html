@@ -86,10 +86,10 @@
                         $('#id_segundo_nombre').val(o.item.obj.segundo_nombre).removeAttr('readonly');
                         $('#id_apellido_paterno').val(o.item.obj.apellido_paterno).removeAttr('readonly');
                         $('#id_apellido_materno').val(o.item.obj.apellido_materno).removeAttr('readonly');
-                        $('#id_departamento').val(o.item.obj.departamento).removeAttr('disabled');
-                        $('#id_municipio').val(o.item.obj.municipio).removeAttr('disabled');
-                        $('#id_estado_civil').val(o.item.obj.estado_civil).removeAttr('disabled');
-                        $('#id_genero').val(o.item.obj.genero).removeAttr('disabled');
+                        $('#id_departamento').val(o.item.obj.departamento).removeAttr('readonly');
+                        $('#id_municipio').val(o.item.obj.municipio).removeAttr('readonly');
+                        $('#id_estado_civil').val(o.item.obj.estado_civil).removeAttr('readonly');
+                        $('#id_genero').val(o.item.obj.genero).removeAttr('readonly');
                         $('#id_telefono').val(o.item.obj.telefono).removeAttr('readonly');
                         $('#id_celular').val(o.item.obj.celular).removeAttr('readonly');
                         $('#id_domicilio').val(o.item.obj.domicilio).removeAttr('readonly');
@@ -105,10 +105,10 @@
                     $('#id_segundo_nombre').removeAttr('readonly');
                     $('#id_apellido_paterno').removeAttr('readonly');
                     $('#id_apellido_materno').removeAttr('readonly');
-                    $('#id_departamento').removeAttr('disabled');
-                    $('#id_municipio').removeAttr('disabled');
-                    $('#id_estado_civil').removeAttr('disabled');
-                    $('#id_genero').removeAttr('disabled');
+                    $('#id_departamento').removeAttr('readonly');
+                    $('#id_municipio').removeAttr('readonly');
+                    $('#id_estado_civil').removeAttr('readonly');
+                    $('#id_genero').removeAttr('readonly');
                     $('#id_telefono').removeAttr('readonly');
                     $('#id_celular').removeAttr('readonly');
                     $('#id_domicilio').removeAttr('readonly');
@@ -124,22 +124,22 @@
                 $('#id_segundo_nombre').val('').attr('readonly', 'readonly');
                 $('#id_apellido_paterno').val('').attr('readonly', 'readonly');
                 $('#id_apellido_materno').val('').attr('readonly', 'readonly');
-                $('#id_departamento').val('').attr('disabled', 'disabled');
-                $('#id_municipio').val('').attr('disabled', 'disabled');
-                $('#id_estado_civil').val('').attr('disabled', 'disabled');
-                $('#id_genero').val('').attr('disabled', 'disabled');
+                $('#id_departamento').val('').attr('readonly', 'readonly');
+                $('#id_municipio').val('').attr('readonly', 'readonly');
+                $('#id_estado_civil').val('').attr('readonly', 'readonly');
+                $('#id_genero').val('').attr('readonly', 'readonly');
                 $('#id_telefono').val('').attr('readonly', 'readonly');
                 $('#id_celular').val('').attr('readonly', 'readonly');
                 $('#id_domicilio').val('').attr('readonly', 'readonly');
                 $('#id_email_personal').val('').attr('readonly', 'readonly');
                 $('#id_cedula').val('').removeAttr('readonly', 'readonly');
-                //$('#id_tipo_identificacion').removeAttr('disabled', 'disabled');
                 $(this).css('display', 'none');
             });
 
             $(document).on('change', '.aseguradora-check', function () {
                 const form = document.getElementById('{{ opts.model_name }}-form');
                 const data = new FormData(form);
+                data.append('save', 'save');
                 data.append('cotizar', 'cotizar');
                 $.ajax('.', {
                     method: "post",
@@ -147,20 +147,7 @@
                     processData: false,
                     contentType: false,
                     success: function (response, textStatus, xhr) {
-                        redraw_object(response);
-                        if (xhr.status === 200) {
-                            update_table(response);
-                            $.growl.notice({
-                                title: `Notificación`,
-                                message: `<p>${response.instance.str} se guardó con éxito!</p>`
-                            });
-                        }
-                        $.each(response.errors, function (n, error) {
-                            $.growl.error({
-                                message: `<p>${error.key}</p>
-                                      <ul>${li_errors(error.errors)}</ul>`
-                            });
-                        });
+                        process_response(response, textStatus, xhr)
                     },
                 })
             })

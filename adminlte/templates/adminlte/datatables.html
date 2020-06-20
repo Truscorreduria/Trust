@@ -82,6 +82,23 @@
 
         const modal_width = parseInt('{{ modal_width }}');
 
+        function process_response(response, textStatus, xhr) {
+            redraw_object(response);
+            if (xhr.status === 200) {
+                update_table(response);
+                $.growl.notice({
+                    title: `Notificación`,
+                    message: `<p>${response.instance.str} se guardó con éxito!</p>`
+                });
+            }
+            $.each(response.errors, function (n, error) {
+                $.growl.error({
+                    message: `<p>${error.key}</p>
+                                      <ul>${li_errors(error.errors)}</ul>`
+                });
+            });
+        }
+
         const form_submit = function (e) {
             e.preventDefault();
             const data = new FormData(this);
@@ -93,20 +110,7 @@
                 processData: false,
                 contentType: false,
                 success: function (response, textStatus, xhr) {
-                    redraw_object(response);
-                    if (xhr.status === 200) {
-                        update_table(response);
-                        $.growl.notice({
-                            title: `Notificación`,
-                            message: `<p>${response.instance.str} se guardó con éxito!</p>`
-                        });
-                    }
-                    $.each(response.errors, function (n, error) {
-                        $.growl.error({
-                            message: `<p>${error.key}</p>
-                                      <ul>${li_errors(error.errors)}</ul>`
-                        });
-                    });
+                    process_response(response, textStatus, xhr)
                 },
                 error: function (error) {
                     console.log(error);
