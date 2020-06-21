@@ -136,7 +136,7 @@
                 $(this).css('display', 'none');
             });
 
-            $(document).on('change', '.aseguradora-check', function () {
+            const cotizar = function () {
                 const form = document.getElementById('{{ opts.model_name }}-form');
                 const data = new FormData(form);
                 data.append('save', 'save');
@@ -150,7 +150,13 @@
                         process_response(response, textStatus, xhr)
                     },
                 })
-            })
+            };
+
+            $(document).on('change', '.aseguradora-check', cotizar);
+            $(document).on('change', '#id_valor_nuevo', cotizar);
+            $(document).on('change', '#id_rc_exceso', cotizar);
+            $(document).on('change', '#id_valor_exceso', cotizar);
+            $(document).on('change', '#id_ANIO', cotizar);
 
         })
     </script>
