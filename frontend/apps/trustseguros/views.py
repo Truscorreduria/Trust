@@ -781,7 +781,6 @@ class Aseguradoras(Datatables):
     ]
 
     def save_related(self, instance, data):
-        print(data)
         for i in range(1, len(data.getlist('contactoaseguradora_id'))):
             if data.getlist('contactoaseguradora_id')[i] == '':
                 c = ContactoAseguradora(aseguradora=instance)
@@ -1414,10 +1413,12 @@ class Oportunidades(Datatables):
                             tarifa = Tarifa.objects.get(aseguradora=aseguradora, marca=cotizacion.marca,
                                                         modelo=cotizacion.modelo)
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_robo, cotizacion.deducible = tarifa.calcular_tarifa()
+                            cotizacion.coaseguro_robo, cotizacion.deducible, \
+                            cotizacion.exceso = tarifa.calcular_tarifa()
                         except ObjectDoesNotExist:
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_robo, cotizacion.deducible = aseguradora.calcular_tarifa()
+                            cotizacion.coaseguro_robo, cotizacion.deducible, \
+                            cotizacion.exceso = aseguradora.calcular_tarifa()
                         cotizacion.save()
                     except:
                         OportunityQuotation.objects.get(aseguradora=aseguradora,

@@ -166,7 +166,7 @@ class Aseguradora(BaseEntity, Base):
         return ContactoAseguradora.objects.filter(aseguradora=self)
 
     def calcular_tarifa(self):
-        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible
+        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible, self.exceso
 
 
 class ContactoAseguradora(Base):
@@ -258,7 +258,7 @@ class Tarifa(Base):
         unique_together = ('aseguradora', 'marca', 'modelo')
 
     def calcular_tarifa(self):
-        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible
+        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible, self.exceso
 
 
 # endregion
@@ -1911,8 +1911,9 @@ class OportunityQuotation(Base):
     @property
     def emision_total(self):
         if self.aseguradora.emision_soa:
-            return round((self.emision * (self.prima + 55)) / 100, 2)
-        return round((self.emision * self.prima) / 100, 2)
+            return round((self.emision * (self.prima + 55 + self.valor_exceso)) / 100, 2)
+        else:
+            return round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
 
     @property
     def iva(self):
