@@ -1419,6 +1419,7 @@ class Oportunidades(Datatables):
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
                             cotizacion.coaseguro_robo, cotizacion.deducible, \
                             cotizacion.exceso = aseguradora.calcular_tarifa()
+                        cotizacion.emision = aseguradora.emision
                         cotizacion.save()
                     except:
                         OportunityQuotation.objects.get(aseguradora=aseguradora,
