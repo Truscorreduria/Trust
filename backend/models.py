@@ -133,6 +133,8 @@ class Aseguradora(BaseEntity, Base):
     coaseguro_robo = models.FloatField(default=20.0, verbose_name="Coaseguro robo")
     coaseguro_dano = models.FloatField(default=20.0, verbose_name="Coaseguro daño")
     deducible = models.FloatField(default=100.0, verbose_name="Mínimo deducible")
+    emision_soa = models.BooleanField(default=False, verbose_name="Emisión sobre SOA",
+                                      help_text="Esta aseguradora cobra emisión sobre el valor SOA")
 
     def __str__(self):
         return self.name
@@ -1580,6 +1582,7 @@ class Comentario(base):
 
 # region Cotizador
 
+
 class CotizadorConfig(base):
     empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
     email_trust = models.CharField(max_length=255, null=True)
@@ -1907,6 +1910,8 @@ class OportunityQuotation(Base):
 
     @property
     def emision_total(self):
+        if self.aseguradora.emision_soa:
+            return round((self.emision * (self.prima + 55)) / 100, 2)
         return round((self.emision * self.prima) / 100, 2)
 
     @property

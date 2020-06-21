@@ -760,6 +760,7 @@ class Aseguradoras(Datatables):
                 ('phone', 'email'),
                 ('emision', 'exceso', 'tarifa'),
                 ('coaseguro_robo', 'coaseguro_dano', 'deducible'),
+                ('emision_soa',),
                 ('address',),
             )
         },
