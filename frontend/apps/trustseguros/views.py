@@ -876,7 +876,8 @@ class SubRamos(Datatables):
 class Tarifas(Datatables):
     model = Tarifa
     form = TarifaForm
-    list_display = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano', 'deducible')
+    list_display = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano', 'deducible',
+                    'aseguradora')
     list_filter = ('aseguradora',)
     search_fields = ('marca', 'modelo')
     fieldsets = [
@@ -884,7 +885,7 @@ class Tarifas(Datatables):
             'id': 'info',
             'name': 'Información general',
             'fields': (
-                ('aseguraroda', 'tarifa'),
+                ('aseguradora', 'tarifa'),
                 ('marca', 'modelo'),
                 ('exceso', 'deducible'),
                 ('coaseguro_robo', 'coaseguro_dano'),
@@ -1421,8 +1422,8 @@ class Oportunidades(Datatables):
                                                         oportunity=instance).delete()
                 else:
                     try:
-                         OportunityQuotation.objects.get(aseguradora=aseguradora,
-                                                           oportunity=instance).delete()
+                        OportunityQuotation.objects.get(aseguradora=aseguradora,
+                                                        oportunity=instance).delete()
                     except ObjectDoesNotExist:
                         pass
 
@@ -1432,6 +1433,3 @@ def iniciar_proc():
                                cliente__isnull=False, fecha_vence__lte=datetime.now())
     for p in ps:
         np = RenovarPoliza.send(p)
-
-
-
