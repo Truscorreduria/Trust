@@ -1409,13 +1409,14 @@ class Oportunidades(Datatables):
                         cotizacion.marca = data.get('MARCA')
                         cotizacion.modelo = data.get('MODELO')
                         cotizacion.anno = int(data.get('ANIO'))
-
-                        cotizacion.emision = aseguradora.emision
-                        cotizacion.exceso = aseguradora.exceso
-                        cotizacion.tarifa = aseguradora.tarifa
-                        cotizacion.coaseguro_robo = aseguradora.coaseguro_robo
-                        cotizacion.coaseguro_dano = aseguradora.coaseguro_dano
-                        cotizacion.deducible = aseguradora.deducible
+                        try:
+                            tarifa = Tarifa.objects.get(aseguradora=aseguradora, marca=cotizacion.marca,
+                                                        modelo=cotizacion.modelo)
+                            cotizacion.tarifa, cotizacion.coaseguro_robo, \
+                            cotizacion.coaseguro_robo, cotizacion.deducible = tarifa.calcular_tarifa()
+                        except ObjectDoesNotExist:
+                            cotizacion.tarifa, cotizacion.coaseguro_robo, \
+                            cotizacion.coaseguro_robo, cotizacion.deducible = aseguradora.calcular_tarifa()
                         cotizacion.save()
                     except:
                         OportunityQuotation.objects.get(aseguradora=aseguradora,

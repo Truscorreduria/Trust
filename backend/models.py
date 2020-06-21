@@ -14,6 +14,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Base(base):
@@ -162,6 +163,9 @@ class Aseguradora(BaseEntity, Base):
     def contactos(self):
         return ContactoAseguradora.objects.filter(aseguradora=self)
 
+    def calcular_tarifa(self):
+        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible
+
 
 class ContactoAseguradora(Base):
     aseguradora = models.ForeignKey(Aseguradora, null=True, on_delete=models.CASCADE)
@@ -247,6 +251,12 @@ class Tarifa(Base):
 
     def __str__(self):
         return self.marca
+
+    class Meta:
+        unique_together = ('aseguradora', 'marca', 'modelo')
+
+    def calcular_tarifa(self):
+        return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible
 
 
 # endregion
