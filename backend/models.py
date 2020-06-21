@@ -1870,17 +1870,30 @@ class OportunityQuotation(Base):
     anno = models.CharField(max_length=65, null=True, blank=True)
 
     factor_depreciacion = models.FloatField(default=0.0, blank=True)
-    suma_asegurada = models.FloatField(default=0.0, blank=True, verbose_name="Derecha de emision")
     emision = models.FloatField(default=0.0, blank=True, verbose_name="Derecha de emision")
-    exceso = models.FloatField(default=0.0, blank=True, verbose_name="Porcentaje Exceso")
+    exceso = models.FloatField(default=0.0, blank=True, verbose_name="Tarifa Exceso")
     tarifa = models.FloatField(default=0.0, blank=True, verbose_name="Tarifa por millar")
     coaseguro_robo = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro robo")
     coaseguro_dano = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro daño")
     deducible = models.FloatField(default=0.0, blank=True, verbose_name="Mínimo deducible")
 
     @property
+    def suma_asegurada(self):
+        try:
+            return self.aseguradora.depreciar(self.oportunity.valor_nuevo, self.anno)
+        except AttributeError:
+            return 0.0
+
+    @property
     def prima(self):
         return round((self.oportunity.valor_nuevo * self.tarifa) / 1000, 2)
+
+    @property
+    def valor_exceso(self):
+        if self.oportunity.rc_exceso:
+            return round((self.oportunity.valor_exceso * self.exceso) / 1000, 2)
+        else:
+            return 0.0
 
     @property
     def emision_total(self):
@@ -1888,11 +1901,11 @@ class OportunityQuotation(Base):
 
     @property
     def iva(self):
-        return round((self.prima + self.emision_total) * 0.15, 2)
+        return round((self.prima + self.emision_total + self.valor_exceso) * 0.15, 2)
 
     @property
     def prima_total(self):
-        return round(self.prima + self.emision_total + 55 + self.iva, 2)
+        return round(self.prima + self.emision_total + self.valor_exceso + 55 + self.iva, 2)
 
 
 def user_lines(user):

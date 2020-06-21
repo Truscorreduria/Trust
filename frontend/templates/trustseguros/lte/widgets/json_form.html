@@ -36,7 +36,7 @@
 
             const $input = $('#id_{{ widget.name }}');
             $($fieldset).on('change', 'input', function () {
-                obj = {};
+                let obj = {};
                 $.each($($fieldset).find('input'), function (i, o) {
                     obj[$(o).attr('name')] = $(o).val()
                 });

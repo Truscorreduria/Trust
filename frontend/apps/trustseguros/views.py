@@ -1409,7 +1409,6 @@ class Oportunidades(Datatables):
                         cotizacion.modelo = data.get('MODELO')
                         cotizacion.anno = int(data.get('ANIO'))
 
-                        cotizacion.suma_asegurada = aseguradora.depreciar(instance.valor_nuevo, cotizacion.anno)
                         cotizacion.emision = aseguradora.emision
                         cotizacion.exceso = aseguradora.exceso
                         cotizacion.tarifa = aseguradora.tarifa
@@ -1422,8 +1421,8 @@ class Oportunidades(Datatables):
                                                         oportunity=instance).delete()
                 else:
                     try:
-                        OportunityQuotation.objects.get(aseguradora=aseguradora,
-                                                        oportunity=instance).delete()
+                         OportunityQuotation.objects.get(aseguradora=aseguradora,
+                                                           oportunity=instance).delete()
                     except ObjectDoesNotExist:
                         pass
 

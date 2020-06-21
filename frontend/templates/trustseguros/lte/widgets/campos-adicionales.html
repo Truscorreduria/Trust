@@ -48,8 +48,6 @@
     <tbody id="{{ widget.name }}-table">
     {% for row in widget.value.datos_tecnicos.all %}
         <tr>
-
-
             {% for field in widget.value.sub_ramo.datos_tecnicos.all %}
                 <td>
                     <input type="text" class="form-control {{ widget.name }}-input"
@@ -71,7 +69,6 @@
                     </button>
                 {% endif %}
             </td>
-
         </tr>
     {% endfor %}
     </tbody>
