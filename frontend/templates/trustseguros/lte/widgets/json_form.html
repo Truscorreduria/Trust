@@ -1,3 +1,5 @@
+{% load datatables %}
+
 {% with widget.value.sub_ramo as sub_ramo %}
 
 
@@ -14,7 +16,8 @@
                         {{ field.label }}
                     </label>
 
-                    <input name="{{ field.name }}" class="form-control" id="id_{{ field.name }}">
+                    <input name="{{ field.name }}" class="form-control" id="id_{{ field.name }}"
+                    value="{{ widget.value.data_load|datatables_field:field.name }}">
 
                 </div>
             </div>
@@ -32,20 +35,6 @@
             const $fieldset = $('.{{ widget.name }}_fieldset');
 
             const $input = $('#id_{{ widget.name }}');
-
-            const load_data = function () {
-                let data = JSON.parse($($input).val());
-                Object.keys(data).forEach(function (k) {
-                    $($fieldset).find('#id_' + k).val(data[k]);
-                });
-            };
-
-            {% if widget.value.extra_data %}
-
-                load_data();
-
-            {% endif %}
-
             $($fieldset).on('change', 'input', function () {
                 obj = {};
                 $.each($($fieldset).find('input'), function (i, o) {

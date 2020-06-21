@@ -1433,3 +1433,6 @@ def iniciar_proc():
                                cliente__isnull=False, fecha_vence__lte=datetime.now())
     for p in ps:
         np = RenovarPoliza.send(p)
+
+
+

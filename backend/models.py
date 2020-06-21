@@ -1849,6 +1849,12 @@ class Oportunity(BasePoliza):
     def __str__(self):
         return ""
 
+    def data_load(self):
+        try:
+            return json.loads(self.extra_data)
+        except:
+            return {}
+
     def to_json(self):
         o = super().to_json()
         o['prospect'] = json_object(self.prospect, Prospect)
