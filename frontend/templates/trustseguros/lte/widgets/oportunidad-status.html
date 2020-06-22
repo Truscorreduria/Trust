@@ -5,7 +5,7 @@
     {% for choice in widget.attrs.choices %}
         <article class="status">
             <span>{{ choice.1 }}</span>
-            <div class="status-circle"
+            <div class="status-circle {{ choice|touchable:widget.value }}" data-status="{{ choice.0 }}"
                  passed="{{ choice|passed:widget.value }}">
             </div>
         </article>

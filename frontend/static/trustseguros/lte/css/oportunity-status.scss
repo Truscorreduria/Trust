@@ -39,11 +39,14 @@
         border-radius: 50%;
         background-color: $greenlight;
         z-index: 20;
-        cursor: pointer;
         box-shadow: 0px 0px 26px 3px rgba(81, 151, 45, 1);
 
         &[passed="on"] {
           background-color: $green;
+        }
+
+        &.touchable {
+          cursor: pointer;
         }
       }
     }

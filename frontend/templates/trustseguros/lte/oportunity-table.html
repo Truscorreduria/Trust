@@ -152,11 +152,30 @@
                 })
             };
 
+            const cambiar_status = function () {
+                const form = document.getElementById('{{ opts.model_name }}-form');
+                const data = new FormData(form);
+                data.append('save', 'save');
+                data.append('cambiar_status', 'cambiar_status');
+                data.append('siguiente_status', $(this).data('status'));
+                $.ajax('.', {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response, textStatus, xhr) {
+                        process_response(response, textStatus, xhr)
+                    },
+                })
+            };
+
             $(document).on('change', '.aseguradora-check', cotizar);
             $(document).on('change', '#id_valor_nuevo', cotizar);
             $(document).on('change', '#id_rc_exceso', cotizar);
             $(document).on('change', '#id_valor_exceso', cotizar);
             $(document).on('change', '#id_ANIO', cotizar);
+
+            $(document).on('click', '.status-circle.touchable', cambiar_status);
 
         })
     </script>

@@ -1921,10 +1921,6 @@ class OportunityQuotation(Base):
 
     @property
     def prima_total(self):
-        print('prima', self.prima)
-        print('emision_total', self.emision_total)
-        print('valor_exceso', self.valor_exceso)
-        print('iva', self.iva)
         return round(self.prima + self.emision_total + self.valor_exceso + 55 + self.iva, 2)
 
 

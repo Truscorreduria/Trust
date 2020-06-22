@@ -1,5 +1,5 @@
 from django import template
-from backend.models import LineaUser, OportunityQuotation
+from backend.models import LineaUser, OportunityQuotation, OportunityStatus
 from django.core.exceptions import ObjectDoesNotExist
 
 register = template.Library()
@@ -71,3 +71,19 @@ def prima(company, oportunity):
         return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).prima_total
     except:
         return '-'
+
+
+@register.filter('touchable')
+def touchable(choice, status):
+    if int(status) == OportunityStatus.PENDIENTE and choice[0] == 2:
+        return 'touchable'
+    elif int(status) == OportunityStatus.COTIZAZDO and choice[0] == 3:
+        return 'touchable'
+    elif int(status) == OportunityStatus.CONTACTADO and choice[0] == 4:
+        return 'touchable'
+    elif int(status) == OportunityStatus.EMISION and choice[0] == 5:
+        return 'touchable'
+    elif int(status) == OportunityStatus.EMISION and choice[0] == 6:
+        return 'touchable'
+    else:
+        return ''

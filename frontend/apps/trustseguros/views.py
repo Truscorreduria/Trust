@@ -1431,9 +1431,14 @@ class Oportunidades(Datatables):
                     except ObjectDoesNotExist:
                         pass
 
+        if 'cambiar_status' in data:
+            instance.status = int(data.get('siguiente_status'))
+            instance.save()
+
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
                                cliente__isnull=False, fecha_vence__lte=datetime.now())
     for p in ps:
-        np = RenovarPoliza.send(p)
+        pass
+    np = RenovarPoliza.send(p)
