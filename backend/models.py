@@ -68,10 +68,14 @@ def user_to_json(user):
     o['groups'] = []
     return o
 
+def full_name(user):
+    return user.get_full_name()
+
 
 User.add_to_class('profile', get_profile)
 User.add_to_class('config', get_config)
 User.add_to_class('to_json', user_to_json)
+User.add_to_class('__str__', full_name)
 
 
 # region Aseguradora
@@ -1855,11 +1859,13 @@ class Oportunity(BasePoliza):
                                  null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
     aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
+    fecha_vence = models.DateField(null=True, blank=True, verbose_name="fecha de vencimiento")
     valor_nuevo = models.FloatField(default=0.0, verbose_name="Valor de nuevo", null=True, blank=True)
     rc_exceso = models.BooleanField(default=False, verbose_name="RC en exceso", null=True, blank=True)
     valor_exceso = models.FloatField(default=0.0, verbose_name="Valor exceso", null=True, blank=True)
     extra_data = models.CharField(max_length=1000000, null=True, blank=True,
                                   verbose_name="datos técnicos")
+    vendedor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = "oportunidad"
