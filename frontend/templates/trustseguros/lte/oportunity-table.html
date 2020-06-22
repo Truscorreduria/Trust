@@ -5,35 +5,37 @@
     {{ block.super }}
 
     <div class="import-modal">
-        <div class="modal-body">
-            <div class="container">
-                <div class="row">
-                    <div class="col">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
 
-                        <div id="div_id_sub_ramo" class="form-group">
+                    <div id="div_id_sub_ramo" class="form-group">
 
-                            <label for="import-file" class="col-form-label ">
-                                Archivo a importar
-                            </label>
+                        <label for="import-file" class="col-form-label ">
+                            Archivo a importar
+                        </label>
 
-                            <div class="">
-
-                                <input type="file" id="import-file" class="form-control"
-                                       style="border: none; outline:none">
-
-                            </div>
-
+                        <div class="">
+                            <input type="file" id="import-file" class="form-control"
+                                   style="border: none; outline:none">
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col data-container">
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
-
+{% load static %}
 {% block javascript %}
     {{ block.super }}
+
+    <script type="text/javascript" src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'lodash/dist/lodash.min.js' %}"></script>
 
     <script type="text/javascript" defer>
         $(document).ready(function () {
@@ -42,8 +44,10 @@
                 title: "Importar oportunidades de negocio",
                 headerColor: '#326634',
                 padding: 20,
-                fullscreen: true
-            })
+                fullscreen: true,
+                width: 900,
+                zindex: 1500,
+            });
             const ImportButton = $(`
                 <button class="dt-button btn btn-trust" tabindex="0" aria-controls="receipt-table"
                 type="button">
@@ -208,6 +212,81 @@
             $(document).on('change', '#id_ANIO', cotizar);
 
             $(document).on('click', '.status-circle.touchable', cambiar_status);
+
+
+            function get_keys(data) {
+                return Object.keys(data[0])
+            }
+
+
+            function makeTable() {
+                return (`
+                            <table class="table" style="max-width: 100vw; overflow-x: auto">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                    `)
+            }
+
+            function headerTemplate(columns) {
+                let html = `<tr>`;
+                $.each(columns, function (i, column) {
+                    html += `<th><input type="hidden" name="column" value="${column}"> ${column} </th>`
+                });
+                html += `</tr>`;
+                return html
+            }
+
+            function selectorsTemplate(columns) {
+                let html = `<tr>`;
+                $.each(columns, function (i, column) {
+                    html += `<th>
+                        <select class="form-control" data-name="choice_${column}">
+                            <option value="-">---------</option>
+                        </select></th>`
+                });
+                html += `</tr>`;
+                return html
+            }
+
+
+            function tbodyTemplate(data, columns) {
+                let html = ``;
+                $.each(data, function (i, row) {
+                    html += `<tr>`;
+                    $.each(columns, function (i, column) {
+                        html += `<td>
+                                    <input type="hidden" name="${column}"
+                                           value="${row[column]}">
+                                    <input type="hidden" name="choice_${column}" value="">
+                                    <span>${row[column]}</span>
+                                </td>`
+                    });
+                    html += `</tr>`;
+                });
+                return html
+            }
+
+            $(document).on('change', '#import-file', function () {
+                const $content = $('.data-container').empty();
+                $.each(this.files, function (i, file) {
+                    const reader = new FileReader();
+                    reader.readAsArrayBuffer(file);
+                    reader.onload = function () {
+                        let result = new Uint8Array(reader.result);
+                        let book = XLSX.read(result, {type: 'array'});
+                        let sheet = book.Sheets[book.SheetNames[0]];
+                        let data = XLSX.utils.sheet_to_json(sheet);
+                        let columns = get_keys(data);
+                        let table = $(makeTable());
+                        let thead = $(table.find('thead'));
+                        thead.append(headerTemplate(columns));
+                        thead.append(selectorsTemplate(columns));
+                        thead.append(tbodyTemplate(data, columns));
+                        $content.append(table);
+                    };
+                });
+            });
 
         })
     </script>
