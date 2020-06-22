@@ -1358,7 +1358,8 @@ class Oportunidades(Datatables):
     modal_width = 1200
     model = Oportunity
     form = OportunityForm
-    list_display = ('prospect',)
+    list_display = ('code', ('Prospecto', 'prospect.full_name'), ('Etapa', 'status.name'),
+                    'campain.name')
     search_fields = ('prospect',)
     form_template = "trustseguros/lte/oportunity.html"
     list_template = "trustseguros/lte/oportunity-table.html"

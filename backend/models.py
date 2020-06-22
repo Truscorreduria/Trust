@@ -1826,6 +1826,11 @@ class Prospect(BaseCliente, Persona, Direccion):
     def __str__(self):
         return ""
 
+    def to_json(self):
+        o = super().to_json()
+        o['full_name'] = self.full_name
+        return o
+
 
 class OportunityStatus:
     PENDIENTE = 1
@@ -1843,6 +1848,7 @@ class OportunityStatus:
 
 
 class Oportunity(BasePoliza):
+    code = models.CharField(max_length=6, null=True, blank=True, verbose_name="Número")
     campain = models.ForeignKey(Campain, on_delete=models.CASCADE, verbose_name=_("campaña"), null=True)
     linea = models.ForeignKey(Linea, on_delete=models.CASCADE, verbose_name=_("linea"), null=True)
     prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"),
@@ -1871,7 +1877,14 @@ class Oportunity(BasePoliza):
     def to_json(self):
         o = super().to_json()
         o['prospect'] = json_object(self.prospect, Prospect)
+        o['campain'] = json_object(self.campain, Campain)
+        o['status'] = {'id': self.status, 'name': self.get_status_display()}
         return o
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = get_code(self)
+        super().save(*args, **kwargs)
 
 
 class OportunityQuotation(Base):
