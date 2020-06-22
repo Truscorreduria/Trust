@@ -1379,7 +1379,7 @@ class Oportunidades(Datatables):
 
     def get(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
-        return super().get(request)
+        return super().get(request, import_form=ImportDataForm)
 
     def put(self, request, linea):
         self.linea = Linea.objects.get(id=linea)

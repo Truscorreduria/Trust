@@ -120,13 +120,13 @@ class Datatables(View):
     def get_list_filters(self):
         return [Filter(x, self.model) for x in self.list_filter]
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         return render(request, self.list_template, {
             'opts': self.model._meta, 'list_display': self.list_display,
             'form': self.get_form(), 'form_template': self.form_template,
             'modal_width': self.modal_width, 'media': self.media,
-            'list_filter': self.get_list_filters()
-
+            'list_filter': self.get_list_filters(),
+            **kwargs
         })
 
     def save_related(self, instance, data):

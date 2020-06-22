@@ -797,3 +797,13 @@ class CampainForm(forms.ModelForm):
     class Meta:
         model = Campain
         fields = '__all__'
+
+
+class ImportDataForm(forms.ModelForm):
+    prefix = 'import'
+
+    vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
+
+    class Meta:
+        model = Oportunity
+        fields = ('campain', 'ramo', 'sub_ramo', 'vendedor',)

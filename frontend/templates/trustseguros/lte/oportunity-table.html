@@ -1,4 +1,14 @@
 {% extends 'adminlte/datatables.html' %}
+{% load crispy_forms_filters %}
+
+{% block style %}
+    {{ block.super }}
+    <style type="text/css">
+        .data-container .table td {
+            min-width: 200px;
+        }
+    </style>
+{% endblock %}
 
 
 {% block content %}
@@ -20,10 +30,13 @@
                                    style="border: none; outline:none">
                         </div>
                     </div>
+
+                    {{ import_form|crispy }}
+
                 </div>
             </div>
             <div class="row">
-                <div class="col data-container">
+                <div class="col data-container table-responsive">
                 </div>
             </div>
         </div>
@@ -71,6 +84,24 @@
                     },
                     success: function (response) {
                         const table = $('#id_sub_ramo').empty();
+                        table.append(`<option value="">---------</option>`);
+                        $.each(response, function (i, o) {
+                            table.append(`<option value="${o.id}">${o.name}</option>`);
+                        })
+                    }
+                })
+            });
+
+            $(document).on('change', '#id_import-ramo', function () {
+                const _this = $(this);
+                $.ajax("{% url 'ajax_getCollection' %}", {
+                    method: 'POST',
+                    data: {
+                        app_label: 'backend', model: 'subramo',
+                        filters: `{'ramo_id': '${_this.val()}'}`
+                    },
+                    success: function (response) {
+                        const table = $('#id_import-sub_ramo').empty();
                         table.append(`<option value="">---------</option>`);
                         $.each(response, function (i, o) {
                             table.append(`<option value="${o.id}">${o.name}</option>`);
@@ -218,7 +249,6 @@
                 return Object.keys(data[0])
             }
 
-
             function makeTable() {
                 return (`
                             <table class="table" style="max-width: 100vw; overflow-x: auto">
@@ -241,14 +271,13 @@
                 let html = `<tr>`;
                 $.each(columns, function (i, column) {
                     html += `<th>
-                        <select class="form-control" data-name="choice_${column}">
+                        <select class="form-control select-field" data-name="choice_${column}">
                             <option value="-">---------</option>
                         </select></th>`
                 });
                 html += `</tr>`;
                 return html
             }
-
 
             function tbodyTemplate(data, columns) {
                 let html = ``;
@@ -265,6 +294,27 @@
                     html += `</tr>`;
                 });
                 return html
+            }
+
+            function makeSelectorOptions(fields) {
+                let options = `<option value="">---------</option>`;
+                options += `<option value="no_poliza">NÚMERO DE PÓLIZA</option>`;
+                options += `<option value="fecha_vence">FECHA VENCIMIENTO</option>`;
+                options += `<option value="valor_nuevo">VALOR DE NUEVO</option>`;
+                options += `<option value="rc_exceso">RC EXCESO</option>`;
+                options += `<option value="valor_exceso">VALOR EN EXCESO</option>`;
+
+                options += `<option value="cedula">CÉDULA</option>`;
+                options += `<option value="primer_nombre">PRIMER NOMBRE</option>`;
+                options += `<option value="segundo_nombre">SEGUNDO NOMBRE</option>`;
+                options += `<option value="apellido_paterno">APELLIDO PATERNO</option>`;
+                options += `<option value="apellido_materno">APELLIDO MATERNO</option>`;
+                options += `<option value="telefono">TELÉFONO</option>`;
+                options += `<option value="celular">CELULAR</option>`;
+                $.each(fields, function (i, o) {
+                    options += `<option value="${o.name}">${o.label}</option>`
+                });
+                return options
             }
 
             $(document).on('change', '#import-file', function () {
@@ -286,6 +336,23 @@
                         $content.append(table);
                     };
                 });
+            });
+
+
+            $(document).on('change', '#id_import-sub_ramo', function () {
+                const _this = $(this);
+                $.ajax("{% url 'ajax_getCollection' %}", {
+                    method: 'POST',
+                    data: {
+                        app_label: 'backend', model: 'campoadicional',
+                        filters: `{'sub_ramo_id': '${_this.val()}'}`
+                    },
+                    success: function (response) {
+                        $.each($('.select-field'), function (i, o) {
+                            $(o).html(makeSelectorOptions(response))
+                        })
+                    }
+                })
             });
 
         })
