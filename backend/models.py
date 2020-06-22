@@ -68,6 +68,7 @@ def user_to_json(user):
     o['groups'] = []
     return o
 
+
 def full_name(user):
     return user.get_full_name()
 
@@ -1880,11 +1881,24 @@ class Oportunity(BasePoliza):
         except:
             return {}
 
+    @property
+    def dias(self):
+        return (timezone.datetime.now() - self.created).days
+
     def to_json(self):
         o = super().to_json()
         o['prospect'] = json_object(self.prospect, Prospect)
         o['campain'] = json_object(self.campain, Campain)
         o['status'] = {'id': self.status, 'name': self.get_status_display()}
+        o['dias'] = self.dias
+        if self.vendedor:
+            o['vendedor'] = {'id': self.vendedor.id,
+                             'username': self.vendedor.username,
+                             'full_name': self.vendedor.get_full_name()}
+        else:
+            o['vendedor'] = {'id': "",
+                             'username': "",
+                             'full_name': ""}
         return o
 
     def save(self, *args, **kwargs):

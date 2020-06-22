@@ -59,7 +59,6 @@ class AseguradoraForm(forms.ModelForm):
 
 
 class TarifaForm(forms.ModelForm):
-
     class Meta:
         model = Tarifa
         fields = '__all__'
@@ -765,7 +764,7 @@ class OportunityForm(forms.ModelForm):
     cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
         attrs={
             'companies': Aseguradora.objects.all(),
-            'instance': None
+            'instance': None,
         }
     ))
 
@@ -779,7 +778,8 @@ class OportunityForm(forms.ModelForm):
             kwargs.update(
                 initial={
                     'extra_data': instance,
-                    'prospect': instance.prospect
+                    'prospect': instance.prospect,
+                    'days': instance.dias,
                 }
             )
         super().__init__(*args, **kwargs)
