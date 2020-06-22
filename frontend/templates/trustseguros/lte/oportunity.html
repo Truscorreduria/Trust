@@ -128,8 +128,14 @@
             <div class="row">
 
                 <div class="col-md-12 form-buttons">
+                    {% if instance.status == 5 %}
+                        <button type="button" class="btn btn-danger" id="btn-register">
+                            <i class="fa fa-archive"></i>
+                            Registrar renovación
+                        </button>
+                    {% endif %}
                     {% if instance.status >= 3 %}
-                        <button type="button" class="btn btn-warning" id="btn-print">
+                        <button type="button" class="btn btn-warning" id="btn-send">
                             <i class="fa fa-envelope"></i>
                             Enviar Cotización
                         </button>
