@@ -1360,7 +1360,8 @@ class Oportunidades(Datatables):
     form = OportunityForm
     list_display = ('code', ('Prospecto', 'prospect.full_name'), ('Etapa', 'status.name'),
                     'campain.name')
-    search_fields = ('prospect',)
+    search_fields = ('prospect__primer_nombre', 'prospect__segundo_nombre',
+                     'prospect__apellido_paterno', 'prospect__apellido_materno', 'code')
     form_template = "trustseguros/lte/oportunity.html"
     list_template = "trustseguros/lte/oportunity-table.html"
 
