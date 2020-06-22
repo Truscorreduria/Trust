@@ -126,7 +126,18 @@
 
         <div class="modal-footer">
             <div class="row">
+
                 <div class="col-md-12 form-buttons">
+                    {% if instance.status >= 3 %}
+                        <button type="button" class="btn btn-warning" id="btn-print">
+                            <i class="fa fa-envelope"></i>
+                            Enviar Cotización
+                        </button>
+                        <button type="button" class="btn btn-warning" id="btn-print">
+                            <i class="fa fa-print"></i>
+                            Imprimir cotización
+                        </button>
+                    {% endif %}
                     <button type="button" class="btn btn-info" id="btn-save">
                         <i class="fa fa-save"></i>
                         Guardar
