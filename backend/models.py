@@ -1873,7 +1873,9 @@ class Oportunity(BasePoliza):
         verbose_name_plural = "oportunidades"
 
     def __str__(self):
-        return self.code
+        if self.code:
+            return self.code
+        return ""
 
     def data_load(self):
         try:
@@ -1883,7 +1885,10 @@ class Oportunity(BasePoliza):
 
     @property
     def dias(self):
-        return (timezone.datetime.now() - self.created).days
+        try:
+            return (timezone.datetime.now() - self.created).days
+        except:
+            return ""
 
     def to_json(self):
         o = super().to_json()

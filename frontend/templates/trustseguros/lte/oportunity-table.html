@@ -1,12 +1,49 @@
 {% extends 'adminlte/datatables.html' %}
 
 
+{% block content %}
+    {{ block.super }}
+
+    <div class="import-modal">
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+
+                        <div id="div_id_sub_ramo" class="form-group">
+
+                            <label for="import-file" class="col-form-label ">
+                                Archivo a importar
+                            </label>
+
+                            <div class="">
+
+                                <input type="file" id="import-file" class="form-control"
+                                       style="border: none; outline:none">
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
 {% block javascript %}
     {{ block.super }}
 
     <script type="text/javascript" defer>
         $(document).ready(function () {
 
+            const $importModal = $('.import-modal').iziModal({
+                title: "Importar oportunidades de negocio",
+                headerColor: '#326634',
+                padding: 20,
+                fullscreen: true
+            })
             const ImportButton = $(`
                 <button class="dt-button btn btn-trust" tabindex="0" aria-controls="receipt-table"
                 type="button">
@@ -15,12 +52,7 @@
             `);
 
             ImportButton.on('click', function () {
-                $.ajax("", {
-                    method: "POST",
-                    data: {},
-                    success: function (response) {
-                    }
-                });
+                $importModal.iziModal('open')
             });
 
             $('div.dt-buttons').append(ImportButton);
