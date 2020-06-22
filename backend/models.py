@@ -768,7 +768,7 @@ class Precio(Base):
         return "%s - %s" % (self.cobertura.name, self.aseguradora.name)
 
 
-class BasePoliza(base):
+class BasePoliza(Base):
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated = models.DateTimeField(auto_now=True, null=True, blank=True)
     no_poliza = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de póliza")
@@ -1866,7 +1866,7 @@ class Oportunity(BasePoliza):
         verbose_name_plural = "oportunidades"
 
     def __str__(self):
-        return ""
+        return self.code
 
     def data_load(self):
         try:
