@@ -296,7 +296,7 @@
                         html += `<td>
                                     <input type="hidden" name="${column}"
                                            value="${row[column]}">
-                                    <input type="hidden" name="choice_${ column }" value="">
+                                    <input type="hidden" name="choice_${column}" value="">
                                     <span>${row[column]}</span>
                                 </td>`
                     });
@@ -386,7 +386,24 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log(response)
+                        location.reload();
+                    }
+                })
+            });
+
+            $(document).on('click', '#btn-print', function () {
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        'print': 'print',
+                        'id': $('input[name="id"]').val()
+                    },
+                    success: function (response) {
+                        let blob = new Blob([response], {type: 'application/pdf'});
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "Proforma.pdf";
+                        link.click();
                     }
                 })
             })

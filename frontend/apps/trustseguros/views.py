@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from adminlte.generics import Datatables
 from django.contrib.auth.decorators import login_required
-from backend.forms import *
 from backend.utils import calcular_tabla_pagos
 from .forms import *
 from django.http import JsonResponse
@@ -14,6 +13,7 @@ from django.db import IntegrityError
 from backend.signals import AddComment
 from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
+from easy_pdf.rendering import render_to_pdf_response
 
 
 def group_to_json(group):
@@ -1393,7 +1393,6 @@ class Oportunidades(Datatables):
             extra_data = {}
             columns = request.POST.getlist('column')
             rows = len(request.POST.getlist(columns[0]))
-            print(rows)
             prospect = {
                 'cedula': request.POST.get('cedula', ''),
                 'primer_nombre': request.POST.get('primer_nombre', ''),
@@ -1410,34 +1409,47 @@ class Oportunidades(Datatables):
                 'rc_exceso': request.POST.get('rc_exceso', ''),
                 'valor_exceso': request.POST.get('valor_exceso', ''),
             }
-            for n in range(0, rows):
-                p = None
-                cedula = request.POST.getlist(prospect['cedula'])[n]
-                if len(cedula) == 14:
-                    p, _ = Prospect.objects.get_or_create(cedula=cedula)
-                    p.primer_nombre = request.POST.getlist(prospect['primer_nombre'])[n]
-                    p.segundo_nombre = request.POST.getlist(prospect['segundo_nombre'])[n]
-                    p.apellido_paterno = request.POST.getlist(prospect['apellido_paterno'])[n]
-                    p.apellido_materno = request.POST.getlist(prospect['apellido_materno'])[n]
-                    p.telefono = request.POST.getlist(prospect['telefono'])[n]
-                    p.celular = request.POST.getlist(prospect['celular'])[n]
-                    p.save()
-                o = Oportunity()
-                o.prospect = p
-                o.no_poliza = request.POST.getlist(prospect['no_poliza'])[n]
-                o.fecha_vence = request.POST.getlist(prospect['fecha_vence'])[n]
-                o.valor_nuevo = request.POST.getlist(prospect['valor_nuevo'])[n]
-                o.rc_exceso = request.POST.getlist(prospect['rc_exceso'])[n]
-                o.valor_exceso = request.POST.getlist(prospect['valor_exceso'])[n]
-                for column in columns:
-                    choice = request.POST.getlist("choice_" + column)[n]
-                    value = request.POST.getlist(column)[n]
-                    if choice and choice != '':
-                        if choice not in oportunity.keys() and choice not in prospect.keys():
-                            extra_data[choice] = value
-                o.extra_data = json.dumps(extra_data)
-                o.save()
+            form = ImportDataForm(request.POST)
+            if form.is_valid():
+                for n in range(0, rows):
+                    p = None
+                    cedula = request.POST.getlist(prospect['cedula'])[n]
+                    if len(cedula) == 14:
+                        print(cedula)
+                        p, _ = Prospect.objects.get_or_create(cedula=cedula)
+                        o = Oportunity()
+                        o.prospect = p
+                        for column in columns:
+                            choice = request.POST.getlist("choice_" + column)[n]
+                            value = request.POST.getlist(column)[n]
+                            if choice and choice != '':
+                                if choice in prospect.keys():
+                                    p.__setattr__(choice, value)
+
+                                if choice in oportunity.keys():
+                                    if choice == 'fecha_vence':
+                                        o.fecha_vence = timezone.datetime.strptime(value, '%d/%m/%Y')
+                                    else:
+                                        o.__setattr__(choice, value)
+
+                                if choice not in oportunity.keys() and choice not in prospect.keys():
+                                    extra_data[choice] = value
+
+                        p.save()
+                        o.extra_data = json.dumps(extra_data)
+                        o.linea = self.linea
+                        o.campain = form.cleaned_data['campain']
+                        o.ramo = form.cleaned_data['ramo']
+                        o.sub_ramo = form.cleaned_data['sub_ramo']
+                        o.vendedor = form.cleaned_data['vendedor']
+                        o.save()
             return JsonResponse({})
+
+        if 'print' in request.POST:
+            print(request.POST)
+            return render_to_pdf_response(request, 'trustseguros/lte/pdf/oportunity.html', {
+
+            })
         return super().post(request)
 
     def save_related(self, instance, data):
