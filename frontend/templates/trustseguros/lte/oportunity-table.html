@@ -16,29 +16,37 @@
 
     <div class="import-modal">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col">
 
-                    <div id="div_id_sub_ramo" class="form-group">
+            <form action="." method="post" id="import-form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col">
+                        <div id="div_id_sub_ramo" class="form-group">
 
-                        <label for="import-file" class="col-form-label ">
-                            Archivo a importar
-                        </label>
+                            <label for="import-file" class="col-form-label ">
+                                Archivo a importar
+                            </label>
 
-                        <div class="">
-                            <input type="file" id="import-file" class="form-control"
-                                   style="border: none; outline:none">
+                            <div class="">
+                                <input type="file" id="import-file" class="form-control"
+                                       style="border: none; outline:none">
+                            </div>
+                        </div>
+                        {{ import_form|crispy }}
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="submit" name="importar" value="Confirmar Importación"
+                                   class="btn btn-info">
                         </div>
                     </div>
-
-                    {{ import_form|crispy }}
-
                 </div>
-            </div>
-            <div class="row">
-                <div class="col data-container table-responsive">
+                <div class="row">
+                    <div class="col data-container table-responsive">
+                    </div>
                 </div>
-            </div>
+            </form>
+
         </div>
     </div>
 {% endblock %}
@@ -241,9 +249,7 @@
             $(document).on('change', '#id_rc_exceso', cotizar);
             $(document).on('change', '#id_valor_exceso', cotizar);
             $(document).on('change', '#id_ANIO', cotizar);
-
             $(document).on('click', '.status-circle.touchable', cambiar_status);
-
 
             function get_keys(data) {
                 return Object.keys(data[0])
@@ -270,10 +276,13 @@
             function selectorsTemplate(columns) {
                 let html = `<tr>`;
                 $.each(columns, function (i, column) {
-                    html += `<th>
+                    html += `
+                    <th>
                         <select class="form-control select-field" data-name="choice_${column}">
                             <option value="-">---------</option>
-                        </select></th>`
+                        </select>
+                        <input type="hidden" value="${column}"/>
+                    </th>`
                 });
                 html += `</tr>`;
                 return html
@@ -287,7 +296,7 @@
                         html += `<td>
                                     <input type="hidden" name="${column}"
                                            value="${row[column]}">
-                                    <input type="hidden" name="choice_${column}" value="">
+                                    <input type="hidden" name="choice_${ column }" value="">
                                     <span>${row[column]}</span>
                                 </td>`
                     });
@@ -338,7 +347,6 @@
                 });
             });
 
-
             $(document).on('change', '#id_import-sub_ramo', function () {
                 const _this = $(this);
                 $.ajax("{% url 'ajax_getCollection' %}", {
@@ -355,6 +363,36 @@
                 })
             });
 
+            $(document).on('change', '.select-field', function () {
+                const _this = $(this);
+                const $th = $(_this.parent());
+                if (_this.val()) {
+                    $($th.find('input')).attr('name', _this.val())
+                } else {
+                    $($th.find('input')).removeAttr('name')
+                }
+                $.each($(`input[name="${_this.data('name')}"]`), function (i, o) {
+                    $(o).val(_this.val())
+                });
+            });
+
+            $(document).on('submit', '#import-form', function (e) {
+                e.preventDefault();
+                const data = new FormData(this);
+                data.append('importar', 'importar');
+                $.ajax('.', {
+                    method: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response)
+                    }
+                })
+            })
+
         })
     </script>
 {% endblock %}
+
+
