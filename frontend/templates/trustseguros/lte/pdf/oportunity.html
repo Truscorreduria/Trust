@@ -1,5 +1,153 @@
-{% extends 'easy_pdf/base.html' %}
+{% extends "easy_pdf/base.html" %}
+
+{% load static humanize %}
+
+{% block extra_style %}
+
+    <meta charset="UTF-8">
+    <style type="text/css">
+        @page {
+            size: letter portrait;
+            margin: 1.5cm;
+        }
+
+        body {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+    </style>
+{% endblock %}
+
+
+{% block page_header %}
+    <table>
+        <tr>
+            <td>
+                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center, Planta Baja.</p>
+                <p style="padding: 0; margin: 0;">Del busto José Martí 1c este, 1c al norte.</p>
+                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
+                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+            </td>
+            <td>
+
+            </td>
+            <td class="pull-right">
+                <figure>
+                    <img src="{% static 'cotizador/images/logo.condiciones.png' %}" alt="">
+                </figure>
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
 
 {% block content %}
+
+    <p style="font-size: 10pt"><b>Sr(a). {% if oportunity.prospect %}{{ oportunity.prospect.full_name }}{% endif %}</b>
+    </p>
+
+    <p style="text-align: justify">Es muy grato para nosotros presentar estas alternativas de programas de seguros
+        y atenderle en todo lo concerniente a las mismas.</p>
+
+    <p style="text-align: justify">Para esta cotización hemos buscado opciones en compañias de seguros con
+        prestigio Nacional, en base a la siguiente información:</p>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th colspan="4" style="background-color: darkgreen;
+            vertical-align: middle;
+            color: white;
+            padding: 4px 0 2px 0;">Datos del vehículo
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Marca</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.MARCA }}</td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Chasis</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.CHASIS }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Modelo</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.MODELO }}</td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Motor</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.MOTOR }}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Año</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.extra_data.ANIO }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <table style="margin-top: 10mm">
+        <thead>
+        <tr>
+            <th colspan="{{ oportunity.ofertas_columns }}" style="background-color: darkgreen;
+            vertical-align: middle;
+            color: white;
+            padding: 4px 0 2px 0;">Comparativo de sumas aseguradas, coaseguros y primas
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 0; text-align: center">
+                    <img src="{{ oferta.aseguradora.logo.url }}" style="width: 100%">
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Suma asegurada</b>
+            </td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.suma_asegurada|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.suma_asegurada|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b>
+            </td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }} %</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }} %</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Prima total</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.prima_total|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+
+    <p style="text-align: justify;">La forma de pago de la póliza puede ser en cuotas debitadas a una tarjeta de crédito
+        o débito, o pagada de contado.</p>
+
+    <p style="text-align: justify">Agradeciendo su atención, quedamos atentos a sus comentarios.</p>
+
+    <p style="margin: 0">Atte.</p>
+    <p style="margin: 0">{{ oportunity.vendedor.get_full_name }}</p>
+    <p style="margin: 0">Trust Correduría de Seguros</p>
+    <p style="margin: 0">Celular +505 8932 8850</p>
+    <p style="margin: 0">contacto@trustcorreduria.com</p>
+    <p style="margin: 0">www.trustcorreduria.com</p>
 
 {% endblock %}

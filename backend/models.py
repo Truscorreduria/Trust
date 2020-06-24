@@ -1890,6 +1890,10 @@ class Oportunity(BasePoliza):
         except:
             return ""
 
+    @property
+    def ofertas_columns(self):
+        return self.ofertas.all().count() + 1
+
     def to_json(self):
         o = super().to_json()
         o['prospect'] = json_object(self.prospect, Prospect)
@@ -1913,7 +1917,7 @@ class Oportunity(BasePoliza):
 
 
 class OportunityQuotation(Base):
-    oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE)
+    oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE, related_name="ofertas")
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
 
     marca = models.CharField(max_length=65, null=True, blank=True)

@@ -1415,7 +1415,6 @@ class Oportunidades(Datatables):
                     p = None
                     cedula = request.POST.getlist(prospect['cedula'])[n]
                     if len(cedula) == 14:
-                        print(cedula)
                         p, _ = Prospect.objects.get_or_create(cedula=cedula)
                         o = Oportunity()
                         o.prospect = p
@@ -1446,9 +1445,8 @@ class Oportunidades(Datatables):
             return JsonResponse({})
 
         if 'print' in request.POST:
-            print(request.POST)
             return render_to_pdf_response(request, 'trustseguros/lte/pdf/oportunity.html', {
-
+                'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
             })
         return super().post(request)
 

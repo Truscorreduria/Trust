@@ -392,6 +392,7 @@
             });
 
             $(document).on('click', '#btn-print', function () {
+                const _this = $(this);
                 $.ajax('.', {
                     method: "POST",
                     data: {
@@ -404,6 +405,7 @@
                         link.href = window.URL.createObjectURL(blob);
                         link.download = "Proforma.pdf";
                         link.click();
+                        _this.removeAttr('disabled')
                     }
                 })
             })
