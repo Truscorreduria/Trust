@@ -814,7 +814,7 @@ class Grupos(Datatables):
 
 
 class SubRamos(Datatables):
-    modal_width = 1200
+    modal_width = 1300
     model = SubRamo
     form = SubRamoForm
     list_display = ('name', 'ramo.name')
@@ -852,9 +852,9 @@ class SubRamos(Datatables):
                 c = Cobertura.objects.get(id=int(data.getlist('cobertura_id')[i]))
             f = CoberturaForm({
                 'subramo_cobertura-name': data.getlist('subramo_cobertura-name')[i],
-                'subramo_cobertura-tipo_calculo': data.getlist('subramo_cobertura-tipo_calculo')[i],
-                'subramo_cobertura-tipo_cobertura': data.getlist('subramo_cobertura-tipo_cobertura')[i],
-                'subramo_cobertura-tipo_exceso': data.getlist('subramo_cobertura-tipo_exceso')[i],
+                # 'subramo_cobertura-tipo_calculo': data.getlist('subramo_cobertura-tipo_calculo')[i],
+                # 'subramo_cobertura-tipo_cobertura': data.getlist('subramo_cobertura-tipo_cobertura')[i],
+                # 'subramo_cobertura-tipo_exceso': data.getlist('subramo_cobertura-tipo_exceso')[i],
                 # 'subramo_cobertura-iva': data.getlist('subramo_cobertura-iva')[i],
             }, instance=c)
             if f.is_valid():
@@ -871,6 +871,15 @@ class SubRamos(Datatables):
             }, instance=c)
             if f.is_valid():
                 f.save()
+
+        for i in range(0, len(data.getlist('valor_cobertura_cobertura'))):
+            aseguradora = Aseguradora.objects.get(id=data.getlist('valor_cobertura_aseguradora')[i])
+            cobertura = Cobertura.objects.get(id=data.getlist('valor_cobertura_cobertura')[i])
+            valor_cobertura, created = CoberturaAseguradora.objects.get_or_create(
+                aseguradora=aseguradora, cobertura=cobertura
+            )
+            valor_cobertura.valor = data.getlist('valor_cobertura_valor')[i]
+            valor_cobertura.save()
 
 
 class Tarifas(Datatables):
@@ -1507,3 +1516,5 @@ def iniciar_proc():
     for p in ps:
         pass
     np = RenovarPoliza.send(p)
+
+

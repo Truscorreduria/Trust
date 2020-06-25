@@ -757,6 +757,15 @@ class Cobertura(Base):
         ordering = ('id',)
 
 
+class CoberturaAseguradora(Base):
+    cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
+    aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
+    valor = models.CharField(max_length=150)
+
+    class Meta:
+        unique_together = ('cobertura', 'aseguradora')
+
+
 class DetalleCobertura(Base):
     cobertura = models.ForeignKey(Cobertura, on_delete=models.CASCADE)
     name = models.CharField(max_length=250, null=True, blank=True)

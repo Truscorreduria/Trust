@@ -14,6 +14,7 @@
         body {
             font-family: "Helvetica", "sans-serif";
             color: #333333;
+            font-size: 10pt;
         }
     </style>
 {% endblock %}
@@ -107,32 +108,39 @@
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Suma asegurada</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.suma_asegurada|intcomma }}</td>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.suma_asegurada|intcomma }}</td>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }} %</td>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
+                    %
+                </td>
             {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b></td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }} %</td>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
+                    %
+                </td>
             {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Prima total</b></td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">U$ {{ oferta.prima_total|intcomma }}</td>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.prima_total|intcomma }}</td>
             {% endfor %}
         </tr>
         </tbody>
@@ -147,7 +155,101 @@
     <p style="margin: 0">{{ oportunity.vendedor.get_full_name }}</p>
     <p style="margin: 0">Trust Correduría de Seguros</p>
     <p style="margin: 0">Celular +505 8932 8850</p>
-    <p style="margin: 0">contacto@trustcorreduria.com</p>
-    <p style="margin: 0">www.trustcorreduria.com</p>
+    <p style="margin: 0; color: blue; text-decoration: underline">contacto@trustcorreduria.com</p>
+    <p style="margin: 0; color: blue; text-decoration: underline; page-break-after: always">www.trustcorreduria.com</p>
 
+
+
+    <p><b>Anexo</b></p>
+    <p>Cuadro comparativo por compañia</p>
+
+    <table>
+        <thead>
+        <tr>
+            <td>COBERTURAS/COMPAÑIAS</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Responsabilidad Civil Obligatoria</td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>a) Muerte o Lesiones a una persona</td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>b) Muerte o Lesiones a dos o mas personas</td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>c) Daños a la Propiedad Ajena</td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td></td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>c) Daños a la Propiedad Ajena</td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td></td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td>Colisiones, Autoignición, Incendio, Rayo y/o Explosión</td>
+        </tr>
+        <tr>
+            <td>Desordenes Públicos</td>
+        </tr>
+        <tr>
+            <td>Riesgos Catastróficos</td>
+        </tr>
+        <tr>
+            <td>Robot total o parcial a concecuencia de robo total</td>
+        </tr>
+        <tr>
+            <td>Rotura de vidrios</td>
+        </tr>
+
+        <tr>
+            <td>Gastos Médicos Ocupante</td>
+        </tr>
+        <tr>
+            <td>Responsabilidad civil del conductor</td>
+        </tr>
+        <tr>
+            <td>Extensión territorial</td>
+        </tr>
+        <tr>
+            <td>Gastos por asistencia legal</td>
+        </tr>
+        <tr>
+            <td>Gastos de salvamento</td>
+        </tr>
+        <tr>
+            <td>Taller elegido 5 años máximo de $100,000km</td>
+        </tr>
+        <tr>
+            <td>Cobertura de daños maliciosos</td>
+        </tr>
+
+        <tr>
+            <td>Reinstalación de suma asegurada (cobertura de daños)</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p>Esta oferta es válida solo para vehículos de uso particular</p>
+    <p>Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso</p>
+    <p>Esta oferta no debe entenderce como cobertura de ninguna índole, ni aceptación de riesgo por parte de la(s)
+        compañia(s) de seguro, hasta no recibir la aceptación por escrito de usted y confirmado cobertura con la póliza
+        emitida</p>
+    <p>*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e Infracciones de
+        Tránsito</p>
 {% endblock %}

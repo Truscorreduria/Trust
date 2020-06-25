@@ -124,3 +124,12 @@ class CotizacionWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class CoberturaSubRamoWidget(Widget):
+    template_name = "trustseguros/lte/widgets/sub-ramo-coberturas.html"
+
+    def format_value(self, value):
+        if value:
+            return [self.attrs['form'](instance=x) for x in value]
+        return value

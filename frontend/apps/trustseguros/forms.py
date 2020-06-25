@@ -320,7 +320,7 @@ class CoberturaForm(forms.ModelForm):
 
     class Meta:
         model = Cobertura
-        fields = ('name', 'tipo_calculo', 'tipo_cobertura', 'tipo_exceso')
+        fields = ('name', )
 
 
 class CampoAdicionalForm(forms.ModelForm):
@@ -339,9 +339,11 @@ class RamoForm(forms.ModelForm):
 
 class SubRamoForm(forms.ModelForm):
     coberturas = forms.Field(label='', required=False,
-                             widget=TableBorderedInput(
+                             widget=CoberturaSubRamoWidget(
                                  attrs={
-                                     'form': CoberturaForm
+                                     'form': CoberturaForm,
+                                     'columns': ('name', ),
+                                     'aseguradoras': Aseguradora.objects.all()
                                  }
                              ))
     campos_adicionales = forms.Field(label='', required=False,
