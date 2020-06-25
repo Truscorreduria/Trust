@@ -7,4 +7,7 @@ register = template.Library()
 
 @register.filter('valor_cobertura')
 def valor_cobertura(cobertura, aseguradora):
-    return CoberturaAseguradora.objects.get(cobertura_id=cobertura.id, aseguradora_id=aseguradora.id).valor
+    try:
+        return CoberturaAseguradora.objects.get(cobertura_id=cobertura.id, aseguradora_id=aseguradora.id).valor
+    except ObjectDoesNotExist:
+        return ""

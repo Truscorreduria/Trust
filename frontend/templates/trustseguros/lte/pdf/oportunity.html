@@ -1,6 +1,6 @@
 {% extends "easy_pdf/base.html" %}
 
-{% load static humanize %}
+{% load static humanize sub_ramo %}
 
 {% block extra_style %}
 
@@ -163,93 +163,42 @@
     <p><b>Anexo</b></p>
     <p>Cuadro comparativo por compañia</p>
 
-    <table>
+    <table style="margin-bottom: 10mm">
         <thead>
         <tr>
-            <td>COBERTURAS/COMPAÑIAS</td>
+            <td colspan="{{ oportunity.ofertas_columns }}" style="background-color: darkgreen;
+            vertical-align: middle;
+            color: white;
+            padding: 4px 0 2px 0;
+            text-align: center;">COBERTURAS/COMPAÑIAS
+            </td>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>Responsabilidad Civil Obligatoria</td>
-            {% for oferta in oportunity.ofertas.all %}
-                <td></td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>a) Muerte o Lesiones a una persona</td>
-            {% for oferta in oportunity.ofertas.all %}
-                <td></td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>b) Muerte o Lesiones a dos o mas personas</td>
-            {% for oferta in oportunity.ofertas.all %}
-                <td></td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>c) Daños a la Propiedad Ajena</td>
-            {% for oferta in oportunity.ofertas.all %}
-                <td></td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td>c) Daños a la Propiedad Ajena</td>
-            {% for oferta in oportunity.ofertas.all %}
-                <td></td>
-            {% endfor %}
-        </tr>
 
-        <tr>
-            <td>Colisiones, Autoignición, Incendio, Rayo y/o Explosión</td>
-        </tr>
-        <tr>
-            <td>Desordenes Públicos</td>
-        </tr>
-        <tr>
-            <td>Riesgos Catastróficos</td>
-        </tr>
-        <tr>
-            <td>Robot total o parcial a concecuencia de robo total</td>
-        </tr>
-        <tr>
-            <td>Rotura de vidrios</td>
-        </tr>
+        <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></td>
+        {% for oferta in oportunity.ofertas.all %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                {{ oferta.aseguradora.name }}
+            </td>
+        {% endfor %}
 
-        <tr>
-            <td>Gastos Médicos Ocupante</td>
-        </tr>
-        <tr>
-            <td>Responsabilidad civil del conductor</td>
-        </tr>
-        <tr>
-            <td>Extensión territorial</td>
-        </tr>
-        <tr>
-            <td>Gastos por asistencia legal</td>
-        </tr>
-        <tr>
-            <td>Gastos de salvamento</td>
-        </tr>
-        <tr>
-            <td>Taller elegido 5 años máximo de $100,000km</td>
-        </tr>
-        <tr>
-            <td>Cobertura de daños maliciosos</td>
-        </tr>
-
-        <tr>
-            <td>Reinstalación de suma asegurada (cobertura de daños)</td>
-        </tr>
+        {% for cobertura in oportunity.sub_ramo.coberturas.all %}
+            <tr>
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center; width: 80mm">{{ cobertura }}</td>
+                {% for oferta in oportunity.ofertas.all %}
+                    <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ cobertura|valor_cobertura:oferta.aseguradora }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
 
-    <p>Esta oferta es válida solo para vehículos de uso particular</p>
-    <p>Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso</p>
-    <p>Esta oferta no debe entenderce como cobertura de ninguna índole, ni aceptación de riesgo por parte de la(s)
+    <p style="margin: 0">Esta oferta es válida solo para vehículos de uso particular</p>
+    <p style="margin: 0">Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso</p>
+    <p style="margin: 0">Esta oferta no debe entenderce como cobertura de ninguna índole, ni aceptación de riesgo por parte de la(s)
         compañia(s) de seguro, hasta no recibir la aceptación por escrito de usted y confirmado cobertura con la póliza
         emitida</p>
-    <p>*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e Infracciones de
+    <p style="margin: 0">*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e Infracciones de
         Tránsito</p>
 {% endblock %}
