@@ -1411,9 +1411,11 @@ class Oportunidades(Datatables):
                 'apellido_materno': request.POST.get('apellido_materno', ''),
                 'telefono': request.POST.get('telefono', ''),
                 'celular': request.POST.get('celular', ''),
+                'email_personal': request.POST.get('email_personal', ''),
             }
             oportunity = {
                 'no_poliza': request.POST.get('no_poliza', ''),
+                'aseguradora': request.POST.get('aseguradora', ''),
                 'fecha_vence': request.POST.get('fecha_vence', ''),
                 'valor_nuevo': request.POST.get('valor_nuevo', ''),
                 'rc_exceso': request.POST.get('rc_exceso', ''),
@@ -1480,6 +1482,20 @@ class Oportunidades(Datatables):
             send_email(request.POST.get('asunto'), request.POST.get('para'),
                        html=request.POST.get('email_content'), files=files)
             return JsonResponse({})
+
+        if 'prepare_register' in request.POST:
+            html = render_to_string('trustseguros/lte/includes/ofertas.html',
+                                    context={
+                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                                    },
+                                    request=request)
+            return JsonResponse({
+                'html': html
+            })
+
+        if 'register' in request.POST:
+            return JsonResponse({
+            })
 
         return super().post(request)
 

@@ -1868,7 +1868,7 @@ class Oportunity(BasePoliza):
     prospect = models.ForeignKey(Prospect, on_delete=models.CASCADE, verbose_name=_("prospecto"),
                                  null=True, blank=True)
     status = models.PositiveSmallIntegerField(choices=OportunityStatus.choices(), default=OportunityStatus.PENDIENTE)
-    aseguradora = models.ForeignKey(Aseguradora, null=True, blank=True, on_delete=models.SET_NULL)
+    aseguradora = models.CharField(max_length=65, null=True, blank=True)
     fecha_vence = models.DateField(null=True, blank=True, verbose_name="fecha de vencimiento")
     valor_nuevo = models.FloatField(default=0.0, verbose_name="Valor de nuevo", null=True, blank=True)
     rc_exceso = models.BooleanField(default=False, verbose_name="RC en exceso", null=True, blank=True)

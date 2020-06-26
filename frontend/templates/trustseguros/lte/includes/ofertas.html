@@ -1,0 +1,31 @@
+{% load humanize %}
+
+<form action="." id="form-register" method="post">
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Aseguradora</th>
+            <th>Prima total</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for oferta in oportunity.ofertas.all %}
+            <tr>
+                <td style="text-align: center; vertical-align: middle">
+                    <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}">
+                </td>
+                <td>
+                    <img src="{{ oferta.aseguradora.logo.url }}" style="max-width: 85px">
+                </td>
+                <td>U$ {{ oferta.prima|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary btn-trust">
+        <i class="fa fa-file-archive"></i>
+        <span>Registrar</span>
+    </button>
+</form>

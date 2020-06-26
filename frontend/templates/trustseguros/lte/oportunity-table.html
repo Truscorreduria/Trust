@@ -84,6 +84,12 @@
 
         </div>
     </div>
+
+    <div class="poliza-modal">
+        <div class="container-fluid">
+
+        </div>
+    </div>
 {% endblock %}
 
 
@@ -117,6 +123,15 @@
                 headerColor: '#326634',
                 padding: 20,
                 fullscreen: true,
+                width: 900,
+                zindex: 1500,
+            });
+
+            const $registerModal = $('.poliza-modal').iziModal({
+                title: "Registrar la póliza vendida en el sistema de pólizas",
+                headerColor: '#326634',
+                padding: 20,
+                fullscreen: false,
                 width: 900,
                 zindex: 1500,
             });
@@ -360,6 +375,7 @@
             function makeSelectorOptions(fields) {
                 let options = `<option value="">---------</option>`;
                 options += `<option value="no_poliza">NÚMERO DE PÓLIZA</option>`;
+                options += `<option value="aseguradora">ASEGURADORA</option>`;
                 options += `<option value="fecha_vence">FECHA VENCIMIENTO</option>`;
                 options += `<option value="valor_nuevo">VALOR DE NUEVO</option>`;
                 options += `<option value="rc_exceso">RC EXCESO</option>`;
@@ -372,6 +388,7 @@
                 options += `<option value="apellido_materno">APELLIDO MATERNO</option>`;
                 options += `<option value="telefono">TELÉFONO</option>`;
                 options += `<option value="celular">CELULAR</option>`;
+                options += `<option value="email_personal">EMAIL</option>`;
                 $.each(fields, function (i, o) {
                     options += `<option value="${o.name}">${o.label}</option>`
                 });
@@ -492,7 +509,6 @@
                         _this.removeAttr('disabled')
                     }
                 })
-
             });
 
             $(document).on('click', '.email-attachment', imprimir_oferta);
@@ -516,7 +532,46 @@
                         })
                     }
                 })
-            })
+            });
+
+            $(document).on('click', '#btn-register', function () {
+                const _this = $(this);
+                const _container = $($registerModal.find('.container-fluid')).empty();
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        'prepare_register': 'prepare_register',
+                        'id': $('input[name="id"]').val()
+                    },
+                    success: function (response) {
+                        _container.html(response.html);
+                        $registerModal.iziModal('open');
+                        _this.removeAttr('disabled')
+                    }
+                })
+            });
+
+
+            $(document).on('submit', '#form-register', function (e) {
+                e.preventDefault();
+                let data = new FormData(this);
+                data.append('register', 'register');
+                $.ajax('.', {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        swal({
+                            type: 'success',
+                            title: 'Póliza registrada con éxito!',
+                            text: 'Ahora podras darle seguimiento y completar sus datos desde el módulo de pólizas.'
+                        }).then(function () {
+                            $registerModal.iziModal('close');
+                        })
+                    }
+                })
+            });
 
         })
     </script>
