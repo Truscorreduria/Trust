@@ -1495,6 +1495,12 @@ class Oportunidades(Datatables):
                 'html': html
             })
 
+        if 'calcular' in request.POST:
+            print(request.POST)
+            return JsonResponse({
+                'referencia': Referencia.valor_nuevo(request.POST)
+            })
+
         if 'register' in request.POST:
             print(request.POST)
             return JsonResponse({

@@ -632,6 +632,27 @@
                 }
             });
 
+            const calcular_valor_nuevo = function () {
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        chasis: $('input[name="CHASIS"]').val(),
+                        marca: $('input[name="MARCA"]').val(),
+                        modelo: $('input[name="MODELO"]').val(),
+                        anno: $('input[name="ANIO"]').val(),
+                        calcular: 'calcular',
+                    },
+                    success: function (response) {
+                        $('#id_valor_nuevo').val(response.referencia.valor);
+                    }
+                })
+            };
+
+            $(document).on('change', '#id_ANIO', calcular_valor_nuevo);
+            $(document).on('change', '#id_CHASIS', calcular_valor_nuevo);
+            $(document).on('change', '#id_MARCA', calcular_valor_nuevo);
+            $(document).on('change', '#id_MODELO', calcular_valor_nuevo);
+
         })
     </script>
 {% endblock %}

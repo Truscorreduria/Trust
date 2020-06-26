@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Avg
 
 
 class Base(base):
@@ -226,6 +227,63 @@ class Referencia(Base):
 
     def __str__(self):
         return "%s, %s" % (self.marca, self.modelo)
+
+    @classmethod
+    def el_mas_probable(cls, referencias):
+        average = referencias.aggregate(Avg('valor'))['valor__avg']
+        elegido = referencias[0]
+        diff = abs(elegido.valor - average)
+        for r in referencias:
+            ndiff = abs(r.valor - average)
+            if ndiff < diff:
+                diff = ndiff
+                elegido = r
+        return elegido
+
+    @classmethod
+    def anno_mas_cercano(cls, years, year):
+        diff = None
+        selected = None
+        for y in years:
+            _diff = abs(int(y) - int(year))
+            if diff:
+                if _diff < diff:
+                    selected = y
+                    diff = _diff
+            else:
+                diff = _diff
+                selected = y
+        return selected
+
+    @classmethod
+    def valor_nuevo(cls, data):
+        marca = data.get('marca', '')
+        modelo = data.get('modelo', '')
+        anno = data.get('anno', '')
+        chasis = data.get('chasis', '')
+        try:
+            if chasis and chasis != '':
+                valor_nuevo = Referencia.objects.get(chasis=chasis).to_json()
+        except ObjectDoesNotExist:
+            referencias = Referencia.objects.filter(marca=marca, modelo=modelo, anno=anno)
+            if referencias.count() > 0:
+                valor_nuevo = cls.el_mas_probable(referencias).to_json()
+            else:
+                referencias = Referencia.objects.filter(marca=marca, modelo=modelo, anno__lt=anno).order_by('-anno')
+                if referencias.count() > 0:
+                    _year = referencias[0].anno
+                    referencias = referencias.filter(anno=_year)
+                    valor_nuevo = cls.el_mas_probable(referencias).to_json()
+                else:
+                    referencias = Referencia.objects.filter(marca=marca, modelo=modelo).order_by('-anno')
+                    if referencias.count() > 0:
+                        years = [x.anno for x in referencias.distinct('anno')]
+                        _year = cls.anno_mas_cercano(years, anno)
+                        referencias = referencias.filter(anno=_year)
+                        valor_nuevo = cls.el_mas_probable(referencias).to_json()
+                    else:
+                        valor_nuevo = {'marca': marca, 'modelo': modelo, 'anno': anno, 'valor': 0.0}
+        return valor_nuevo
 
 
 # esto es exclusivo para el uso del cotizador
