@@ -183,7 +183,7 @@
             </td>
         {% endfor %}
 
-        {% for cobertura in oportunity.sub_ramo.coberturas.all %}
+        {% for cobertura in oportunity.sub_ramo.coberturas_en_cotizacion %}
             <tr>
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center; width: 80mm">{{ cobertura }}</td>
                 {% for oferta in oportunity.ofertas.all %}

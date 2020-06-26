@@ -613,6 +613,9 @@ class SubRamo(Base):
     def campos_adicionales(self):
         return CampoAdicional.objects.filter(sub_ramo=self)
 
+    def coberturas_en_cotizacion(self):
+        return Cobertura.objects.filter(sub_ramo=self, en_cotizacion=ActivoChoices.ACTIVO)
+
 
 class CampoAdicional(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="datos_tecnicos",
