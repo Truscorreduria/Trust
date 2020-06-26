@@ -1,0 +1,39 @@
+<form action="." method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <table>
+        <tr>
+            <td>
+                <span class="send-mail-label">De:</span>
+                <input class="send-mail-input" type="text" value="{{ user.email }}">
+            </td>
+        </tr>
+        <tr>
+            <td><span class="send-mail-label">Para:</span> <input class="send-mail-input" type="text"></td>
+        </tr>
+        <tr>
+            <td><span class="send-mail-label">Asunto:</span> <input class="send-mail-input" type="text">
+            </td>
+        </tr>
+    </table>
+
+    <textarea id="id_html" name="email_content" data-autosave="editor-content"
+              autofocus>
+
+                    <p>&nbsp;</p>
+                    <p>Atentamente</p>
+                    <p>&nbsp;</p>
+                    <p>
+                        <span
+                                style="color: rgb(136, 136, 136);"><b><span
+                                style="color: rgb(47, 85, 151);">{{ user.get_full_name }}&nbsp;</span></b></span>
+                        <font color="#2f5597">Seguros de consumo<br></font>
+                    </p>
+                    <p><b><span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span></b><br>Teléfono: + 505.2251-0108, Ext.1013</p>
+                    <p>Celular: + 505.5871-3408<br>Email:&nbsp;<a
+                            href="mailto:gcarrion@trustcorreduria.com"
+                            target="_blank">gcarrion@trustcorreduria.com</a></p>
+                    <p><a href="http://www.trustcorreduria.com/"
+                          target="_blank">www.trustcorreduria.com</a></p></textarea>
+
+</form>

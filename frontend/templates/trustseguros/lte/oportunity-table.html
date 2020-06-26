@@ -1,11 +1,22 @@
 {% extends 'adminlte/datatables.html' %}
-{% load crispy_forms_filters %}
+{% load crispy_forms_filters static %}
+
 
 {% block style %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'simditor/site/assets/styles/simditor.css' %}">
     <style type="text/css">
         .data-container .table td {
             min-width: 200px;
+        }
+
+        .send-mail-input {
+            color: grey;
+        }
+
+        .send-mail-input {
+            outline: none;
+            border: none;
         }
     </style>
 {% endblock %}
@@ -49,14 +60,56 @@
 
         </div>
     </div>
+
+    <div class="email-modal">
+        <div class="container-fluid">
+
+        </div>
+    </div>
 {% endblock %}
 
-{% load static %}
+
 {% block javascript %}
     {{ block.super }}
 
     <script type="text/javascript" src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'lodash/dist/lodash.min.js' %}"></script>
+
+    {#    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/jquery.min.js' %}"></script>#}
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/uploader.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/hotkeys.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/dompurify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/simditor.js' %}"></script>
+    <script type="text/javascript">
+
+        (function () {
+            $(function () {
+                var $preview, editor, mobileToolbar, toolbar;
+                Simditor.locale = 'en-US';
+                toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
+                editor = new Simditor({
+                    textarea: $('#id_html'),
+                    placeholder: 'Ingresar cuerpo del correo...',
+                    toolbar: toolbar,
+                    pasteImage: true,
+                    defaultImage: 'assets/images/image.png',
+                    upload: location.search === '?upload' ? {
+                        url: '/upload'
+                    } : false
+                });
+                {% comment %}$preview = $('#preview');
+                if ($preview.length > 0) {
+                    return editor.on('valuechanged', function (e) {
+                        return $preview.html(editor.getValue());
+                    });
+                }{% endcomment %}
+            });
+
+        }).call(this);
+
+    </script>
+
 
     <script type="text/javascript" defer>
         $(document).ready(function () {
@@ -69,6 +122,16 @@
                 width: 900,
                 zindex: 1500,
             });
+
+            const $emailModal = $('.email-modal').iziModal({
+                title: "Enviar cotización por email",
+                headerColor: '#326634',
+                padding: 20,
+                fullscreen: true,
+                width: 900,
+                zindex: 1500,
+            });
+
             const ImportButton = $(`
                 <button class="dt-button btn btn-trust" tabindex="0" aria-controls="receipt-table"
                 type="button">
@@ -408,7 +471,38 @@
                         _this.removeAttr('disabled')
                     }
                 })
-            })
+            });
+
+            $(document).on('click', '#btn-send', function () {
+                const _this = $(this);
+                const _container = $($emailModal.find('.container-fluid')).empty();
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        'prepare_email': 'prepare_email',
+                        'id': $('input[name="id"]').val()
+                    },
+                    success: function (response) {
+                        _container.html(response.html);
+                        let editor, toolbar;
+                        Simditor.locale = 'es';
+                        toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale', 'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image', 'hr', '|', 'indent', 'outdent', 'alignment'];
+                        editor = new Simditor({
+                            textarea: $('#id_html'),
+                            placeholder: 'Ingresar cuerpo del correo...',
+                            toolbar: toolbar,
+                            pasteImage: true,
+                            defaultImage: 'assets/images/image.png',
+                            upload: location.search === '?upload' ? {
+                                url: '/upload'
+                            } : false
+                        });
+                        $emailModal.iziModal('open');
+                        _this.removeAttr('disabled')
+                    }
+                })
+
+            });
 
         })
     </script>

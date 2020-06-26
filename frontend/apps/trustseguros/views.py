@@ -1457,6 +1457,17 @@ class Oportunidades(Datatables):
             return render_to_pdf_response(request, 'trustseguros/lte/pdf/oportunity.html', {
                 'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
             })
+
+        if 'prepare_email' in request.POST:
+            html = render_to_string('trustseguros/lte/includes/send-email-template.html',
+                                    context={
+                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                                    },
+                                    request=request)
+            return JsonResponse({
+                'html': html
+            })
+
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -1516,5 +1527,3 @@ def iniciar_proc():
     for p in ps:
         pass
     np = RenovarPoliza.send(p)
-
-
