@@ -1396,7 +1396,6 @@ class Oportunidades(Datatables):
         return super().put(request)
 
     def post(self, request, linea):
-        print(request.POST)
         self.linea = Linea.objects.get(id=linea)
 
         if 'importar' in request.POST:
