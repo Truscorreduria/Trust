@@ -1404,6 +1404,12 @@ class Oportunidades(Datatables):
             extra_data = {}
             columns = request.POST.getlist('column')
             rows = len(request.POST.getlist(columns[0]))
+            automovil = {
+                'MARCA': 'marca',
+                'MODELO': 'modelo',
+                'ANIO': 'anno',
+                'CHASIS': 'chasis'
+            }
             prospect = {
                 'cedula': request.POST.get('cedula', ''),
                 'primer_nombre': request.POST.get('primer_nombre', ''),
@@ -1429,6 +1435,7 @@ class Oportunidades(Datatables):
                     p = None
                     cedula = request.POST.getlist(prospect['cedula'])[n]
                     if len(cedula) == 14:
+                        datos_vehiculo = {}
                         p, _ = Prospect.objects.get_or_create(cedula=cedula)
                         o = Oportunity()
                         o.prospect = p
@@ -1448,6 +1455,9 @@ class Oportunidades(Datatables):
                                 if choice not in oportunity.keys() and choice not in prospect.keys():
                                     extra_data[choice] = value
 
+                                if choice in automovil.keys():
+                                    datos_vehiculo[automovil[choice]] = value
+
                         p.save()
                         o.extra_data = json.dumps(extra_data)
                         o.linea = self.linea
@@ -1455,6 +1465,8 @@ class Oportunidades(Datatables):
                         o.ramo = form.cleaned_data['ramo']
                         o.sub_ramo = form.cleaned_data['sub_ramo']
                         o.vendedor = form.cleaned_data['vendedor']
+                        if oportunity['valor_nuevo'] == '':
+                            o.valor_nuevo = Referencia.valor_nuevo(datos_vehiculo)
                         o.save()
             return JsonResponse({})
 
@@ -1565,5 +1577,3 @@ def iniciar_proc():
     for p in ps:
         pass
     np = RenovarPoliza.send(p)
-
-
