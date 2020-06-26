@@ -1861,6 +1861,38 @@ class OportunityStatus:
                (cls.VENDIDO, "Vendido"), (cls.NOVENDIDO, "No vendido")
 
 
+class OportunityCausal:
+    TELEFONOAPAGADO = 'A'
+    CREDITOCANCELADO = 'B'
+    ESEMPLEADOBANPRO = 'C'
+    NUMEROEQUIVOCADO = 'D'
+    FUERADEAREA = 'E'
+    FUERADELPAIS = 'F'
+    NOCONTESTA = 'G'
+    NOHAYINFO = 'H'
+    EXTERNADIRECTA = 'I'
+    EXTERNACORREDOR = 'J'
+    SEGUROCOMPARATIVO = 'K'
+    ILACLIZABLE = 'L'
+    VIP = 'M'
+
+    @classmethod
+    def choices(cls):
+        return (cls.TELEFONOAPAGADO, 'Teléfono Apagado.'), \
+               (cls.CREDITOCANCELADO, 'Crédito Cancelado'), \
+               (cls.ESEMPLEADOBANPRO, 'Es empleado BANPRO'), \
+               (cls.NUMEROEQUIVOCADO, 'Número de Teléfono Equivocado.'), \
+               (cls.FUERADEAREA, 'Teléfono fuera de Área / Cobertura.'), \
+               (cls.FUERADELPAIS, 'Fuera del país.'), \
+               (cls.NOCONTESTA, 'No Contesta Teléfono.'), \
+               (cls.NOHAYINFO, 'No hay información.'), \
+               (cls.EXTERNADIRECTA, 'Presentará Externa Cartera Directa.'), \
+               (cls.EXTERNACORREDOR, ' Presentará Externa Corredor.'), \
+               (cls.SEGUROCOMPARATIVO, 'Seguro Comparativo.'), \
+               (cls.ILACLIZABLE, 'Ilocalizable.'), \
+               (cls.VIP, 'VIP'),
+
+
 class Oportunity(BasePoliza):
     code = models.CharField(max_length=6, null=True, blank=True, verbose_name="Número")
     campain = models.ForeignKey(Campain, on_delete=models.CASCADE, verbose_name=_("campaña"), null=True)
@@ -1876,6 +1908,8 @@ class Oportunity(BasePoliza):
     extra_data = models.CharField(max_length=1000000, null=True, blank=True,
                                   verbose_name="datos técnicos")
     vendedor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
+    causal = models.CharField(max_length=1, null=True, blank=True, choices=OportunityCausal.choices())
 
     class Meta:
         verbose_name = "oportunidad"

@@ -64,6 +64,7 @@
                             </div>
                         </div>
                         {% if instance.id %}
+
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card">
@@ -95,6 +96,7 @@
                                 </div>
                             </div>
 
+
                             <div class="row">
                                 <div class="col">
                                     <div class="card">
@@ -117,6 +119,14 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {% if instance.status == 6 %}
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.causal|as_crispy_field }}
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </form>
                 </div>
