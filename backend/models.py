@@ -1919,6 +1919,14 @@ class Oportunity(BasePoliza):
                              'full_name': ""}
         return o
 
+    @property
+    def media_files(self):
+        return Archivo.media_files(self)
+
+    @property
+    def bitacora(self):
+        return Comentario.bitacora(self)
+
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = get_code(self)

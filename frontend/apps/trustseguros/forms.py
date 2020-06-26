@@ -781,6 +781,8 @@ class OportunityForm(forms.ModelForm):
                 initial={
                     'extra_data': instance,
                     'prospect': instance.prospect,
+                    'drive': instance,
+                    'bitacora': instance,
                     'days': instance.dias,
                 }
             )

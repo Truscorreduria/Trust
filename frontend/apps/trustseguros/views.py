@@ -1411,6 +1411,7 @@ class Oportunidades(Datatables):
                 'telefono': request.POST.get('telefono', ''),
                 'celular': request.POST.get('celular', ''),
                 'email_personal': request.POST.get('email_personal', ''),
+                'domicilio': request.POST.get('domicilio', ''),
             }
             oportunity = {
                 'no_poliza': request.POST.get('no_poliza', ''),
@@ -1493,6 +1494,7 @@ class Oportunidades(Datatables):
             })
 
         if 'register' in request.POST:
+            print(request.POST)
             return JsonResponse({
             })
 
