@@ -1922,7 +1922,8 @@ class Oportunity(BasePoliza):
                                   verbose_name="datos técnicos")
     vendedor = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
-    causal = models.CharField(max_length=1, null=True, blank=True, choices=OportunityCausal.choices())
+    causal = models.CharField(max_length=1, null=True, blank=True, choices=OportunityCausal.choices(),
+                              verbose_name="Razón por la que no se concretó la venta")
 
     class Meta:
         verbose_name = "oportunidad"
