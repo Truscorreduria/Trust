@@ -1,4 +1,4 @@
-{% load static %}
+{% load static humanize %}
 <form action="." method="post" enctype="multipart/form-data" id="send-mail-form">
     {% csrf_token %}
 
@@ -27,8 +27,133 @@
 
     <textarea id="id_html" name="email_content" data-autosave="editor-content"
               autofocus>
+<div>
+    <div style="font-family:Arial,Helvetica,sans-serif"><span
+            style="font-family:Verdana,sans-serif;font-size:11pt;color:rgb(38,40,42)">Buenos días</span><span
+            style="font-family:Verdana,sans-serif;font-size:12pt;color:rgb(38,40,42)">&nbsp;Sr(a)</span><span
+            style="font-size:11pt">&nbsp;</span>{{ oportunity.prospect.full_name }}&nbsp;<span style="font-size:11pt"><font
+            color="#26282a" style="background-color:inherit"><font face="verdana, sans-serif"><span
+            style="font-family:sans-serif;font-size:small">,&nbsp;</span></font></font></span><font color="#26282a"
+                                                                                                    face="Verdana, sans-serif">Permítanos presentarle una cotización de seguro para su vehículo con las mejores condiciones del mercado. Para esta cotización&nbsp;hemos buscado alternativas en compañías de seguros con prestigio Nacional,</font><br></div><div><div><div
+        dir="ltr">
+    <b><p style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt">
+        <span style="color:rgb(38,40,42);font-family:Verdana,sans-serif"><br></span>
+    </p><p style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt">
+        <span style="color:rgb(38,40,42);font-family:Verdana,sans-serif">A continuación las opciones de seguro:</span>
+    </p><p style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt">
+        <span style="color:rgb(38,40,42);font-family:Verdana,sans-serif"><br></span>
+    </p>
 
-                    <p>&nbsp;</p>
+
+        <table style="margin-top: 10mm">
+        <thead>
+        <tr>
+            <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
+            {% for oferta in oportunity.ofertas.all %}
+                <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    <b>{{ oferta.aseguradora.name }}</b>
+                </th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Suma asegurada</b>
+            </td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b>
+            </td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
+                    %
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
+                    %
+                </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Prima total</b></td>
+            {% for oferta in oportunity.ofertas.all %}
+                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                    U$ {{ oferta.prima_total|intcomma }}</td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+
+
+
+    <div class="a6S" dir="ltr" style="opacity: 0.01; left: 275px; top: 476.727px;">
+    <div id=":r8"
+         class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q"
+         role="button" tabindex="0"
+         aria-label="Descargar el archivo adjunto image.png"
+         data-tooltip-class="a1V"
+         data-tooltip="Descargar"><div
+            class="aSK J-J5-Ji aYr"></div></div>
+        <div id=":r9" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" role="button"
+             tabindex="0"
+             aria-label="Guardar el archivo adjunto image.png en Drive"
+             data-tooltip-class="a1V" data-tooltip="Añadir a Drive"><div
+                class="wtScjd J-J5-Ji aYr XG"><div class="T-aT4" style="display: none;"><div></div><div
+                class="T-aT4-JX"></div></div></div></div>
+    </div>
+                <br>
+            <div>
+                <span
+                        style="color:rgb(38,40,42);font-family:Verdana,sans-serif;font-size:11pt">Los requisitos para tomar la póliza son:</span><br>
+            </div>
+        <div dir="ltr">
+            <p
+                    style="margin:0cm 0cm 8pt 47.25pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                    style="color:rgb(38,40,42);font-family:Symbol;font-size:10pt">·</span><span
+                    style="color:rgb(38,40,42);font-family:&quot;New serif&quot;;font-size:7pt">&nbsp;&nbsp;</span><span
+                    style="color:rgb(38,40,42);font-family:Verdana,sans-serif">Copia de cédula</span></p><p
+                style="margin:0cm 0cm 8pt 47.25pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Symbol;font-size:10pt">·</span><span
+                style="color:rgb(38,40,42);font-family:&quot;New serif&quot;;font-size:7pt">&nbsp;&nbsp;</span><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">Copia de circulación</span></p><p
+                style="margin:0cm 0cm 8pt 47.25pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Symbol;font-size:10pt">·</span><span
+                style="color:rgb(38,40,42);font-family:&quot;New serif&quot;;font-size:7pt">&nbsp;&nbsp;</span><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">Inspección del vehículo</span></p><p
+                style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">Adjunto encontrará una cotización formal.</span></p><p
+                style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">&nbsp;</span></p><p
+                style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">En caso que usted prefiera trabajar con otra compañía, nos lo hace saber para presentarle oferta con las mejores condiciones del mercado.</span></p><p
+                style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif"><br>Agradeciendo nuevamente su confianza en nosotros, me despido en espera de su aprobación.</span></p><p
+                style="margin:0cm 0cm 0pt;line-height:normal;font-family:Calibri,sans-serif;font-size:11pt"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">&nbsp;</span></p><p
+                style="margin-bottom:0.0001pt;line-height:normal"><span
+                style="color:rgb(38,40,42);font-family:Verdana,sans-serif">Saludos cordiales......</span>
+        </p></div>
+</div>
+
+
+
+        <p>&nbsp;</p>
                     <p>Atentamente</p>
                     <p>&nbsp;</p>
                     <p style="margin: 0">
