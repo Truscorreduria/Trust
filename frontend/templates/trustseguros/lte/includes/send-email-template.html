@@ -48,7 +48,7 @@
             <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
             {% for oferta in oportunity.ofertas.all %}
                 <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
-                    <b>{{ oferta.aseguradora.name }}</b>
+                    <img src="{{ oferta.aseguradora.logo.url }}" width="65">
                 </th>
             {% endfor %}
         </tr>
