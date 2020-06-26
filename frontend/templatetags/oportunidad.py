@@ -16,12 +16,15 @@ def has_line(user, linea):
 
 @register.filter('passed')
 def passed(choice, status):
-    try:
-        if int(choice[0]) <= int(status):
+    print(status)
+    if int(status) == OportunityStatus.NOVENDIDO:
+        if int(choice[0]) in [4, 5]:
+            return "off"
+        else:
             return "on"
-        return "off"
-    except:
-        return "off"
+    elif int(choice[0]) <= int(status):
+        return "on"
+    return "off"
 
 
 @register.filter('checked')
@@ -79,7 +82,7 @@ def touchable(choice, status):
         return 'touchable'
     elif int(status) == OportunityStatus.COTIZAZDO and choice[0] == 3:
         return 'touchable'
-    elif int(status) == OportunityStatus.CONTACTADO and choice[0] == 4:
+    elif int(status) == OportunityStatus.CONTACTADO and (choice[0] == 4 or choice[0] == 6):
         return 'touchable'
     elif int(status) == OportunityStatus.EMISION and choice[0] == 5:
         return 'touchable'
