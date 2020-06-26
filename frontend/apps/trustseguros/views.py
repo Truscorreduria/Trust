@@ -1466,7 +1466,7 @@ class Oportunidades(Datatables):
                         o.sub_ramo = form.cleaned_data['sub_ramo']
                         o.vendedor = form.cleaned_data['vendedor']
                         if oportunity['valor_nuevo'] == '':
-                            o.valor_nuevo = Referencia.valor_nuevo(datos_vehiculo)
+                            o.valor_nuevo = Referencia.valor_nuevo(datos_vehiculo).get('valor')
                         o.save()
             return JsonResponse({})
 
