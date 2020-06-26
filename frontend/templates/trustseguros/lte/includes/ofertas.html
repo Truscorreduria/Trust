@@ -14,7 +14,7 @@
         {% for oferta in oportunity.ofertas.all %}
             <tr>
                 <td style="text-align: center; vertical-align: middle">
-                    <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}">
+                    <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}" required="required">
                 </td>
                 <td>
                     <img src="{{ oferta.aseguradora.logo.url }}" style="max-width: 85px">
