@@ -1,7 +1,8 @@
-<form action="." method="post" enctype="multipart/form-data">
+{% load static %}
+<form action="." method="post" enctype="multipart/form-data" id="send-mail-form">
     {% csrf_token %}
 
-    <table>
+    <table style="width: 100%">
         <tr>
             <td>
                 <span class="send-mail-label">De:</span>
@@ -9,10 +10,15 @@
             </td>
         </tr>
         <tr>
-            <td><span class="send-mail-label">Para:</span> <input class="send-mail-input" type="text"></td>
+            <td>
+                <span class="send-mail-label">Para:</span>
+                <input class="send-mail-input" type="text" value="{{ oportunity.prospect.email_personal }}">
+            </td>
         </tr>
         <tr>
-            <td><span class="send-mail-label">Asunto:</span> <input class="send-mail-input" type="text">
+            <td><span class="send-mail-label">Asunto:</span>
+                <input class="send-mail-input" type="text"
+                       value="Oferta de seguro">
             </td>
         </tr>
     </table>
@@ -23,17 +29,35 @@
                     <p>&nbsp;</p>
                     <p>Atentamente</p>
                     <p>&nbsp;</p>
-                    <p>
+                    <p style="margin: 0">
                         <span
                                 style="color: rgb(136, 136, 136);"><b><span
                                 style="color: rgb(47, 85, 151);">{{ user.get_full_name }}&nbsp;</span></b></span>
-                        <font color="#2f5597">Seguros de consumo<br></font>
+                        <br><font color="#2f5597">Seguros de consumo<br></font>
                     </p>
-                    <p><b><span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span></b><br>Teléfono: + 505.2251-0108, Ext.1013</p>
-                    <p>Celular: + 505.5871-3408<br>Email:&nbsp;<a
-                            href="mailto:gcarrion@trustcorreduria.com"
-                            target="_blank">gcarrion@trustcorreduria.com</a></p>
+                    <p style="margin: 0">
+                        <b><span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span>
+                        </b><br>Teléfono: +505 2251-0108</p>
+                    <p style="margin: 0">Email:&nbsp;<a
+                            href="mailto:{{ oportunity.vendedor.email }}"
+                            target="_blank">{{ oportunity.vendedor.email }}</a></p>
                     <p><a href="http://www.trustcorreduria.com/"
-                          target="_blank">www.trustcorreduria.com</a></p></textarea>
+                          target="_blank">www.trustcorreduria.com</a></p>
+    </textarea>
+
+    <div class="send-email-attachment">
+        <figure class="email-attachment">
+            <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
+            <figcaption>Cotización</figcaption>
+        </figure>
+    </div>
+
+    <div class="send-email-buttons" style="display: flex; justify-content: flex-end">
+        <button type="submit" class="btn btn-primary btn-trust"
+                id="btn-send-email" data-id="{{ oportunity.id }}">
+            <i class="fa fa-paper-plane"></i>
+            <span>Enviar</span>
+        </button>
+    </div>
 
 </form>
