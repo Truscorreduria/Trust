@@ -13,7 +13,8 @@ from django.db import IntegrityError
 from backend.signals import AddComment
 from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
-from easy_pdf.rendering import render_to_pdf_response
+from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
+from utils.utils import send_email
 
 
 def group_to_json(group):
@@ -1467,6 +1468,18 @@ class Oportunidades(Datatables):
             return JsonResponse({
                 'html': html
             })
+
+        if 'send_email' in request.POST:
+            files = []
+            cotizacion = render_to_pdf('trustseguros/lte/pdf/oportunity.html', {
+                'oportunity': Oportunity.objects.get(id=request.POST.get('oportunity_id'))
+            })
+
+            files.append(("attachment", ("Oferta.pdf", cotizacion)))
+
+            send_email(request.POST.get('asunto'), request.POST.get('para'),
+                       html=request.POST.get('email_content'), files=files)
+            return JsonResponse({})
 
         return super().post(request)
 

@@ -15,13 +15,14 @@ def send_simple_message(address):
               "text": "Mensaje de prueba desde Mailgun!"})
 
 
-def send_email(subject, receipt, html, files=None):
+def send_email(subject, receipt, html, files=None, fr=None):
+    from_email = fr or 'info@truscorreduria.com'
     if files and len(files) > 0:
         return requests.post(
             "https://api.mailgun.net/v3/trustcorreduria.com/messages",
             auth=("api", "338f0a7715e124eaf80cbaf279f274a1-7bbbcb78-a34c85e8"),
             files=files,
-            data={"from": "Trust Corredurida de Seguros <info@truscorreduria.com>",
+            data={"from": "Trust Corredurida de Seguros <%s>" % from_email,
                   "to": receipt,
                   "subject": subject,
                   "html": html})
@@ -29,7 +30,7 @@ def send_email(subject, receipt, html, files=None):
         return requests.post(
             "https://api.mailgun.net/v3/trustcorreduria.com/messages",
             auth=("api", "338f0a7715e124eaf80cbaf279f274a1-7bbbcb78-a34c85e8"),
-            data={"from": "Trust Corredurida de Seguros <info@truscorreduria.com>",
+            data={"from": "Trust Corredurida de Seguros <%s>" % from_email,
                   "to": receipt,
                   "subject": subject,
                   "html": html})

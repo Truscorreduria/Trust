@@ -2,23 +2,25 @@
 <form action="." method="post" enctype="multipart/form-data" id="send-mail-form">
     {% csrf_token %}
 
+    <input type="hidden" name="oportunity_id" value="{{ oportunity.id }}">
+
     <table style="width: 100%">
         <tr>
             <td>
                 <span class="send-mail-label">De:</span>
-                <input class="send-mail-input" type="text" value="{{ user.email }}">
+                <input class="send-mail-input" type="text" value="{{ user.email }}" name="de">
             </td>
         </tr>
         <tr>
             <td>
                 <span class="send-mail-label">Para:</span>
-                <input class="send-mail-input" type="text" value="{{ oportunity.prospect.email_personal }}">
+                <input class="send-mail-input" type="text" value="{{ oportunity.prospect.email_personal }}" name="para">
             </td>
         </tr>
         <tr>
             <td><span class="send-mail-label">Asunto:</span>
                 <input class="send-mail-input" type="text"
-                       value="Oferta de seguro">
+                       value="Oferta de seguro" name="asunto">
             </td>
         </tr>
     </table>
@@ -53,8 +55,7 @@
     </div>
 
     <div class="send-email-buttons" style="display: flex; justify-content: flex-end">
-        <button type="submit" class="btn btn-primary btn-trust"
-                id="btn-send-email" data-id="{{ oportunity.id }}">
+        <button type="submit" class="btn btn-primary btn-trust">
             <i class="fa fa-paper-plane"></i>
             <span>Enviar</span>
         </button>

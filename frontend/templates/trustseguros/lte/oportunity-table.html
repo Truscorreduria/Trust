@@ -497,6 +497,27 @@
 
             $(document).on('click', '.email-attachment', imprimir_oferta);
 
+            $(document).on('submit', '#send-mail-form', function (e) {
+                e.preventDefault();
+                let data = new FormData(this);
+                data.append('send_email', 'send_email');
+                $.ajax('.', {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        swal({
+                            type: 'success',
+                            title: 'Mensaje enviado con éxito!',
+                            text: 'Tu mensaje se ha enviado correctamente, recibiras respuesta del cliente a tu correo de trustcorreduria.com'
+                        }).then(function () {
+                            $emailModal.iziModal('close');
+                        })
+                    }
+                })
+            })
+
         })
     </script>
 {% endblock %}
