@@ -725,6 +725,15 @@ class ProcedenciaPoliza:
         return (cls.TRUSTSEGUROS, "Trustseguros"), (cls.COTIZADOR, "Cotizador"), (cls.BANCASEGUROS, "Bancaseguros")
 
 
+class ActivoChoices:
+    INACTIVO = 0
+    ACTIVO = 1
+
+    @classmethod
+    def choices(cls):
+        return (cls.INACTIVO, "No"), (cls.ACTIVO, "Si")
+
+
 class Cobertura(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
     name = models.CharField(max_length=75, null=True, verbose_name="nombre")
@@ -736,6 +745,7 @@ class Cobertura(Base):
     tipo_exceso = models.CharField(max_length=25, choices=TipoExceso.choices(), default='0.0',
                                    verbose_name="variable de referencia")
     iva = models.BooleanField(default=True, verbose_name="aplica iva")
+    en_cotizacion = models.PositiveSmallIntegerField(choices=ActivoChoices.choices(), default=ActivoChoices.INACTIVO)
 
     def __str__(self):
         return self.name

@@ -320,7 +320,7 @@ class CoberturaForm(forms.ModelForm):
 
     class Meta:
         model = Cobertura
-        fields = ('name', )
+        fields = ('name', 'en_cotizacion')
 
 
 class CampoAdicionalForm(forms.ModelForm):
@@ -342,7 +342,7 @@ class SubRamoForm(forms.ModelForm):
                              widget=CoberturaSubRamoWidget(
                                  attrs={
                                      'form': CoberturaForm,
-                                     'columns': ('name', ),
+                                     'columns': ('name', 'en_cotizacion'),
                                      'aseguradoras': Aseguradora.objects.all()
                                  }
                              ))

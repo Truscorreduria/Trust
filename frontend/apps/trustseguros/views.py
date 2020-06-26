@@ -846,6 +846,7 @@ class SubRamos(Datatables):
     ]
 
     def save_related(self, instance, data):
+        print(data)
         for i in range(1, len(data.getlist('cobertura_id'))):
             if data.getlist('cobertura_id')[i] == '':
                 c = Cobertura(sub_ramo=instance)
@@ -853,6 +854,7 @@ class SubRamos(Datatables):
                 c = Cobertura.objects.get(id=int(data.getlist('cobertura_id')[i]))
             f = CoberturaForm({
                 'subramo_cobertura-name': data.getlist('subramo_cobertura-name')[i],
+                'subramo_cobertura-en_cotizacion': data.getlist('subramo_cobertura-en_cotizacion')[i],
                 # 'subramo_cobertura-tipo_calculo': data.getlist('subramo_cobertura-tipo_calculo')[i],
                 # 'subramo_cobertura-tipo_cobertura': data.getlist('subramo_cobertura-tipo_cobertura')[i],
                 # 'subramo_cobertura-tipo_exceso': data.getlist('subramo_cobertura-tipo_exceso')[i],
@@ -1557,3 +1559,5 @@ def iniciar_proc():
     for p in ps:
         pass
     np = RenovarPoliza.send(p)
+
+
