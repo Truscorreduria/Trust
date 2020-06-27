@@ -264,6 +264,8 @@ class Referencia(Base):
         try:
             if chasis and chasis != '':
                 valor_nuevo = Referencia.objects.get(chasis=chasis).to_json()
+            else:
+                raise ObjectDoesNotExist()
         except ObjectDoesNotExist:
             referencias = Referencia.objects.filter(marca=marca, modelo=modelo, anno=anno)
             if referencias.count() > 0:
@@ -1898,6 +1900,7 @@ class LineaUser(Base):
 
 class Campain(Base):
     name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
+    active = models.BooleanField(default=False, verbose_name="activa")
 
     def __str__(self):
         return self.name
