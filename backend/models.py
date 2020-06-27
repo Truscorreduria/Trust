@@ -2066,13 +2066,13 @@ class Oportunity(BasePoliza):
 
         for f in self.media_files:
             a = Archivo()
-            a.type = ContentType.objects.get_for_model(self)
+            a.type = ContentType.objects.get_for_model(p)
             a.key = p.id
-            a.nombre = f.id
-            a.tiene_caducidad = f.nombre
-            a.fecha_caducidad = f.tiene_caducidad
-            a.archivo = f.fecha_caducidad
-            a.tag = f.archivo
+            a.nombre = f.nombre
+            a.tiene_caducidad = f.tiene_caducidad
+            a.fecha_caducidad = f.fecha_caducidad
+            a.archivo = f.archivo
+            a.tag = f.tag
             a.save()
 
         return p
