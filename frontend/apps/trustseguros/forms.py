@@ -775,7 +775,7 @@ class OportunityForm(forms.ModelForm):
 
     class Meta:
         model = Oportunity
-        exclude = ('linea',)
+        exclude = ('linea', 'code')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
