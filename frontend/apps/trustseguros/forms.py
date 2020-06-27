@@ -425,7 +425,10 @@ class PolizaForm(forms.ModelForm):
         updated_initial = {}
         if instance:
             updated_initial['campos_adicionales'] = instance
-            updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
+            try:
+                updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
+            except AttributeError:
+                pass
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance
             updated_initial['drive'] = instance

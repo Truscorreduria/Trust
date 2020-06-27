@@ -971,6 +971,8 @@ class Poliza(BasePoliza):
     perdir_comentarios = models.BooleanField(default=False, blank=True)
     pedir_soporte = models.BooleanField(default=False, blank=True)
 
+    oportunity = models.ForeignKey('Oportunity', null=True, blank=True, on_delete=models.SET_NULL)
+
     class Meta:
         ordering = ['fecha_vence', ]
         verbose_name_plural = "Pólizas"
@@ -2035,6 +2037,45 @@ class Oportunity(BasePoliza):
     @property
     def bitacora(self):
         return Comentario.bitacora(self)
+
+    def registrar(self, aseguradora):
+        p = Poliza(oportunity=self)
+        cliente, _ = ClienteNatural.objects.get_or_create(cedula=self.prospect.cedula, tipo_cliente=TipoCliente.NATURAL,
+                                                          estado_cliente=EstadoCliente.ACTIVO)
+        cliente.primer_nombre = self.prospect.primer_nombre
+        cliente.segundo_nombre = self.prospect.segundo_nombre
+        cliente.apellido_paterno = self.prospect.apellido_paterno
+        cliente.apellido_materno = self.prospect.apellido_materno
+
+        cliente.email_personal = self.prospect.email_personal
+        cliente.celular = self.prospect.celular
+        cliente.telefono = self.prospect.telefono
+        cliente.departamento = self.prospect.departamento
+        cliente.municipio = self.prospect.municipio
+        cliente.domicilio = self.prospect.domicilio
+        cliente.save()
+
+        p.cliente = cliente
+        p.aseguradora = aseguradora
+        p.ramo = self.ramo
+        p.sub_ramo = self.sub_ramo
+        p.save()
+
+        d = DatoPoliza(poliza=p, extra_data=self.extra_data)
+        d.save()
+
+        for f in self.media_files:
+            a = Archivo()
+            a.type = ContentType.objects.get_for_model(self)
+            a.key = p.id
+            a.nombre = f.id
+            a.tiene_caducidad = f.nombre
+            a.fecha_caducidad = f.tiene_caducidad
+            a.archivo = f.fecha_caducidad
+            a.tag = f.archivo
+            a.save()
+
+        return p
 
     def save(self, *args, **kwargs):
         if not self.code:

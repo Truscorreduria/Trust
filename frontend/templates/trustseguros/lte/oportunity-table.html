@@ -563,12 +563,13 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
+                        console.log(response);
                         swal({
                             type: 'success',
                             title: 'Póliza registrada con éxito!',
                             text: 'Ahora podras darle seguimiento y completar sus datos desde el módulo de pólizas.'
                         }).then(function () {
-                            $registerModal.iziModal('close');
+                            location.replace("/trustseguros/polizas/#" + response.instance.id);
                         })
                     }
                 })

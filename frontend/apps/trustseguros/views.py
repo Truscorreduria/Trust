@@ -1508,15 +1508,17 @@ class Oportunidades(Datatables):
             })
 
         if 'calcular' in request.POST:
-            print(request.POST)
             return JsonResponse({
                 'referencia': Referencia.valor_nuevo(request.POST)
             })
 
         if 'register' in request.POST:
-            print(request.POST)
+            oportunity = Oportunity.objects.get(id=request.POST.get('oportunity'))
+            aseguradora = Aseguradora.objects.get(id=request.POST.get('aseguradora'))
+            poliza = oportunity.registrar(aseguradora)
             return JsonResponse({
-            })
+                'instance': poliza.to_json()
+            }, encoder=Codec)
 
         return super().post(request)
 
