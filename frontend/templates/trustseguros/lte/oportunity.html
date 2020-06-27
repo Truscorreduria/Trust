@@ -9,6 +9,7 @@
                     <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
                           data-toggle="validator">
                         <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+                        {{ form.code }}
                         {% csrf_token %}
                         <div class="row">
                             {{ form.status|as_crispy_field }}

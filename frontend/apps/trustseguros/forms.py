@@ -772,10 +772,11 @@ class OportunityForm(forms.ModelForm):
             'instance': None,
         }
     ))
+    code = forms.CharField(widget=forms.HiddenInput)
 
     class Meta:
         model = Oportunity
-        exclude = ('linea', 'code')
+        exclude = ('linea', )
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
