@@ -768,7 +768,7 @@ class OportunityForm(forms.ModelForm):
 
     cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
         attrs={
-            'companies': Aseguradora.objects.all(),
+            'companies': Aseguradora.objects.filter(active=True),
             'instance': None,
         }
     ))
