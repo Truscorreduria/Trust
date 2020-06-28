@@ -163,6 +163,11 @@
     <p><b>Anexo</b></p>
     <p>Cuadro comparativo por compañia</p>
 
+    {% if oportunity.rc_exceso %}
+        <p><b>Cotización con Exceso por U$ {{ oportunity.valor_exceso|intcomma }}</b></p>
+    {% endif %}
+
+
     <table style="margin-bottom: 10mm">
         <thead>
         <tr>
