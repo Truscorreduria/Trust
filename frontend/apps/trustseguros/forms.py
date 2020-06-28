@@ -773,6 +773,7 @@ class OportunityForm(forms.ModelForm):
         }
     ))
     code = forms.CharField(widget=forms.HiddenInput)
+    vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
 
     class Meta:
         model = Oportunity
@@ -810,6 +811,7 @@ class CampainForm(forms.ModelForm):
 class ImportDataForm(forms.ModelForm):
     prefix = 'import'
 
+    campain = forms.ModelChoiceField(queryset=Campain.objects.filter(active=True))
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
 
     class Meta:
