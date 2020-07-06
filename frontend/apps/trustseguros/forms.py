@@ -772,7 +772,7 @@ class OportunityForm(forms.ModelForm):
             'instance': None,
         }
     ))
-    code = forms.CharField(widget=forms.HiddenInput)
+    code = forms.CharField(widget=forms.HiddenInput, required=False)
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
 
     class Meta:
