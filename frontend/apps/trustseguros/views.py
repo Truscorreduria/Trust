@@ -1494,7 +1494,7 @@ class Oportunidades(Datatables):
             files.append(("attachment", ("Oferta.pdf", cotizacion)))
 
             send_email(request.POST.get('asunto'), request.POST.get('para'),
-                       html=request.POST.get('email_content'), files=files)
+                       html=request.POST.get('email_content'), files=files, fr=request.POST.get('de'))
             return JsonResponse({})
 
         if 'prepare_register' in request.POST:

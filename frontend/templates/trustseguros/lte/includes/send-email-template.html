@@ -8,7 +8,7 @@
         <tr>
             <td>
                 <span class="send-mail-label">De:</span>
-                <input class="send-mail-input" type="text" value="{{ user.email }}" name="de">
+                <input class="send-mail-input" type="text" value="{{ oportunity.vendedor.email }}" name="de">
             </td>
         </tr>
         <tr>
@@ -20,7 +20,7 @@
         <tr>
             <td><span class="send-mail-label">Asunto:</span>
                 <input class="send-mail-input" type="text"
-                       value="Oferta de seguro" name="asunto">
+                       value="Oferta de seguro {{ oportunity.prospect.full_name }}" name="asunto">
             </td>
         </tr>
     </table>
@@ -110,7 +110,7 @@
         <p style="margin: 0">
             <span
                     style="color: rgb(136, 136, 136);"><b><span
-                    style="color: rgb(47, 85, 151);">{{ user.get_full_name }}&nbsp;</span></b></span>
+                    style="color: rgb(47, 85, 151);">{{ oportunity.vendedor.get_full_name }}&nbsp;</span></b></span>
             <br><font color="#2f5597">Seguros de consumo<br></font>
         </p>
         <p style="margin: 0">
