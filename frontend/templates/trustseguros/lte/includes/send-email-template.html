@@ -40,7 +40,7 @@
         <tr>
             <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
             {% for oferta in oportunity.ofertas.all %}
-                <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                <th style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
                     <img src="https://dev.trustcorreduria.com{{ oferta.aseguradora.logo.url }}" width="65">
                 </th>
             {% endfor %}
@@ -49,7 +49,7 @@
         <tbody>
 
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Suma asegurada</b>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Suma asegurada</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
@@ -59,12 +59,12 @@
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
             {% for oferta in oportunity.ofertas.all %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+                <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
                     U$ {{ oferta.suma_asegurada|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro daños</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
@@ -73,7 +73,7 @@
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro robo</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
                     %
@@ -81,7 +81,7 @@
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Prima total</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Prima total</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
                     U$ {{ oferta.prima_total|intcomma }}</td>
