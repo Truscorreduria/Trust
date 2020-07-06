@@ -1550,11 +1550,11 @@ class Oportunidades(Datatables):
                             tarifa = Tarifa.objects.get(aseguradora=aseguradora, marca=cotizacion.marca,
                                                         modelo=cotizacion.modelo)
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_robo, cotizacion.deducible, \
+                            cotizacion.coaseguro_dano, cotizacion.deducible, \
                             cotizacion.exceso = tarifa.calcular_tarifa()
                         except ObjectDoesNotExist:
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_robo, cotizacion.deducible, \
+                            cotizacion.coaseguro_dano, cotizacion.deducible, \
                             cotizacion.exceso = aseguradora.calcular_tarifa()
                         cotizacion.emision = aseguradora.emision
                         cotizacion.save()
