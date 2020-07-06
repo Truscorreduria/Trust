@@ -60,11 +60,11 @@
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
-                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
+                    U$ {{ oferta.deducible|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro daños</b>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro robo</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
@@ -73,7 +73,7 @@
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro robo</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro daños</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
                     %

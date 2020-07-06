@@ -53,7 +53,6 @@
     <p style="text-align: justify">Para esta cotización hemos buscado opciones en compañias de seguros con
         prestigio Nacional, en base a la siguiente información:</p>
 
-
     <table>
         <thead>
         <tr>
@@ -116,11 +115,11 @@
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
-                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
+                    U$ {{ oferta.deducible|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b>
             </td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
@@ -129,7 +128,7 @@
             {% endfor %}
         </tr>
         <tr>
-            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b></td>
             {% for oferta in oportunity.ofertas.all %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
                     %
@@ -157,8 +156,6 @@
     <p style="margin: 0">Celular +505 8932 8850</p>
     <p style="margin: 0; color: blue; text-decoration: underline">contacto@trustcorreduria.com</p>
     <p style="margin: 0; color: blue; text-decoration: underline; page-break-after: always">www.trustcorreduria.com</p>
-
-
 
     <p><b>Anexo</b></p>
     <p>Cuadro comparativo por compañia</p>
