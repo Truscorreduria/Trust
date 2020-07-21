@@ -58,7 +58,7 @@
             <td></td>
             <td>
                 <h1 style="font-size: 1.2em; text-align: center"><b>INDICATIVO DE COSTO Y COBERTURA</b></h1>
-                <h1 style="font-size: 1.2em; text-align: center"><b>PROGRAMA EXCLUSIVO DE COLABORADORES BANPRO</b></h1>
+                <h1 style="font-size: 1.2em; text-align: center"><b>PROGRAMA EXCLUSIVO DE COLABORADORES {{ config.empresa.nombre_comercial }}</b></h1>
             </td>
             <td class="pull-right">Fecha: {{ poliza.fecha_emision|date:'d/m/Y' }}</td>
         </tr>
@@ -68,7 +68,7 @@
 
     <p style="text-align: justify">Trust Correduría, atendiendo su solicitud, le presenta la
         oferta de seguros de automóvil con la compañía de Seguros ASSA, la cual cuenta con tasa preferencial de
-        colaborador de Banpro.</p>
+        colaborador de {{ config.empresa.nombre_comercial }}.</p>
 
     <table>
 

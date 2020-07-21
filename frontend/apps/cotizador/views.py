@@ -328,7 +328,7 @@ def generar_cotizacion(request):
         pass
     # ticket.save()
 
-    context = {'poliza': ticket}
+    context = {'poliza': ticket, 'config': get_config(user)}
     return render_to_pdf_response(request, 'cotizador/pdf/cotizacion.html', context)
 
 
