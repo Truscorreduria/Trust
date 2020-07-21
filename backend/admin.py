@@ -303,3 +303,8 @@ class OportunityAdmin(admin.ModelAdmin):
         'prospect',
         'status')
     inlines = [OportunityRows, ]
+
+
+@admin.register(CotizadorConfig)
+class ConfigAdmin(ImageCroppingMixin, admin.ModelAdmin):
+    pass

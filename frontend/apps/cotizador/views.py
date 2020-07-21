@@ -32,14 +32,9 @@ from django.contrib import messages
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def inicio(request):
-    context = {}
-    # context = {'productos': Producto.objects.filter(active=True),
-    #            'marcas': marcas, 'modelos': modelos,
-    #            'aseguradoras': Aseguradora.objects.filter(active=True),
-    #            'producto': Producto.objects.get(code='0001'),
-    #            'perfil_form': ProfileForm(instance=request.user),
-    #            'today': datetime.now()
-    #            }
+    context = {
+        'config': get_config(request.user)
+    }
     if request.method == "POST":
         form = ProfileForm(request.POST)
         context['perfil_form'] = form

@@ -203,23 +203,9 @@
         </div>
 
         <aside>
-            {% comment %}<div class="flexslider">
-                <ul class="slides">
-                    {% for img in publicidad %}
-                        <li>
-                            <img class="image-responsive"
-                                 src="{% cropped_thumbnail img "cropping" max_size="400x800" %}">
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>{% endcomment %}
 
-            {% with publicidad.0 as img %}
-
-                <img src="{% cropped_thumbnail img "cropping" max_size="400x800" %}" alt=""
+                <img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
                      style="width: 100%">
-
-            {% endwith %}
         </aside>
     </div>
 {% endblock %}
