@@ -801,7 +801,9 @@ def change_password(request):
 @profile_required
 @login_required(login_url="/cotizador/login/")
 def referenciados(request):
-    return render(request, 'cotizador/referenciados.html')
+    return render(request, 'cotizador/referenciados.html', {
+        'config': get_config(request.user)
+    })
 
 
 @profile_required
