@@ -79,7 +79,8 @@ def cotizar(request):
     context = {
         'marcas': marcas, 'modelos': modelos, 'annos': annos,
         'aseguradoras': Aseguradora.objects.filter(active=True),
-        'anno_actual': year, 'soa_descontado': soa_descontado
+        'anno_actual': year, 'soa_descontado': soa_descontado,
+        'config': config
     }
     return render(request, 'cotizador/cotizar.html', context)
 
@@ -891,7 +892,9 @@ def contactanos(request):
             pass
         t.save()
         NotificarTramite.send(t)
-    response = render(request, 'cotizador/contactanos.html')
+    response = render(request, 'cotizador/contactanos.html', {
+        'config': get_config(request.user)
+    })
     response.set_cookie('user', request.user.id)
     return response
 
