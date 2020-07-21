@@ -16,6 +16,8 @@ from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg
+from image_cropping.fields import ImageCropField
+from image_cropping import ImageRatioField
 
 
 class Base(base):
@@ -1675,6 +1677,8 @@ class Comentario(base):
 class CotizadorConfig(base):
     empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
     email_trust = models.CharField(max_length=255, null=True)
+    imagen = ImageCropField(upload_to='banners', blank=True, null=True)
+    cropping = ImageRatioField('imagen', '400x800', allow_fullsize=True, verbose_name="vista previa")
 
     # region automovil
     aseguradora_automovil = models.ForeignKey(Aseguradora, on_delete=models.CASCADE,
