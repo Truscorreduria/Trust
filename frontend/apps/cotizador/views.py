@@ -667,6 +667,7 @@ def print_orden_trabajo_sepelio(request):
 
 @csrf_exempt
 def print_orden_trabajo_accidente(request):
+    config = get_config(request.user)
     orden = OrdenTrabajo.objects.get(id=int(request.POST.get('orden')))
     beneficiarios = orden.beneficiarios()
     return render_to_pdf_response(request, 'cotizador/pdf/orden_trabajo_accidente.html', {
@@ -674,7 +675,7 @@ def print_orden_trabajo_accidente(request):
         'total_suma_asegurada': beneficiarios.aggregate(Sum('suma_asegurada'))['suma_asegurada__sum'],
         'total_emision': beneficiarios.aggregate(Sum('emision'))['emision__sum'],
         'total_costo': beneficiarios.aggregate(Sum('costo'))['costo__sum'],
-        'user': request.user, 'now': datetime.now(), 'orden': orden
+        'user': request.user, 'now': datetime.now(), 'orden': orden, 'config': config
     })
 
 
