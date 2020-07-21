@@ -204,9 +204,8 @@
 
         <aside>
                 {{ config.imagen }}
-                {% comment %}<img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
-                     style="width: 100%">{% endcomment %}
-        </aside>
+                <img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
+                     style="width: 100%">
     </div>
 {% endblock %}
 
