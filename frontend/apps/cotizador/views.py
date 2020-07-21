@@ -590,7 +590,7 @@ def guardar_accidente(request):
         'total_suma_asegurada': beneficiarios.aggregate(Sum('suma_asegurada'))['suma_asegurada__sum'],
         'total_emision': beneficiarios.aggregate(Sum('emision'))['emision__sum'],
         'total_costo': beneficiarios.aggregate(Sum('costo'))['costo__sum'],
-        'user': request.user, 'now': datetime.now(), 'orden': o
+        'user': request.user, 'now': datetime.now(), 'orden': o, 'config': config
     })
 
     files.append(("attachment", (o.nomeclatura() + ".pdf", ot)))
