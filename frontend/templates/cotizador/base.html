@@ -203,6 +203,7 @@
         </div>
 
         <aside>
+            {{ config.cropping }}
 
                 <img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
                      style="width: 100%">
