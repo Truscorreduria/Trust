@@ -1249,6 +1249,7 @@ class ConfiguracionCotizador(Datatables):
             'name': 'Información general',
             'fields': (
                 ('empresa', 'email_trust'),
+                ('imagen',),
             )
         },
         {
