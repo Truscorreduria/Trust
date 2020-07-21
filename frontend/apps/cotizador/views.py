@@ -728,7 +728,7 @@ def generar_solicitud(request):
 @login_required(login_url="/cotizador/login/")
 def perfil(request):
     form = ProfileForm(instance=request.user)
-    context = {'perfil_form': form}
+    context = {'perfil_form': form, 'config': get_config(request.user)}
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():
