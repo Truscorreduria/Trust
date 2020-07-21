@@ -327,6 +327,12 @@ class Tarifa(Base):
     def calcular_tarifa(self):
         return self.tarifa, self.coaseguro_robo, self.coaseguro_dano, self.deducible, self.exceso
 
+    def to_json(self):
+        o = super().to_json()
+        if self.id:
+            o['aseguradora'] = json_object(self.aseguradora, Aseguradora)
+        return o
+
 
 # endregion
 

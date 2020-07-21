@@ -889,7 +889,7 @@ class Tarifas(Datatables):
     model = Tarifa
     form = TarifaForm
     list_display = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano', 'deducible',
-                    'aseguradora')
+                    ('Aseguradora', 'aseguradora.name'))
     list_filter = ('aseguradora',)
     search_fields = ('marca', 'modelo')
     fieldsets = [
