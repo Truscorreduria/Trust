@@ -273,5 +273,89 @@
             </li>
         {% endif %}
 
+        {% if perms.backend.trust_registrar_pago or perms.backend.trust_registrar_comision or perms.backend.trust_gestion_recibo or perms.backend.trust_cobranza_reportes %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Cobranza
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_registrar_pago %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:pagos_pendientes' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Registrar pagos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_registrar_comision %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:pagos_cancelados' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Registrar comisión
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_gestion_recibo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:recibos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Recibos de prima
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_cobranza_reportes %}
+                        <li class="nav-item">
+                            <a href="#" class="nav-link has-treeview">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Reportes
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>
+                                            Montos recaudados
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>
+                                            Comisiones cobradas
+                                        </p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>
+                                            Mora global
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
     </ul>
 </nav>

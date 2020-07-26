@@ -1,0 +1,18 @@
+{% extends 'adminlte/datatables.html' %}
+{% load static datatables %}
+
+
+{% block javascript %}
+
+    {{ block.super }}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('.dt-buttons').css({
+                display: 'none'
+            })
+
+        });
+
+    </script>
+{% endblock %}

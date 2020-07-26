@@ -126,6 +126,10 @@
                                         <div class="card">
                                             <table class="table" style="border: none !important;">
                                                 <tr>
+                                                    <td><b>N° Recibo:</b></td>
+                                                    <td class="float-right">{{ form.no_recibo|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
                                                     <td><b>Prima</b></td>
                                                     <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
                                                 </tr>
@@ -169,10 +173,19 @@
                                                     <td><b>Moneda</b></td>
                                                     <td class="float-right">{{ form.moneda|as_inline_field }}</td>
                                                 </tr>
-                                                {% comment %}<tr>
-                                                <td><b>Suma asegurada total</b></td>
-                                                <td class="float-right">{{ form.suma_asegurada|as_inline_field }}</td>
-                                            </tr>{% endcomment %}
+                                            </table>
+                                        </div>
+
+                                        <div class="card">
+                                            <table class="table" style="border: none !important;">
+                                                <tr>
+                                                    <td><b>Prima total:</b></td>
+                                                    <td class="float-right">{{ form.prima_total|as_inline_field }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><b>Saldo pendiente:</b></td>
+                                                    <td class="float-right">{{ form.saldo_pendiente|as_inline_field }}</td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>

@@ -1574,6 +1574,67 @@ class Oportunidades(Datatables):
             instance.save()
 
 
+class PagosPendientes(Datatables):
+    modal_width = 1200
+    model = Pago
+    form = PagoForm
+    list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
+                    'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
+    search_fields = ('poliza',)
+
+    fieldsets = (
+        {'id': 'info',
+         'name': 'Información de pago',
+         'fields': (
+             ('nombre_cliente', 'numero_poliza', 'aseguradora'),
+             ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
+             ('monto_pagado', 'fecha_pago', 'medio_pago', 'numero_recibo'),
+         )},
+    )
+
+    def get_queryset(self, filters, search_value):
+        return super().get_queryset(filters, search_value).filter(estado__in=[EstadoPago.VIGENTE, EstadoPago.VENCIDO])
+
+
+class PagosCancelados(Datatables):
+    modal_width = 1200
+    model = Pago
+    form = PagoForm
+    list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
+                    'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
+    search_fields = ('poliza',)
+
+    fieldsets = (
+        {'id': 'info',
+         'name': 'Información de pago',
+         'fields': (
+             ('nombre_cliente', 'numero_poliza', 'aseguradora'),
+             ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
+             ('monto_pagado', 'fecha_pago', 'medio_pago', 'numero_recibo'),
+         )},
+    )
+
+    def get_queryset(self, filters, search_value):
+        return super().get_queryset(filters, search_value).filter(estado__in=[EstadoPago.ANULADO, EstadoPago.PAGADO])
+
+
+class Recibos(Datatables):
+    modal_width = 1400
+    model = Poliza
+    form = PolizaForm
+    form_template = "trustseguros/lte/recibo-modal.html"
+    list_template = "trustseguros/lte/recibo-datatables.html"
+    list_display = ('no_poliza', 'cliente.name', 'fecha_emision', 'fecha_vence', 'grupo.name', 'estado_poliza.label')
+
+    class Meta:
+        verbose_name = "Recibo"
+        verbose_name_plural = "Recibos de prima"
+
+    def get_opts(self):
+        print(self.Meta)
+        return self.Meta
+
+
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
                                cliente__isnull=False, fecha_vence__lte=datetime.now())

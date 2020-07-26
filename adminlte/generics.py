@@ -91,6 +91,7 @@ class Datatables(View):
     list_display = ()
     search_fields = ()
     list_filter = ()
+    ordering = None
 
     @classmethod
     def as_view(cls, **initkwars):
@@ -120,9 +121,12 @@ class Datatables(View):
     def get_list_filters(self):
         return [Filter(x, self.model) for x in self.list_filter]
 
+    def get_opts(self):
+        return self.model._meta
+
     def get(self, request, **kwargs):
         return render(request, self.list_template, {
-            'opts': self.model._meta, 'list_display': self.list_display,
+            'opts': self.get_opts(), 'list_display': self.list_display,
             'form': self.get_form(), 'form_template': self.form_template,
             'modal_width': self.modal_width, 'media': self.media,
             'list_filter': self.get_list_filters(),
@@ -187,7 +191,11 @@ class Datatables(View):
                 order = ''
                 if order_dir == 'desc':
                     order += '-'
-                order += self.list_display[int(order_column)].split('.')[0]
+                list_display_column = self.list_display[int(order_column)]
+                if type(list_display_column) == tuple:
+                    order += list_display_column[1].replace('.', '__')
+                else:
+                    order += list_display_column.split('.')[0]
 
             return JsonResponse(self.get_data(start, per_page, filters, search_value, draw, order), encoder=Codec)
         if 'open' in request.POST:
@@ -241,3 +249,5 @@ class Datatables(View):
 
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
                              'errors': errors}, status=status, encoder=Codec)
+
+

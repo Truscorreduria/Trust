@@ -409,6 +409,17 @@ class PolizaForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
+    prima_total = forms.CharField(required=False, label="", widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ), initial=0.0)
+    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ), initial=0.0)
+
     class Meta:
         model = Poliza
         fields = (
@@ -777,7 +788,7 @@ class OportunityForm(forms.ModelForm):
 
     class Meta:
         model = Oportunity
-        exclude = ('linea', )
+        exclude = ('linea',)
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
@@ -817,3 +828,78 @@ class ImportDataForm(forms.ModelForm):
     class Meta:
         model = Oportunity
         fields = ('campain', 'ramo', 'sub_ramo', 'vendedor',)
+
+
+class PagoForm(forms.ModelForm):
+    nombre_cliente = forms.CharField(label="Nombre del cliente", required=False,
+                                     widget=forms.TextInput(
+                                         attrs={
+                                             'readonly': 'readonly'
+                                         }
+                                     ))
+    numero_poliza = forms.CharField(label="Número de póliza", required=False,
+                                    widget=forms.TextInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
+    aseguradora = forms.CharField(label="Aseguradora", required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+    numero_recibo = forms.CharField(label="Número de recibo", required=False,
+                                    widget=forms.TextInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
+    fecha_vence = forms.CharField(label="Fecha de vencimiento", required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+    numero = forms.IntegerField(label="Número de cuota", required=False,
+                                widget=forms.NumberInput(
+                                    attrs={
+                                        'readonly': 'readonly'
+                                    }
+                                ))
+    monto = forms.FloatField(label="Valor a pagar", required=False,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
+
+    class Meta:
+        model = Pago
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance:
+            if instance.poliza:
+                kwargs.update(
+                    initial={
+                        'nombre_cliente': instance.cliente_poliza['name'],
+                        'numero_poliza': instance.poliza.no_poliza,
+                        'aseguradora': instance.poliza.aseguradora.name,
+                        'numero_recibo': instance.poliza.no_recibo,
+                    }
+                )
+            if instance.tramite:
+                kwargs.update(
+                    initial={
+                        'nombre_cliente': instance.cliente_tramite['name'],
+                        'numero_poliza': instance.tramite.poliza.no_poliza,
+                        'aseguradora': instance.tramite.poliza.aseguradora.name,
+                        'numero_recibo': instance.tramite.no_recibo,
+                    }
+                )
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['monto_pagado'].widget.attrs['min'] = 0.0
+            self.fields['monto_pagado'].widget.attrs['max'] = instance.monto

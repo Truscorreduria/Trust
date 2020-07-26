@@ -1080,7 +1080,7 @@ class Poliza(BasePoliza):
         except:
             return 0.0
 
-    def tabla_pago(self):
+    def tabla_pago(self):  # fixme revizar si se puede eliminar esta funcion
         cuotas = []
         if self.forma_pago == 'mensual':
             anno = self.fecha_pago.year
@@ -1285,6 +1285,7 @@ class Tramite(Base):
                                 related_name='tickets_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_resultante")
+    no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
     descripcion = models.TextField(max_length=600, null=True, blank=True)
 
     nombres = models.CharField(max_length=165, null=True, blank=True)
@@ -1446,17 +1447,63 @@ class EstadoPago:
         return (cls.ANULADO, "Anulado"), (cls.VIGENTE, "Vigente"), (cls.VENCIDO, "Vencido"), (cls.PAGADO, "Pagado")
 
 
+class MedioPago:
+    EFECTIVO = 1
+    CHEQUE = 2
+    CREDIGO = 3
+    DEBITO = 4
+
+    @classmethod
+    def choices(cls):
+        return (cls.EFECTIVO, 'Efectivo'), (cls.CHEQUE, 'Cheque'), \
+               (cls.CREDIGO, 'Crédito'), (cls.DEBITO, 'Débito')
+
+
 class Pago(Base):
+    """
+    Modelo para las cuotas
+    """
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE,
                                related_name="pagos_polizas", null=True, blank=True)
     tramite = models.ForeignKey(Tramite, on_delete=models.CASCADE,
                                 related_name="pagos_tramites", null=True, blank=True)
     monto = models.FloatField(default=0.0)
-    numero = models.PositiveSmallIntegerField(null=True, blank=True)
+    monto_pagado = models.FloatField(default=0.0, verbose_name="monto a recaudar")
+    numero = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Número de cuota")
     fecha_vence = models.DateField(null=True)
     fecha_pago = models.DateField(null=True)
     estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
                                               default=EstadoPago.VIGENTE)
+    medio_pago = models.PositiveSmallIntegerField(verbose_name="medio de pago", choices=MedioPago.choices(),
+                                                  default=MedioPago.EFECTIVO)
+
+    @property
+    def cliente_poliza(self):
+        try:
+            return self.poliza.cliente.to_json()
+        except:
+            return Cliente().to_json()
+
+    @property
+    def cliente_tramite(self):
+        try:
+            return self.tramite.poliza.cliente.to_json()
+        except:
+            return Cliente().to_json()
+
+    def to_json(self):
+        o = super().to_json()
+        if self.id:
+            o['estado'] = {'id': self.estado, 'name': self.get_estado_display()}
+            if self.poliza:
+                o['poliza'] = {'id': self.poliza.id, 'no_poliza': self.poliza.no_poliza}
+                o['cliente'] = self.cliente_poliza
+                o['recibo'] = self.poliza.no_recibo
+            if self.tramite:
+                o['poliza'] = {'id': self.tramite.poliza.id, 'no_poliza': self.tramite.poliza.no_poliza}
+                o['cliente'] = self.cliente_tramite
+                o['recibo'] = self.tramite.no_recibo
+        return o
 
 
 class benAbstract(Base):
