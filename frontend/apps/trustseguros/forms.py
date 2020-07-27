@@ -876,7 +876,9 @@ class PagoForm(forms.ModelForm):
 
     class Meta:
         model = Pago
-        fields = '__all__'
+        fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
+                  'fecha_vence', 'numero', 'monto', 'monto_pagado', 'fecha_pago',
+                  'medio_pago')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -903,3 +905,16 @@ class PagoForm(forms.ModelForm):
         if instance:
             self.fields['monto_pagado'].widget.attrs['min'] = 0.0
             self.fields['monto_pagado'].widget.attrs['max'] = instance.monto
+
+    def clean(self):
+        data = self.cleaned_data
+        if data['monto_pagado'] > data['monto']:
+            raise forms.ValidationError("el monto pagado no puede ser mayor al monto a pagar", )
+
+    def save(self, commit=True):
+        super().save(commit)
+        data = self.cleaned_data
+        instance = self.instance
+        if instance and data['monto'] == data['monto_pagado']:
+            instance.estado = EstadoPago.PAGADO
+            instance.save()

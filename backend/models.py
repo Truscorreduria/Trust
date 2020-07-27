@@ -771,10 +771,11 @@ class EstadoPoliza:
 class TipoPoliza:
     INDIVIDUAL = 1
     COLECTIVA = 2
+    OFICIO = 3
 
     @classmethod
     def choices(cls):
-        return (cls.INDIVIDUAL, "Individual"), (cls.COLECTIVA, "Colectiva")
+        return (cls.INDIVIDUAL, "Individual"), (cls.COLECTIVA, "Colectiva"), (cls.OFICIO, "Oficio")
 
 
 class ConceptoPoliza:
