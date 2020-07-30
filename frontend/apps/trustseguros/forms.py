@@ -610,7 +610,7 @@ class TramiteForm(forms.ModelForm):
             self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
             self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
             self.fields['poliza'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
+            self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
 
 
 class FieldMapForm(forms.ModelForm):
@@ -1079,43 +1079,50 @@ class ReciboForm(forms.ModelForm):
         }
     ), initial=0.0)
 
-    recibo_editar = forms.Field(required=False, label="Recibos de esta póliza",
+    recibos = forms.Field(required=False, label="Recibos de esta póliza",
                           widget=RecibosPrima)
 
     class Meta:
         model = Poliza
         fields = (
             'no_poliza', 'ramo', 'sub_ramo', 'fecha_emision', 'fecha_vence', 'aseguradora',
-            'cliente', 'grupo', 'tipo_poliza', 'cesion_derecho',
-            'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios',
+            'cliente', 'grupo',
             'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
-            'amount_comision', 'moneda', 'tabla_pagos', 'recibo_editar'
+            'amount_comision', 'moneda', 'tabla_pagos', 'recibo_editar', 'recibos'
         )
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         updated_initial = {}
         if instance:
-            updated_initial['campos_adicionales'] = instance
             try:
                 updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             except AttributeError:
                 pass
-            updated_initial['recibo_editar'] = instance
-            updated_initial['tabla_pagos'] = instance
-            updated_initial['pedir_comentarios'] = instance.perdir_comentarios
+            updated_initial['recibos'] = instance
+            if instance.recibo_editar:
+                print(type(instance.recibo_editar))
+                updated_initial['tabla_pagos'] = instance.recibo_editar
+                updated_initial['subtotal'] = instance.recibo_editar.subtotal
+                updated_initial['descuento'] = instance.recibo_editar.descuento
+                updated_initial['emision'] = instance.recibo_editar.emision
+                updated_initial['iva'] = instance.recibo_editar.iva
+                updated_initial['otros'] = instance.recibo_editar.otros
+                updated_initial['total'] = instance.recibo_editar.total
+                updated_initial['per_comision'] = instance.recibo_editar.per_comision
+                updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
+                updated_initial['amount_comision'] = instance.recibo_editar.amount_comision
+                updated_initial['moneda'] = instance.recibo_editar.moneda
+            else:
+                updated_initial['tabla_pagos'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
-        self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
         self.fields['fecha_emision'].widget.attrs['readonly'] = 'readonly'
         self.fields['fecha_vence'].widget.attrs['readonly'] = 'readonly'
         self.fields['ramo'].widget.attrs['readonly'] = 'readonly'
         self.fields['sub_ramo'].widget.attrs['readonly'] = 'readonly'
         self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
-        self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
+        self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
         self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
-        self.fields['tipo_poliza'].widget.attrs['readonly'] = 'readonly'
-        self.fields['cesion_derecho'].widget.attrs['readonly'] = 'readonly'
-        self.fields['concepto'].widget.attrs['readonly'] = 'readonly'

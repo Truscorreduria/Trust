@@ -1095,7 +1095,7 @@ class Tramites(Datatables):
                     ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
                     ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
     list_filter = ('tipo_tramite', 'estado', 'user')
-    search_fields = ('code',)
+    search_fields = ('code', 'cliente__nombre')
     fieldsets = [
         {
             'id': 'info',
@@ -1632,6 +1632,7 @@ class Recibos(Datatables):
     class Meta:
         verbose_name = "Recibo"
         verbose_name_plural = "Recibos de prima"
+        model_name = "poliza"
 
     def get_opts(self):
         return self.Meta
@@ -1640,8 +1641,6 @@ class Recibos(Datatables):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
     def post(self, request):
-        if 'modificar_recibo' in request.POST:
-            return JsonResponse({})
         return super().post(request)
 
 

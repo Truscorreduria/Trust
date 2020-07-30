@@ -12,19 +12,9 @@
                 display: 'none'
             });
 
-            $(document).on('change', '#id_recibo_editar', function () {
-                const _this = $(this);
-                $.ajax('.', {
-                    method: "POST",
-                    data: {
-                        save: 'yes',
-                        id: $('input[name="id"]').val(),
-                        recibo: _this.val()
-                    },
-                    success: function (response) {
-                        console.log(response)
-                    }
-                })
+            $(document).on('change', '#id_recibos', function () {
+                $('#id_recibo_editar').val($(this).val());
+                $('#{{ opts.model_name }}-form').trigger('submit')
             })
 
         });
