@@ -133,3 +133,10 @@ class CoberturaSubRamoWidget(Widget):
         if value:
             return [self.attrs['form'](instance=x) for x in value]
         return value
+
+
+class RecibosPrima(Widget):
+    template_name = "trustseguros/lte/widgets/recibos-prima.html"
+
+    def format_value(self, value):
+        return value

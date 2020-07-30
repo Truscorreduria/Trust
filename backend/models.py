@@ -1203,6 +1203,9 @@ class Poliza(BasePoliza):
     def pagos(self):
         return Pago.objects.filter(poliza=self).order_by('numero')
 
+    def recibos(self):
+        return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
+
     def get_config(self):
         try:
             return CotizadorConfig.objects.get(empresa=self.cliente.empresa)

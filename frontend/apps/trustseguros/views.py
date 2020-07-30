@@ -1632,7 +1632,6 @@ class Recibos(Datatables):
         verbose_name_plural = "Recibos de prima"
 
     def get_opts(self):
-        print(self.Meta)
         return self.Meta
 
     def get_queryset(self, filters, search_value):

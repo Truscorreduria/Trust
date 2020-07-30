@@ -964,17 +964,17 @@ class ComisionForm(forms.ModelForm):
                                  }
                              ))
     monto_pagado = forms.FloatField(label="Monto pagado", required=False,
-                             widget=forms.NumberInput(
-                                 attrs={
-                                     'readonly': 'readonly'
-                                 }
-                             ))
+                                    widget=forms.NumberInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
     fecha_pago = forms.CharField(label="Fecha de pago", required=False,
-                                  widget=forms.TextInput(
-                                      attrs={
-                                          'readonly': 'readonly'
-                                      }
-                                  ))
+                                 widget=forms.TextInput(
+                                     attrs={
+                                         'readonly': 'readonly'
+                                     }
+                                 ))
     medio_pago = forms.ChoiceField(choices=MedioPago.choices(), label="Medio de pago",
                                    widget=forms.Select(
                                        attrs={
@@ -1079,6 +1079,9 @@ class ReciboForm(forms.ModelForm):
         }
     ), initial=0.0)
 
+    recibos = forms.Field(required=False, label="Recibos de esta póliza",
+                          widget=RecibosPrima)
+
     class Meta:
         model = Poliza
         fields = (
@@ -1087,7 +1090,7 @@ class ReciboForm(forms.ModelForm):
             'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios',
             'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
-            'amount_comision', 'moneda', 'tabla_pagos',
+            'amount_comision', 'moneda', 'tabla_pagos', 'recibos'
         )
 
     def __init__(self, *args, **kwargs):
@@ -1099,10 +1102,8 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             except AttributeError:
                 pass
-            updated_initial['coberturas'] = instance
+            updated_initial['recibos'] = instance
             updated_initial['tabla_pagos'] = instance
-            updated_initial['drive'] = instance
-            updated_initial['bitacora'] = instance
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)

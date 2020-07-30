@@ -1,0 +1,6 @@
+<select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control">
+    <option value="{{ widget.value.id }}" selected>{{ widget.value.no_recibo }}</option>
+    {% for recibo in widget.value.recibos %}
+        <option value="{{ recibo.id }}">{{ recibo.no_recibo }}</option>
+    {% endfor %}
+</select>
