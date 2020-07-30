@@ -982,6 +982,10 @@ class Poliza(BasePoliza):
 
     oportunity = models.ForeignKey('Oportunity', null=True, blank=True, on_delete=models.SET_NULL)
 
+    modificando_recibo = models.BooleanField(default=False)
+    recibo_editar = models.ForeignKey('Tramite', on_delete=models.SET_NULL, null=True, blank=True,
+                                      related_name="recibo_a_editar", verbose_name="recibo a editar")
+
     class Meta:
         ordering = ['fecha_vence', ]
         verbose_name_plural = "Pólizas"

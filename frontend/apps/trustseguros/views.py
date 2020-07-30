@@ -15,6 +15,7 @@ from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from utils.utils import send_email
+from django.db.models import Q
 
 
 def group_to_json(group):
@@ -1580,7 +1581,7 @@ class PagosPendientes(Datatables):
     form = PagoForm
     list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
                     'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
-    search_fields = ('poliza',)
+    search_fields = ('poliza__no_poliza', 'poliza__cliente__nombre')
 
     fieldsets = (
         {'id': 'info',
@@ -1602,7 +1603,7 @@ class PagosCancelados(Datatables):
     form = ComisionForm
     list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
                     'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
-    search_fields = ('poliza',)
+    search_fields = ('poliza__no_poliza', 'poliza__cliente__nombre')
 
     fieldsets = (
         {'id': 'info',
@@ -1626,6 +1627,7 @@ class Recibos(Datatables):
     form_template = "trustseguros/lte/recibo-modal.html"
     list_template = "trustseguros/lte/recibo-datatables.html"
     list_display = ('no_poliza', 'cliente.name', 'fecha_emision', 'fecha_vence', 'grupo.name', 'estado_poliza.label')
+    search_fields = ('no_poliza', 'cliente__nombre')
 
     class Meta:
         verbose_name = "Recibo"

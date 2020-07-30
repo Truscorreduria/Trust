@@ -1079,7 +1079,7 @@ class ReciboForm(forms.ModelForm):
         }
     ), initial=0.0)
 
-    recibos = forms.Field(required=False, label="Recibos de esta póliza",
+    recibo_editar = forms.Field(required=False, label="Recibos de esta póliza",
                           widget=RecibosPrima)
 
     class Meta:
@@ -1090,7 +1090,7 @@ class ReciboForm(forms.ModelForm):
             'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios',
             'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
-            'amount_comision', 'moneda', 'tabla_pagos', 'recibos'
+            'amount_comision', 'moneda', 'tabla_pagos', 'recibo_editar'
         )
 
     def __init__(self, *args, **kwargs):
@@ -1102,42 +1102,20 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['fecha_vence'] = instance.fecha_vence.strftime('%d/%m/%Y')
             except AttributeError:
                 pass
-            updated_initial['recibos'] = instance
+            updated_initial['recibo_editar'] = instance
             updated_initial['tabla_pagos'] = instance
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
-        if instance and not instance.editable:
-            self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
-            self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['fecha_emision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['fecha_vence'].widget.attrs['readonly'] = 'readonly'
-            self.fields['ramo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['sub_ramo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
-            self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
-            self.fields['tipo_poliza'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cesion_derecho'].widget.attrs['readonly'] = 'readonly'
-            self.fields['concepto'].widget.attrs['readonly'] = 'readonly'
-        if instance:
-            if instance.f_pago == FormaPago.CONTADO:
-                self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
-        if instance and (instance.estado_poliza == EstadoPoliza.CANCELADA
-                         or instance.estado_poliza == EstadoPoliza.ANULADA):
-            self.fields['tipo_poliza'].required = False
-            self.fields['cliente'].required = False
-        if instance and not instance.estado_poliza == EstadoPoliza.PENDIENTE:
-            self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
-            self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
-            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
-            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
-            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
-            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
-            self.fields['total'].widget.attrs['readonly'] = 'readonly'
-            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+        self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
+        self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['fecha_emision'].widget.attrs['readonly'] = 'readonly'
+        self.fields['fecha_vence'].widget.attrs['readonly'] = 'readonly'
+        self.fields['ramo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['sub_ramo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
+        self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
+        self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['tipo_poliza'].widget.attrs['readonly'] = 'readonly'
+        self.fields['cesion_derecho'].widget.attrs['readonly'] = 'readonly'
+        self.fields['concepto'].widget.attrs['readonly'] = 'readonly'

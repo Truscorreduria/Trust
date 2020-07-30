@@ -1,6 +1,16 @@
-<select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control">
-    <option value="{{ widget.value.id }}" selected>{{ widget.value.no_recibo }}</option>
-    {% for recibo in widget.value.recibos %}
-        <option value="{{ recibo.id }}">{{ recibo.no_recibo }}</option>
-    {% endfor %}
-</select>
+{% with widget.value as instance %}
+    <select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control">
+        {% if instance.modificando_recibo and instance.recibo_modificar %}
+            <option value="{{ instance.id }}">{{ instance.no_recibo }}</option>
+            {% for recibo in instance.recibos %}
+                <option value="{{ recibo.id }}"
+                        {% ifequal recibo instance.recibo_modificar %}selected{% endifequal %}>{{ recibo.no_recibo }}</option>
+            {% endfor %}
+        {% else %}
+            <option value="{{ instance.id }}" selected>{{ instance.no_recibo }}</option>
+            {% for recibo in instance.recibos %}
+                <option value="{{ recibo.id }}">{{ recibo.no_recibo }}</option>
+            {% endfor %}
+        {% endif %}
+    </select>
+{% endwith %}
