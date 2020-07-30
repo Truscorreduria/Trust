@@ -172,6 +172,28 @@ class Datatables(View):
             'recordsFiltered': queryset.count(),
         }
 
+    def get_instance(self, request):
+        return self.model.objects.get(id=int(request.POST.get('id')))
+
+    def process_request(self, request, method, instance=None):
+        status = 200
+        errors = []
+        if instance:
+            form = self.get_form()(request.POST, instance=instance)
+        else:
+            form = self.get_form()(request.POST)
+        if form.is_valid():
+            form.save()
+            instance = form.instance
+            self.save_related(instance=instance, data=request.POST)
+            form = self.get_form()(instance=instance)
+            method = "POST"
+        else:
+            errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+            status = 203
+        html_form = self.html_form(instance, request, form, method)
+        return instance, html_form, errors, status
+
     def post(self, request):
         status = 200
         errors = []
@@ -203,18 +225,8 @@ class Datatables(View):
             form = self.get_form()(instance=instance)
             html_form = self.html_form(instance, request, form, 'POST')
         if 'save' in request.POST:
-            instance = self.model.objects.get(id=int(request.POST.get('id')))
-            form = self.get_form()(request.POST, instance=instance)
-            if form.is_valid():
-                form.save()
-                instance = form.instance
-                self.save_related(instance=instance, data=request.POST)
-                form = self.get_form()(instance=instance)
-            else:
-                errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                status = 203
-            html_form = self.html_form(instance, request, form, 'POST')
-
+            instance = self.get_instance(request)
+            instance, html_form, errors, status = self.process_request(request, 'POST', instance)
         return JsonResponse({'instance': instance.to_json(),
                              'form': html_form, 'errors': errors}, encoder=Codec,
                             status=status)
@@ -230,24 +242,21 @@ class Datatables(View):
         errors = []
 
         if 'save' in request.PUT:
-            try:
-                form = self.get_form()(request.PUT)
-                if form.is_valid():
-                    form.save()
-                    instance = form.instance
-                    status = 200
-                    self.save_related(instance=instance, data=request.PUT)
-                    form = self.get_form()(instance=instance)
-                    html_form = self.html_form(instance, request, form, "POST")
-                else:
-                    errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                    print(errors)
-                    html_form = self.html_form(instance, request, form, "PUT")
-            except IntegrityError as e:
-                print(e)
-                # errors.append(dict(e))
-
+            instance, html_form, errors, status = self.process_request(request, 'PUT')
+            # try:
+            #     form = self.get_form()(request.PUT)
+            #     if form.is_valid():
+            #         form.save()
+            #         instance = form.instance
+            #         status = 200
+            #         self.save_related(instance=instance, data=request.PUT)
+            #         form = self.get_form()(instance=instance)
+            #         html_form = self.html_form(instance, request, form, "POST")
+            #     else:
+            #         errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+            #         html_form = self.html_form(instance, request, form, "PUT")
+            # except IntegrityError as e:
+            #     print(e)
+            #     # errors.append(dict(e))
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
                              'errors': errors}, status=status, encoder=Codec)
-
-

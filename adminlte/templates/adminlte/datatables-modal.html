@@ -65,7 +65,7 @@
                 </ul>
 
                 <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form">
-                    <input type="hidden" name="id" value="">
+                    <input type="hidden" name="id" value="{{ instance.id }}">
                     {% csrf_token %}
                     <div class="tab-content">
                         <div id="{{ opts.model_name }}-info"

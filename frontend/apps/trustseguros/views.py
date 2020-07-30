@@ -1639,6 +1639,11 @@ class Recibos(Datatables):
     def get_queryset(self, filters, search_value):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
+    def post(self, request):
+        if 'modificar_recibo' in request.POST:
+            return JsonResponse({})
+        return super().post(request)
+
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
