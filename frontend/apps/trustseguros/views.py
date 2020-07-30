@@ -1588,7 +1588,7 @@ class PagosPendientes(Datatables):
          'fields': (
              ('nombre_cliente', 'numero_poliza', 'aseguradora'),
              ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-             ('monto_pagado', 'fecha_pago', 'medio_pago', 'numero_recibo'),
+             ('monto_pagado', 'fecha_pago', 'medio_pago', 'referencia_pago'),
          )},
     )
 
@@ -1599,7 +1599,7 @@ class PagosPendientes(Datatables):
 class PagosCancelados(Datatables):
     modal_width = 1200
     model = Pago
-    form = PagoForm
+    form = ComisionForm
     list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
                     'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
     search_fields = ('poliza',)
@@ -1610,7 +1610,8 @@ class PagosCancelados(Datatables):
          'fields': (
              ('nombre_cliente', 'numero_poliza', 'aseguradora'),
              ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-             ('monto_pagado', 'fecha_pago', 'medio_pago', 'numero_recibo'),
+             ('monto_pagado', 'fecha_pago', 'medio_pago', 'referencia_pago'),
+             ('monto_comision', 'fecha_pago_comision',),
          )},
     )
 

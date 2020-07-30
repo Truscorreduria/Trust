@@ -878,7 +878,121 @@ class PagoForm(forms.ModelForm):
         model = Pago
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
                   'fecha_vence', 'numero', 'monto', 'monto_pagado', 'fecha_pago',
-                  'medio_pago')
+                  'medio_pago', 'referencia_pago')
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance:
+            if instance.poliza:
+                kwargs.update(
+                    initial={
+                        'nombre_cliente': instance.cliente_poliza['name'],
+                        'numero_poliza': instance.poliza.no_poliza,
+                        'aseguradora': instance.poliza.aseguradora.name,
+                        'numero_recibo': instance.poliza.no_recibo,
+                    }
+                )
+            if instance.tramite:
+                kwargs.update(
+                    initial={
+                        'nombre_cliente': instance.cliente_tramite['name'],
+                        'numero_poliza': instance.tramite.poliza.no_poliza,
+                        'aseguradora': instance.tramite.poliza.aseguradora.name,
+                        'numero_recibo': instance.tramite.no_recibo,
+                    }
+                )
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['monto_pagado'].widget.attrs['min'] = 0.0
+            self.fields['monto_pagado'].widget.attrs['max'] = instance.monto
+
+    def clean(self):
+        data = self.cleaned_data
+        if data['monto_pagado'] > data['monto']:
+            raise forms.ValidationError("el monto pagado no puede ser mayor al monto a pagar", )
+
+    def save(self, commit=True):
+        super().save(commit)
+        data = self.cleaned_data
+        instance = self.instance
+        if instance and data['monto'] == data['monto_pagado']:
+            instance.estado = EstadoPago.PAGADO
+            instance.save()
+
+
+class ComisionForm(forms.ModelForm):
+    nombre_cliente = forms.CharField(label="Nombre del cliente", required=False,
+                                     widget=forms.TextInput(
+                                         attrs={
+                                             'readonly': 'readonly'
+                                         }
+                                     ))
+    numero_poliza = forms.CharField(label="Número de póliza", required=False,
+                                    widget=forms.TextInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
+    aseguradora = forms.CharField(label="Aseguradora", required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+    numero_recibo = forms.CharField(label="Número de recibo", required=False,
+                                    widget=forms.TextInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
+    fecha_vence = forms.CharField(label="Fecha de vencimiento", required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+    numero = forms.IntegerField(label="Número de cuota", required=False,
+                                widget=forms.NumberInput(
+                                    attrs={
+                                        'readonly': 'readonly'
+                                    }
+                                ))
+    monto = forms.FloatField(label="Valor a pagar", required=False,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
+    monto_pagado = forms.FloatField(label="Monto pagado", required=False,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
+    fecha_pago = forms.CharField(label="Fecha de pago", required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+    medio_pago = forms.ChoiceField(choices=MedioPago.choices(), label="Medio de pago",
+                                   widget=forms.Select(
+                                       attrs={
+                                           'readonly': 'readonly'
+                                       }
+                                   ))
+    referencia_pago = forms.CharField(label="Referencia de pago", required=False,
+                                      widget=forms.TextInput(
+                                          attrs={
+                                              'readonly': 'readonly'
+                                          }
+                                      ))
+
+    class Meta:
+        model = Pago
+        fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
+                  'fecha_vence', 'numero', 'monto', 'monto_pagado', 'fecha_pago',
+                  'medio_pago', 'monto_comision', 'fecha_pago_comision', 'referencia_pago')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

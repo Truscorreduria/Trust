@@ -1477,6 +1477,9 @@ class Pago(Base):
                                               default=EstadoPago.VIGENTE)
     medio_pago = models.PositiveSmallIntegerField(verbose_name="medio de pago", choices=MedioPago.choices(),
                                                   default=MedioPago.EFECTIVO)
+    referencia_pago = models.CharField(max_length=65, null=True, blank=True, verbose_name="referencia de pago")
+    monto_comision = models.FloatField(default=0.0, verbose_name="Monto de comisión")
+    fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión")
 
     @property
     def cliente_poliza(self):
