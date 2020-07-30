@@ -1622,7 +1622,7 @@ class PagosCancelados(Datatables):
 class Recibos(Datatables):
     modal_width = 1400
     model = Poliza
-    form = PolizaForm
+    form = ReciboForm
     form_template = "trustseguros/lte/recibo-modal.html"
     list_template = "trustseguros/lte/recibo-datatables.html"
     list_display = ('no_poliza', 'cliente.name', 'fecha_emision', 'fecha_vence', 'grupo.name', 'estado_poliza.label')
@@ -1634,6 +1634,9 @@ class Recibos(Datatables):
     def get_opts(self):
         print(self.Meta)
         return self.Meta
+
+    def get_queryset(self, filters, search_value):
+        return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
 
 def iniciar_proc():

@@ -1201,7 +1201,7 @@ class Poliza(BasePoliza):
         return CoberturaPoliza.objects.filter(poliza=self)
 
     def pagos(self):
-        return Pago.objects.filter(poliza=self)
+        return Pago.objects.filter(poliza=self).order_by('numero')
 
     def get_config(self):
         try:
