@@ -41,11 +41,12 @@
             };
 
             const calcular_tabla_pagos = function () {
-                $.ajax("{% url 'cotizador:calcular_tabla_pagos' %}", {
+                $.ajax(".", {
                     method: "POST",
                     data: {
-                        total: $('#id_total').val(), fecha: $('#id_fecha_pago').val(),
-                        cuotas: $('#id_cuotas').val(), poliza: $('input[name="id"]').val()
+                        total: $('#id_total').val(), fecha_pago: $('#id_fecha_pago').val(),
+                        cuotas: $('#id_cuotas').val(), id: $('input[name="id"]').val(),
+                        calcular_tabla_pagos: 'calcular_tabla_pagos',
                     },
                     success: function (response) {
                         const pagos = $('#id_tabla_pagos tbody').empty();
@@ -109,6 +110,24 @@
                 } else {
                     $('#id_cuotas').removeAttr('readonly')
                 }
+            });
+            $(document).on('click', '#btn-ecuenta', function () {
+                const _this = $(this);
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        id: $('input[name="id"]').val(),
+                        estado_cuenta: 'estado_cuenta'
+                    },
+                    success: function (response) {
+                        let blob = new Blob([response], {type: 'application/pdf'});
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = "Estado de cuenta.pdf";
+                        link.click();
+                        _this.removeAttr('disabled')
+                    }
+                })
             });
 
         });

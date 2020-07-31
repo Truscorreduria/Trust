@@ -15,7 +15,6 @@ from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from utils.utils import send_email
-from django.db.models import Q
 
 
 def group_to_json(group):
@@ -1719,6 +1718,21 @@ class Recibos(Datatables):
                 errors = self.get_form_errors(form)
             html_form = self.html_form(instance, request, form, 'POST')
             return self.make_response(instance, html_form, errors, status)
+
+        if 'calcular_tabla_pagos' in request.POST:
+            instance = self.get_instance(request)
+            if instance.recibo_editar:
+                instance = instance.recibo_editar
+            total = float(request.POST.get('total'))
+            fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
+            cuotas = int(request.POST.get('cuotas'))
+            data = calcular_tabla_pagos(total, fecha_pago, cuotas, instance)
+            return JsonResponse(data, safe=False, encoder=Codec)
+
+        if 'estado_cuenta' in request.POST:
+            print(request.POST)
+            return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
+
         return super().post(request)
 
 
