@@ -2,7 +2,8 @@
     <input type="hidden" name="recibo_editar" id="id_recibo_editar"
            {% if instance.recibo_modificar %}value="{{ instance.recibo_modificar.id }}"
            {% else %}value=""{% endif %}>
-    <select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control">
+    <select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control"
+            {% if widget.attrs.readonly %}readonly="readonly"{% endif %}>
         {% if instance.recibo_editar %}
             <option value="">{{ instance.no_recibo }}</option>
             {% for recibo in instance.recibos %}

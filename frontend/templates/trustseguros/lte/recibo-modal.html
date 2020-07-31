@@ -124,15 +124,23 @@
         <div class="modal-footer">
             <div class="row">
                 <div class="col-md-12 form-buttons">
+
                     {% block buttons %}
-                        <button type="button" class="btn btn-warning btn-perform" data-perform="modificar">
-                            <i class="fa fa-edit"></i>
-                            Modificar
-                        </button>
-                        <button type="button" class="btn btn-danger btn-perform" data-perform="anular">
-                            <i class="fa fa-exclamation-triangle"></i>
-                            Anular
-                        </button>
+                        {% if instance.modificando_recibo %}
+                            <button type="button" class="btn btn-warning btn-perform" data-perform="aplicar_cambio">
+                                <i class="fa fa-save"></i>
+                                Aplicar cambio
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-warning btn-perform" data-perform="modificar">
+                                <i class="fa fa-edit"></i>
+                                Modificar
+                            </button>
+                            <button type="button" class="btn btn-danger btn-perform" data-perform="anular">
+                                <i class="fa fa-exclamation-triangle"></i>
+                                Anular
+                            </button>
+                        {% endif %}
                         <button type="button" class="btn btn-info" id="btn-ecuenta">
                             <i class="fa fa-file"></i>
                             Estado de cuenta

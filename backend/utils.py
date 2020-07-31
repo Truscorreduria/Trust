@@ -12,7 +12,7 @@ def calcular_tabla_pagos(total, fecha_pago, cuotas, instance):
     mes = fecha_pago.month
     dia = fecha_pago.day
     data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                 'estado': 'VIGENTE'})
+                 'monto_comision': 0.0, 'estado': 'VIGENTE'})
     for i in range(1, cuotas):
         if mes != 12:
             mes += 1
@@ -21,5 +21,5 @@ def calcular_tabla_pagos(total, fecha_pago, cuotas, instance):
             anno += 1
         fecha = valid_date(year=anno, month=mes, day=dia)
         data.append({'numero': i + 1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                     'estado': 'VIGENTE'})
+                     'monto_comision': 0.0, 'estado': 'VIGENTE'})
     return data

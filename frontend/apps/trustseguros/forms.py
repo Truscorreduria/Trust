@@ -1113,6 +1113,10 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
                 updated_initial['amount_comision'] = instance.recibo_editar.amount_comision
                 updated_initial['moneda'] = instance.recibo_editar.moneda
+                updated_initial['f_pago'] = instance.recibo_editar.f_pago
+                updated_initial['m_pago'] = instance.recibo_editar.m_pago
+                updated_initial['cuotas'] = instance.recibo_editar.cuotas
+                updated_initial['fecha_pago'] = instance.recibo_editar.fecha_pago
             else:
                 updated_initial['tabla_pagos'] = instance
         kwargs.update(initial=updated_initial)
@@ -1125,3 +1129,19 @@ class ReciboForm(forms.ModelForm):
         self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
         self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
         self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
+        if instance and not instance.modificando_recibo:
+            self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+            self.fields['total'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
+            self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
+        else:
+            self.fields['recibos'].widget.attrs['readonly'] = 'readonly'

@@ -1641,15 +1641,78 @@ class Recibos(Datatables):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
     def post(self, request):
+        status = 200
+        errors = []
+
         if 'cambiar_recibo' in request.POST:
-            status = 200
-            errors = []
             instance = self.get_instance(request)
             form = self.get_form()(request.POST, instance=instance)
             if form.is_valid():
                 instance = self.get_instance(request)
                 instance.recibo_editar = form.cleaned_data['recibo_editar']
                 instance.save()
+                form = self.get_form()(instance=instance)
+            else:
+                status = 203
+                errors = self.get_form_errors(form)
+            html_form = self.html_form(instance, request, form, 'POST')
+            return self.make_response(instance, html_form, errors, status)
+
+        if 'modificar' in request.POST:
+            instance = self.get_instance(request)
+            form = self.get_form()(request.POST, instance=instance)
+            if form.is_valid():
+                instance = self.get_instance(request)
+                instance.modificando_recibo = True
+                instance.save()
+                form = self.get_form()(instance=instance)
+            else:
+                status = 203
+                errors = self.get_form_errors(form)
+            html_form = self.html_form(instance, request, form, 'POST')
+            return self.make_response(instance, html_form, errors, status)
+
+        if 'aplicar_cambio' in request.POST:
+            instance = self.get_instance(request)
+            form = self.get_form()(request.POST, instance=instance)
+            if form.is_valid():
+                instance = self.get_instance(request)
+                instance.modificando_recibo = False
+                if instance.recibo_editar:
+                    recibo = instance.recibo_editar
+                else:
+                    recibo = instance
+                recibo.subtotal = form.cleaned_data['subtotal']
+                recibo.descuento = form.cleaned_data['descuento']
+                recibo.emision = form.cleaned_data['emision']
+                recibo.iva = form.cleaned_data['iva']
+                recibo.otros = form.cleaned_data['otros']
+                recibo.total = form.cleaned_data['total']
+                recibo.per_comision = form.cleaned_data['per_comision']
+                recibo.suma_asegurada = form.cleaned_data['suma_asegurada']
+                recibo.amount_comision = form.cleaned_data['amount_comision']
+                recibo.moneda = form.cleaned_data['moneda']
+                recibo.f_pago = form.cleaned_data['f_pago']
+                recibo.m_pago = form.cleaned_data['m_pago']
+                recibo.cuotas = form.cleaned_data['cuotas']
+                recibo.fecha_pago = form.cleaned_data['fecha_pago']
+                recibo.save()
+                instance.save()
+
+                for i in range(0, len(request.POST.getlist('tabla_pagos_id'))):
+                    if request.POST.getlist('tabla_pagos_id')[i] == '':
+                        if instance.recibo_editar:
+                            p = Pago(tramite=recibo)
+                        else:
+                            p = Pago(poliza=recibo)
+                    else:
+                        p = Pago.objects.get(id=int(request.POST.getlist('tabla_pagos_id')[i]))
+                    p.numero = request.POST.getlist('tabla_pagos_numero')[i]
+                    p.monto = request.POST.getlist('tabla_pagos_monto')[i]
+                    p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i]
+                    p.fecha_vence = datetime.strptime(request.POST.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+                    p.save()
+
                 form = self.get_form()(instance=instance)
             else:
                 status = 203

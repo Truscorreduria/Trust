@@ -31,7 +31,7 @@
                        value="{{ fila.monto }}">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto" class="form-control"
+                <input type="text" name="{{ widget.name }}_monto_comision" class="form-control"
                        {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
                        value="{{ fila.monto_comision }}">
             </td>
