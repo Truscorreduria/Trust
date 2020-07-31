@@ -99,13 +99,10 @@
             });
         }
 
-        const form_submit = function (e) {
-            e.preventDefault();
-            const data = new FormData(this);
-            const _this = $(this);
-            data.append('save', 'save');
-            $.ajax(_this.attr('action'), {
-                method: _this.data('method'),
+        function perform_action(data, method, action, perform) {
+            data.append(perform, perform);
+            $.ajax(action, {
+                method: method,
                 data: data,
                 processData: false,
                 contentType: false,
@@ -113,12 +110,19 @@
                     process_response(response, textStatus, xhr)
                 },
                 error: function (error) {
-                    console.log(error);
+                    console.log(error)
                     $.growl.error({
                         message: `<p>${error}</p>`
                     });
                 }
             })
+        }
+
+        const form_submit = function (e) {
+            e.preventDefault();
+            const data = new FormData(this);
+            const _this = $(this);
+            perform_action(data, _this.attr('method'), _this.attr('action'), 'save');
         };
 
         const new_object = function (e, dt, node, config) {
@@ -274,8 +278,11 @@
 
             $(document).on('submit', '#{{ opts.model_name }}-form', form_submit);
 
-            $(document).on('click', '#btn-save', function () {
-                $('#{{ opts.model_name }}-form').trigger('submit')
+            $(document).on('click', '.btn-perform', function () {
+                const _this = $(this);
+                const form = $('#{{ opts.model_name }}-form');
+                const data = new FormData(form[0]);
+                perform_action(data, form.attr('method'), form.attr('action'), _this.data('perform'))
             });
 
             $(document).on('click', '.btn-table-add', add_row);

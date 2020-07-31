@@ -1095,7 +1095,7 @@ class Tramites(Datatables):
                     ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
                     ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
     list_filter = ('tipo_tramite', 'estado', 'user')
-    search_fields = ('code', 'cliente__nombre')
+    search_fields = ('code', 'cliente__nombre', 'poliza__no_poliza')
     fieldsets = [
         {
             'id': 'info',
@@ -1641,6 +1641,21 @@ class Recibos(Datatables):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
     def post(self, request):
+        if 'cambiar_recibo' in request.POST:
+            status = 200
+            errors = []
+            instance = self.get_instance(request)
+            form = self.get_form()(request.POST, instance=instance)
+            if form.is_valid():
+                print(form.cleaned_data)
+                instance.recibo_editar = form.cleaned_data['recibo_editar']
+                instance.save()
+                form = self.get_form()(instance=instance)
+            else:
+                status = 203
+                errors = self.get_form_errors(form)
+            html_form = self.html_form(instance, request, form, 'POST')
+            return self.make_response(instance, html_form, errors, status)
         return super().post(request)
 
 

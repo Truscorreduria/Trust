@@ -81,22 +81,17 @@
                                         {{ form.tipo_poliza|as_crispy_field }}
                                     </div>
                                     <div class="col">
+                                        {{ form.estado_poliza|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.concepto|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
                                         {{ form.cesion_derecho|as_crispy_field }}
                                     </div>
                                     <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
                                          style="visibility: hidden" {% endif %}>
                                         {{ form.cesioinario|as_crispy_field }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.estado_poliza|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.no_recibo|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.concepto|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="row">
@@ -240,7 +235,7 @@
                         {% else %}
 
                             {% if instance.editable %}
-                                <button type="button" class="btn btn-info" id="btn-save">
+                                <button type="button" class="btn btn-info btn-perform" data-perform="save">
                                     <i class="fa fa-save"></i>
                                     Guardar
                                 </button>

@@ -136,7 +136,8 @@ class Datatables(View):
     def save_related(self, instance, data):
         pass
 
-    def get_filters(self, filters):
+    @staticmethod
+    def get_filters(filters):
         return [Q((field.split('=')[0], field.split('=')[1])) for field in filters.split('&')]
 
     def search_value(self, search_value):
@@ -175,6 +176,10 @@ class Datatables(View):
     def get_instance(self, request):
         return self.model.objects.get(id=int(request.POST.get('id')))
 
+    @staticmethod
+    def get_form_errors(form):
+        return [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+
     def process_request(self, request, method, instance=None):
         status = 200
         errors = []
@@ -189,10 +194,16 @@ class Datatables(View):
             form = self.get_form()(instance=instance)
             method = "POST"
         else:
-            errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
+            errors = self.get_form_errors(form)
             status = 203
         html_form = self.html_form(instance, request, form, method)
         return instance, html_form, errors, status
+
+    @staticmethod
+    def make_response(instance, html_form, errors, status):
+        return JsonResponse({'instance': instance.to_json(),
+                             'form': html_form, 'errors': errors}, encoder=Codec,
+                            status=status)
 
     def post(self, request):
         status = 200
@@ -227,9 +238,7 @@ class Datatables(View):
         if 'save' in request.POST:
             instance = self.get_instance(request)
             instance, html_form, errors, status = self.process_request(request, 'POST', instance)
-        return JsonResponse({'instance': instance.to_json(),
-                             'form': html_form, 'errors': errors}, encoder=Codec,
-                            status=status)
+        return self.make_response(instance, html_form, errors, status)
 
     def put(self, request):
         status = 203
@@ -243,20 +252,4 @@ class Datatables(View):
 
         if 'save' in request.PUT:
             instance, html_form, errors, status = self.process_request(request, 'PUT')
-            # try:
-            #     form = self.get_form()(request.PUT)
-            #     if form.is_valid():
-            #         form.save()
-            #         instance = form.instance
-            #         status = 200
-            #         self.save_related(instance=instance, data=request.PUT)
-            #         form = self.get_form()(instance=instance)
-            #         html_form = self.html_form(instance, request, form, "POST")
-            #     else:
-            #         errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-            #         html_form = self.html_form(instance, request, form, "PUT")
-            # except IntegrityError as e:
-            #     print(e)
-            #     # errors.append(dict(e))
-        return JsonResponse({'instance': instance.to_json(), 'form': html_form,
-                             'errors': errors}, status=status, encoder=Codec)
+        return self.make_response(instance, html_form, errors, status)
