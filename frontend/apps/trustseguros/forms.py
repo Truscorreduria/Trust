@@ -1113,6 +1113,8 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
                 updated_initial['amount_comision'] = instance.recibo_editar.amount_comision
                 updated_initial['moneda'] = instance.recibo_editar.moneda
+            else:
+                updated_initial['tabla_pagos'] = instance
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
