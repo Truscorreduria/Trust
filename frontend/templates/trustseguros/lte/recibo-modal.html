@@ -136,6 +136,12 @@
                                 <i class="fa fa-edit"></i>
                                 Modificar
                             </button>
+                            {% if instance.recibo_editar %}
+                                <button type="button" class="btn btn-danger" id="btn-null">
+                                    <i class="fa fa-exclamation-triangle"></i>
+                                    Anular
+                                </button>
+                            {% endif %}
                         {% endif %}
                         <button type="button" class="btn btn-info" id="btn-ecuenta">
                             <i class="fa fa-file"></i>
