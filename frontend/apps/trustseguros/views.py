@@ -1647,7 +1647,7 @@ class Recibos(Datatables):
             instance = self.get_instance(request)
             form = self.get_form()(request.POST, instance=instance)
             if form.is_valid():
-                print(form.cleaned_data)
+                instance = self.get_instance(request)
                 instance.recibo_editar = form.cleaned_data['recibo_editar']
                 instance.save()
                 form = self.get_form()(instance=instance)
