@@ -1719,6 +1719,24 @@ class Recibos(Datatables):
             html_form = self.html_form(instance, request, form, 'POST')
             return self.make_response(instance, html_form, errors, status)
 
+        if 'anular_recibo' in request.POST:
+            instance = self.get_instance(request)
+            form = self.get_form()(request.POST, instance=instance)
+            if form.is_valid():
+                instance = self.get_instance(request)
+                if instance.recibo_editar:
+                    recibo = instance.recibo_editar
+                    recibo.genera_endoso = False
+                    recibo.pagos().delete()
+                    recibo.save()
+                    instance = self.get_instance(request)
+                    form = self.get_form()(instance=instance)
+            else:
+                status = 203
+                errors = self.get_form_errors(form)
+            html_form = self.html_form(instance, request, form, 'POST')
+            return self.make_response(instance, html_form, errors, status)
+
         if 'calcular_tabla_pagos' in request.POST:
             instance = self.get_instance(request)
             if instance.recibo_editar:

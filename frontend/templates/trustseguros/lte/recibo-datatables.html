@@ -129,6 +129,31 @@
                     }
                 })
             });
+            $(document).on('click', '#btn-null', function () {
+                swal({
+                    title: 'Estas seguro?',
+                    text: "Esta acción no se puede revertir!",
+                    imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, anúlalo!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        swal(
+                            'Recibo anulado con éxito!',
+                            'Todas las operaciones relacionadas se realizaron correctamente.',
+                            'success'
+                        ).then(() => {
+                            const form = $('#{{ opts.model_name }}-form');
+                            const data = new FormData(form[0]);
+                            perform_action(data, 'POST', '.', 'anular_recibo')
+                        })
+                    }
+                })
+
+            });
 
         });
 
