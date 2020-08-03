@@ -15,6 +15,8 @@ from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from utils.utils import send_email
+from django.db.models.functions import ExtractDay, TruncDay
+from django.db.models import Count
 
 
 def group_to_json(group):
@@ -563,14 +565,23 @@ def index(request):
         return {
             'id': poliza.id,
             'grupo': get_grupo(poliza),
-            'status': {'label': poliza.get_estado_poliza_display(), 'value': poliza.estado_poliza},
+            'status': poliza.get_estado_poliza_display(),
             'ramo': get_ramo(poliza),
         }
 
+    def renovacion_json(poliza):
+        return poliza
+
+    def get_renovaciones():
+        return Poliza.objects.filter(estado_poliza=EstadoPoliza.RENOVADA
+                                     ).annotate(day=TruncDay('updated')
+                                                ).values('day').annotate(c=Count('id')).values('day', 'c').order_by('day')
+
     if request.method == 'POST':
         return JsonResponse({
-            'data': [poliza_json(p) for p in
-                     Poliza.objects.all().exclude(estado_poliza=EstadoPoliza.RENOVADA)],
+            'polizas': [poliza_json(p) for p in
+                        Poliza.objects.all().exclude(estado_poliza=EstadoPoliza.RENOVADA)],
+            'renovaciones': [renovacion_json(poliza) for poliza in get_renovaciones()],
         }, encoder=Codec)
     return render(request, 'adminlte/index.html', {})
 

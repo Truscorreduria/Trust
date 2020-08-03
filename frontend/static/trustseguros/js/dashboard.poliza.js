@@ -13,7 +13,7 @@ $(document).ready(function () {
             this.histogram_estado_axis_X = null;
             this.barscolor_estado = '#4195da';
 
-            this.histogram_ramo_height = 350;
+            this.histogram_ramo_height = 300;
             this.histogram_ramo_width = this.width - 50;
             this.histogram_ramo_axis_Y = null;
             this.histogram_ramo_axis_X = null;
@@ -44,15 +44,15 @@ $(document).ready(function () {
 
             d3.json('.', {
                 method: 'POST',
-                body: JSON.stringify({
-                    hola: 'hola',
-                }),
+                body: JSON.stringify({}),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
                     "X-CSRFToken": getCookie('csrftoken'),
                 }
             }).then(response => {
-                this.data = [...response.data];
+                this.data = [...response.polizas];
+
+                console.log(response)
 
                 this.svg = d3.select("#dashboard-polizas").append('svg')
                     .attr('width', this.width).attr('height', this.height);
@@ -69,10 +69,10 @@ $(document).ready(function () {
                     .attr('transform', `translate(${60}, ${100})`);
 
                 this.svgHistogramEstado = this.svg.append('g')
-                    .attr('transform', `translate(${900}, ${50})`);
+                    .attr('transform', `translate(${900}, ${80})`);
 
                 this.svgHistogramRamo = this.svg.append('g')
-                    .attr('transform', `translate(${50}, ${400})`);
+                    .attr('transform', `translate(${50}, ${500})`);
 
                 this.drawPie();
                 this.drawLegend();
@@ -92,7 +92,7 @@ $(document).ready(function () {
         };
 
         groupByEstado = data => {
-            data = d3.group(data, d => d.status.label);
+            data = d3.group(data, d => d.status);
             data = Array.from(data, ([key, value]) => {
                 return {
                     estado: key, total: value.length,
@@ -379,6 +379,12 @@ $(document).ready(function () {
                 .call(d3.axisBottom(this.histogram_estado_axis_X))
                 .attr('transform', `translate(0, ${this.histogram_estado_height})`);
 
+            this.svgHistogramEstado.append('text').attr('class', 'estado-text')
+                .text('Por estado')
+                .style('font-size', '3em')
+                .style('fill', this.barscolor_estado)
+                .attr('transform', `translate(0,-20)`);
+
             let bars = this.svgHistogramEstado.selectAll(".bar").data(data).enter()
                 .append("g").attr("class", "bar");
 
@@ -391,12 +397,14 @@ $(document).ready(function () {
                 .on('mouseover', d => {
                     this.updatePie(d.data);
                     this.updateLegend(d.data);
-                    this.updateHistogramRamo(d.data, this.barscolor_ramo)
+                    this.updateHistogramRamo(d.data, this.barscolor_ramo);
+                    this.svgHistogramEstado.select('.estado-text').text(d.estado);
                 })
                 .on('mouseout', () => {
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
-                    this.updateHistogramRamo(this.data, this.barscolor_ramo)
+                    this.updateHistogramRamo(this.data, this.barscolor_ramo);
+                    this.svgHistogramEstado.select('.estado-text').text('Por estado');
                 });
 
             bars.append("text")
@@ -419,11 +427,17 @@ $(document).ready(function () {
                 .range([0, this.histogram_ramo_width]);
 
             this.histogram_ramo_axis_Y = d3.scaleLinear()
-                .range([this.histogram_estado_height, 0])
+                .range([this.histogram_ramo_height, 0])
                 .domain([0, d3.max(data, d => d.total) + 100]);
 
             this.svgHistogramRamo.append("g")
                 .call(d3.axisLeft(this.histogram_ramo_axis_Y));
+
+            this.svgHistogramRamo.append('text').attr('class', 'ramo-text')
+                .text('Por ramo')
+                .style('font-size', '3em')
+                .style('fill', '#dac277')
+                .attr('transform', `translate(0,-20)`);
 
             let bars = this.svgHistogramRamo.selectAll(".bar").data(data).enter()
                 .append("g").attr("class", "bar");
@@ -438,11 +452,13 @@ $(document).ready(function () {
                     this.updatePie(d.data);
                     this.updateLegend(d.data);
                     this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo));
+                    this.svgHistogramRamo.select('.ramo-text').text(d.ramo);
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
+                    this.svgHistogramRamo.select('.ramo-text').text('Por ramo');
                 });
 
             bars.append("text")
