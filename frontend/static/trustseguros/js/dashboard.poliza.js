@@ -18,14 +18,14 @@ $(document).ready(function () {
             this.histogram_ramo_axis_Y = null;
             this.histogram_ramo_axis_X = null;
             this.colorScaleRamo = null;
-            this.ramoTextColor = '#dac277';
+            this.ramoTextColor = '#547a95';
 
             this.pieRadius = 180;
             this.pieFilter = null;
             this.arc = null;
             this.outerArc = null;
             this.colorScalePie = null;
-            this.pieCenterColor = '#8edcb3';
+            this.pieCenterColor = '#547a95';
 
             this.legend_axis_Y = null;
             this.legendLineHeight = 20;
@@ -289,13 +289,13 @@ $(document).ready(function () {
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
                 .on('mouseover', d => {
-                    this.updateHistogramEstado(d.data.data, this.colorScalePie(d.data.grupo));
+                    this.updateHistogramEstado(d.data.data, this.colorScalePie(d.data.grupo), this.colorScalePie(d.data.grupo));
                     this.updateHistogramRamo(d.data.data, this.colorScalePie(d.data.grupo));
                     this.updatePieCenter(d, data);
                     this.updateProgresBar(d.data.data, this.colorScalePie(d.data.grupo));
                 })
                 .on('mouseout', () => {
-                    this.updateHistogramEstado(this.data, this.barscolor_estado);
+                    this.updateHistogramEstado(this.data, this.barscolor_estado, this.barColor);
                     this.updateHistogramRamo(this.data);
                     this.updatePieCenter(undefined, data);
                     this.updateProgresBar(this.data, this.barColor);
@@ -408,7 +408,7 @@ $(document).ready(function () {
             this.svgHistogramEstado.append('text').attr('class', 'estado-text')
                 .text('POR ESTADO')
                 .style('font-size', '2em')
-                .style('fill', this.barscolor_estado)
+                .style('fill', this.barColor)
                 .attr('transform', `translate(0,-20)`);
 
             let bars = this.svgHistogramEstado.selectAll(".bar").data(data).enter()
@@ -425,7 +425,7 @@ $(document).ready(function () {
                     this.updateLegend(d.data);
                     this.updateHistogramRamo(d.data, this.barscolor_estado);
                     this.svgHistogramEstado.select('.estado-text').text(d.estado);
-                    this.updateProgresBar(d.data, this.barscolor_estado);
+                    this.updateProgresBar(d.data, this.barColor);
                 })
                 .on('mouseout', () => {
                     this.updatePie(this.data);
@@ -448,7 +448,7 @@ $(document).ready(function () {
             this.ramos = data.map(d => d.ramo).sort();
             this.colorScaleRamo = d3.scaleOrdinal()
                 .domain(this.ramos)
-                .range(d3.schemeSet3);
+                .range(d3.schemeDark2);
 
             this.histogram_ramo_axis_X = d3.scaleBand()
                 .domain(this.ramos)
@@ -477,20 +477,20 @@ $(document).ready(function () {
                 .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
                 .attr('fill', d => this.colorScaleRamo(d.ramo))
                 .on('mouseover', d => {
-                    this.updatePie(d.data);
+                    this.updatePie(d.data, this.colorScaleRamo(d.ramo));
                     this.updateLegend(d.data);
-                    this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo));
+                    this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo), this.colorScaleRamo(d.ramo));
                     this.svgHistogramRamo.select('.ramo-text').text(d.ramo)
                         .style('fill', this.colorScaleRamo(d.ramo));
                     this.updateProgresBar(d.data, this.colorScaleRamo(d.ramo));
                 })
                 .on('mouseout', () => {
-                    this.updateHistogramEstado(this.data, this.barscolor_estado);
+                    this.updateHistogramEstado(this.data, this.barscolor_estado, this.barColor);
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
                     this.svgHistogramRamo.select('.ramo-text').text('POR RAMO')
-                        .style('fill', '#dac277');
-                    this.updateProgresBar(this.data, this.barColor);
+                        .style('fill', this.barColor);
+                    this.updateProgresBar(this.data, this.barscolor_estado);
                 });
 
             bars.append("text")
@@ -573,9 +573,9 @@ $(document).ready(function () {
                 .style('font-size', '1.5em');
         };
 
-        updateHistogramEstado = (data, color) => {
+        updateHistogramEstado = (data, color, colorLabel) => {
             this.svgHistogramEstado.select('.estado-text')
-                .style('fill', color);
+                .style('fill', colorLabel);
 
             data = this.groupByEstado(data);
             let bars = this.svgHistogramEstado.selectAll(".bar")
@@ -620,13 +620,18 @@ $(document).ready(function () {
             }
         };
 
-        updatePie = (data) => {
+        updatePie = (data, color) => {
             data = this.groupByGrupo(data);
             let total = d3.sum(data, d => d.total);
             data = this.pieFilter(data);
             this.svgPie.selectAll("path").data(data) //.transition().duration(500)
                 .attr("d", this.arc);
             this.svgPie.select('.pie-total').text(total);
+            if (color !== undefined) {
+                this.svgPie.select('.pie-grupo').style('fill', color);
+            } else {
+                this.svgPie.select('.pie-grupo').style('fill', this.pieCenterColor);
+            }
             /*this.svgPie.selectAll("polyline").data(data).transition().duration(500)
                 .attr('points', this.drawPolyLine);
             this.svgPie.selectAll("text").data(data).transition().duration(500)
