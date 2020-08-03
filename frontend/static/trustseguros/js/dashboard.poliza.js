@@ -421,17 +421,19 @@ $(document).ready(function () {
                 .attr("height", d => this.histogram_estado_height - this.histogram_estado_axis_Y(d.total))
                 .attr('fill', this.barscolor_estado)
                 .on('mouseover', d => {
-                    this.updatePie(d.data);
+                    this.updatePie(d.data, this.barscolor_estado);
                     this.updateLegend(d.data);
                     this.updateHistogramRamo(d.data, this.barscolor_estado);
-                    this.svgHistogramEstado.select('.estado-text').text(d.estado);
+                    this.svgHistogramEstado.select('.estado-text').text(d.estado)
+                        .style('fill', this.barscolor_estado);
                     this.updateProgresBar(d.data, this.barColor);
                 })
                 .on('mouseout', () => {
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
                     this.updateHistogramRamo(this.data);
-                    this.svgHistogramEstado.select('.estado-text').text('POR ESTADO');
+                    this.svgHistogramEstado.select('.estado-text').text('POR ESTADO')
+                        .style('fill', this.barColor);
                     this.updateProgresBar(this.data, this.barColor);
                 });
 
@@ -490,7 +492,7 @@ $(document).ready(function () {
                     this.updateLegend(this.data);
                     this.svgHistogramRamo.select('.ramo-text').text('POR RAMO')
                         .style('fill', this.barColor);
-                    this.updateProgresBar(this.data, this.barscolor_estado);
+                    this.updateProgresBar(this.data, this.barColor);
                 });
 
             bars.append("text")
