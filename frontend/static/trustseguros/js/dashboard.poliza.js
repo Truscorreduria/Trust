@@ -7,19 +7,20 @@ $(document).ready(function () {
             this.sidebar_width = 300;
             this.width = window.innerWidth - this.sidebar_width;
 
-            this.histogram_estado_height = 350;
+            this.histogram_estado_height = 320;
             this.histogram_estado_width = 600;
             this.histogram_estado_axis_Y = null;
             this.histogram_estado_axis_X = null;
             this.barscolor_estado = '#4195da';
 
             this.histogram_ramo_height = 300;
-            this.histogram_ramo_width = this.width - 50;
+            this.histogram_ramo_width = this.width - 150;
             this.histogram_ramo_axis_Y = null;
             this.histogram_ramo_axis_X = null;
             this.colorScaleRamo = null;
+            this.ramoTextColor = '#dac277';
 
-            this.pieRadius = 200;
+            this.pieRadius = 180;
             this.pieFilter = null;
             this.arc = null;
             this.outerArc = null;
@@ -29,11 +30,17 @@ $(document).ready(function () {
             this.legend_axis_Y = null;
             this.legendLineHeight = 20;
 
+            this.barWidth = (this.width - 100) / 2;
+            this.barColor = '#547a95';
+            this.barScalePrima = null;
+            this.barScaleComision = null;
+
             this.svg = null;
             this.svgPie = null;
             this.svgLegend = null;
             this.svgHistogramEstado = null;
             this.svgHistogramRamo = null;
+            this.svgBar = null;
 
             this.data = [];
             this.estados = [];
@@ -55,19 +62,17 @@ $(document).ready(function () {
                 this.svg = d3.select("#dashboard-polizas").append('svg')
                     .attr('width', this.width).attr('height', this.height);
 
-                this.svgPie = this.svg.append('g')
-                    .attr('transform', `translate(${550}, ${250})`);
+                this.svgBar = this.svg.append('g').attr('class', 'progres-bar')
+                    .attr('transform', `translate(${0}, ${0})`);
 
-                /*this.svg.append('text').text('Control de Pólizas')
-                    .attr('transform', `translate(${0}, ${60})`)
-                    .style('font-size', '3em')
-                    .style('fill', '#739272');*/
+                this.svgPie = this.svg.append('g')
+                    .attr('transform', `translate(${550}, ${280})`);
 
                 this.svgLegend = this.svg.append("g")
-                    .attr('transform', `translate(${60}, ${100})`);
+                    .attr('transform', `translate(${60}, ${150})`);
 
                 this.svgHistogramEstado = this.svg.append('g')
-                    .attr('transform', `translate(${900}, ${80})`);
+                    .attr('transform', `translate(${900}, ${120})`);
 
                 this.svgHistogramRamo = this.svg.append('g')
                     .attr('transform', `translate(${50}, ${500})`);
@@ -76,6 +81,7 @@ $(document).ready(function () {
                 this.drawLegend();
                 this.drawHistogramEstado();
                 this.drawHistogramRamo();
+                this.drawProgresBar();
 
             }).catch(err => {
                 console.log(err)
@@ -180,10 +186,28 @@ $(document).ready(function () {
             return data;
         };
 
+        calculatePercent = (segment, total, precision) => {
+            let percent = (parseFloat(segment) / parseFloat(total)) * 100;
+            return `${percent.toFixed(precision)}%`;
+        };
+
+        calulateBars = data => {
+            let comision_total = d3.sum(this.data, d => d.comision);
+            let prima_total = d3.sum(this.data, d => d.prima);
+            let comision = d3.sum(data, d => d.comision);
+            let prima = d3.sum(data, d => d.prima);
+
+            return {
+                comision: comision,
+                comision_percent: this.calculatePercent(comision, comision_total, 0),
+                prima: prima,
+                prima_percent: this.calculatePercent(prima, prima_total, 0),
+            }
+        };
+
         legendPercent = (d, data) => {
             let total = d3.sum(data.map(v => v.total));
-            let percent = (d.total / total) * 100;
-            return `${percent.toFixed(2)}%`;
+            return this.calculatePercent(d.total, total, 2)
         };
 
         drawPolyLine = d => {
@@ -267,12 +291,14 @@ $(document).ready(function () {
                 .on('mouseover', d => {
                     this.updateHistogramEstado(d.data.data, this.colorScalePie(d.data.grupo));
                     this.updateHistogramRamo(d.data.data, this.colorScalePie(d.data.grupo));
-                    this.updatePieCenter(d, data)
+                    this.updatePieCenter(d, data);
+                    this.updateProgresBar(d.data.data, this.colorScalePie(d.data.grupo));
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
-                    this.updateHistogramRamo(this.data, this.barscolor_ramo);
-                    this.updatePieCenter(undefined, data)
+                    this.updateHistogramRamo(this.data);
+                    this.updatePieCenter(undefined, data);
+                    this.updateProgresBar(this.data, this.barColor);
                 });
 
             this.svgPie
@@ -296,9 +322,9 @@ $(document).ready(function () {
             this.svgPie
                 .append('text')
                 .attr('class', 'pie-grupo')
-                .text('Por grupo')
-                .attr('transform', 'translate(-500, -200)')
-                .style('font-size', '3em')
+                .text('POR GRUPO')
+                .attr('transform', 'translate(-500, -180)')
+                .style('font-size', '2em')
                 .style('fill', this.pieCenterColor);
 
             /*this.svgPie
@@ -342,18 +368,21 @@ $(document).ready(function () {
                 .attr("class", 'total')
                 .attr("text-anchor", "middle")
                 .attr('x', 30).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
-                .style('font-size', '.8em');
+                .style('font-size', '.8em')
+                .attr("fill", d => this.colorScalePie(d.grupo));
 
             tr.append("text").text(d => this.legendPercent(d, data))
                 .attr("class", 'percent')
                 .attr("text-anchor", "middle")
                 .attr('x', 70).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
-                .style('font-size', '.75em');
+                .style('font-size', '.75em')
+                .attr("fill", d => this.colorScalePie(d.grupo));
 
             tr.append("text").text(d => d.grupo)
                 .attr("class", 'grupo')
                 .attr('x', 100).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
-                .style('font-size', '.75em');
+                .style('font-size', '.75em')
+                .attr("fill", d => this.colorScalePie(d.grupo));
         };
 
         drawHistogramEstado = () => {
@@ -377,8 +406,8 @@ $(document).ready(function () {
                 .attr('transform', `translate(0, ${this.histogram_estado_height})`);
 
             this.svgHistogramEstado.append('text').attr('class', 'estado-text')
-                .text('Por estado')
-                .style('font-size', '3em')
+                .text('POR ESTADO')
+                .style('font-size', '2em')
                 .style('fill', this.barscolor_estado)
                 .attr('transform', `translate(0,-20)`);
 
@@ -394,14 +423,16 @@ $(document).ready(function () {
                 .on('mouseover', d => {
                     this.updatePie(d.data);
                     this.updateLegend(d.data);
-                    this.updateHistogramRamo(d.data, this.barscolor_ramo);
+                    this.updateHistogramRamo(d.data, this.barscolor_estado);
                     this.svgHistogramEstado.select('.estado-text').text(d.estado);
+                    this.updateProgresBar(d.data, this.barscolor_estado);
                 })
                 .on('mouseout', () => {
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
-                    this.updateHistogramRamo(this.data, this.barscolor_ramo);
-                    this.svgHistogramEstado.select('.estado-text').text('Por estado');
+                    this.updateHistogramRamo(this.data);
+                    this.svgHistogramEstado.select('.estado-text').text('POR ESTADO');
+                    this.updateProgresBar(this.data, this.barColor);
                 });
 
             bars.append("text")
@@ -431,9 +462,9 @@ $(document).ready(function () {
                 .call(d3.axisLeft(this.histogram_ramo_axis_Y));
 
             this.svgHistogramRamo.append('text').attr('class', 'ramo-text')
-                .text('Por ramo')
-                .style('font-size', '3em')
-                .style('fill', '#dac277')
+                .text('POR RAMO')
+                .style('font-size', '2em')
+                .style('fill', this.ramoTextColor)
                 .attr('transform', `translate(0,-20)`);
 
             let bars = this.svgHistogramRamo.selectAll(".bar").data(data).enter()
@@ -441,10 +472,7 @@ $(document).ready(function () {
 
             bars.append("rect")
                 .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
-                .attr("y", d => {
-                    console.log(this.histogram_ramo_axis_Y(50))
-                    return this.histogram_ramo_axis_Y(d.total)
-                })
+                .attr("y", d => this.histogram_ramo_axis_Y(d.total))
                 .attr("width", this.histogram_ramo_axis_X.bandwidth() - 2)
                 .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
                 .attr('fill', d => this.colorScaleRamo(d.ramo))
@@ -454,13 +482,15 @@ $(document).ready(function () {
                     this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo));
                     this.svgHistogramRamo.select('.ramo-text').text(d.ramo)
                         .style('fill', this.colorScaleRamo(d.ramo));
+                    this.updateProgresBar(d.data, this.colorScaleRamo(d.ramo));
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
-                    this.svgHistogramRamo.select('.ramo-text').text('Por ramo')
+                    this.svgHistogramRamo.select('.ramo-text').text('POR RAMO')
                         .style('fill', '#dac277');
+                    this.updateProgresBar(this.data, this.barColor);
                 });
 
             bars.append("text")
@@ -480,7 +510,73 @@ $(document).ready(function () {
                 .attr("transform", "rotate(-65)");
         };
 
+        drawProgresBar = () => {
+            let data = this.calulateBars(this.data);
+
+            this.barScalePrima = d3.scaleLinear()
+                .range([0, this.barWidth])
+                .domain([0, data.prima]);
+
+            this.barScaleComision = d3.scaleLinear()
+                .range([0, this.barWidth])
+                .domain([0, data.comision]);
+
+            let comision = this.svgBar.append('g').attr('class', 'bar-comision');
+            let prima = this.svgBar.append('g').attr('class', 'bar-comision');
+
+            comision.append('rect')
+                .attr('class', 'bar-bg')
+                .attr('width', this.barWidth).attr('height', 10)
+                .attr('rx', 3).attr('ry', 3)
+                .attr('transform', `translate(0, 30)`)
+                .style('fill', 'gray');
+            comision.append('rect')
+                .attr('class', 'bar-value-prima')
+                .attr('width', this.barWidth).attr('height', 10)
+                .attr('rx', 3).attr('ry', 3)
+                .attr('transform', `translate(0, 30)`)
+                .style('fill', this.barColor);
+            comision.append('text').text(`Prima U$ ${d3.format(',')(data.prima)}`)
+                .attr('class', 'text-prima')
+                .attr('transform', `translate(0, 20)`)
+                .style('fill', this.barColor)
+                .style('font-size', '1.5em');
+            comision.append('text').text(`100%`)
+                .attr('class', 'text-prima-percent')
+                .attr('transform', `translate(${this.barWidth - 30}, 20)`)
+                .style('fill', 'gray')
+                .style('text-anchor', 'middle')
+                .style('font-size', '1.5em');
+
+            prima.append('rect')
+                .attr('class', 'bar-bg')
+                .attr('width', this.barWidth).attr('height', 10)
+                .attr('rx', 3).attr('ry', 3)
+                .attr('transform', `translate(800, 30)`)
+                .style('fill', 'gray');
+            prima.append('rect')
+                .attr('class', 'bar-value-comision')
+                .attr('width', this.barWidth).attr('height', 10)
+                .attr('rx', 3).attr('ry', 3)
+                .attr('transform', `translate(800, 30)`)
+                .style('fill', this.barColor);
+            prima.append('text').text(`Comision U$ ${d3.format(',')(data.comision)}`)
+                .attr('class', 'text-comision')
+                .attr('transform', `translate(800, 20)`)
+                .style('fill', this.barColor)
+                .style('font-size', '1.5em');
+            prima.append('text').text(`100%`)
+                .attr('class', 'text-comision-percent')
+                .attr('transform', `translate(${800 + (this.barWidth - 30)}, 20)`)
+                .style('fill', 'gray')
+                .style('text-anchor', 'middle')
+                .style('font-size', '1.5em');
+        };
+
         updateHistogramEstado = (data, color) => {
+            this.svgHistogramEstado.select('.estado-text')
+                .style('fill', color);
+
             data = this.groupByEstado(data);
             let bars = this.svgHistogramEstado.selectAll(".bar")
                 .data(data);
@@ -497,28 +593,38 @@ $(document).ready(function () {
                 .attr("x", d => this.histogram_estado_axis_X(d.estado) + this.histogram_estado_axis_X.bandwidth() / 2);
         };
 
-        updateHistogramRamo = (data) => {
+        updateHistogramRamo = (data, color) => {
             data = this.groupByRamo(data);
             let bars = this.svgHistogramRamo.selectAll(".bar")
                 .data(data);
-
-            bars.select("rect").transition().duration(500)
-                .attr("y", d => this.histogram_ramo_axis_Y(d.total))
-                .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
-                .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
-                .attr("fill", d => this.colorScaleRamo(d.ramo));
-
             bars.select("text").transition().duration(500)
                 .text(d => d3.format(",")(d.total))
                 .attr("y", (d) => this.histogram_ramo_axis_Y(d.total) - 5)
                 .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + this.histogram_ramo_axis_X.bandwidth() / 2);
+            if (color === undefined) {
+                this.svgHistogramRamo.select('.ramo-text')
+                    .style('fill', this.ramoTextColor);
+                bars.select("rect").transition().duration(500)
+                    .attr("y", d => this.histogram_ramo_axis_Y(d.total))
+                    .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
+                    .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
+                    .attr("fill", d => this.colorScaleRamo(d.ramo));
+            } else {
+                this.svgHistogramRamo.select('.ramo-text')
+                    .style('fill', color);
+                bars.select("rect").transition().duration(500)
+                    .attr("y", d => this.histogram_ramo_axis_Y(d.total))
+                    .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
+                    .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
+                    .attr("fill", d => color);
+            }
         };
 
         updatePie = (data) => {
             data = this.groupByGrupo(data);
             let total = d3.sum(data, d => d.total);
             data = this.pieFilter(data);
-            this.svgPie.selectAll("path").data(data).transition().duration(500)
+            this.svgPie.selectAll("path").data(data) //.transition().duration(500)
                 .attr("d", this.arc);
             this.svgPie.select('.pie-total').text(total);
             /*this.svgPie.selectAll("polyline").data(data).transition().duration(500)
@@ -544,19 +650,43 @@ $(document).ready(function () {
                     .style("fill", this.pieCenterColor);
                 this.svgPie.select('.pie-percent').text(`100%`)
                     .style("fill", this.pieCenterColor);
-                this.svgPie.select('.pie-grupo').text(`Por grupo`)
+                this.svgPie.select('.pie-grupo').text(`POR GRUPO`)
                     .style("fill", this.pieCenterColor);
             }
 
         };
 
-        updateLegend = (data) => {
+        updateLegend = data => {
             data = this.groupByGrupo(data);
             let tr = this.svgLegend.selectAll('g').data(data);
             tr.select('.total')
                 .text(d => d3.format(",")(d.total));
             tr.select('.percent')
                 .text(d => this.legendPercent(d, data));
+        };
+
+        updateProgresBar = (data, color) => {
+            data = this.calulateBars(data);
+            this.svgBar.select('.text-comision').transition().duration(500)
+                .text(`Comisión U$ ${d3.format(',')(data.comision)}`)
+                .style('fill', color);
+
+            this.svgBar.select('.text-prima-percent').transition().duration(500)
+                .text(data.prima_percent);
+
+            this.svgBar.select('.text-comision-percent').transition().duration(500)
+                .text(data.comision_percent);
+
+            this.svgBar.select('.text-prima').transition().duration(500)
+                .text(`Prima U$ ${d3.format(',')(data.prima)}`)
+                .style('fill', color);
+
+            this.svgBar.select('.bar-value-prima').transition().duration(500)
+                .attr('width', this.barScalePrima(data.prima))
+                .style('fill', color);
+            this.svgBar.select('.bar-value-comision').transition().duration(500)
+                .attr('width', this.barScaleComision(data.comision))
+                .style('fill', color);
         };
     }
 

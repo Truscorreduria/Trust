@@ -561,12 +561,24 @@ def index(request):
             return poliza.sub_ramo.name
         return "SIN RAMO"
 
+    def get_comision(poliza):
+        if poliza.estado_poliza == EstadoPoliza.ACTIVA:
+            return poliza.amount_comision
+        return 0
+
+    def get_prima(poliza):
+        if poliza.estado_poliza == EstadoPoliza.ACTIVA:
+            return poliza.prima_neta
+        return 0
+
     def poliza_json(poliza):
         return {
             'id': poliza.id,
             'grupo': get_grupo(poliza),
             'status': poliza.get_estado_poliza_display(),
             'ramo': get_ramo(poliza),
+            'comision': get_comision(poliza),
+            'prima': get_prima(poliza),
         }
 
     def renovacion_json(poliza):
@@ -581,7 +593,6 @@ def index(request):
         return JsonResponse({
             'polizas': [poliza_json(p) for p in
                         Poliza.objects.all().exclude(estado_poliza=EstadoPoliza.RENOVADA)],
-            'renovaciones': [renovacion_json(poliza) for poliza in get_renovaciones()],
         }, encoder=Codec)
     return render(request, 'adminlte/index.html', {})
 
