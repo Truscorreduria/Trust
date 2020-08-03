@@ -548,9 +548,31 @@ def calcular_tabla_pagos_tramites(request):
 
 @login_required(login_url="/cotizador/login/")
 def index(request):
-    return render(request, 'adminlte/index.html', {
+    def get_grupo(poliza):
+        if poliza.grupo:
+            return poliza.grupo.name
+        else:
+            return 'SIN GRUPO'
 
-    })
+    def get_ramo(poliza):
+        if poliza.sub_ramo:
+            return poliza.sub_ramo.name
+        return "SIN RAMO"
+
+    def poliza_json(poliza):
+        return {
+            'id': poliza.id,
+            'grupo': get_grupo(poliza),
+            'status': {'label': poliza.get_estado_poliza_display(), 'value': poliza.estado_poliza},
+            'ramo': get_ramo(poliza),
+        }
+
+    if request.method == 'POST':
+        return JsonResponse({
+            'data': [poliza_json(p) for p in
+                     Poliza.objects.all()],
+        }, encoder=Codec)
+    return render(request, 'adminlte/index.html', {})
 
 
 @login_required(login_url="/cotizador/login/")
@@ -921,7 +943,7 @@ class Polizas(Datatables):
                     ('Fecha fin', 'fecha_vence'), ('Dias para vencimiento', 'dias_vigencia'), 'grupo.name',
                     'suma_asegurada', ('Prima neta', 'total'), 'tipo_poliza.label', 'estado_poliza.label')
     search_fields = ('no_poliza', 'no_recibo', 'nombres', 'apellidos')
-
+    list_filter = ('estado_poliza',)
     media = {
         'js': ['trustseguros/lte/js/fecha-vence.js', ],
         'css': ['trustseguros/lte/css/coberturas-field.css', ]
