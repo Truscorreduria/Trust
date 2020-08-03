@@ -52,8 +52,6 @@ $(document).ready(function () {
             }).then(response => {
                 this.data = [...response.polizas];
 
-                console.log(response)
-
                 this.svg = d3.select("#dashboard-polizas").append('svg')
                     .attr('width', this.width).attr('height', this.height);
 
@@ -78,7 +76,6 @@ $(document).ready(function () {
                 this.drawLegend();
                 this.drawHistogramEstado();
                 this.drawHistogramRamo();
-
 
             }).catch(err => {
                 console.log(err)
@@ -426,7 +423,7 @@ $(document).ready(function () {
                 .domain(this.ramos)
                 .range([0, this.histogram_ramo_width]);
 
-            this.histogram_ramo_axis_Y = d3.scaleLinear()
+            this.histogram_ramo_axis_Y = d3.scaleSymlog()
                 .range([this.histogram_ramo_height, 0])
                 .domain([0, d3.max(data, d => d.total) + 100]);
 
@@ -444,7 +441,10 @@ $(document).ready(function () {
 
             bars.append("rect")
                 .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
-                .attr("y", d => this.histogram_ramo_axis_Y(d.total))
+                .attr("y", d => {
+                    console.log(this.histogram_ramo_axis_Y(50))
+                    return this.histogram_ramo_axis_Y(d.total)
+                })
                 .attr("width", this.histogram_ramo_axis_X.bandwidth() - 2)
                 .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
                 .attr('fill', d => this.colorScaleRamo(d.ramo))
@@ -452,13 +452,15 @@ $(document).ready(function () {
                     this.updatePie(d.data);
                     this.updateLegend(d.data);
                     this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo));
-                    this.svgHistogramRamo.select('.ramo-text').text(d.ramo);
+                    this.svgHistogramRamo.select('.ramo-text').text(d.ramo)
+                        .style('fill', this.colorScaleRamo(d.ramo));
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
                     this.updatePie(this.data);
                     this.updateLegend(this.data);
-                    this.svgHistogramRamo.select('.ramo-text').text('Por ramo');
+                    this.svgHistogramRamo.select('.ramo-text').text('Por ramo')
+                        .style('fill', '#dac277');
                 });
 
             bars.append("text")
