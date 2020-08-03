@@ -570,7 +570,7 @@ def index(request):
     if request.method == 'POST':
         return JsonResponse({
             'data': [poliza_json(p) for p in
-                     Poliza.objects.all()],
+                     Poliza.objects.all().exclude(estado_poliza=EstadoPoliza.RENOVADA)],
         }, encoder=Codec)
     return render(request, 'adminlte/index.html', {})
 

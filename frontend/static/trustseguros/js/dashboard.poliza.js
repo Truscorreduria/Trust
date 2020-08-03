@@ -1,6 +1,8 @@
 $(document).ready(function () {
     class DashBoard {
         constructor() {
+
+            //region props
             this.height = 1800;
             this.sidebar_width = 300;
             this.width = window.innerWidth - this.sidebar_width;
@@ -15,15 +17,21 @@ $(document).ready(function () {
             this.histogram_ramo_width = this.width - 50;
             this.histogram_ramo_axis_Y = null;
             this.histogram_ramo_axis_X = null;
-            this.barscolor_ramo = '#dabb4e';
+            this.colorScaleRamo = null;
 
             this.pieRadius = 200;
             this.pieFilter = null;
             this.arc = null;
             this.outerArc = null;
+            this.colorScalePie = null;
+            this.pieCenterColor = '#8edcb3';
+
+            this.legend_axis_Y = null;
+            this.legendLineHeight = 20;
 
             this.svg = null;
             this.svgPie = null;
+            this.svgLegend = null;
             this.svgHistogramEstado = null;
             this.svgHistogramRamo = null;
 
@@ -31,6 +39,8 @@ $(document).ready(function () {
             this.estados = [];
             this.grupos = [];
             this.ramos = [];
+
+            // endregion
 
             d3.json('.', {
                 method: 'POST',
@@ -44,24 +54,29 @@ $(document).ready(function () {
             }).then(response => {
                 this.data = [...response.data];
 
-                this.svg = d3.select("#dashboard-polizas")
-                    .append('svg')
-                    .attr('width', this.width)
-                    .attr('height', this.height);
+                this.svg = d3.select("#dashboard-polizas").append('svg')
+                    .attr('width', this.width).attr('height', this.height);
 
                 this.svgPie = this.svg.append('g')
-                    .attr('transform', `translate(${400}, ${200})`);
+                    .attr('transform', `translate(${550}, ${250})`);
 
-                this.drawPie(response.data);
+                /*this.svg.append('text').text('Control de Pólizas')
+                    .attr('transform', `translate(${0}, ${60})`)
+                    .style('font-size', '3em')
+                    .style('fill', '#739272');*/
+
+                this.svgLegend = this.svg.append("g")
+                    .attr('transform', `translate(${60}, ${100})`);
 
                 this.svgHistogramEstado = this.svg.append('g')
-                    .attr('transform', `translate(${900}, ${0})`);
-
-                this.drawHistogramEstado();
+                    .attr('transform', `translate(${900}, ${50})`);
 
                 this.svgHistogramRamo = this.svg.append('g')
                     .attr('transform', `translate(${50}, ${400})`);
 
+                this.drawPie();
+                this.drawLegend();
+                this.drawHistogramEstado();
                 this.drawHistogramRamo();
 
 
@@ -168,6 +183,12 @@ $(document).ready(function () {
             return data;
         };
 
+        legendPercent = (d, data) => {
+            let total = d3.sum(data.map(v => v.total));
+            let percent = (d.total / total) * 100;
+            return `${percent.toFixed(2)}%`;
+        };
+
         drawPolyLine = d => {
             if (parseFloat(d.data.total) > 1) {
                 let posA = this.arc.centroid(d);
@@ -202,17 +223,31 @@ $(document).ready(function () {
             }
         };
 
-        drawPie = (data) => {
-            data = this.groupByGrupo(data);
+        pieTotalText = (d, data) => {
+            if (d !== undefined) {
+                return data.find(el => el.grupo === d.grupo).total
+            } else {
+                return d3.sum(data, d => d.total)
+            }
+        };
+
+        drawPie = () => {
+            let data = this.groupByGrupo(this.data);
+            let total = d3.sum(data, d => d.total);
 
             this.grupos = data.map(d => d.grupo);
-            let colorScale = d3.scaleOrdinal()
+            this.grupos.sort();
+            this.colorScalePie = d3.scaleOrdinal()
                 .domain(this.grupos)
                 .range(d3.schemeCategory10);
 
             this.pieFilter = d3.pie()
                 .value(d => d.total)
-                .sort((el1, el2) => el1.total - el2.total);
+                .sort((a, b) => {
+                    if (a.grupo < b.grupo) return -1;
+                    if (a.grupo > b.grupo) return 1;
+                    return 0;
+                });
             data = this.pieFilter(data);
 
             this.arc = d3.arc()
@@ -229,19 +264,47 @@ $(document).ready(function () {
                 .enter()
                 .append('path')
                 .attr('d', this.arc)
-                .attr("fill", d => colorScale(d.data.grupo))
+                .attr("fill", d => this.colorScalePie(d.data.grupo))
                 .attr("stroke", "white")
                 .style("stroke-width", "2px")
                 .on('mouseover', d => {
-                    this.updateHistogramEstado(d.data.data, colorScale(d.data.grupo));
-                    this.updateHistogramRamo(d.data.data, colorScale(d.data.grupo));
+                    this.updateHistogramEstado(d.data.data, this.colorScalePie(d.data.grupo));
+                    this.updateHistogramRamo(d.data.data, this.colorScalePie(d.data.grupo));
+                    this.updatePieCenter(d, data)
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
                     this.updateHistogramRamo(this.data, this.barscolor_ramo);
+                    this.updatePieCenter(undefined, data)
                 });
 
             this.svgPie
+                .append('text')
+                .attr('class', 'pie-total')
+                .text(total)
+                .attr('transform', 'translate(0, -20)')
+                .style('text-anchor', 'middle')
+                .style('font-size', '2.5em')
+                .style('fill', this.pieCenterColor);
+
+            this.svgPie
+                .append('text')
+                .attr('class', 'pie-percent')
+                .text('100%')
+                .attr('transform', 'translate(0, 40)')
+                .style('text-anchor', 'middle')
+                .style('font-size', '4em')
+                .style('fill', this.pieCenterColor);
+
+            this.svgPie
+                .append('text')
+                .attr('class', 'pie-grupo')
+                .text('Por grupo')
+                .attr('transform', 'translate(-500, -200)')
+                .style('font-size', '3em')
+                .style('fill', this.pieCenterColor);
+
+            /*this.svgPie
                 .selectAll('allPolylines')
                 .data(data)
                 .enter()
@@ -260,7 +323,40 @@ $(document).ready(function () {
                 .text(this.pieLabelText)
                 .attr('transform', this.pieLabelPos)
                 .style('text-anchor', this.pieLabelAnchor)
-                .style('font-size', '0.9em');
+                .style('font-size', '0.9em');*/
+        };
+
+        drawLegend = () => {
+            let data = this.groupByGrupo(this.data);
+
+            this.legend_axis_Y = d3.scaleBand()
+                .domain(this.grupos)
+                .range([0, this.legendLineHeight * this.grupos.length]);
+
+            let tr = this.svgLegend.selectAll(".legend").data(data).enter().append('g');
+
+            tr.append("rect")
+                .attr("class", 'box')
+                .attr("width", '16').attr("height", '16')
+                .attr("y", d => this.legend_axis_Y(d.grupo))
+                .attr("fill", d => this.colorScalePie(d.grupo));
+
+            tr.append("text").text(d => d3.format(",")(d.total))
+                .attr("class", 'total')
+                .attr("text-anchor", "middle")
+                .attr('x', 30).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
+                .style('font-size', '.8em');
+
+            tr.append("text").text(d => this.legendPercent(d, data))
+                .attr("class", 'percent')
+                .attr("text-anchor", "middle")
+                .attr('x', 70).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
+                .style('font-size', '.75em');
+
+            tr.append("text").text(d => d.grupo)
+                .attr("class", 'grupo')
+                .attr('x', 100).attr("y", d => this.legend_axis_Y(d.grupo) + 13)
+                .style('font-size', '.75em');
         };
 
         drawHistogramEstado = () => {
@@ -294,10 +390,12 @@ $(document).ready(function () {
                 .attr('fill', this.barscolor_estado)
                 .on('mouseover', d => {
                     this.updatePie(d.data);
+                    this.updateLegend(d.data);
                     this.updateHistogramRamo(d.data, this.barscolor_ramo)
                 })
                 .on('mouseout', () => {
                     this.updatePie(this.data);
+                    this.updateLegend(this.data);
                     this.updateHistogramRamo(this.data, this.barscolor_ramo)
                 });
 
@@ -312,7 +410,7 @@ $(document).ready(function () {
             let data = this.groupByRamo(this.data);
 
             this.ramos = data.map(d => d.ramo).sort();
-            let colorScale = d3.scaleOrdinal()
+            this.colorScaleRamo = d3.scaleOrdinal()
                 .domain(this.ramos)
                 .range(d3.schemeSet3);
 
@@ -335,14 +433,16 @@ $(document).ready(function () {
                 .attr("y", d => this.histogram_ramo_axis_Y(d.total))
                 .attr("width", this.histogram_ramo_axis_X.bandwidth() - 2)
                 .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
-                .attr('fill', d => colorScale(d.ramo))
+                .attr('fill', d => this.colorScaleRamo(d.ramo))
                 .on('mouseover', d => {
                     this.updatePie(d.data);
-                    this.updateHistogramEstado(d.data, colorScale(d.ramo));
+                    this.updateLegend(d.data);
+                    this.updateHistogramEstado(d.data, this.colorScaleRamo(d.ramo));
                 })
                 .on('mouseout', () => {
                     this.updateHistogramEstado(this.data, this.barscolor_estado);
                     this.updatePie(this.data);
+                    this.updateLegend(this.data);
                 });
 
             bars.append("text")
@@ -363,9 +463,9 @@ $(document).ready(function () {
         };
 
         updateHistogramEstado = (data, color) => {
-            let bars = this.svgHistogramEstado.selectAll(".bar");
             data = this.groupByEstado(data);
-            bars.data(data);
+            let bars = this.svgHistogramEstado.selectAll(".bar")
+                .data(data);
 
             bars.select("rect").transition().duration(500)
                 .attr("y", d => this.histogram_estado_axis_Y(d.total))
@@ -379,16 +479,16 @@ $(document).ready(function () {
                 .attr("x", d => this.histogram_estado_axis_X(d.estado) + this.histogram_estado_axis_X.bandwidth() / 2);
         };
 
-        updateHistogramRamo = (data, color) => {
-            let bars = this.svgHistogramRamo.selectAll(".bar");
+        updateHistogramRamo = (data) => {
             data = this.groupByRamo(data);
-            bars.data(data);
+            let bars = this.svgHistogramRamo.selectAll(".bar")
+                .data(data);
 
             bars.select("rect").transition().duration(500)
                 .attr("y", d => this.histogram_ramo_axis_Y(d.total))
                 .attr("x", d => this.histogram_ramo_axis_X(d.ramo) + 2)
                 .attr("height", d => this.histogram_ramo_height - this.histogram_ramo_axis_Y(d.total))
-                .attr("fill", color);
+                .attr("fill", d => this.colorScaleRamo(d.ramo));
 
             bars.select("text").transition().duration(500)
                 .text(d => d3.format(",")(d.total))
@@ -398,15 +498,47 @@ $(document).ready(function () {
 
         updatePie = (data) => {
             data = this.groupByGrupo(data);
+            let total = d3.sum(data, d => d.total);
             data = this.pieFilter(data);
             this.svgPie.selectAll("path").data(data).transition().duration(500)
                 .attr("d", this.arc);
-            this.svgPie.selectAll("polyline").data(data).transition().duration(500)
+            this.svgPie.select('.pie-total').text(total);
+            /*this.svgPie.selectAll("polyline").data(data).transition().duration(500)
                 .attr('points', this.drawPolyLine);
             this.svgPie.selectAll("text").data(data).transition().duration(500)
                 .text(this.pieLabelText)
                 .attr('transform', this.pieLabelPos)
-                .style('text-anchor', this.pieLabelAnchor);
+                .style('text-anchor', this.pieLabelAnchor);*/
+        };
+
+        updatePieCenter = (d, data) => {
+            let total = d3.sum(data, d => d.data.total);
+            if (d !== undefined) {
+                let percent = (d.data.total / total) * 100;
+                this.svgPie.select('.pie-total').text(d.data.total)
+                    .style("fill", this.colorScalePie(d.data.grupo));
+                this.svgPie.select('.pie-percent').text(`${percent.toFixed(0)}%`)
+                    .style("fill", this.colorScalePie(d.data.grupo));
+                this.svgPie.select('.pie-grupo').text(d.data.grupo)
+                    .style("fill", this.colorScalePie(d.data.grupo));
+            } else {
+                this.svgPie.select('.pie-total').text(total)
+                    .style("fill", this.pieCenterColor);
+                this.svgPie.select('.pie-percent').text(`100%`)
+                    .style("fill", this.pieCenterColor);
+                this.svgPie.select('.pie-grupo').text(`Por grupo`)
+                    .style("fill", this.pieCenterColor);
+            }
+
+        };
+
+        updateLegend = (data) => {
+            data = this.groupByGrupo(data);
+            let tr = this.svgLegend.selectAll('g').data(data);
+            tr.select('.total')
+                .text(d => d3.format(",")(d.total));
+            tr.select('.percent')
+                .text(d => this.legendPercent(d, data));
         };
     }
 

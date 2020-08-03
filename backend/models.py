@@ -1488,6 +1488,15 @@ class Pago(Base):
     monto_comision = models.FloatField(default=0.0, verbose_name="Monto de comisión")
     fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión")
 
+    def get_recibo(self):
+        if self.poliza and not self.tramite:
+            return self.poliza.no_recibo
+        else:
+            return self.tramite.no_recibo
+
+    def __str__(self):
+        return "Póliza: %s - Recibo: %s - Cuota # %s" % (self.poliza.no_poliza, self.get_recibo(), self.numero)
+
     @property
     def cliente_poliza(self):
         try:
