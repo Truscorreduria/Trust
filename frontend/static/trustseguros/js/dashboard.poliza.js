@@ -3,7 +3,7 @@ $(document).ready(function () {
         constructor() {
 
             //region props
-            this.height = 1800;
+            this.height = 1150;
             this.sidebar_width = 300;
             this.width = 1600;
 

@@ -1,0 +1,11 @@
+@media screen and (max-width: 1440px) {
+  #dashboard-polizas {
+    transform: scale(0.7) translate(-200px, -250px);
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  #dashboard-polizas {
+    transform: scale(0.6) translate(-300px, -350px);
+  }
+}
