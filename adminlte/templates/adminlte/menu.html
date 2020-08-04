@@ -314,7 +314,7 @@
                         </li>
                     {% endif %}
                     {% if perms.backend.trust_cobranza_reportes %}
-                        <li class="nav-item">
+                        {% comment %}<li class="nav-item">
                             <a href="#" class="nav-link has-treeview">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>
@@ -351,7 +351,7 @@
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li>{% endcomment %}
                     {% endif %}
                 </ul>
             </li>
