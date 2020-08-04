@@ -445,6 +445,8 @@ class PolizaForm(forms.ModelForm):
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
+            updated_initial['prima_total'] = instance.prima_total
+            updated_initial['saldo_pendiente'] = instance.saldo_pendiente
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         if instance and not instance.editable:

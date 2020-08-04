@@ -695,6 +695,7 @@ $(document).ready(function () {
                 .attr('width', this.barScaleComision(data.comision))
                 .style('fill', color);
         };
+
     }
 
     new DashBoard()

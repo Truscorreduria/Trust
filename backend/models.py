@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.forms.models import model_to_dict
 from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 from image_cropping.fields import ImageCropField
 from image_cropping import ImageRatioField
 
@@ -1206,6 +1206,12 @@ class Poliza(BasePoliza):
 
     def pagos(self):
         return Pago.objects.filter(poliza=self).order_by('numero')
+
+    def prima_total(self):
+        return self.pagos().aggregate(Sum('monto'))['monto__sum']
+
+    def saldo_pendiente(self):
+        return self.pagos().exclude(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
 
     def recibos(self):
         return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
