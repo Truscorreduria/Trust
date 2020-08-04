@@ -2034,6 +2034,7 @@ class OportunityCausal:
     SEGUROCOMPARATIVO = 'K'
     ILACLIZABLE = 'L'
     VIP = 'M'
+    INTERNA = 'N'
 
     @classmethod
     def choices(cls):
@@ -2049,7 +2050,8 @@ class OportunityCausal:
                (cls.EXTERNACORREDOR, ' Presentará Externa Corredor.'), \
                (cls.SEGUROCOMPARATIVO, 'Seguro Comparativo.'), \
                (cls.ILACLIZABLE, 'Ilocalizable.'), \
-               (cls.VIP, 'VIP'),
+               (cls.VIP, 'VIP'), \
+               (cls.INTERNA, 'Póliza interna'),
 
 
 class Oportunity(BasePoliza):
