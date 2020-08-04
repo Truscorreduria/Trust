@@ -5,7 +5,7 @@ $(document).ready(function () {
             //region props
             this.height = 1800;
             this.sidebar_width = 300;
-            this.width = window.innerWidth - this.sidebar_width;
+            this.width = 1600;
 
             this.histogram_estado_height = 320;
             this.histogram_estado_width = 600;
