@@ -43,18 +43,6 @@
 
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="row">
-                    <div class="col-md-12 form-buttons">
-                        {% block buttons %}
-                            <button type="button" class="btn btn-success btn-perform" id="btn-save" data-perform="save">
-                                <i class="fa fa-save"></i>
-                                Guardar
-                            </button>
-                        {% endblock %}
-                    </div>
-                </div>
-            </div>
         {% else %}
             <div class="modal-body" style="padding: 0">
                 <ul class="nav nav-tabs">
@@ -68,20 +56,12 @@
                     <div class="card-body">
                         <form action="." data-method="{{ method }}" method="{{ method }}"
                               id="{{ opts.model_name }}-form">
-                            <input type="hidden" name="id" value="{{ instance.id }}">
+                            <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
                             {% csrf_token %}
                             <div class="tab-content">
                                 <div id="{{ opts.model_name }}-info"
                                      class="tab-pane fade show active">
                                     {{ form|crispy }}
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <button type="submit" class="btn btn-success btn-perform" data-perform="save">
-                                                <i class="fa fa-save"></i>
-                                                Guardar
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </form>
@@ -90,6 +70,18 @@
 
             </div>
         {% endif %}
+        <div class="modal-footer">
+            <div class="row">
+                <div class="col-md-12 form-buttons">
+                    {% block buttons %}
+                        <button type="button" class="btn btn-success btn-perform" id="btn-save" data-perform="save">
+                            <i class="fa fa-save"></i>
+                            Guardar
+                        </button>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
 
     </div>
 {% endblock %}

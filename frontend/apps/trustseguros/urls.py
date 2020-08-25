@@ -29,5 +29,6 @@ urlpatterns = [
     path('pagos_pendientes/', PagosPendientes.as_view(), name="pagos_pendientes"),
     path('pagos_cancelados/', PagosCancelados.as_view(), name="pagos_cancelados"),
     path('recibos/', Recibos.as_view(), name="recibos"),
+    path('verificador/', verificador, name="verificador"),
     path('calcular_tabla_pagos_tramites/', calcular_tabla_pagos_tramites, name="calcular_tabla_pagos_tramites"),
 ]

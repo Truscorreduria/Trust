@@ -1517,6 +1517,17 @@ class Pago(Base):
         except:
             return Cliente().to_json()
 
+    @property
+    def dias_mora(self):
+        days = 0
+        if self.fecha_pago:
+            days = (self.fecha_pago - self.fecha_vence).days
+        else:
+            days = (date.today() - self.fecha_vence).days
+        if days < 0:
+            return 0
+        return days
+
     def to_json(self):
         o = super().to_json()
         if self.id:
@@ -1529,6 +1540,7 @@ class Pago(Base):
                 o['poliza'] = {'id': self.tramite.poliza.id, 'no_poliza': self.tramite.poliza.no_poliza}
                 o['cliente'] = self.cliente_tramite
                 o['recibo'] = self.tramite.no_recibo
+            o['dias_mora'] = self.dias_mora
         return o
 
 

@@ -875,12 +875,19 @@ class PagoForm(forms.ModelForm):
                                      'readonly': 'readonly'
                                  }
                              ))
+    dias_mora = forms.IntegerField(label="Días de mora", required=False,
+                                   widget=forms.NumberInput(
+                                       attrs={
+                                           'readonly': 'readonly'
+                                       }
+                                   )
+                                   )
 
     class Meta:
         model = Pago
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
                   'fecha_vence', 'numero', 'monto', 'monto_pagado', 'fecha_pago',
-                  'medio_pago', 'referencia_pago')
+                  'medio_pago', 'referencia_pago', 'dias_mora')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -892,6 +899,7 @@ class PagoForm(forms.ModelForm):
                         'numero_poliza': instance.poliza.no_poliza,
                         'aseguradora': instance.poliza.aseguradora.name,
                         'numero_recibo': instance.poliza.no_recibo,
+                        'dias_mora': instance.dias_mora,
                     }
                 )
             if instance.tramite:

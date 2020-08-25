@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<video id="videoInput"></video>
+<canvas id="canvasFrame"></canvas>
+<canvas id="canvasOutput"></canvas>
+
+<script src="{% static 'trustseguros/js/opencv.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"></script>
+
+<script type="text/javascript">
+    let video = document.getElementById("videoInput");
+    let h = 150, w = 300;
+    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+        .then(function (stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function (err) {
+            console.log("An error occurred! " + err);
+        });
+    let canvasFrame = document.getElementById("canvasFrame"); // canvasFrame is the id of <canvas>
+    let context = canvasFrame.getContext("2d");
+    let src = new cv.Mat(h, w, cv.CV_8UC4);
+    let dst = new cv.Mat(h, w, cv.CV_8UC1);
+
+    const FPS = 30;
+
+    function processVideo() {
+        let begin = Date.now();
+        context.drawImage(video, 0, 0, w, h);
+        src.data.set(context.getImageData(0, 0, w, h).data);
+
+        cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+        let ksize = new cv.Size(3, 3);
+        let anchor = new cv.Point(-1, -1);
+        //cv.blur(dst, dst, ksize, anchor, cv.BORDER_DEFAULT);
+        cv.Canny(dst, dst, 100, 200);
+
+
+        let contours = new cv.MatVector();
+        let hierarchy = new cv.Mat();
+        let poly = new cv.MatVector();
+
+        cv.findContours(dst, contours, hierarchy, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE);
+
+        for (let i = 0; i < contours.size(); ++i) {
+            let tmp = new cv.Mat();
+            let cnt = contours.get(i);
+            cv.approxPolyDP(cnt, tmp, 3, true);
+            poly.push_back(tmp);
+            cnt.delete();
+            tmp.delete();
+        }
+
+        for (let i = 0; i < contours.size(); ++i) {
+            let color = new cv.Scalar(0, 255, 0);
+            cv.drawContours(dst, poly, i, color, 1, 8, hierarchy, 0);
+        }
+
+
+        /*
+        */
+        cv.imshow("canvasOutput", dst);
+        let delay = 1000 / FPS - (Date.now() - begin);
+        setTimeout(processVideo, delay)
+    }
+
+    // schedule first one.
+    setTimeout(processVideo, 0);
+</script>
+</body>
+</html>

@@ -282,6 +282,7 @@
                 const _this = $(this);
                 const form = $('#{{ opts.model_name }}-form');
                 const data = new FormData(form[0]);
+                $(this).attr('disabled', 'disabled');
                 perform_action(data, form.attr('method'), form.attr('action'), _this.data('perform'))
             });
 
@@ -326,10 +327,6 @@
                 let text = self.val().toUpperCase();
                 self.val(text);
             });
-
-            $(document).on('click', '.form-buttons button', function () {
-                $(this).attr('disabled', 'disabled')
-            })
 
         });
 

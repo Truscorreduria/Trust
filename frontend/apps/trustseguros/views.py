@@ -1416,6 +1416,12 @@ class Roles(Datatables):
     fields = ('name',)
 
 
+# endregion
+
+
+# region crm
+
+
 class Oportunidades(Datatables):
     linea = None
     modal_width = 1200
@@ -1624,19 +1630,26 @@ class Oportunidades(Datatables):
             instance.save()
 
 
+# endregion
+
+
+# region cobranza
+
+
 class PagosPendientes(Datatables):
     modal_width = 1200
     model = Pago
     form = PagoForm
-    list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
-                    'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
+    list_display = ('numero', ('Cliente', 'cliente.name'), ('Póliza', 'poliza.no_poliza'),
+                    ('Recibo', 'recibo'), 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence',
+                    ('Días de mora', 'dias_mora'))
     search_fields = ('poliza__no_poliza', 'poliza__cliente__nombre')
 
     fieldsets = (
         {'id': 'info',
          'name': 'Información de pago',
          'fields': (
-             ('nombre_cliente', 'numero_poliza', 'aseguradora'),
+             ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
              ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
              ('monto_pagado', 'fecha_pago', 'medio_pago', 'referencia_pago'),
          )},
@@ -1802,6 +1815,13 @@ class Recibos(Datatables):
             return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
 
         return super().post(request)
+
+
+# endregion
+
+
+def verificador(request):
+    return render(request, "trustseguros/lte/verificador.html")
 
 
 def iniciar_proc():
