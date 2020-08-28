@@ -3,7 +3,6 @@ from grappelli_extras.models import base, BaseEntity, get_code
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from .numero_letra import numero_a_letras
-from image_cropping import ImageRatioField
 from datetime import date
 from utils.models import Departamento, Municipio, Direccion
 from django.contrib import messages
@@ -30,6 +29,15 @@ class Base(base):
         abstract = True
 
 
+def valid_date(year, month, day):
+    valid = False
+    while not valid:
+        try:
+            return datetime(year=year, month=month, day=day)
+        except ValueError:
+            day -= 1
+
+
 def get_media_url(model, filename):
     clase = model.__class__.__name__
     code = str(model.id)
@@ -44,15 +52,6 @@ def get_profile(user):
 def get_config(user):
     cliente = Cliente.objects.get(user=user)
     return CotizadorConfig.objects.get(empresa=cliente.empresa)
-
-
-def valid_date(year, month, day):
-    valid = False
-    while not valid:
-        try:
-            return datetime(year=year, month=month, day=day)
-        except:
-            day -= 1
 
 
 def json_object(obj, tpe):
@@ -86,9 +85,6 @@ User.add_to_class('__str__', full_name)
 
 
 class Quincena(object):
-    """
-        Objeto auxiciliar para el calculo y muestra de las quincenas en el método de pago
-    """
     MESES = [
         'Enero',
         'Febrero',
@@ -104,10 +100,10 @@ class Quincena(object):
         'Diciembre',
     ]
 
-    def __init__(self, date, number):
-        self.date = date
-        self.year = date.year
-        self.month = date.month
+    def __init__(self, initdate, number):
+        self.date = initdate
+        self.year = initdate.year
+        self.month = initdate.month
         self.number = number
 
     def __str__(self):
@@ -124,8 +120,8 @@ class Quincena(object):
         if month > 12:
             month = month - 12
         years = (qtym - months) / 12
-        date = datetime(year=int(self.year + years), month=month, day=self.date.day)
-        return Quincena(date=date, number=self.number + part)
+        initdate = datetime(year=int(self.year + years), month=month, day=self.date.day)
+        return Quincena(initdate=initdate, number=self.number + part)
 
 
 class Aseguradora(BaseEntity, Base):
@@ -479,10 +475,6 @@ class BaseCliente(Base):
 
 
 class Cliente(BaseCliente, Persona, Empresa, Direccion):
-    '''
-        Esta clase se convertirá en el cliente de trustseguros
-    '''
-
     class Meta:
         verbose_name = "cliente"
 
@@ -493,8 +485,8 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
             return self.razon_social
 
     def perfil_completo(self):
-        return (self.primer_nombre and self.apellido_paterno and \
-                self.cedula and self.departamento and self.municipio and \
+        return (self.primer_nombre and self.apellido_paterno and
+                self.cedula and self.departamento and self.municipio and
                 self.celular and self.codigo_empleado)
 
     def polizas_activas(self):
@@ -513,7 +505,7 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
         try:
             today = date.today()
             year = self.cedula[7:9]
-            if (int(year) > 30):
+            if int(year) > 30:
                 year = "19%s" % year
             else:
                 year = "20%s" % year
@@ -521,7 +513,7 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
             nacimiento = date(year=int(year), month=int(self.cedula[5:7]), day=int(self.cedula[3:5]))
             return today.year - nacimiento.year - (
                     (today.month, today.day) < (nacimiento.month, nacimiento.day))
-        except:
+        except ValueError:
             return "desconocida"
 
     def dependientes_sepelio(self):
@@ -672,10 +664,8 @@ class SubRamo(Base):
 
     def to_json(self):
         o = super().to_json()
-        try:
-            o['ramo'] = self.ramo.to_json()
-        except:
-            o['ramo'] = {'id': '', 'name': ''}
+        if self.id:
+            o['ramo'] = json_object(self.ramo, Ramo)
         return o
 
     def campos_adicionales(self):
@@ -745,11 +735,13 @@ class MedioPago:
     NOMINA = 4
     PRESTAMO = 5
     TARJETA_CREDITO = 6
+    EFECTIVO = 6
 
     @classmethod
     def choices(cls):
         return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depositos'), \
-               (cls.TARJETA_CREDITO, 'Tarjeta de Credito'), (cls.NOMINA, 'Deducción por Nómina'),
+               (cls.TARJETA_CREDITO, 'Tarjeta de Credito'), (cls.NOMINA, 'Deducción por Nómina'), \
+               (cls.EFECTIVO, 'Efectivo'),
 
 
 class EstadoPoliza:
@@ -825,7 +817,7 @@ class Cobertura(Base):
     def get_precio(self, aseguradora):
         try:
             return Precio.objects.get(aseguradora=aseguradora, cobertura=self)
-        except:
+        except ObjectDoesNotExist:
             return None
 
     def to_json(self):
@@ -1012,12 +1004,6 @@ class Poliza(BasePoliza):
     def get_config(self):
         return get_config(self.user)
 
-    def data_load(self):
-        try:
-            return json.loads(self.extra_data)
-        except:
-            return {}
-
     def save(self, *args, **kwargs):
         if not self.code:
             self.code = get_code(self, 6)
@@ -1041,13 +1027,9 @@ class Poliza(BasePoliza):
 
     @property
     def dias_vigencia(self):
-        try:
-            hoy = datetime.now()
-            emision = datetime(year=self.fecha_emision.year, month=self.fecha_emision.month, day=self.fecha_emision.day)
-            vencimiento = datetime(year=self.fecha_vence.year, month=self.fecha_vence.month, day=self.fecha_vence.day)
-            return (vencimiento - hoy).days
-        except:
-            return None
+        if self.fecha_vence:
+            return (self.fecha_vence - date.today()).days
+        return None
 
     @property
     def media_files(self):
@@ -1082,24 +1064,8 @@ class Poliza(BasePoliza):
     def saldo(self):
         try:
             return round(self.total - self.monto_cuota, 2)
-        except:
+        except ValueError:
             return 0.0
-
-    def tabla_pago(self):  # fixme revizar si se puede eliminar esta funcion
-        cuotas = []
-        if self.forma_pago == 'mensual':
-            anno = self.fecha_pago.year
-            mes = self.fecha_pago.month
-            dia = self.fecha_pago.day
-            for i in range(1, self.cuotas + 1):
-                if mes != 12:
-                    mes += 1
-                else:
-                    mes = 1
-                    anno += 1
-                fecha = valid_date(year=anno, month=mes, day=dia)
-                cuotas.append({'numero': i, 'cuotas': self.cuotas, 'fecha': fecha, 'monto': self.monto_cuota})
-        return cuotas
 
     def tabla_pagos(self):
         total = self.total
@@ -1139,14 +1105,14 @@ class Poliza(BasePoliza):
     def valor_prima(self):
         try:
             return round(float(self.subtotal) - (self.get_config().soa_automovil + float(self.costo_exceso)), 2)
-        except:
+        except ValueError:
             return 0.0
 
     @property
     def prima_neta(self):
         try:
             return round(self.subtotal - self.descuento, 2)
-        except:
+        except ValueError:
             return 0.0
 
     @property
@@ -1156,7 +1122,7 @@ class Poliza(BasePoliza):
     def rotura_vidrios(self):
         try:
             return round(float(self.valor_nuevo) * 0.05, 2)
-        except:
+        except ValueError:
             return 0.0
 
     def suma_asegurada_letras(self):
@@ -1194,9 +1160,9 @@ class Poliza(BasePoliza):
 
     def primera_quincena(self):
         if self.fecha_emision.day <= 13:
-            return Quincena(date=self.fecha_emision, number=1)
+            return Quincena(initdate=self.fecha_emision, number=1)
         else:
-            return Quincena(date=self.fecha_emision, number=2)
+            return Quincena(initdate=self.fecha_emision, number=2)
 
     def ultima_quincena(self):
         return self.primera_quincena().add(self.cuotas)
@@ -1205,7 +1171,7 @@ class Poliza(BasePoliza):
         return CoberturaPoliza.objects.filter(poliza=self)
 
     def pagos(self):
-        return Pago.objects.filter(poliza=self).order_by('numero')
+        return Cuota.objects.filter(poliza=self).order_by('numero')
 
     def prima_total(self):
         return self.pagos().aggregate(Sum('monto'))['monto__sum']
@@ -1215,12 +1181,6 @@ class Poliza(BasePoliza):
 
     def recibos(self):
         return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
-
-    def get_config(self):
-        try:
-            return CotizadorConfig.objects.get(empresa=self.cliente.empresa)
-        except:
-            return None
 
 
 class CoberturaPoliza(Base):
@@ -1411,7 +1371,8 @@ class Tramite(Base):
             minu = int((num - (hor * 3600)) / 60)
             seg = int(num - ((hor * 3600) + (minu * 60)))
             return "%s:%s:%s" % (str(hor).zfill(2), str(minu).zfill(2), str(seg).zfill(2))
-        return "<span>00:00:00</span> <button class='btn-trust btn-trust-sm contacto-directo' data-ticket='%s'>Contacto directo</button>" \
+        return "<span>00:00:00</span> <button class='btn-trust btn-trust-sm contacto-directo' data-ticket='%s'" \
+               ">Contacto directo</button>" \
                % self.id
 
     def to_json(self):
@@ -1438,7 +1399,7 @@ class Tramite(Base):
         return o
 
     def pagos(self):
-        return Pago.objects.filter(tramite=self)
+        return Cuota.objects.filter(tramite=self)
 
     def duracion(self):
         if self.estado not in [EstadoTramite.ENPROCESO, EstadoTramite.PENDIENTE]:
@@ -1461,36 +1422,17 @@ class EstadoPago:
         return (cls.ANULADO, "Anulado"), (cls.VIGENTE, "Vigente"), (cls.VENCIDO, "Vencido"), (cls.PAGADO, "Pagado")
 
 
-class MedioPago:
-    EFECTIVO = 1
-    CHEQUE = 2
-    CREDIGO = 3
-    DEBITO = 4
-
-    @classmethod
-    def choices(cls):
-        return (cls.EFECTIVO, 'Efectivo'), (cls.CHEQUE, 'Cheque'), \
-               (cls.CREDIGO, 'Crédito'), (cls.DEBITO, 'Débito')
-
-
-class Pago(Base):
-    """
-    Modelo para las cuotas
-    """
+class Cuota(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE,
                                related_name="pagos_polizas", null=True, blank=True)
     tramite = models.ForeignKey(Tramite, on_delete=models.CASCADE,
                                 related_name="pagos_tramites", null=True, blank=True)
     monto = models.FloatField(default=0.0)
-    monto_pagado = models.FloatField(default=0.0, verbose_name="monto a recaudar")
     numero = models.PositiveSmallIntegerField(null=True, blank=True, verbose_name="Número de cuota")
     fecha_vence = models.DateField(null=True)
-    fecha_pago = models.DateField(null=True)
     estado = models.PositiveSmallIntegerField(choices=EstadoPago.choices(), null=True, blank=True,
                                               default=EstadoPago.VIGENTE)
-    medio_pago = models.PositiveSmallIntegerField(verbose_name="medio de pago", choices=MedioPago.choices(),
-                                                  default=MedioPago.EFECTIVO)
-    referencia_pago = models.CharField(max_length=65, null=True, blank=True, verbose_name="referencia de pago")
+
     monto_comision = models.FloatField(default=0.0, verbose_name="Monto de comisión")
     fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión")
 
@@ -1500,30 +1442,26 @@ class Pago(Base):
         else:
             return self.tramite.no_recibo
 
+    def get_poliza(self):
+        try:
+            return self.poliza.no_poliza
+        except AttributeError:
+            return ''
+
     def __str__(self):
-        return "Póliza: %s - Recibo: %s - Cuota # %s" % (self.poliza.no_poliza, self.get_recibo(), self.numero)
+        return "Póliza: %s - Recibo: %s - Cuota # %s" % (self.get_poliza(), self.get_recibo(), self.numero)
 
     @property
     def cliente_poliza(self):
-        try:
-            return self.poliza.cliente.to_json()
-        except:
-            return Cliente().to_json()
+        return json_object(self.poliza.cliente, Cliente)
 
     @property
     def cliente_tramite(self):
-        try:
-            return self.tramite.poliza.cliente.to_json()
-        except:
-            return Cliente().to_json()
+        return json_object(self.tramite.cliente, Cliente)
 
     @property
     def dias_mora(self):
-        days = 0
-        if self.fecha_pago:
-            days = (self.fecha_pago - self.fecha_vence).days
-        else:
-            days = (date.today() - self.fecha_vence).days
+        days = (date.today() - self.fecha_vence).days
         if days < 0:
             return 0
         return days
@@ -1544,7 +1482,19 @@ class Pago(Base):
         return o
 
 
-class benAbstract(Base):
+class PagoCuota(Base):
+    cuota = models.ForeignKey(Cuota, on_delete=models.CASCADE)
+    monto = models.FloatField(default=0.0)
+    referencia_pago = models.CharField(max_length=65, null=True, blank=True, verbose_name="referencia de pago")
+    medio_pago = models.PositiveSmallIntegerField(verbose_name="medio de pago", choices=MedioPago.choices(),
+                                                  default=MedioPago.EFECTIVO)
+    fecha_pago = models.DateField(null=True)
+
+    def __str__(self):
+        return ""
+
+
+class BenAbstract(Base):
     created = models.DateTimeField(auto_now_add=True, null=True)
     numero_poliza = models.CharField(max_length=30, null=True, blank=True, verbose_name="Número de Póliza")
     orden = models.ForeignKey('OrdenTrabajo', null=True, blank=True, on_delete=models.SET_NULL,
@@ -1596,7 +1546,7 @@ class benAbstract(Base):
         return get_config(self.empleado.user)
 
 
-class benSepelio(benAbstract):
+class benSepelio(BenAbstract):
 
     def save(self, *args, **kwargs):
         config = self.get_config()
@@ -1609,7 +1559,7 @@ class benSepelio(benAbstract):
         super(benSepelio, self).save(*args, **kwargs)
 
 
-class benAccidente(benAbstract):
+class benAccidente(BenAbstract):
     prima = models.FloatField(default=0.0)
     carnet = models.FloatField(default=0.0)
     emision = models.FloatField(default=0.0)
@@ -1779,17 +1729,27 @@ class CotizadorConfig(base):
     tasa_automovil = models.FloatField(default=10.4, verbose_name='Tarifa para el seguro de prima de vehículo')
     soa_automovil = models.FloatField(default=55.0, verbose_name='Tarifa para el seguro obligatorio de vehículo')
     porcentaje_deducible = models.FloatField(default=0.2,
-                                             verbose_name='Porcentaje deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')
+                                             verbose_name='Porcentaje deducible global. Puede ir a la seccion de marcas'
+                                                          ' con recargo para cambiar este valor a una marca '
+                                                          'en específico')
     porcentaje_deducible_extencion_territorial = models.FloatField(default=0.3,
-                                                                   verbose_name='Porcentaje deducible solo para la cobertura de extensión territorial. Para aplicar regargo vaya a Marcas con recargo.')
+                                                                   verbose_name='Porcentaje deducible solo para la '
+                                                                                'cobertura de extensión territorial. '
+                                                                                'Para aplicar regargo vaya a '
+                                                                                'Marcas con recargo.')
     minimo_deducible = models.FloatField(default=100.0,
-                                         verbose_name='Mínimo deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')
+                                         verbose_name='Mínimo deducible global. '
+                                                      'Puede ir a la seccion de marcas con recargo para cambiar '
+                                                      'este valor a una marca en específico')
     soa_descuento = models.FloatField(default=0.05,
-                                      verbose_name='Descuento del Seguro Obligatorio de Vehículo. Por favor usar notación decimal (0.05 = 5%)')
+                                      verbose_name='Descuento del Seguro Obligatorio de Vehículo. '
+                                                   'Por favor usar notación decimal (0.05 = 5%)')
     email_automovil = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,',
-                                       verbose_name='Lista de correos de automovil usados para las notificaciones del sistema')
+                                       verbose_name='Lista de correos de automovil '
+                                                    'usados para las notificaciones del sistema')
     email_cobranza = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
-                                      verbose_name='Lista de correos de automovil usados para las notificaciones de cobranza')
+                                      verbose_name='Lista de correos de automovil usados '
+                                                   'para las notificaciones de cobranza')
 
     # endregion
 
@@ -1848,7 +1808,8 @@ class CotizadorConfig(base):
     # endregion
 
     email_renovacion = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
-                                        verbose_name='Lista de correos adicionales que se incluiran en la notificación del cliente')
+                                        verbose_name='Lista de correos adicionales que se '
+                                                     'incluiran en la notificación del cliente')
     email_texto = models.TextField(max_length=10000, default='', null=True, blank=True,
                                    verbose_name='Contenido del correo')
 
@@ -2104,7 +2065,7 @@ class Oportunity(BasePoliza):
     def dias(self):
         try:
             return (timezone.datetime.now() - self.created).days
-        except:
+        except ValueError:
             return ""
 
     @property

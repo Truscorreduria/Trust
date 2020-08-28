@@ -85,6 +85,15 @@ class Datatables(View):
     form_template = "adminlte/datatables-modal.html"
     model = None
     form = None
+    buttons = [
+        {
+            'class': 'btn btn-success btn-perform',
+            'perform': 'save',
+            'callback': 'process_response',
+            'icon': 'fa fa-save',
+            'text': 'Guardar',
+        },
+    ]
     fieldsets = None
     fields = None
     media = None
@@ -112,10 +121,14 @@ class Datatables(View):
         else:
             return self.form
 
+    def get_buttons(self, request):
+        return self.buttons
+
     def html_form(self, instance, request, form, method):
         return render_to_string(self.form_template,
                                 context={'opts': self.model._meta, 'fieldsets': self.fieldsets,
-                                         'form': form, 'instance': instance, 'method': method},
+                                         'form': form, 'instance': instance, 'method': method,
+                                         'buttons': self.get_buttons(request)},
                                 request=request)
 
     def get_list_filters(self):

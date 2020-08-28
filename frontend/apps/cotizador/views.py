@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, render_to_response, Http404, HttpResponseRedirect
 from django.http.response import JsonResponse
 from backend.signals import *
-from backend.utils import calcular_tabla_pagos
+from backend.utils import calcular_tabla_cuotas
 from grappelli_extras.utils import Codec
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -951,13 +951,14 @@ def download(request):
 def calcular_tabla_pagos_polizas(request):
     total = float(request.POST.get('total'))
     fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
-    cuotas = int(request.POST.get('cuotas'))
+    cuotas = int(request.POST.get('cuotas', 0))
+    prima_neta = float(request.POST.get('prima_neta', 0))
+    comision = float(request.POST.get('per_comision', 0))
     try:
         poliza = Poliza.objects.get(id=int(request.POST.get('poliza')))
     except:
         poliza = None
-    monto_cuota = round(total / cuotas, 2)
-    data = calcular_tabla_pagos(total, fecha_pago, cuotas, poliza)
+    data = calcular_tabla_cuotas(prima_neta, comision, total, fecha_pago, cuotas, poliza)
     return JsonResponse(data, safe=False, encoder=Codec)
 
 

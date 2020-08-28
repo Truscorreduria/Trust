@@ -1,0 +1,50 @@
+{% load humanize %}
+
+<input type="hidden" name="total_pagos" id="id_total_pagos" {% if widget.value %}
+       value="{{ widget.value.total_pagos }}" {% endif %}>
+
+<table class="table" id="id_{{ widget.name }}">
+    <thead>
+    <tr>
+        <th>Cuotas</th>
+        <th>Fecha vencimiento</th>
+        <th>Monto</th>
+        <th>Comisión</th>
+        <th>Estado</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for fila in widget.value.pagos %}
+        <tr>
+            <td>
+                <input type="hidden" name="{{ widget.name }}_id" value="{{ fila.id }}">
+                <input type="text" name="{{ widget.name }}_numero" class="form-control" readonly
+                       value="{{ fila.numero }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_fecha_vence" class="form-control" readonly
+                       value="{{ fila.fecha_vence|date:'d/m/Y' }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_monto" class="form-control"
+                        {% if widget.attrs.readonly %} readonly {% endif %}
+                       value="{{ fila.monto }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_monto_comision" class="form-control"
+                        {% if widget.attrs.readonly %} readonly {% endif %}
+                       value="{{ fila.monto_comision }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_estado" class="form-control" readonly
+                       value="{{ fila.get_estado_display }}">
+            </td>
+            <td>
+                <button type="button" class="btn btn-info btn-edit-cuota"
+                        data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

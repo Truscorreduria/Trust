@@ -1,277 +1,222 @@
+{% extends 'adminlte/datatables-modal.html' %}
 {% load crispy_forms_tags crispy_forms_filters datatables mathfilters humanize %}
 
-{% block content %}
-    <div class="izimodal" id="{{ opts.model_name }}-modal">
 
-        <div class="modal-body" style="padding: 0; min-height: 700px">
-            <ul class="nav nav-tabs">
+{% block modal-body %}
+    <div class="modal-body" style="padding: 0; min-height: 700px">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a data-toggle="tab" href="#{{ opts.model_name }}-info" class="nav-link active">Información
+                    general</a>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="tab" href="#{{ opts.model_name }}-coberturas" class="nav-link">
+                    Detalle de coberturas</a>
+            </li>
+            <li class="nav-item">
+                <a data-toggle="tab" href="#{{ opts.model_name }}-pago" class="nav-link">
+                    Costo y forma de pago</a>
+            </li>
+            {% if instance.id %}
                 <li class="nav-item">
-                    <a data-toggle="tab" href="#{{ opts.model_name }}-info" class="nav-link active">Información
-                        general</a>
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-adicionales" class="nav-link">
+                        Datos técnicos</a>
                 </li>
                 <li class="nav-item">
-                    <a data-toggle="tab" href="#{{ opts.model_name }}-coberturas" class="nav-link">
-                        Detalle de coberturas</a>
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-drive-files" class="nav-link">
+                        Soportes</a>
                 </li>
                 <li class="nav-item">
-                    <a data-toggle="tab" href="#{{ opts.model_name }}-pago" class="nav-link">
-                        Costo y forma de pago</a>
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-bitacora" class="nav-link">
+                        Bitácora</a>
                 </li>
-                {% if instance.id %}
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#{{ opts.model_name }}-adicionales" class="nav-link">
-                            Datos técnicos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#{{ opts.model_name }}-drive-files" class="nav-link">
-                            Soportes</a>
-                    </li>
-                    <li class="nav-item">
-                        <a data-toggle="tab" href="#{{ opts.model_name }}-bitacora" class="nav-link">
-                            Bitácora</a>
-                    </li>
-                {% endif %}
-            </ul>
+            {% endif %}
+        </ul>
 
-            <div class="card card-trust">
-                <div class="card-body">
-                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
-                          data-toggle="validator">
-                        <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+        <div class="card card-trust">
+            <div class="card-body">
+                <form action="." data-method="{{ method }}" method="{{ method }}"
+                      id="{{ opts.model_name }}-form"
+                      data-toggle="validator">
+                    <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
 
-                        {% csrf_token %}
-                        <div class="tab-content">
-                            <div id="{{ opts.model_name }}-info"
-                                 class="tab-pane fade show active">
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.no_poliza|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.ramo|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.sub_ramo|as_crispy_field }}
-                                    </div>
+                    {% csrf_token %}
+                    <div class="tab-content">
+                        <div id="{{ opts.model_name }}-info"
+                             class="tab-pane fade show active">
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.no_poliza|as_crispy_field }}
                                 </div>
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.fecha_emision|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.fecha_vence|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.aseguradora|as_crispy_field }}
-                                    </div>
+                                <div class="col">
+                                    {{ form.ramo|as_crispy_field }}
                                 </div>
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.cliente|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.contratante|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.grupo|as_crispy_field }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.tipo_poliza|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.estado_poliza|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.concepto|as_crispy_field }}
-                                    </div>
-                                    <div class="col">
-                                        {{ form.cesion_derecho|as_crispy_field }}
-                                    </div>
-                                    <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
-                                         style="visibility: hidden" {% endif %}>
-                                        {{ form.cesioinario|as_crispy_field }}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.pedir_comentarios }}
-                                    </div>
+                                <div class="col">
+                                    {{ form.sub_ramo|as_crispy_field }}
                                 </div>
                             </div>
-                            <div id="{{ opts.model_name }}-coberturas"
-                                 class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.coberturas }}
-                                    </div>
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.fecha_emision|as_crispy_field }}
+                                </div>
+                                <div class="col">
+                                    {{ form.fecha_vence|as_crispy_field }}
+                                </div>
+                                <div class="col">
+                                    {{ form.aseguradora|as_crispy_field }}
                                 </div>
                             </div>
-                            <div id="{{ opts.model_name }}-pago"
-                                 class="tab-pane fade">
-                                <div class="row">
-                                    <div class="col">{{ form.f_pago|as_crispy_field }}</div>
-                                    <div class="col">{{ form.m_pago|as_crispy_field }}</div>
-                                    <div class="col">{{ form.cuotas|as_crispy_field }}</div>
-                                    <div class="col">{{ form.fecha_pago|as_crispy_field }}</div>
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.cliente|as_crispy_field }}
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="card">
-                                            <table class="table" style="border: none !important;">
-                                                <tr>
-                                                    <td><b>N° Recibo:</b></td>
-                                                    <td class="float-right">{{ form.no_recibo|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Prima</b></td>
-                                                    <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Descuento</b></td>
-                                                    <td class="float-right">{{ form.descuento|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Prima neta</b></td>
-                                                    <td class="float-right">
-                                                        <input type="number" class="form-control" name="prima_neta"
-                                                               readonly value="{{ instance.prima_neta }}"
-                                                               id="id_prima_neta">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Emisión</b></td>
-                                                    <td class="float-right">{{ form.emision|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>IVA</b></td>
-                                                    <td class="float-right">{{ form.iva|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Otros gastos</b></td>
-                                                    <td class="float-right">{{ form.otros|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Total</b></td>
-                                                    <td class="float-right">{{ form.total|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>% Comisión</b></td>
-                                                    <td class="float-right">{{ form.per_comision|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Monto de comisión</b></td>
-                                                    <td class="float-right">{{ form.amount_comision|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Moneda</b></td>
-                                                    <td class="float-right">{{ form.moneda|as_inline_field }}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-
-                                        <div class="card">
-                                            <table class="table" style="border: none !important;">
-                                                <tr>
-                                                    <td><b>Prima total:</b></td>
-                                                    <td class="float-right">{{ form.prima_total|as_inline_field }}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><b>Saldo pendiente:</b></td>
-                                                    <td class="float-right">{{ form.saldo_pendiente|as_inline_field }}</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Tabla de pagos</h5>
-                                                <div class="card-text">
-                                                    {{ form.tabla_pagos }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
+                                <div class="col">
+                                    {{ form.contratante|as_crispy_field }}
                                 </div>
-
+                                <div class="col">
+                                    {{ form.grupo|as_crispy_field }}
+                                </div>
                             </div>
-                            <div id="{{ opts.model_name }}-adicionales"
-                                 class="tab-pane fade">
-                                {{ form.campos_adicionales }}
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.tipo_poliza|as_crispy_field }}
+                                </div>
+                                <div class="col">
+                                    {{ form.estado_poliza|as_crispy_field }}
+                                </div>
+                                <div class="col">
+                                    {{ form.concepto|as_crispy_field }}
+                                </div>
+                                <div class="col">
+                                    {{ form.cesion_derecho|as_crispy_field }}
+                                </div>
+                                <div class="col" id="col-cesionario" {% if not instance.cesion_derecho %}
+                                     style="visibility: hidden" {% endif %}>
+                                    {{ form.cesioinario|as_crispy_field }}
+                                </div>
                             </div>
-                            <div id="{{ opts.model_name }}-drive-files"
-                                 class="tab-pane fade">
-                                {{ form.drive }}
-                            </div>
-                            <div id="{{ opts.model_name }}-bitacora"
-                                 class="tab-pane fade">
-                                {{ form.bitacora }}
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.pedir_comentarios }}
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-            </div>
+                        <div id="{{ opts.model_name }}-coberturas"
+                             class="tab-pane fade">
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.coberturas }}
+                                </div>
+                            </div>
+                        </div>
+                        <div id="{{ opts.model_name }}-pago"
+                             class="tab-pane fade">
+                            <div class="row">
+                                <div class="col">{{ form.f_pago|as_crispy_field }}</div>
+                                <div class="col">{{ form.m_pago|as_crispy_field }}</div>
+                                <div class="col">{{ form.cuotas|as_crispy_field }}</div>
+                                <div class="col">{{ form.fecha_pago|as_crispy_field }}</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <table class="table" style="border: none !important;">
+                                            <tr>
+                                                <td><b>N° Recibo:</b></td>
+                                                <td class="float-right">{{ form.no_recibo|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Prima</b></td>
+                                                <td class="float-right">{{ form.subtotal|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Descuento</b></td>
+                                                <td class="float-right">{{ form.descuento|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Prima neta</b></td>
+                                                <td class="float-right">
+                                                    <input type="number" class="form-control" name="prima_neta"
+                                                           readonly value="{{ instance.prima_neta }}"
+                                                           id="id_prima_neta">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Emisión</b></td>
+                                                <td class="float-right">{{ form.emision|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>IVA</b></td>
+                                                <td class="float-right">{{ form.iva|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Otros gastos</b></td>
+                                                <td class="float-right">{{ form.otros|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Total</b></td>
+                                                <td class="float-right">{{ form.total|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>% Comisión</b></td>
+                                                <td class="float-right">{{ form.per_comision|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Monto de comisión</b></td>
+                                                <td class="float-right">{{ form.amount_comision|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Moneda</b></td>
+                                                <td class="float-right">{{ form.moneda|as_inline_field }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
 
-        </div>
+                                    <div class="card">
+                                        <table class="table" style="border: none !important;">
+                                            <tr>
+                                                <td><b>Prima total:</b></td>
+                                                <td class="float-right">{{ form.prima_total|as_inline_field }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Saldo pendiente:</b></td>
+                                                <td class="float-right">{{ form.saldo_pendiente|as_inline_field }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Tabla de pagos</h5>
+                                            <div class="card-text">
+                                                {{ form.tabla_pagos }}
+                                            </div>
+                                        </div>
+                                    </div>
 
-        <div class="modal-footer">
-            <div class="row">
-                <div class="col-md-12 form-buttons">
-                    {% block buttons %}
-                        {% if instance.modificando %}
-                            <button type="button" class="btn btn-info" id="btn-modificar" disabled="disabled">
-                                <i class="fa fa-save"></i>
-                                Guardar
-                            </button>
-                        {% elif instance.cancelando %}
-                            <button type="button" class="btn btn-info" id="btn-cancelar" disabled="disabled">
-                                <i class="fa fa-save"></i>
-                                Guardar
-                            </button>
-                        {% else %}
+                                </div>
 
-                            {% if instance.editable %}
-                                <button type="button" class="btn btn-info btn-perform" data-perform="save">
-                                    <i class="fa fa-save"></i>
-                                    Guardar
-                                </button>
-                                {% if instance.id %}
-                                    <button type="button" class="btn btn-success" id="btn-finish">
-                                        <i class="fa fa-suitcase"></i>
-                                        Finalizar
-                                    </button>
-                                {% endif %}
-                            {% else %}
-                                {% if instance.id %}
-                                    <button type="button" class="btn btn-success" id="btn-renew">
-                                        <i class="fa fa-fan"></i>
-                                        Renovar
-                                    </button>
-                                    <button type="button" class="btn btn-warning" id="btn-edit">
-                                        <i class="fa fa-edit"></i>
-                                        Modificar
-                                    </button>
-                                    <button type="button" class="btn btn-danger" id="btn-null">
-                                        <i class="fa fa-exclamation-triangle"></i>
-                                        Cancelar
-                                    </button>
-                                {% endif %}
-                            {% endif %}
+                            </div>
 
-                        {% endif %}
-                    {% endblock %}
-                </div>
+                        </div>
+                        <div id="{{ opts.model_name }}-adicionales"
+                             class="tab-pane fade">
+                            {{ form.campos_adicionales }}
+                        </div>
+                        <div id="{{ opts.model_name }}-drive-files"
+                             class="tab-pane fade">
+                            {{ form.drive }}
+                        </div>
+                        <div id="{{ opts.model_name }}-bitacora"
+                             class="tab-pane fade">
+                            {{ form.bitacora }}
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
     </div>
 {% endblock %}
-
-{% block extra-content %}
-{% endblock %}
-
 

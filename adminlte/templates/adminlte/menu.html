@@ -283,32 +283,12 @@
                     </p>
                 </a>
                 <ul class="nav nav-treeview">
-                    {% if perms.backend.trust_registrar_pago %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:pagos_pendientes' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Registrar pagos
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_registrar_comision %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:pagos_cancelados' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Registrar comisión
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
                     {% if perms.backend.trust_gestion_recibo %}
                         <li class="nav-item">
                             <a href="{% url 'trustseguros:recibos' %}" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>
-                                    Recibos de prima
+                                    Pólizas
                                 </p>
                             </a>
                         </li>

@@ -82,6 +82,7 @@
             };
 
             const calcular_tabla_pagos = function () {
+                perform_action()
                 $.ajax("{% url 'cotizador:calcular_tabla_pagos' %}", {
                     method: "POST",
                     data: {
@@ -217,80 +218,7 @@
                 }
             });
 
-            $(document).on('click', '#btn-finish', function () {
-                $.ajax("{% url 'trustseguros:polizas' %}", {
-                    method: "POST",
-                    data: {
-                        id: $('input[name="id"]').val(), activar: 'activar'
-                    }, success: function (response) {
-                        redraw_object(response);
-                        update_table(response);
-                    }
-                })
-            });
-
-            $(document).on('click', '#btn-edit', function () {
-                $.ajax("{% url 'trustseguros:polizas' %}", {
-                    method: "POST",
-                    data: {
-                        id: $('input[name="id"]').val(), modificando: 'modificando'
-                    }, success: function (response) {
-                        redraw_object(response);
-                    }
-                })
-            });
-
-            $(document).on('click', '#btn-null', function () {
-                $.ajax("{% url 'trustseguros:polizas' %}", {
-                    method: "POST",
-                    data: {
-                        id: $('input[name="id"]').val(), cancelando: 'cancelando'
-                    }, success: function (response) {
-                        redraw_object(response);
-                    }
-                })
-            });
-
-            const confirm = function () {
-                const form = document.getElementById('poliza-form');
-                const data = new FormData(form);
-                let action = $(this).attr('id').replace('btn-', '');
-                data.append(action, action);
-                $.ajax('.', {
-                    method: 'POST',
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    success: function (response, textStatus, xhr) {
-                        redraw_object(response);
-                        if (xhr.status === 200) {
-                            redraw_object(response);
-                            update_table(response);
-                            $.growl.notice({
-                                title: `Notificación`,
-                                message: `<p>${response.instance.str} se guardó con éxito!</p>`
-                            });
-                        }
-                        $.each(response.errors, function (n, error) {
-                            $.growl.error({
-                                message: `<p>${error.key}</p>
-                                      <ul>${li_errors(error.errors)}</ul>`
-                            });
-                        });
-                    },
-                    error: function (error) {
-                        console.log(error);
-                        $.growl.error({
-                            message: `<p>${error}</p>`
-                        });
-                    }
-                })
-            };
-
-            $(document).on('click', '#btn-modificar', confirm);
-            $(document).on('click', '#btn-cancelar', confirm);
-
-            $(document).on('click', '#btn-renew', function () {
+            $(document).on('click', '.btn-renew', function () {
                 Swal.fire({
                     imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",
                     title: 'Estas seguro?',

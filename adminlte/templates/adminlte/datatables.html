@@ -99,30 +99,29 @@
             });
         }
 
-        function perform_action(data, method, action, perform) {
-            data.append(perform, perform);
-            $.ajax(action, {
-                method: method,
+        const perform_action = function (form, action, callback) {
+            const _form = $(form);
+            const data = new FormData(form);
+            data.append(action, action);
+            $.ajax(_form.attr('action'), {
+                method: _form.attr('method'),
                 data: data,
                 processData: false,
                 contentType: false,
                 success: function (response, textStatus, xhr) {
-                    process_response(response, textStatus, xhr)
+                    callback(response, textStatus, xhr)
                 },
                 error: function (error) {
-                    console.log(error)
                     $.growl.error({
                         message: `<p>${error}</p>`
                     });
                 }
             })
-        }
+        };
 
         const form_submit = function (e) {
             e.preventDefault();
-            const data = new FormData(this);
-            const _this = $(this);
-            perform_action(data, _this.attr('method'), _this.attr('action'), 'save');
+            perform_action(this, 'save', process_response);
         };
 
         const new_object = function (e, dt, node, config) {
@@ -279,11 +278,10 @@
             $(document).on('submit', '#{{ opts.model_name }}-form', form_submit);
 
             $(document).on('click', '.btn-perform', function () {
+                const form = $('#{{ opts.model_name }}-form')[0];
                 const _this = $(this);
-                const form = $('#{{ opts.model_name }}-form');
-                const data = new FormData(form[0]);
-                $(this).attr('disabled', 'disabled');
-                perform_action(data, form.attr('method'), form.attr('action'), _this.data('perform'))
+                _this.attr('disabled', 'disabled');
+                perform_action(form, _this.data('perform'), window[_this.data('callback')])
             });
 
             $(document).on('click', '.btn-table-add', add_row);

@@ -32,6 +32,13 @@ class TablaPagosWidget(Widget):
         return value
 
 
+class CobranzaWidget(Widget):
+    template_name = "trustseguros/lte/widgets/cobranza.html"
+
+    def format_value(self, value):
+        return value
+
+
 class RepresentanteLegalWidget(Widget):
     template_name = "trustseguros/lte/widgets/representante-legal.html"
 

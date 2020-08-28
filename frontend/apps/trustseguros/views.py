@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from adminlte.generics import Datatables
 from django.contrib.auth.decorators import login_required
-from backend.utils import calcular_tabla_pagos
+from backend.utils import calcular_tabla_cuotas
 from .forms import *
 from django.http import JsonResponse
 from grappelli_extras.utils import Codec
@@ -90,7 +90,7 @@ def calcular_tabla_pagos_tramites(request):
     fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cuotas'))
     tramite = Tramite.objects.get(id=int(request.POST.get('poliza')))
-    data = calcular_tabla_pagos(total, fecha_pago, cuotas, tramite)
+    data = calcular_tabla_cuotas(total, fecha_pago, cuotas, tramite)
     return JsonResponse(data, safe=False, encoder=Codec)
 
 
@@ -981,6 +981,60 @@ class Polizas(Datatables):
         return super().get_queryset(filters, search_value).filter(
             estado_poliza__in=[EstadoPoliza.PENDIENTE, EstadoPoliza.ACTIVA])
 
+    def get_buttons(self, request):
+        buttons = self.buttons.copy()
+        instance = self.get_instance(request)
+        if instance:
+            if instance.editable:
+                buttons.append({
+                    'class': 'btn btn-info btn-perform',
+                    'icon': 'fa fa-suitcase',
+                    'text': 'Finalizar',
+                    'perform': 'activar',
+                    'callback': 'process_response',
+                })
+            else:
+                buttons = [{
+                    'class': 'btn btn-info btn-renew',
+                    'icon': 'fa fa-fan',
+                    'text': 'Renovar',
+                }, {
+                    'class': 'btn btn-warning btn-perform',
+                    'icon': 'fa fa-edit',
+                    'text': 'Modificar',
+                    'perform': 'modificando',
+                    'callback': 'process_response',
+                }, {
+                    'class': 'btn btn-danger btn-perform',
+                    'icon': 'fa fa-exclamation-triangle',
+                    'text': 'Anular',
+                    'perform': 'cancelando',
+                    'callback': 'process_response',
+                }
+                ]
+
+            if instance.modificando:
+                buttons = [{
+                    'class': 'btn btn-info btn-perform',
+                    'icon': 'fa fa-save',
+                    'text': 'Guardar',
+                    'perform': 'modificar',
+                    'callback': 'process_response'
+                }]
+
+            if instance.cancelando:
+                buttons = [{
+                    'class': 'btn btn-info btn-perform',
+                    'icon': 'fa fa-save',
+                    'text': 'Guardar',
+                    'perform': 'cancelar',
+                    'callback': 'process_response',
+                }]
+
+            if instance.estado == EstadoPoliza.CANCELADA:
+                buttons = []
+        return buttons
+
     def put(self, request):
         status = 203
         instance = self.model()
@@ -1070,17 +1124,17 @@ class Polizas(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'cancelar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-            AddComment.send(p, request=request,
+            instance = self.get_instance(request)
+            AddComment.send(instance, request=request,
                             comentario="Poliza en estado cancelada")
-            p.estado_poliza = EstadoPoliza.CANCELADA
-            p.editable = False
-            p.perdir_comentarios = False
-            p.cancelando = False
-            p.save()
-            form = self.get_form()(instance=p)
-            html_form = self.html_form(p, request, form, 'POST')
-            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
+            instance.estado_poliza = EstadoPoliza.CANCELADA
+            instance.editable = False
+            instance.perdir_comentarios = False
+            instance.cancelando = False
+            instance.save()
+            form = self.get_form()(instance=instance)
+            html_form = self.html_form(instance, request, form, 'POST')
+            return self.make_response(instance, html_form, [], 200)
         if 'renovar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
             AddComment.send(p, request=request,
@@ -1105,6 +1159,17 @@ class Polizas(Datatables):
                 'forms': forms, 'widget': {'name': 'campos_adicionales'}
             }, request=request)
             return JsonResponse({'html': html}, encoder=Codec, safe=False)
+        if 'calcular_tabla_pagos' in request.POST:
+            instance = self.get_instance(request)
+            if instance.recibo_editar:
+                instance = instance.recibo_editar
+            total = float(request.POST.get('total', 0))
+            prima_neta = float(request.POST.get('prima_neta', 0))
+            per_comision = float(request.POST.get('per_comision', 0))
+            fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
+            cuotas = int(request.POST.get('cuotas'))
+            data = calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
+            return JsonResponse(data, safe=False, encoder=Codec)
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -1126,9 +1191,9 @@ class Polizas(Datatables):
 
         for i in range(0, len(data.getlist('tabla_pagos_id'))):
             if data.getlist('tabla_pagos_id')[i] == '':
-                p = Pago(poliza=instance)
+                p = Cuota(poliza=instance)
             else:
-                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+                p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
@@ -1273,9 +1338,9 @@ class Tramites(Datatables):
     def save_related(self, instance, data):
         for i in range(0, len(data.getlist('tabla_pagos_id'))):
             if data.getlist('tabla_pagos_id')[i] == '':
-                p = Pago(tramite=instance)
+                p = Cuota(tramite=instance)
             else:
-                p = Pago.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+                p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
@@ -1636,54 +1701,8 @@ class Oportunidades(Datatables):
 # region cobranza
 
 
-class PagosPendientes(Datatables):
-    modal_width = 1200
-    model = Pago
-    form = PagoForm
-    list_display = ('numero', ('Cliente', 'cliente.name'), ('Póliza', 'poliza.no_poliza'),
-                    ('Recibo', 'recibo'), 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence',
-                    ('Días de mora', 'dias_mora'))
-    search_fields = ('poliza__no_poliza', 'poliza__cliente__nombre')
-
-    fieldsets = (
-        {'id': 'info',
-         'name': 'Información de pago',
-         'fields': (
-             ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
-             ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-             ('monto_pagado', 'fecha_pago', 'medio_pago', 'referencia_pago'),
-         )},
-    )
-
-    def get_queryset(self, filters, search_value):
-        return super().get_queryset(filters, search_value).filter(estado__in=[EstadoPago.VIGENTE, EstadoPago.VENCIDO])
-
-
-class PagosCancelados(Datatables):
-    modal_width = 1200
-    model = Pago
-    form = ComisionForm
-    list_display = (('Póliza', 'poliza.no_poliza'), ('Cliente', 'cliente.name'), ('Recibo', 'recibo'),
-                    'numero', 'monto', ('Estado', 'estado.name'), 'fecha_pago', 'fecha_vence')
-    search_fields = ('poliza__no_poliza', 'poliza__cliente__nombre')
-
-    fieldsets = (
-        {'id': 'info',
-         'name': 'Información de pago',
-         'fields': (
-             ('nombre_cliente', 'numero_poliza', 'aseguradora'),
-             ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-             ('monto_pagado', 'fecha_pago', 'medio_pago', 'referencia_pago'),
-             ('monto_comision', 'fecha_pago_comision',),
-         )},
-    )
-
-    def get_queryset(self, filters, search_value):
-        return super().get_queryset(filters, search_value).filter(estado__in=[EstadoPago.ANULADO, EstadoPago.PAGADO])
-
-
 class Recibos(Datatables):
-    modal_width = 1400
+    modal_width = 1600
     model = Poliza
     form = ReciboForm
     form_template = "trustseguros/lte/recibo-modal.html"
@@ -1701,6 +1720,35 @@ class Recibos(Datatables):
 
     def get_queryset(self, filters, search_value):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
+
+    def get_buttons(self, request):
+        instance = self.get_instance(request)
+        if instance.modificando_recibo:
+            return [
+                {
+                    'class': 'btn btn-success btn-perform',
+                    'perform': 'aplicar_cambio',
+                    'callback': 'process_response',
+                    'icon': 'fa fa-save',
+                    'text': 'Guardar',
+                },
+            ]
+        else:
+            return [
+                {
+                    'class': 'btn btn-warning btn-perform',
+                    'perform': 'modificar',
+                    'callback': 'process_response',
+                    'icon': 'fa fa-edit',
+                    'text': 'Modificar',
+                }, {
+                    'class': 'btn btn-danger btn-perform',
+                    'perform': 'anular_recibo',
+                    'callback': 'process_response',
+                    'icon': 'fa fa-exclamation-triangle',
+                    'text': 'Anular',
+                },
+            ]
 
     def post(self, request):
         status = 200
@@ -1764,11 +1812,11 @@ class Recibos(Datatables):
                 for i in range(0, len(request.POST.getlist('tabla_pagos_id'))):
                     if request.POST.getlist('tabla_pagos_id')[i] == '':
                         if instance.recibo_editar:
-                            p = Pago(tramite=recibo)
+                            p = Cuota(tramite=recibo)
                         else:
-                            p = Pago(poliza=recibo)
+                            p = Cuota(poliza=recibo)
                     else:
-                        p = Pago.objects.get(id=int(request.POST.getlist('tabla_pagos_id')[i]))
+                        p = Cuota.objects.get(id=int(request.POST.getlist('tabla_pagos_id')[i]))
                     p.numero = request.POST.getlist('tabla_pagos_numero')[i]
                     p.monto = request.POST.getlist('tabla_pagos_monto')[i]
                     p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i]
@@ -1804,17 +1852,57 @@ class Recibos(Datatables):
             instance = self.get_instance(request)
             if instance.recibo_editar:
                 instance = instance.recibo_editar
-            total = float(request.POST.get('total'))
+            total = float(request.POST.get('total', 0))
+            prima_neta = float(request.POST.get('prima_neta', 0))
+            per_comision = float(request.POST.get('per_comision', 0))
             fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
             cuotas = int(request.POST.get('cuotas'))
-            data = calcular_tabla_pagos(total, fecha_pago, cuotas, instance)
+            data = calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
             return JsonResponse(data, safe=False, encoder=Codec)
 
+        if 'opencuota' in request.POST:
+            instance = Cuota.objects.get(id=request.POST.get('cuota'))
+            fieldsets = (
+                {'id': 'info',
+                 'name': 'Información de pago',
+                 'fields': (
+                     ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
+                     ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
+                     ('pagos',),
+                 )},
+            )
+            html_form = render_to_string('adminlte/datatables-modal.html',
+                                         context={'opts': Cuota._meta, 'fieldsets': fieldsets,
+                                                  'form': CuotaForm(instance=instance), 'instance': instance,
+                                                  'method': 'POST',
+                                                  'buttons': [{
+                                                      'class': 'btn btn-success btn-perform',
+                                                      'perform': 'guardarcuota',
+                                                      'callback': 'process_response',
+                                                      'icon': 'fa fa-save',
+                                                      'text': 'Guardar',
+                                                  }, ]},
+                                         request=request)
+            return JsonResponse({
+                'html': html_form, 'instance': instance.to_json()
+            }, encoder=Codec)
+
         if 'estado_cuenta' in request.POST:
-            print(request.POST)
             return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
 
         return super().post(request)
+
+    def save_related(self, instance, data):
+        for i in range(0, len(data.getlist('tabla_pagos_id'))):
+            if data.getlist('tabla_pagos_id')[i] == '':
+                p = Cuota(poliza=instance.recibo_editar)
+            else:
+                p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
+
+            p.numero = data.getlist('tabla_pagos_numero')[i]
+            p.monto = data.getlist('tabla_pagos_monto')[i]
+            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.save()
 
 
 # endregion

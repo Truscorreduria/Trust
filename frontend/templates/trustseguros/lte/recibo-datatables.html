@@ -1,6 +1,14 @@
 {% extends 'adminlte/datatables.html' %}
 {% load static datatables %}
 
+{% block content %}
+    {{ block.super }}
+
+    <div id="modal-cuota">
+        <div class="container"></div>
+    </div>
+{% endblock %}
+
 
 {% block javascript %}
 
@@ -8,6 +16,20 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+
+
+            const $modalcuota = $('#modal-cuota').iziModal({
+                zindex: 2500,
+                width: 1200,
+                title: 'prueba',
+                subtitle: 'prueba',
+                headerColor: "#326634",
+                onClosed: function () {
+                    modal.iziModal('open')
+                }
+            });
+
+
             $('.dt-buttons').css({
                 display: 'none'
             });
@@ -41,13 +63,14 @@
             };
 
             const calcular_tabla_pagos = function () {
+                const form = $('#poliza-form')[0];
+                const data = new FormData(form);
+                data.append('calcular_tabla_pagos', 'calcular_tabla_pagos');
                 $.ajax(".", {
                     method: "POST",
-                    data: {
-                        total: $('#id_total').val(), fecha_pago: $('#id_fecha_pago').val(),
-                        cuotas: $('#id_cuotas').val(), id: $('input[name="id"]').val(),
-                        calcular_tabla_pagos: 'calcular_tabla_pagos',
-                    },
+                    data: data,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
                         const pagos = $('#id_tabla_pagos tbody').empty();
                         $.each(response, function (i, o) {
@@ -103,6 +126,7 @@
             $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
             $(document).on('change', '#id_total', calcular_tabla_pagos);
+            $(document).on('change', '#id_per_comision', calcular_tabla_pagos);
 
             $(document).on('change', '#id_f_pago', function () {
                 if ($(this).val() === "1") {
@@ -154,6 +178,35 @@
                 })
 
             });
+
+            $(document).on('click', '.btn-edit-cuota', function () {
+                const _this = $(this);
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        cuota: _this.data('cuota'),
+                        opencuota: 'opencuota'
+                    },
+                    success: function (response) {
+                        $modalcuota.iziModal('destroy');
+                        $modalcuota.iziModal({
+                            zindex: 2500,
+                            width: 1200,
+                            title: response.instance.str,
+                            subtitle: 'datos de la cuota',
+                            headerColor: "#326634",
+                            onClosed: function () {
+                                modal.iziModal('open')
+                            }
+                        });
+                        const content = $modalcuota.find('.container');
+                        $(content).html(response.html);
+                        $modalcuota.iziModal('open')
+                    }
+                });
+            });
+
+            $modalcuota.on('')
 
         });
 
