@@ -19,7 +19,7 @@
 
 
             const $modalcuota = $('#modal-cuota').iziModal({
-                zindex: 2500,
+                zindex: 1500,
                 width: 1200,
                 title: 'prueba',
                 subtitle: 'prueba',
@@ -190,7 +190,7 @@
                     success: function (response) {
                         $modalcuota.iziModal('destroy');
                         $modalcuota.iziModal({
-                            zindex: 2500,
+                            zindex: 1500,
                             width: 1200,
                             title: response.instance.str,
                             subtitle: 'datos de la cuota',

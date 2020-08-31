@@ -71,7 +71,6 @@
     <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
     <script type="text/javascript">
 
-
         function li_errors(errors) {
             let li = ``;
             $.each(errors, function (i, error) {
@@ -220,11 +219,7 @@
             const $target = $('#' + _this.data('target'));
             const row = $($template.find('tr')[0]).clone();
             $target.append(row);
-
-            $('.dateinput').datepicker({
-                autoclose: true,
-                format: 'dd/mm/yyyy',
-            });
+            apply_pluggins();
         };
 
         const delete_row = function () {
@@ -256,6 +251,17 @@
                 </div>`);
         };
 
+        const apply_pluggins = function () {
+            $('.dateinput').datepicker({
+                dateFormat: 'dd/mm/yy',
+            });
+            $('.selectpicker').selectpicker();
+            $.each($('.inputmask'), function (n, el) {
+                let mask = $(el).data('mask');
+                $(el).inputmask(mask);
+            });
+        };
+
         $(document).ready(function () {
             $(document)
                 .ajaxStart(function () {
@@ -263,14 +269,7 @@
                 })
                 .ajaxStop(function () {
                     stopLoader();
-                    $('.dateinput').datepicker({
-                        dateFormat: 'dd/mm/yy',
-                    });
-                    $('.selectpicker').selectpicker();
-                    $.each($('.inputmask'), function (n, el) {
-                        let mask = $(el).data('mask');
-                        $(el).inputmask(mask);
-                    });
+                    apply_pluggins();
                 });
 
             $('#{{ opts.model_name }}-table').on('click', 'tbody tr', show_object);

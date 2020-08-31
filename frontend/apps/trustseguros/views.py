@@ -1715,6 +1715,14 @@ class Recibos(Datatables):
         verbose_name_plural = "Recibos de prima"
         model_name = "poliza"
 
+    @staticmethod
+    def get_status(cuota):
+        today = datetime.now()
+        if cuota.fecha_vence > today:
+            return EstadoPago.VIGENTE
+        else:
+            return EstadoPago.VENCIDO
+
     def get_opts(self):
         return self.Meta
 
@@ -1821,6 +1829,7 @@ class Recibos(Datatables):
                     p.monto = request.POST.getlist('tabla_pagos_monto')[i]
                     p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i]
                     p.fecha_vence = datetime.strptime(request.POST.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+                    p.estado = self.get_status(p)
                     p.save()
 
                 form = self.get_form()(instance=instance)
@@ -1887,6 +1896,34 @@ class Recibos(Datatables):
                 'html': html_form, 'instance': instance.to_json()
             }, encoder=Codec)
 
+        if 'guardarcuota' in request.POST:
+            instance = Cuota.objects.get(id=request.POST.get('id'))
+            fieldsets = (
+                {'id': 'info',
+                 'name': 'Información de pago',
+                 'fields': (
+                     ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
+                     ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
+                     ('pagos',),
+                 )},
+            )
+            buttons = [{
+                'class': 'btn btn-success btn-sabe',
+                'perform': 'guardarcuota',
+                'callback': 'process_response',
+                'icon': 'fa fa-save',
+                'text': 'Guardar',
+            }, ]
+            html_form = render_to_string('adminlte/datatables-modal.html',
+                                         context={'opts': Cuota._meta, 'fieldsets': fieldsets,
+                                                  'form': CuotaForm(instance=instance), 'instance': instance,
+                                                  'method': 'POST',
+                                                  'buttons': buttons},
+                                         request=request)
+            return JsonResponse({
+                'html': html_form, 'instance': instance.to_json()
+            }, encoder=Codec)
+
         if 'estado_cuenta' in request.POST:
             return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
 
@@ -1898,10 +1935,10 @@ class Recibos(Datatables):
                 p = Cuota(poliza=instance.recibo_editar)
             else:
                 p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
-
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.estado = self.get_status(p)
             p.save()
 
 
