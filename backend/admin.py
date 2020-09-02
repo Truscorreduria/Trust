@@ -284,7 +284,7 @@ class SolicitudRenovacionAdmin(admin.ModelAdmin):
 
 @admin.register(Linea)
 class LineaAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+    list_display = ('name',)
 
 
 class OportunityRows(admin.TabularInline):
@@ -307,3 +307,12 @@ class OportunityAdmin(admin.ModelAdmin):
 @admin.register(CotizadorConfig)
 class ConfigAdmin(ImageCroppingMixin, admin.ModelAdmin):
     pass
+
+
+@admin.register(Tarifa)
+class TarifaAdmin(ImportExportModelAdmin):
+    list_display = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano',
+                    'deducible', 'aseguradora')
+    search_fields = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano',
+                     'deducible', 'aseguradora__name')
+    list_filter = ('aseguradora',)
