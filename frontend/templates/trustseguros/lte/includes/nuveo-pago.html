@@ -2,7 +2,7 @@
 <tr>
     <td>
         <input type="hidden" name="{{ form.prefix }}"
-               value="{% if form.instance %} {{ form.instance.id }} {% endif %}">
+               value="{% if form.instance.id %} {{ form.instance.id }} {% endif %}">
         {{ form.monto|as_inline_field }}
     </td>
     <td>
