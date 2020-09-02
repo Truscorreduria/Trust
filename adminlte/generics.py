@@ -187,7 +187,10 @@ class Datatables(View):
         }
 
     def get_instance(self, request):
-        return self.model.objects.get(id=int(request.POST.get('id')))
+        try:
+            return self.model.objects.get(id=int(request.POST.get('id')))
+        except TypeError:
+            return None
 
     @staticmethod
     def get_form_errors(form):
