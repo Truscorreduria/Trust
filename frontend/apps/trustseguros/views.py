@@ -1758,6 +1758,29 @@ class Recibos(Datatables):
                 },
             ]
 
+    @staticmethod
+    def opencuota(instance, request):
+        fieldsets = (
+            {'id': 'info',
+             'name': 'Información de pago',
+             'fields': (
+                 ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
+                 ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
+                 ('pagos',),
+             )},
+        )
+        buttons = [{
+            'class': 'btn btn-success btn-save-cuota',
+            'icon': 'fa fa-save',
+            'text': 'Guardar',
+        }, ]
+        return render_to_string('adminlte/datatables-modal.html',
+                                context={'opts': Cuota._meta, 'fieldsets': fieldsets,
+                                         'form': CuotaForm(instance=instance), 'instance': instance,
+                                         'method': 'POST',
+                                         'buttons': buttons},
+                                request=request)
+
     def post(self, request):
         status = 200
         errors = []
@@ -1871,57 +1894,28 @@ class Recibos(Datatables):
 
         if 'opencuota' in request.POST:
             instance = Cuota.objects.get(id=request.POST.get('cuota'))
-            fieldsets = (
-                {'id': 'info',
-                 'name': 'Información de pago',
-                 'fields': (
-                     ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
-                     ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-                     ('pagos',),
-                 )},
-            )
-            html_form = render_to_string('adminlte/datatables-modal.html',
-                                         context={'opts': Cuota._meta, 'fieldsets': fieldsets,
-                                                  'form': CuotaForm(instance=instance), 'instance': instance,
-                                                  'method': 'POST',
-                                                  'buttons': [{
-                                                      'class': 'btn btn-success btn-perform',
-                                                      'perform': 'guardarcuota',
-                                                      'callback': 'process_response',
-                                                      'icon': 'fa fa-save',
-                                                      'text': 'Guardar',
-                                                  }, ]},
-                                         request=request)
             return JsonResponse({
-                'html': html_form, 'instance': instance.to_json()
+                'html': self.opencuota(instance, request), 'instance': instance.to_json()
             }, encoder=Codec)
 
         if 'guardarcuota' in request.POST:
             instance = Cuota.objects.get(id=request.POST.get('id'))
-            fieldsets = (
-                {'id': 'info',
-                 'name': 'Información de pago',
-                 'fields': (
-                     ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
-                     ('numero_recibo', 'numero', 'monto', 'fecha_vence'),
-                     ('pagos',),
-                 )},
-            )
-            buttons = [{
-                'class': 'btn btn-success btn-sabe',
-                'perform': 'guardarcuota',
-                'callback': 'process_response',
-                'icon': 'fa fa-save',
-                'text': 'Guardar',
-            }, ]
-            html_form = render_to_string('adminlte/datatables-modal.html',
-                                         context={'opts': Cuota._meta, 'fieldsets': fieldsets,
-                                                  'form': CuotaForm(instance=instance), 'instance': instance,
-                                                  'method': 'POST',
-                                                  'buttons': buttons},
-                                         request=request)
+            form = CuotaForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                for n, i in enumerate(request.POST.getlist('pagocuota')):
+                    if i == '':
+                        pago = PagoCuota(cuota=instance)
+                    else:
+                        pago = PagoCuota.objects.get(id=i)
+                    pago.monto = request.POST.getlist('pagocuota-monto')[n]
+                    pago.referencia_pago = request.POST.getlist('pagocuota-referencia_pago')[n]
+                    pago.medio_pago = request.POST.getlist('pagocuota-medio_pago')[n]
+                    pago.fecha_pago = datetime.strptime(request.POST.getlist('pagocuota-fecha_pago')[n], '%d/%m/%Y')
+                    pago.save()
+                instance = form.instance
             return JsonResponse({
-                'html': html_form, 'instance': instance.to_json()
+                'html': self.opencuota(instance, request), 'instance': instance.to_json()
             }, encoder=Codec)
 
         if 'nuevopago' in request.POST:

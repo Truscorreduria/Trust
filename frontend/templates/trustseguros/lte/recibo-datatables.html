@@ -183,7 +183,7 @@
                 });
             });
 
-            $(document).on('click', '.btn-add-cuota', function (e) {
+            $(document).on('click', '.btn-add-cuota', function () {
                 $.ajax('.', {
                     method: "POST",
                     data: {
@@ -194,7 +194,22 @@
                         pagos.append(response.html)
                     }
                 })
-            })
+            });
+
+            $(document).on('click', '.btn-save-cuota', function () {
+                const cuotaform = document.getElementById('cuota-form');
+                const data = new FormData(cuotaform);
+                data.append('guardarcuota', 'guardarcuota');
+                $.ajax('.', {
+                    method: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response)
+                    }
+                })
+            });
 
         });
 

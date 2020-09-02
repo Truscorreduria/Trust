@@ -43,7 +43,7 @@ class PagosWidget(Widget):
     template_name = "trustseguros/lte/widgets/pagos.html"
 
     def format_value(self, value):
-        return value
+        return [self.attrs['form'](instance=x) for x in value]
 
 
 class RepresentanteLegalWidget(Widget):

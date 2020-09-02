@@ -948,6 +948,8 @@ class ReciboForm(forms.ModelForm):
 
 
 class PagoForm(forms.ModelForm):
+    prefix = 'pagocuota'
+
     class Meta:
         model = PagoCuota
         fields = ('monto', 'referencia_pago', 'medio_pago', 'fecha_pago')
@@ -1003,7 +1005,11 @@ class CuotaForm(forms.ModelForm):
                                        }
                                    )
                                    )
-    pagos = forms.Field(label="Pagos realizados", required=False, widget=PagosWidget)
+    pagos = forms.Field(label="Pagos realizados", required=False, widget=PagosWidget(
+        attrs={
+            'form': PagoForm
+        }
+    ))
 
     class Meta:
         model = Cuota
@@ -1014,35 +1020,28 @@ class CuotaForm(forms.ModelForm):
         instance = kwargs.get('instance', None)
         if instance:
             if instance.poliza:
-                kwargs.update(
-                    initial={
-                        'nombre_cliente': instance.cliente_poliza['name'],
-                        'numero_poliza': instance.poliza.no_poliza,
-                        'aseguradora': instance.poliza.aseguradora.name,
-                        'numero_recibo': instance.poliza.no_recibo,
-                        'dias_mora': instance.dias_mora,
-                    }
-                )
+                update_initial = {
+                    'nombre_cliente': instance.cliente_poliza['name'],
+                    'numero_poliza': instance.poliza.no_poliza,
+                    'aseguradora': instance.poliza.aseguradora.name,
+                    'numero_recibo': instance.poliza.no_recibo,
+                    'dias_mora': instance.dias_mora,
+                }
             if instance.tramite:
-                kwargs.update(
-                    initial={
-                        'nombre_cliente': instance.cliente_tramite['name'],
-                        'numero_poliza': instance.tramite.poliza.no_poliza,
-                        'aseguradora': instance.tramite.poliza.aseguradora.name,
-                        'numero_recibo': instance.tramite.no_recibo,
-                    }
-                )
+                update_initial = {
+                    'nombre_cliente': instance.cliente_tramite['name'],
+                    'numero_poliza': instance.tramite.poliza.no_poliza,
+                    'aseguradora': instance.tramite.poliza.aseguradora.name,
+                    'numero_recibo': instance.tramite.no_recibo,
+                }
+            update_initial['pagos'] = instance.pagos
+            kwargs.update(initial=update_initial)
         super().__init__(*args, **kwargs)
-
-    def clean(self):
-        data = self.cleaned_data
-        if data['monto_pagado'] > data['monto']:
-            raise forms.ValidationError("el monto pagado no puede ser mayor al monto a pagar", )
 
     def save(self, commit=True):
         super().save(commit)
         data = self.cleaned_data
         instance = self.instance
-        if instance and data['monto'] == data['monto_pagado']:
+        if instance and data['monto'] == instance.monto_pagado():
             instance.estado = EstadoPago.PAGADO
             instance.save()

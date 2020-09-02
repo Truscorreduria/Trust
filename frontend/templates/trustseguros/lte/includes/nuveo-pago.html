@@ -1,6 +1,7 @@
 {% load datatables %}
 <tr>
     <td>
+        <input type="hidden" name="{{ form.prefix }}" value="{{ form.instance.id }}">
         {{ form.monto|as_inline_field }}
     </td>
     <td>

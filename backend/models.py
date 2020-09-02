@@ -1438,10 +1438,14 @@ class Cuota(Base):
     fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión")
 
     def get_recibo(self):
-        if self.poliza and not self.tramite:
+        try:
             return self.poliza.no_recibo
-        else:
-            return self.tramite.no_recibo
+        except AttributeError:
+            try:
+                return self.tramite.no_recibo
+            except AttributeError:
+                print(self)
+        return None
 
     def get_poliza(self):
         try:
@@ -1459,6 +1463,12 @@ class Cuota(Base):
     @property
     def cliente_tramite(self):
         return json_object(self.tramite.cliente, Cliente)
+
+    def pagos(self):
+        return PagoCuota.objects.filter(cuota=self)
+
+    def monto_pagado(self):
+        return self.pagos().aggregate(Sum('monto'))['monto__sum']
 
     @property
     def dias_mora(self):
