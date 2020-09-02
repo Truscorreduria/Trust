@@ -1924,6 +1924,14 @@ class Recibos(Datatables):
                 'html': html_form, 'instance': instance.to_json()
             }, encoder=Codec)
 
+        if 'nuevopago' in request.POST:
+            html_form = render_to_string('trustseguros/lte/includes/nuveo-pago.html', {
+                'form': PagoForm
+            })
+            return JsonResponse({
+                'html': html_form
+            }, encoder=Codec)
+
         if 'estado_cuenta' in request.POST:
             return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
 

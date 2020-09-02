@@ -1003,11 +1003,7 @@ class CuotaForm(forms.ModelForm):
                                        }
                                    )
                                    )
-    pagos = forms.Field(label="Pagos realizados", required=False, widget=TableBorderedInput(
-        attrs={
-            'form': PagoForm
-        }
-    ))
+    pagos = forms.Field(label="Pagos realizados", required=False, widget=PagosWidget)
 
     class Meta:
         model = Cuota

@@ -167,7 +167,6 @@
                         opencuota: 'opencuota'
                     },
                     success: function (response) {
-                        console.log(response.instance)
                         modal.iziModal('destroy');
                         modal.empty().append(response.html);
                         modal.iziModal({
@@ -183,6 +182,19 @@
                     }
                 });
             });
+
+            $(document).on('click', '.btn-add-cuota', function (e) {
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        nuevopago: 'nuevopago'
+                    },
+                    success: function (response) {
+                        const pagos = $('#id_pagos tbody');
+                        pagos.append(response.html)
+                    }
+                })
+            })
 
         });
 

@@ -1,0 +1,20 @@
+{% load datatables %}
+<tr>
+    <td>
+        {{ form.monto|as_inline_field }}
+    </td>
+    <td>
+        {{ form.referencia_pago|as_inline_field }}
+    </td>
+    <td>
+        {{ form.medio_pago|as_inline_field }}
+    </td>
+    <td>
+        {{ form.fecha_pago|as_inline_field }}
+    </td>
+    <td>
+        <button type="button" class="btn btn-danger btn-del-pago">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
+</tr>
