@@ -1,14 +1,6 @@
 {% extends 'adminlte/datatables.html' %}
 {% load static datatables %}
 
-{% block content %}
-    {{ block.super }}
-
-    <div id="modal-cuota">
-        <div class="container"></div>
-    </div>
-{% endblock %}
-
 
 {% block javascript %}
 
@@ -16,18 +8,6 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-
-
-            const $modalcuota = $('#modal-cuota').iziModal({
-                zindex: 1500,
-                width: 1200,
-                title: 'prueba',
-                subtitle: 'prueba',
-                headerColor: "#326634",
-                onClosed: function () {
-                    modal.iziModal('open')
-                }
-            });
 
 
             $('.dt-buttons').css({
@@ -188,25 +168,22 @@
                         opencuota: 'opencuota'
                     },
                     success: function (response) {
-                        $modalcuota.iziModal('destroy');
-                        $modalcuota.iziModal({
-                            zindex: 1500,
-                            width: 1200,
+                        console.log(response.instance)
+                        modal.iziModal('destroy');
+                        modal.empty().append(response.html);
+                        modal.iziModal({
+                            zindex: 1500, width: 1200,
                             title: response.instance.str,
                             subtitle: 'datos de la cuota',
-                            headerColor: "#326634",
-                            onClosed: function () {
-                                modal.iziModal('open')
+                            headerColor: "#326634", padding: 20,
+                            onClosed: () => {
+                                open_object(response.instance.poliza.id)
                             }
                         });
-                        const content = $modalcuota.find('.container');
-                        $(content).html(response.html);
-                        $modalcuota.iziModal('open')
+                        modal.iziModal('open');
                     }
                 });
             });
-
-            $modalcuota.on('')
 
         });
 

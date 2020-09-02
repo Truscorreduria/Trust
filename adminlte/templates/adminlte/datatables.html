@@ -219,7 +219,6 @@
             const $target = $('#' + _this.data('target'));
             const row = $($template.find('tr')[0]).clone();
             $target.append(row);
-            apply_pluggins();
         };
 
         const delete_row = function () {
@@ -262,6 +261,18 @@
             });
         };
 
+        const togleFilters = function (event) {
+            let filters = $('.datatables-filters-group');
+            if ($(event.target).attr('class') === 'fas fa-cog') {
+                if (filters.hasClass('filter-close')) {
+                    filters.removeClass('filter-close').addClass('filter-open')
+                }
+            } else {
+
+                filters.removeClass('filter-open').addClass('filter-close')
+            }
+        };
+
         $(document).ready(function () {
             $(document)
                 .ajaxStart(function () {
@@ -290,18 +301,6 @@
             $(document).on('keydown', 'input', enter2tab);
 
             $('#{{ opts.model_name }}-table_filter').append(filters());
-
-            const togleFilters = function (event) {
-                let filters = $('.datatables-filters-group');
-                if ($(event.target).attr('class') === 'fas fa-cog') {
-                    if (filters.hasClass('filter-close')) {
-                        filters.removeClass('filter-close').addClass('filter-open')
-                    }
-                } else {
-
-                    filters.removeClass('filter-open').addClass('filter-close')
-                }
-            };
 
             $(document).on('click', '#btn-table-filter', togleFilters);
             $(document).on('click', '#{{ opts.model_name }}-table_wrapper', togleFilters);
