@@ -949,8 +949,11 @@ def download(request):
 
 
 def calcular_tabla_pagos_polizas(request):
-    total = float(request.POST.get('total'))
-    fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
+    try:
+        fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
+    except ValueError:
+        fecha_pago = datetime.now()
+    total = float(request.POST.get('total', 0))
     cuotas = int(request.POST.get('cuotas', 0))
     prima_neta = float(request.POST.get('prima_neta', 0))
     comision = float(request.POST.get('per_comision', 0))

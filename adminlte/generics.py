@@ -191,6 +191,8 @@ class Datatables(View):
             return self.model.objects.get(id=int(request.POST.get('id')))
         except TypeError:
             return None
+        except ValueError:
+            return None
 
     @staticmethod
     def get_form_errors(form):

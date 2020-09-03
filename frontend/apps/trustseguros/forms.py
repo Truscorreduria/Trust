@@ -867,12 +867,12 @@ class ReciboForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.CharField(required=False, label="", widget=forms.TextInput(
+    prima_total = forms.FloatField(required=False, label="", widget=forms.NumberInput(
         attrs={
-            'readonly': 'readonly'
+            'readonly': 'readonly',
         }
-    ), initial=0.0)
-    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.TextInput(
+    ))
+    saldo_pendiente = forms.FloatField(required=False, label="", widget=forms.NumberInput(
         attrs={
             'readonly': 'readonly'
         }
@@ -908,6 +908,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['iva'] = instance.recibo_editar.iva
                 updated_initial['otros'] = instance.recibo_editar.otros
                 updated_initial['total'] = instance.recibo_editar.total
+                updated_initial['prima_total'] = instance.prima_neta
                 updated_initial['per_comision'] = instance.recibo_editar.per_comision
                 updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
                 updated_initial['amount_comision'] = instance.recibo_editar.amount_comision
@@ -998,6 +999,12 @@ class CuotaForm(forms.ModelForm):
                                      'readonly': 'readonly'
                                  }
                              ))
+    monto_comision = forms.FloatField(label="Monto comisión", required=False,
+                                      widget=forms.NumberInput(
+                                          attrs={
+                                              'readonly': 'readonly'
+                                          }
+                                      ))
     dias_mora = forms.IntegerField(label="Días de mora", required=False,
                                    widget=forms.NumberInput(
                                        attrs={
@@ -1014,7 +1021,7 @@ class CuotaForm(forms.ModelForm):
     class Meta:
         model = Cuota
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
-                  'fecha_vence', 'numero', 'monto', 'dias_mora')
+                  'fecha_vence', 'numero', 'monto', 'dias_mora', 'monto_comision')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

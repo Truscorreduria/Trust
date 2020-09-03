@@ -68,4 +68,8 @@ input[readonly], .form-control[readonly] {
   pointer-events: none;
 }
 
+.numberinput {
+  text-align: right !important;
+}
+
 /*# sourceMappingURL=main.css.map */

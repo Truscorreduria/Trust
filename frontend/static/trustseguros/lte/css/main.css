@@ -60,4 +60,8 @@ a {
   z-index: 9999 !important;
 }
 
+.numberinput {
+  text-align: right !important;
+}
+
 /*# sourceMappingURL=main.css.map */
