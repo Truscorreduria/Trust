@@ -1489,7 +1489,7 @@ class Oportunidades(Datatables):
     modal_width = 1200
     model = Oportunity
     form = OportunityForm
-    list_display = ('code', ('Prospecto', 'prospect.full_name'), ('Vendedor', 'vendedor.full_name'),
+    list_display = ('code', 'prospect.full_name', 'vendedor.full_name',
                     ('Dias', 'dias'),
                     ('Etapa', 'status.name'),
                     'campain.name')
@@ -1497,7 +1497,7 @@ class Oportunidades(Datatables):
                      'prospect__apellido_paterno', 'prospect__apellido_materno', 'code')
     form_template = "trustseguros/lte/oportunity.html"
     list_template = "trustseguros/lte/oportunity-table.html"
-
+    list_filter = ('campain', 'status')
     media = {
         'js': ['trustseguros/lte/js/municipio.js', ],
         'css': ('trustseguros/lte/css/oportunity-status.css',),

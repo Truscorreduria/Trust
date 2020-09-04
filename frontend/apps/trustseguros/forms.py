@@ -764,7 +764,7 @@ class OportunityForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
-    prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="", required=False, widget=FormWidget(
+    prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Prospecto", required=False, widget=FormWidget(
         attrs={
             'form': ProspectForm,
             'fields': (
