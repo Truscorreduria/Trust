@@ -1493,8 +1493,9 @@ class Oportunidades(Datatables):
                     ('Dias', 'dias'),
                     ('Etapa', 'status.name'),
                     'campain.name')
-    search_fields = ('prospect__primer_nombre', 'prospect__segundo_nombre',
-                     'prospect__apellido_paterno', 'prospect__apellido_materno', 'code')
+    search_fields = ('prospect__primer_nombre', 'prospect__segundo_nombre', 'prospect__cedula',
+                     'prospect__apellido_paterno', 'prospect__apellido_materno', 'code',
+                     'vendedor__first_name', 'vendedor__last_name')
     form_template = "trustseguros/lte/oportunity.html"
     list_template = "trustseguros/lte/oportunity-table.html"
     list_filter = ('campain', 'status')
