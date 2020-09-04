@@ -82,12 +82,14 @@
             };
 
             const calcular_tabla_pagos = function () {
-                $.ajax("{% url 'cotizador:calcular_tabla_pagos' %}", {
+                const form = $('#poliza-form')[0];
+                const data = new FormData(form);
+                data.append('calcular_tabla_pagos', 'calcular_tabla_pagos');
+                $.ajax(".", {
                     method: "POST",
-                    data: {
-                        total: $('#id_total').val(), fecha: $('#id_fecha_pago').val(),
-                        cuotas: $('#id_cuotas').val(), poliza: $('input[name="id"]').val()
-                    },
+                    data: data,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
                         const pagos = $('#id_tabla_pagos tbody').empty();
                         $.each(response, function (i, o) {
@@ -139,6 +141,7 @@
 
             $(document).on('change', 'input[name="prima_neta"]', calcular_comision);
             $(document).on('change', 'input[name="per_comision"]', calcular_comision);
+            $(document).on('change', 'input[name="per_comision"]', calcular_tabla_pagos);
 
             $(document).on('change', 'input[name="cuotas"]', calcular_tabla_pagos);
             $(document).on('change', 'input[name="fecha_pago"]', calcular_tabla_pagos);

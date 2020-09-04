@@ -651,6 +651,15 @@ def reportes(request):
     })
 
 
+def tabla_cuotas(instance, request):
+    total = float(request.POST.get('total', 0))
+    prima_neta = float(request.POST.get('prima_neta', 0))
+    per_comision = float(request.POST.get('per_comision', 0))
+    fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
+    cuotas = int(request.POST.get('cuotas'))
+    return calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
+
+
 # region Clientes
 
 class PersonaNatural(Datatables):
@@ -1161,14 +1170,7 @@ class Polizas(Datatables):
             return JsonResponse({'html': html}, encoder=Codec, safe=False)
         if 'calcular_tabla_pagos' in request.POST:
             instance = self.get_instance(request)
-            if instance.recibo_editar:
-                instance = instance.recibo_editar
-            total = float(request.POST.get('total', 0))
-            prima_neta = float(request.POST.get('prima_neta', 0))
-            per_comision = float(request.POST.get('per_comision', 0))
-            fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
-            cuotas = int(request.POST.get('cuotas'))
-            data = calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
+            data = tabla_cuotas(instance, request)
             return JsonResponse(data, safe=False, encoder=Codec)
         return super().post(request)
 
@@ -1333,6 +1335,10 @@ class Tramites(Datatables):
             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
                                                 for p in contactos],
                                  'instance': poliza.to_json()}, encoder=Codec, safe=False)
+        if 'calcular_tabla_pagos' in request.POST:
+            instance = self.get_instance(request)
+            data = tabla_cuotas(instance, request)
+            return JsonResponse(data, safe=False, encoder=Codec)
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -1882,14 +1888,7 @@ class Recibos(Datatables):
 
         if 'calcular_tabla_pagos' in request.POST:
             instance = self.get_instance(request)
-            if instance.recibo_editar:
-                instance = instance.recibo_editar
-            total = float(request.POST.get('total', 0))
-            prima_neta = float(request.POST.get('prima_neta', 0))
-            per_comision = float(request.POST.get('per_comision', 0))
-            fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
-            cuotas = int(request.POST.get('cuotas'))
-            data = calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
+            data = tabla_cuotas(instance, request)
             return JsonResponse(data, safe=False, encoder=Codec)
 
         if 'opencuota' in request.POST:
