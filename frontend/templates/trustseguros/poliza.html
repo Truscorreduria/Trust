@@ -24,11 +24,11 @@
                 const $montoagencia = $('#id_monto_agencia');
 
                 const calcular = function () {
-                    primaneta = parseFloat($primaneta.val());
-                    porcentajecomision = parseFloat($porcentajecomision.val());
-                    comisionagencia = parseFloat($comisionagencia.val());
-                    montocomision = primaneta * porcentajecomision / 100;
-                    montoagencia = primaneta * comisionagencia / 100;
+                    let primaneta = parseFloat($primaneta.val());
+                    let porcentajecomision = parseFloat($porcentajecomision.val());
+                    let comisionagencia = parseFloat($comisionagencia.val());
+                    let montocomision = primaneta * porcentajecomision / 100;
+                    let montoagencia = primaneta * comisionagencia / 100;
                     $montocomision.val(montocomision.toFixed(2));
                     $montoagencia.val(montoagencia.toFixed(2));
                 };

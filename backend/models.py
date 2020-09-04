@@ -2078,6 +2078,8 @@ class Oportunity(BasePoliza):
             return (timezone.datetime.now() - self.created).days
         except ValueError:
             return ""
+        except TypeError:
+            return ""
 
     @property
     def ofertas_columns(self):
