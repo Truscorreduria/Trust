@@ -15,9 +15,8 @@
 
             $(document).on('change', '#id_recibos', function () {
                 $('#id_recibo_editar').val($(this).val());
-                const form = $('#{{ opts.model_name }}-form');
-                const data = new FormData(form[0]);
-                perform_action(data, 'POST', '.', 'cambiar_recibo')
+                const form = $('#{{ opts.model_name }}-form')[0];
+                perform_action(form, 'cambiar_recibo', process_response);
             });
 
             const calcular_prima_neta = function () {
