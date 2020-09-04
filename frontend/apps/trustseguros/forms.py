@@ -533,6 +533,11 @@ class TramiteForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
+    prima_neta = forms.FloatField(required=False, label="", widget=forms.NumberInput(
+        attrs={
+            'readonly': 'readonly',
+        }
+    ))
     total = forms.FloatField(label="Total", required=False, initial=0.0,
                              widget=forms.NumberInput(
                                  attrs={
@@ -573,6 +578,7 @@ class TramiteForm(forms.ModelForm):
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
             updated_initial['tabla_pagos'] = instance
+            updated_initial['prima_neta'] = instance.prima_neta
             if instance.poliza:
                 updated_initial['aseguradora'] = instance.poliza.aseguradora
                 updated_initial['grupo'] = instance.poliza.grupo
@@ -867,7 +873,7 @@ class ReciboForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.FloatField(required=False, label="", widget=forms.NumberInput(
+    prima_neta = forms.FloatField(required=False, label="", widget=forms.NumberInput(
         attrs={
             'readonly': 'readonly',
         }
@@ -908,7 +914,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['iva'] = instance.recibo_editar.iva
                 updated_initial['otros'] = instance.recibo_editar.otros
                 updated_initial['total'] = instance.recibo_editar.total
-                updated_initial['prima_total'] = instance.prima_neta
+                updated_initial['prima_neta'] = instance.prima_neta
                 updated_initial['per_comision'] = instance.recibo_editar.per_comision
                 updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
                 updated_initial['amount_comision'] = instance.recibo_editar.amount_comision

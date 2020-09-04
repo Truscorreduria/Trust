@@ -85,15 +85,6 @@ def comentarios(request):
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
 
 
-def calcular_tabla_pagos_tramites(request):
-    total = float(request.POST.get('total'))
-    fecha_pago = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
-    cuotas = int(request.POST.get('cuotas'))
-    tramite = Tramite.objects.get(id=int(request.POST.get('poliza')))
-    data = calcular_tabla_cuotas(total, fecha_pago, cuotas, tramite)
-    return JsonResponse(data, safe=False, encoder=Codec)
-
-
 # @staff_member_required
 # def certificados(request):
 #     return render(request, 'trustseguros/include/certificados.html', {

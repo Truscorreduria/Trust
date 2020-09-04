@@ -1347,8 +1347,8 @@ class Tramite(Base):
     def media_files(self):
         return Archivo.media_files(self)
 
-    def valor_prima(self):
-        return self.subtotal - 55
+    def prima_neta(self):
+        return self.subtotal - self.descuento
 
     def rotura_vidrios(self):
         return round(float(self.valor_nuevo) * 0.05, 2)

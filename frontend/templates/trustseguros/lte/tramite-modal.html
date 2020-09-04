@@ -126,9 +126,10 @@
                                             <tr>
                                                 <td><b>Prima neta</b></td>
                                                 <td class="float-right">
-                                                    <input type="number" class="form-control" name="prima_neta"
+                                                    {% comment %}<input type="number" class="form-control" name="prima_neta"
                                                            readonly value="{{ instance.prima_neta }}"
-                                                           id="id_prima_neta">
+                                                           id="id_prima_neta">{% endcomment %}
+                                                    {{ form.prima_neta|as_inline_field }}
                                                 </td>
                                             </tr>
                                             <tr>

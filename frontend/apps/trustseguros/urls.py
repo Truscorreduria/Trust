@@ -28,5 +28,4 @@ urlpatterns = [
     path('comentarios/', comentarios, name="comentarios"),
     path('cobranza/', Recibos.as_view(), name="recibos"),
     path('verificador/', verificador, name="verificador"),
-    path('calcular_tabla_pagos_tramites/', calcular_tabla_pagos_tramites, name="calcular_tabla_pagos_tramites"),
 ]
