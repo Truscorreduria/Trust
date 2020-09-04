@@ -907,6 +907,7 @@ class ReciboForm(forms.ModelForm):
                 pass
             updated_initial['recibos'] = instance
             if instance.recibo_editar:
+                print(instance.recibo_editar)
                 updated_initial['tabla_pagos'] = instance.recibo_editar
                 updated_initial['subtotal'] = instance.recibo_editar.subtotal
                 updated_initial['descuento'] = instance.recibo_editar.descuento
@@ -914,7 +915,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['iva'] = instance.recibo_editar.iva
                 updated_initial['otros'] = instance.recibo_editar.otros
                 updated_initial['total'] = instance.recibo_editar.total
-                updated_initial['prima_neta'] = instance.prima_neta
+                updated_initial['prima_neta'] = instance.recibo_editar.prima_neta
                 updated_initial['per_comision'] = instance.recibo_editar.per_comision
                 updated_initial['suma_asegurada'] = instance.recibo_editar.suma_asegurada
                 updated_initial['amount_comision'] = instance.recibo_editar.amount_comision
@@ -925,6 +926,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['fecha_pago'] = instance.recibo_editar.fecha_pago
             else:
                 updated_initial['tabla_pagos'] = instance
+                updated_initial['prima_neta'] = instance.prima_neta
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'

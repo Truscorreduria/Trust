@@ -1879,6 +1879,8 @@ class Recibos(Datatables):
 
         if 'calcular_tabla_pagos' in request.POST:
             instance = self.get_instance(request)
+            if instance.recibo_editar:
+                instance = instance.recibo_editar
             data = tabla_cuotas(instance, request)
             return JsonResponse(data, safe=False, encoder=Codec)
 
