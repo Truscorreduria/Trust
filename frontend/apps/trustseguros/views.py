@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from adminlte.generics import Datatables
 from django.contrib.auth.decorators import login_required
-from backend.utils import calcular_tabla_cuotas
+from backend.utils import calcular_tabla_cuotas, parse_date
 from .forms import *
 from django.http import JsonResponse
 from grappelli_extras.utils import Codec
@@ -647,7 +647,7 @@ def tabla_cuotas(instance, request):
     prima_neta = float(request.POST.get('prima_neta', 0))
     per_comision = float(request.POST.get('per_comision', 0))
     fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
-    cuotas = int(request.POST.get('cuotas'))
+    cuotas = int(request.POST.get('cantidad_cuotas'))
     return calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
 
 
@@ -1762,8 +1762,9 @@ class Recibos(Datatables):
             {'id': 'info',
              'name': 'Información de pago',
              'fields': (
-                 ('nombre_cliente', 'numero_poliza', 'aseguradora', 'dias_mora'),
-                 ('numero_recibo', 'fecha_vence', 'monto', 'monto_comision'),
+                 ('nombre_cliente', 'numero_poliza', 'aseguradora', 'estado'),
+                 ('numero_recibo', 'numero', 'fecha_vence', 'dias_mora'),
+                 ('monto', 'monto_pagado', 'saldo', 'monto_comision', 'comision_pagada', 'comision_pendiente'),
                  ('pagos',),
              )},
         )
@@ -1833,7 +1834,7 @@ class Recibos(Datatables):
                 recibo.moneda = form.cleaned_data['moneda']
                 recibo.f_pago = form.cleaned_data['f_pago']
                 recibo.m_pago = form.cleaned_data['m_pago']
-                recibo.cuotas = form.cleaned_data['cuotas']
+                recibo.cantidad_cuotas = form.cleaned_data['cantidad_cuotas']
                 recibo.fecha_pago = form.cleaned_data['fecha_pago']
                 recibo.save()
                 instance.save()
@@ -1888,7 +1889,7 @@ class Recibos(Datatables):
         if 'opencuota' in request.POST:
             instance = Cuota.objects.get(id=request.POST.get('cuota'))
             return JsonResponse({
-                'html': self.opencuota(instance, request), 'instance': instance.to_json()
+                'form': self.opencuota(instance, request), 'instance': instance.to_json()
             }, encoder=Codec)
 
         if 'guardarcuota' in request.POST:
@@ -1904,15 +1905,17 @@ class Recibos(Datatables):
                     pago.monto = request.POST.getlist('pagocuota-monto')[n]
                     pago.referencia_pago = request.POST.getlist('pagocuota-referencia_pago')[n]
                     pago.medio_pago = request.POST.getlist('pagocuota-medio_pago')[n]
-                    pago.fecha_pago = datetime.strptime(request.POST.getlist('pagocuota-fecha_pago')[n], '%d/%m/%Y')
+                    pago.fecha_pago = parse_date(request.POST.getlist('pagocuota-fecha_pago')[n])
+                    pago.fecha_pago_comision = parse_date(request.POST.getlist('pagocuota-fecha_pago_comision')[n])
+                    pago.comision = parse_date(request.POST.getlist('pagocuota-comision')[n])
                     pago.save()
                 instance = form.instance
             return JsonResponse({
-                'html': self.opencuota(instance, request), 'instance': instance.to_json()
+                'form': self.opencuota(instance, request), 'instance': instance.to_json()
             }, encoder=Codec)
 
         if 'nuevopago' in request.POST:
-            html_form = render_to_string('trustseguros/lte/includes/nuveo-pago.html', {
+            html_form = render_to_string('trustseguros/lte/includes/nuevo-pago.html', {
                 'form': PagoForm
             })
             return JsonResponse({

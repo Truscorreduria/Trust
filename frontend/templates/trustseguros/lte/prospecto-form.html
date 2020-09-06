@@ -1,134 +1,129 @@
 {% load crispy_forms_tags crispy_forms_filters datatables mathfilters %}
 
 {% block content %}
-    <div class="izimodal" id="{{ opts.model_name }}-modal">
 
-        <div class="modal-body" style="padding: 0">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a data-toggle="tab" href="#{{ opts.model_name }}-info" class="nav-link active">Información
-                        general</a>
-                </li>
-            </ul>
+    <div class="modal-body" style="padding: 0">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a data-toggle="tab" href="#{{ opts.model_name }}-info" class="nav-link active">Información
+                    general</a>
+            </li>
+        </ul>
 
-            <div class="card card-trust">
-                <div class="card-body">
-                    <form action="." method="{{ method }}" id="{{ opts.model_name }}-form">
-                        <input type="hidden" name="id" value="">
-                        {% csrf_token %}
-                        <div class="tab-content">
-                            <div id="{{ opts.model_name }}-info"
-                                 class="tab-pane fade show active">
+        <div class="card card-trust">
+            <div class="card-body">
+                <form action="." method="{{ method }}" id="{{ opts.model_name }}-form">
+                    <input type="hidden" name="id" value="">
+                    {% csrf_token %}
+                    <div class="tab-content">
+                        <div id="{{ opts.model_name }}-info"
+                             class="tab-pane fade show active">
 
+                            <div class="row">
+                                <div class="col">
+                                    {{ form.tipo_cliente|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <fieldset id="persona-natural">
                                 <div class="row">
                                     <div class="col">
-                                        {{ form.tipo_cliente|as_crispy_field }}
+                                        {{ form.primer_nombre|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.segundo_nombre|as_crispy_field }}
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.apellido_paterno|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.apellido_materno|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.cedula|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.email_personal|as_crispy_field }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.telefono|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.celular|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </fieldset>
 
-                                <fieldset id="persona-natural">
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.primer_nombre|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.segundo_nombre|as_crispy_field }}
-                                        </div>
+                            <fieldset id="persona-juridica">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.razon_social|as_crispy_field }}
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.apellido_paterno|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.apellido_materno|as_crispy_field }}
-                                        </div>
+                                    <div class="col">
+                                        {{ form.ruc|as_crispy_field }}
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.cedula|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.email_personal|as_crispy_field }}
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.nombre_comercial|as_crispy_field }}
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.telefono|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.celular|as_crispy_field }}
-                                        </div>
+                                    <div class="col">
+                                        {{ form.actividad_economica|as_crispy_field }}
                                     </div>
-                                </fieldset>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.telefono|as_crispy_field }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.pagina_web|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </fieldset>
 
-                                <fieldset id="persona-juridica">
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.razon_social|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.ruc|as_crispy_field }}
-                                        </div>
+                            <fieldset id="direccion">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.departamento|as_crispy_field }}
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.nombre_comercial|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.actividad_economica|as_crispy_field }}
-                                        </div>
+                                    <div class="col">
+                                        {{ form.municipio|as_crispy_field }}
                                     </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.telefono|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.pagina_web|as_crispy_field }}
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ form.domicilio|as_crispy_field }}
                                     </div>
-                                </fieldset>
-
-                                <fieldset id="direccion">
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.departamento|as_crispy_field }}
-                                        </div>
-                                        <div class="col">
-                                            {{ form.municipio|as_crispy_field }}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            {{ form.domicilio|as_crispy_field }}
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
+                                </div>
+                            </fieldset>
                         </div>
-                    </form>
-                </div>
-            </div>
-
-
-        </div>
-
-        <div class="modal-footer">
-            <div class="row">
-                <div class="col-md-12 form-buttons">
-                    {% block buttons %}
-                        <button type="button" class="btn btn-success" id="btn-save">
-                            <i class="fa fa-save"></i>
-                            Guardar
-                        </button>
-                    {% endblock %}
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
+
 
     </div>
-{% endblock %}
 
-{% block extra-content %}
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-md-12 form-buttons">
+                {% block buttons %}
+                    <button type="button" class="btn btn-success" id="btn-save">
+                        <i class="fa fa-save"></i>
+                        Guardar
+                    </button>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 

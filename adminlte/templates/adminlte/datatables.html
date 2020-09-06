@@ -3,7 +3,6 @@
 
 
 {% block style %}
-
     <link rel="stylesheet" href="{% static 'adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/inputmask/css/inputmask.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
@@ -40,9 +39,7 @@
     <table id="{{ opts.model_name }}-table" class="table table-bordered table-hover">
 
     </table>
-
-    {% include form_template %}
-
+    <div class="izimodal" id="{{ opts.model_name }}-modal"></div>
 {% endblock %}
 
 
@@ -198,7 +195,7 @@
         };
 
         const redraw_object = function (response) {
-            const wrap = modal.find('#{{ opts.model_name }}-modal');
+            const wrap = modal.find('.iziModal-content');
             wrap.empty().append(response.form);
         };
 

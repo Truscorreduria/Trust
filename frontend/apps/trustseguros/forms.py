@@ -426,7 +426,7 @@ class PolizaForm(forms.ModelForm):
             'no_poliza', 'ramo', 'sub_ramo', 'fecha_emision', 'fecha_vence', 'aseguradora',
             'cliente', 'contratante', 'grupo', 'tipo_poliza', 'cesion_derecho', 'cesioinario',
             'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios', 'coberturas',
-            'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
+            'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
         )
@@ -466,7 +466,7 @@ class PolizaForm(forms.ModelForm):
             self.fields['concepto'].widget.attrs['readonly'] = 'readonly'
         if instance:
             if instance.f_pago == FormaPago.CONTADO:
-                self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+                self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
         if instance and (instance.estado_poliza == EstadoPoliza.CANCELADA
                          or instance.estado_poliza == EstadoPoliza.ANULADA):
             self.fields['tipo_poliza'].required = False
@@ -476,7 +476,7 @@ class PolizaForm(forms.ModelForm):
             self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
             self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
             self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
             self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
@@ -606,7 +606,7 @@ class TramiteForm(forms.ModelForm):
             self.fields['descripcion'].widget.attrs['readonly'] = 'readonly'
             self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
             self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
             self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
@@ -764,21 +764,22 @@ class OportunityForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
-    prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Prospecto", required=False, widget=FormWidget(
-        attrs={
-            'form': ProspectForm,
-            'fields': (
-                ('cedula', 'email_personal'),
-                ('primer_nombre', 'segundo_nombre'),
-                ('apellido_paterno', 'apellido_materno'),
-                ('telefono', 'celular'),
-                ('genero', 'estado_civil'),
-                ('departamento', 'municipio'),
-                ('domicilio',),
-            ),
-            'primary_key': 'cedula'
-        }
-    ))
+    prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Prospecto", required=False,
+                                      widget=FormWidget(
+                                          attrs={
+                                              'form': ProspectForm,
+                                              'fields': (
+                                                  ('cedula', 'email_personal'),
+                                                  ('primer_nombre', 'segundo_nombre'),
+                                                  ('apellido_paterno', 'apellido_materno'),
+                                                  ('telefono', 'celular'),
+                                                  ('genero', 'estado_civil'),
+                                                  ('departamento', 'municipio'),
+                                                  ('domicilio',),
+                                              ),
+                                              'primary_key': 'cedula'
+                                          }
+                                      ))
 
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
@@ -892,7 +893,7 @@ class ReciboForm(forms.ModelForm):
         fields = (
             'no_poliza', 'ramo', 'sub_ramo', 'fecha_emision', 'fecha_vence', 'aseguradora',
             'cliente', 'grupo',
-            'f_pago', 'm_pago', 'cuotas', 'fecha_pago', 'subtotal', 'descuento',
+            'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'recibo_editar', 'recibos'
         )
@@ -922,7 +923,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['moneda'] = instance.recibo_editar.moneda
                 updated_initial['f_pago'] = instance.recibo_editar.f_pago
                 updated_initial['m_pago'] = instance.recibo_editar.m_pago
-                updated_initial['cuotas'] = instance.recibo_editar.cuotas
+                updated_initial['cantidad_cuotas'] = instance.recibo_editar.cantidad_cuotas
                 updated_initial['fecha_pago'] = instance.recibo_editar.fecha_pago
             else:
                 updated_initial['tabla_pagos'] = instance
@@ -940,7 +941,7 @@ class ReciboForm(forms.ModelForm):
         if instance and not instance.modificando_recibo:
             self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cuotas'].widget.attrs['readonly'] = 'readonly'
+            self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
             self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
             self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
             self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
@@ -961,7 +962,7 @@ class PagoForm(forms.ModelForm):
 
     class Meta:
         model = PagoCuota
-        fields = ('monto', 'referencia_pago', 'medio_pago', 'fecha_pago')
+        fields = ('monto', 'referencia_pago', 'medio_pago', 'fecha_pago', 'comision', 'fecha_pago_comision')
 
 
 class CuotaForm(forms.ModelForm):
@@ -1007,12 +1008,36 @@ class CuotaForm(forms.ModelForm):
                                      'readonly': 'readonly'
                                  }
                              ))
+    saldo = forms.FloatField(label="Saldo", required=False,
+                             widget=forms.NumberInput(
+                                 attrs={
+                                     'readonly': 'readonly'
+                                 }
+                             ))
+    monto_pagado = forms.FloatField(label="Monto pagado", required=False,
+                                    widget=forms.NumberInput(
+                                        attrs={
+                                            'readonly': 'readonly'
+                                        }
+                                    ))
     monto_comision = forms.FloatField(label="Monto comisión", required=False,
                                       widget=forms.NumberInput(
                                           attrs={
                                               'readonly': 'readonly'
                                           }
                                       ))
+    comision_pagada = forms.FloatField(label="Comision pagada", required=False,
+                                       widget=forms.NumberInput(
+                                           attrs={
+                                               'readonly': 'readonly'
+                                           }
+                                       ))
+    comision_pendiente = forms.FloatField(label="Comision pendiente", required=False,
+                                          widget=forms.NumberInput(
+                                              attrs={
+                                                  'readonly': 'readonly'
+                                              }
+                                          ))
     dias_mora = forms.IntegerField(label="Días de mora", required=False,
                                    widget=forms.NumberInput(
                                        attrs={
@@ -1029,18 +1054,19 @@ class CuotaForm(forms.ModelForm):
     class Meta:
         model = Cuota
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
-                  'fecha_vence', 'numero', 'monto', 'dias_mora', 'monto_comision')
+                  'fecha_vence', 'numero', 'monto', 'dias_mora', 'monto_comision', 'estado',
+                  'monto_pagado', 'comision_pagada', 'saldo', 'comision_pendiente')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         if instance:
+            update_initial = {}
             if instance.poliza:
                 update_initial = {
                     'nombre_cliente': instance.cliente_poliza['name'],
                     'numero_poliza': instance.poliza.no_poliza,
                     'aseguradora': instance.poliza.aseguradora.name,
                     'numero_recibo': instance.poliza.no_recibo,
-                    'dias_mora': instance.dias_mora,
                 }
             if instance.tramite:
                 update_initial = {
@@ -1050,8 +1076,14 @@ class CuotaForm(forms.ModelForm):
                     'numero_recibo': instance.tramite.no_recibo,
                 }
             update_initial['pagos'] = instance.pagos
+            update_initial['dias_mora'] = instance.dias_mora
+            update_initial['monto_pagado'] = instance.monto_pagado
+            update_initial['saldo'] = instance.saldo
+            update_initial['comision_pagada'] = instance.comision_pagada
+            update_initial['comision_pendiente'] = instance.comision_pendiente
             kwargs.update(initial=update_initial)
         super().__init__(*args, **kwargs)
+        self.fields['estado'].widget.attrs['readonly'] = 'readonly'
 
     def save(self, commit=True):
         super().save(commit)

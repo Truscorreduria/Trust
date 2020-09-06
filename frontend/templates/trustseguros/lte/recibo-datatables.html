@@ -2,6 +2,16 @@
 {% load static datatables %}
 
 
+{% block style %}
+    {{ block.super }}
+    <style type="text/css">
+        select[name="pagocuota-medio_pago"] {
+            min-width: 185px;
+        }
+    </style>
+{% endblock %}
+
+
 {% block javascript %}
 
     {{ block.super }}
@@ -56,21 +66,28 @@
                                     <tr>
                                         <td>
                                             <input type="hidden" name="tabla_pagos_id">
-                                            <input type="text" name="tabla_pagos_numero" class="form-control" readonly value="${o.numero}">
+                                            <input type="text" name="tabla_pagos_numero" class="form-control" readonly value="${o.numero}" style="text-align: center">
                                         </td>
                                         <td>
-                                            <input type="text" name="tabla_pagos_fecha_vence" class="form-control" readonly value="${o.fecha}">
+                                            <input type="text" name="tabla_pagos_fecha_vence" class="form-control" readonly value="${o.fecha}" style="text-align: center">
                                         </td>
                                         <td>
-                                            <input type="text" name="tabla_pagos_monto" class="form-control" value="${o.monto}">
+                                            <input type="text" name="tabla_pagos_monto" class="form-control numberinput" value="${o.monto}">
                                         </td>
                                         <td>
-                                            <input type="text" name="tabla_pagos_monto_comision" class="form-control" value="${o.monto_comision}">
+                                            <input type="text" name="tabla_pagos_saldo" class="form-control numberinput" value="${o.monto}">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tabla_pagos_monto_comision" class="form-control numberinput" value="${o.monto_comision}">
                                         </td>
                                         <td>
                                             <input type="text" name="tabla_pagos_estado" class="form-control" readonly value="${o.estado}">
                                         </td>
+                                        <td>
+                                            <input type="text" name="tabla_pagos_mora" class="form-control" readonly value="${o.mora}" style="text-align: center">
+                                        </td>
                                     </tr>
+
                             `)
                         });
                         let total_pagos = 0.0;
@@ -93,18 +110,18 @@
             $(document).on('change', '#id_subtotal', calcular_prima_neta);
             $(document).on('change', '#id_descuento', calcular_prima_neta);
 
-            $(document).on('change', '#id_prima_neta', calcular_total);
-            $(document).on('change', '#id_emision', calcular_total);
-            $(document).on('change', '#id_iva', calcular_total);
-            $(document).on('change', '#id_otros', calcular_total);
+            $(document).on('change', 'input[name="prima_neta"]', calcular_total);
+            $(document).on('change', 'input[name="emision"]', calcular_total);
+            $(document).on('change', 'input[name="iva"]', calcular_total);
+            $(document).on('change', 'input[name="otros"]', calcular_total);
 
-            $(document).on('change', '#id_prima_neta', calcular_comision);
-            $(document).on('change', '#id_per_comision', calcular_comision);
+            $(document).on('change', 'input[name="prima_neta"]', calcular_comision);
+            $(document).on('change', 'input[name="per_comision"]', calcular_comision);
 
-            $(document).on('change', '#id_cuotas', calcular_tabla_pagos);
+            $(document).on('change', '#id_cantidad_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
-            $(document).on('change', '#id_total', calcular_tabla_pagos);
-            $(document).on('change', '#id_per_comision', calcular_tabla_pagos);
+            $(document).on('change', 'input[name="total"]', calcular_tabla_pagos);
+            $(document).on('change', 'input[name="per_comision"]', calcular_tabla_pagos);
 
             $(document).on('change', '#id_f_pago', function () {
                 if ($(this).val() === "1") {
@@ -167,9 +184,9 @@
                     },
                     success: function (response) {
                         modal.iziModal('destroy');
-                        modal.empty().append(response.html);
+                        modal.empty().append(response.form);
                         modal.iziModal({
-                            zindex: 1500, width: 1200,
+                            zindex: 1500, width: 1300,
                             title: response.instance.str,
                             subtitle: 'datos de la cuota',
                             headerColor: "#326634", padding: 20,
@@ -205,10 +222,29 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log(response)
+                        redraw_object(response)
                     }
                 })
             });
+
+            $(document).on('click', '.btn-del-pago', function () {
+                const _this = $(this);
+                const tr = _this.parents('tr');
+                if (_this.data('id')) {
+                    $.ajax($ajax_execute, {
+                        method: "POST",
+                        data: {
+                            app_label: 'backend', model: 'pagocuota', id: _this.data('id'),
+                            'view': 'delete'
+                        },
+                        success: function (response) {
+                            tr.remove();
+                        }
+                    })
+                } else {
+                    tr.remove()
+                }
+            })
 
         });
 

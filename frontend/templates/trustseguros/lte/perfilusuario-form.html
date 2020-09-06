@@ -1,10 +1,10 @@
-{% extends 'trustseguros/lte/datatables-modal.html' %}
+{% extends 'adminlte/datatables-modal.html' %}
 
 
 {% block buttons %}
     {% if instance.id %}
         <button type="button" class="btn btn-warning" id="btn-cambiar-pass"
-        data-id="{{ instance.id }}">
+                data-id="{{ instance.id }}">
             <i class="fa fa-lock"></i>
             Cambiar password
         </button>

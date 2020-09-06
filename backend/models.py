@@ -950,7 +950,7 @@ class Poliza(BasePoliza):
                                   ))
     m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
                                          verbose_name="medio de pago", )
-    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
@@ -1062,34 +1062,6 @@ class Poliza(BasePoliza):
         o['estado_poliza'] = {'value': self.estado_poliza, 'label': self.get_estado_poliza_display()}
         return o
 
-    def saldo(self):
-        try:
-            return round(self.total - self.monto_cuota, 2)
-        except ValueError:
-            return 0.0
-
-    def tabla_pagos(self):
-        total = self.total
-        fecha_pago = datetime(year=self.fecha_pago.year, month=self.fecha_pago.month, day=self.fecha_pago.day)
-        cuotas = self.cuotas
-        monto_cuota = round(total / cuotas, 2)
-        data = []
-        anno = fecha_pago.year
-        mes = fecha_pago.month
-        dia = fecha_pago.day
-        data.append({'numero': 1, 'cuotas': cuotas, 'fecha': fecha_pago.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                     'estado': 'VIGENTE'})
-        for i in range(1, cuotas):
-            if mes != 12:
-                mes += 1
-            else:
-                mes = 1
-                anno += 1
-            fecha = valid_date(year=anno, month=mes, day=dia)
-            data.append({'numero': i + 1, 'cuotas': cuotas, 'fecha': fecha.strftime('%d/%m/%Y'), 'monto': monto_cuota,
-                         'estado': 'VIGENTE'})
-        return data
-
     def fecha_vencimiento(self):
         self.fecha_vence = date(year=self.fecha_emision.year, month=self.fecha_emision.month,
                                 day=self.fecha_emision.day) + timedelta(days=365)
@@ -1115,10 +1087,6 @@ class Poliza(BasePoliza):
             return round(self.subtotal - self.descuento, 2)
         except ValueError:
             return 0.0
-
-    @property
-    def tipo_poliza_display(self):
-        return self.get_tipo_poliza_display()
 
     def rotura_vidrios(self):
         try:
@@ -1171,14 +1139,14 @@ class Poliza(BasePoliza):
     def coberturas(self):
         return CoberturaPoliza.objects.filter(poliza=self)
 
-    def pagos(self):
+    def cuotas(self):
         return Cuota.objects.filter(poliza=self).order_by('numero')
 
     def prima_total(self):
-        return self.pagos().aggregate(Sum('monto'))['monto__sum']
+        return self.cuotas().aggregate(Sum('monto'))['monto__sum']
 
     def saldo_pendiente(self):
-        return self.pagos().exclude(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
+        return self.cuotas().exclude(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
 
     def recibos(self):
         return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
@@ -1322,7 +1290,7 @@ class Tramite(Base):
                                          verbose_name="forma de pago")
     m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
                                          verbose_name="medio de pago", )
-    cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
     fecha_pago = models.DateField(null=True, blank=True)
     subtotal = models.FloatField(default=0.0, null=True, blank=True)
     descuento = models.FloatField(default=0.0, null=True, blank=True)
@@ -1468,7 +1436,16 @@ class Cuota(Base):
         return PagoCuota.objects.filter(cuota=self)
 
     def monto_pagado(self):
-        return self.pagos().aggregate(Sum('monto'))['monto__sum']
+        return self.pagos().aggregate(Sum('monto'))['monto__sum'] or 0.0
+
+    def comision_pagada(self):
+        return self.pagos().aggregate(Sum('comision'))['comision__sum'] or 0.0
+
+    def saldo(self):
+        return round(self.monto - self.monto_pagado(), 2)
+
+    def comision_pendiente(self):
+        return round(self.monto_comision - self.comision_pagada(), 2)
 
     @property
     def dias_mora(self):
@@ -1496,10 +1473,12 @@ class Cuota(Base):
 class PagoCuota(Base):
     cuota = models.ForeignKey(Cuota, on_delete=models.CASCADE)
     monto = models.FloatField(default=0.0)
+    comision = models.FloatField(default=0.0)
     referencia_pago = models.CharField(max_length=65, null=True, blank=True, verbose_name="referencia de pago")
     medio_pago = models.PositiveSmallIntegerField(verbose_name="medio de pago", choices=MedioPago.choices(),
                                                   default=MedioPago.EFECTIVO)
     fecha_pago = models.DateField(null=True)
+    fecha_pago_comision = models.DateField(null=True)
 
     def __str__(self):
         return ""
@@ -2211,4 +2190,3 @@ def user_lines(user):
 User.add_to_class('lineas', user_lines)
 
 # endregion
-

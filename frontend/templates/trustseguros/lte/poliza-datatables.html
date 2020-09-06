@@ -3,7 +3,6 @@
 
 
 {% block javascript %}
-
     {{ block.super }}
     <script type="text/javascript">
 
@@ -288,8 +287,4 @@
         });
 
     </script>
-
-    {% for script in media.js %}
-        <script src="{% static script %}"></script>
-    {% endfor %}
 {% endblock %}

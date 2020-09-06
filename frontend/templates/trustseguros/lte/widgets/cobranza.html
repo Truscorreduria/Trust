@@ -9,36 +9,50 @@
         <th>Cuotas</th>
         <th>Fecha vencimiento</th>
         <th>Monto</th>
+        <th>Saldo</th>
         <th>Comisión</th>
         <th>Estado</th>
+        <th>Dias en mora</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    {% for fila in widget.value.pagos %}
+    {% for fila in widget.value.cuotas %}
         <tr>
             <td>
                 <input type="hidden" name="{{ widget.name }}_id" value="{{ fila.id }}">
                 <input type="text" name="{{ widget.name }}_numero" class="form-control" readonly
-                       value="{{ fila.numero }}">
+                       value="{{ fila.numero }}" style="text-align: center">
             </td>
             <td>
                 <input type="text" name="{{ widget.name }}_fecha_vence" class="form-control dateinput" readonly
+                       style="text-align: center;"
                        value="{{ fila.fecha_vence|date:'d/m/Y' }}">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto" class="form-control"
+                <input type="text" name="{{ widget.name }}_monto" class="form-control numberinput"
                         {% if widget.attrs.readonly %} readonly {% endif %}
                        value="{{ fila.monto }}">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto_comision" class="form-control"
+                <input type="text" name="{{ widget.name }}_saldo" class="form-control numberinput"
+                       readonly
+                       value="{{ fila.saldo }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_monto_comision" class="form-control numberinput"
                         {% if widget.attrs.readonly %} readonly {% endif %}
                        value="{{ fila.monto_comision }}">
             </td>
             <td>
                 <input type="text" name="{{ widget.name }}_estado" class="form-control" readonly
+                       style="text-align: center;"
                        value="{{ fila.get_estado_display }}">
+            </td>
+            <td>
+                <input type="text" name="{{ widget.name }}_mora" class="form-control" readonly
+                       style="text-align: center;"
+                       value="{{ fila.dias_mora }}">
             </td>
             <td>
                 <button type="button" class="btn btn-info btn-edit-cuota"

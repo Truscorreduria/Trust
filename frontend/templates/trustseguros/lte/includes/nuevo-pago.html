@@ -3,6 +3,9 @@
     <td>
         <input type="hidden" name="{{ form.prefix }}"
                value="{% if form.instance.id %}{{ form.instance.id }}{% endif %}">
+        {{ form.fecha_pago|as_inline_field }}
+    </td>
+    <td>
         {{ form.monto|as_inline_field }}
     </td>
     <td>
@@ -12,10 +15,14 @@
         {{ form.medio_pago|as_inline_field }}
     </td>
     <td>
-        {{ form.fecha_pago|as_inline_field }}
+        {{ form.fecha_pago_comision|as_inline_field }}
     </td>
     <td>
-        <button type="button" class="btn btn-danger btn-del-pago">
+        {{ form.comision|as_inline_field }}
+    </td>
+    <td>
+        <button type="button" class="btn btn-danger btn-del-pago"
+                {% if form.instance.id %}data-id="{{ form.instance.id }}"{% endif %}>
             <i class="fa fa-trash"></i>
         </button>
     </td>

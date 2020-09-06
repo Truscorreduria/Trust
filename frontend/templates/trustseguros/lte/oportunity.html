@@ -1,169 +1,165 @@
 {% load crispy_forms_tags crispy_forms_filters datatables mathfilters humanize %}
 
 {% block content %}
-    <div class="izimodal" id="{{ opts.model_name }}-modal">
-
-        <div class="modal-body" style="padding: 0; min-height: 700px">
-            <div class="card card-trust">
-                <div class="card-body">
-                    <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
-                          data-toggle="validator">
-                        <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
-                        {{ form.code }}
-                        {% csrf_token %}
-                        <div class="row">
-                            {{ form.status|as_crispy_field }}
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-header">Información principal</div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">{{ form.campain|as_crispy_field }}</div>
-                                            <div class="col">{{ form.days|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.ramo|as_crispy_field }}</div>
-                                            <div class="col">{{ form.sub_ramo|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.vendedor|as_crispy_field }}</div>
-                                        </div>
+    <div class="modal-body" style="padding: 0; min-height: 700px">
+        <div class="card card-trust">
+            <div class="card-body">
+                <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
+                      data-toggle="validator">
+                    <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
+                    {{ form.code }}
+                    {% csrf_token %}
+                    <div class="row">
+                        {{ form.status|as_crispy_field }}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">Información principal</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">{{ form.campain|as_crispy_field }}</div>
+                                        <div class="col">{{ form.days|as_crispy_field }}</div>
                                     </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">Información del prospecto</div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">{{ form.prospect }}</div>
-                                        </div>
+                                    <div class="row">
+                                        <div class="col">{{ form.ramo|as_crispy_field }}</div>
+                                        <div class="col">{{ form.sub_ramo|as_crispy_field }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">{{ form.vendedor|as_crispy_field }}</div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card">
+                                <div class="card-header">Información del prospecto</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">{{ form.prospect }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">Póliza actual</div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">{{ form.no_poliza|as_crispy_field }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">{{ form.aseguradora|as_crispy_field }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">{{ form.fecha_vence|as_crispy_field }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">Datos del bien</div>
+                                <div class="card-body" style="max-height: 757px; overflow-y: auto;">
+                                    {{ form.extra_data }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if instance.id %}
+
+                        <div class="row">
                             <div class="col-md-4">
                                 <div class="card">
-                                    <div class="card-header">Póliza actual</div>
+                                    <div class="card-header">Datos cotización de vehículos</div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col">{{ form.no_poliza|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.aseguradora|as_crispy_field }}</div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col">{{ form.fecha_vence|as_crispy_field }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-header">Datos del bien</div>
-                                    <div class="card-body" style="max-height: 757px; overflow-y: auto;">
-                                        {{ form.extra_data }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {% if instance.id %}
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-header">Datos cotización de vehículos</div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <div class="col">{{ form.valor_nuevo|as_crispy_field }}</div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">{{ form.rc_exceso|as_crispy_field }}</div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">{{ form.valor_exceso|as_crispy_field }}</div>
-                                                    </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col">{{ form.valor_nuevo|as_crispy_field }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">{{ form.rc_exceso|as_crispy_field }}</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">{{ form.valor_exceso|as_crispy_field }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="card">
-                                        <div class="card-header">Valores de cotización</div>
-                                        <div class="card-body">
-                                            {{ form.cotizacion }}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">Valores de cotización</div>
+                                    <div class="card-body">
+                                        {{ form.cotizacion }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">Archivos</div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col">{{ form.drive }}</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="card">
+                                    <div class="card-header">Comentarios</div>
+                                    <div class="card-body">
+                                        {{ form.bitacora }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-
+                        {% if instance.status == 6 %}
                             <div class="row">
                                 <div class="col">
-                                    <div class="card">
-                                        <div class="card-header">Archivos</div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col">{{ form.drive }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    {{ form.causal|as_crispy_field }}
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="card">
-                                        <div class="card-header">Comentarios</div>
-                                        <div class="card-body">
-                                            {{ form.bitacora }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {% if instance.status == 6 %}
-                                <div class="row">
-                                    <div class="col">
-                                        {{ form.causal|as_crispy_field }}
-                                    </div>
-                                </div>
-                            {% endif %}
                         {% endif %}
-                    </form>
-                </div>
+                    {% endif %}
+                </form>
             </div>
-
         </div>
 
-        <div class="modal-footer">
-            <div class="row">
+    </div>
 
-                <div class="col-md-12 form-buttons">
-                    {% if instance.status == 5 %}
-                        <button type="button" class="btn btn-danger" id="btn-register">
-                            <i class="fa fa-file-archive"></i>
-                            Registrar póliza
-                        </button>
-                    {% endif %}
-                    {% if instance.status >= 2 %}
-                        <button type="button" class="btn btn-warning" id="btn-send">
-                            <i class="fa fa-envelope"></i>
-                            Enviar Cotización
-                        </button>
-                        <button type="button" class="btn btn-warning" id="btn-print">
-                            <i class="fa fa-print"></i>
-                            Imprimir cotización
-                        </button>
-                    {% endif %}
-                    <button type="button" class="btn btn-info btn-perform" data-perform="save"
-                            data-callback="process_response">
-                        <i class="fa fa-save"></i>
-                        Guardar
+    <div class="modal-footer">
+        <div class="row">
+
+            <div class="col-md-12 form-buttons">
+                {% if instance.status == 5 %}
+                    <button type="button" class="btn btn-danger" id="btn-register">
+                        <i class="fa fa-file-archive"></i>
+                        Registrar póliza
                     </button>
-                </div>
+                {% endif %}
+                {% if instance.status >= 2 %}
+                    <button type="button" class="btn btn-warning" id="btn-send">
+                        <i class="fa fa-envelope"></i>
+                        Enviar Cotización
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btn-print">
+                        <i class="fa fa-print"></i>
+                        Imprimir cotización
+                    </button>
+                {% endif %}
+                <button type="button" class="btn btn-info btn-perform" data-perform="save"
+                        data-callback="process_response">
+                    <i class="fa fa-save"></i>
+                    Guardar
+                </button>
             </div>
         </div>
-
     </div>
 {% endblock %}
 
