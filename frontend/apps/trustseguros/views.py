@@ -1896,7 +1896,6 @@ class Recibos(Datatables):
             instance = Cuota.objects.get(id=request.POST.get('id'))
             form = CuotaForm(request.POST, instance=instance)
             if form.is_valid():
-                form.save()
                 for n, i in enumerate(request.POST.getlist('pagocuota')):
                     if i == '':
                         pago = PagoCuota(cuota=instance)
@@ -1907,8 +1906,9 @@ class Recibos(Datatables):
                     pago.medio_pago = request.POST.getlist('pagocuota-medio_pago')[n]
                     pago.fecha_pago = parse_date(request.POST.getlist('pagocuota-fecha_pago')[n])
                     pago.fecha_pago_comision = parse_date(request.POST.getlist('pagocuota-fecha_pago_comision')[n])
-                    pago.comision = parse_date(request.POST.getlist('pagocuota-comision')[n])
+                    pago.comision = request.POST.getlist('pagocuota-comision')[n]
                     pago.save()
+                form.save()
                 instance = form.instance
             return JsonResponse({
                 'form': self.opencuota(instance, request), 'instance': instance.to_json()
