@@ -950,7 +950,7 @@ class Poliza(BasePoliza):
                                   ))
     m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
                                          verbose_name="medio de pago", )
-    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True, blank=True, )
+    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True, blank=True)
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
@@ -1134,7 +1134,7 @@ class Poliza(BasePoliza):
             return Quincena(initdate=self.fecha_emision, number=2)
 
     def ultima_quincena(self):
-        return self.primera_quincena().add(self.cuotas)
+        return self.primera_quincena().add(self.cantidad_cuotas)
 
     def coberturas(self):
         return CoberturaPoliza.objects.filter(poliza=self)
@@ -1931,7 +1931,6 @@ class SolicitudRenovacion(base):
 
 # endregion
 
-
 # region CRM
 
 class Linea(Base):
@@ -2188,5 +2187,118 @@ def user_lines(user):
 
 
 User.add_to_class('lineas', user_lines)
+
+
+# endregion
+
+# region Siniestros
+
+class EstadoSiniestros:
+    REGISTRADO = 'Registrado'
+    ENVIADO = 'Enviado'
+    LIQUIDADO = 'Liquidado'
+    PAGADO = 'Pagado'
+    RECHAZADO = 'Rechazado'
+
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.REGISTRADO, 'Registrado'), (cls.ENVIADO, 'Enviado'), (
+            cls.LIQUIDADO, 'Liquidado'), \
+               (cls.PAGADO, 'Pagado'), (cls.RECHAZADO, 'Rechazado')
+
+
+class FormaPagoSiniestro:
+    EFECTIVO = 'Efectivo'
+    CHEQUE = 'Cheque'
+    DEPOSITO = 'Deposito'
+    TRANSFERENCIA = 'Transferencia'
+
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.EFECTIVO, 'Efectivo'), (cls.CHEQUE, 'Cheque'), (cls.DEPOSITO, 'Deposito'), \
+               (cls.TRANSFERENCIA, 'Transferencia')
+
+
+class TipoMovimientoSiniestros:
+    REEMBOLSO = 'Reembolso de Gastos'
+    CHOQUE = 'Choque'
+    OTRO = 'Otro'
+
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.REEMBOLSO, 'Reembolso de Gastos'), (cls.CHOQUE, 'Choque'), (cls.OTRO, 'Otro')
+
+
+class Siniestro(Base):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoSiniestros.REGISTRADO,
+                              choices=EstadoSiniestros.choices())
+    tipo_movimiento = models.CharField(max_length=55, null=True, blank=True, default=TipoMovimientoSiniestros.REEMBOLSO,
+                                       choices=TipoMovimientoSiniestros.choices())
+    code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name='cliente_siniestro')
+    poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
+                               related_name="poliza_siniestro")
+    fecha_recepcion = models.DateField(null=True, blank=True)
+    asegurado_certificado = models.CharField(max_length=30, null=True, blank=True,
+                                             verbose_name="Asegurado / Certificado")
+    descripcion = models.TextField(max_length=600, null=True, blank=True)
+
+    fecha_envio_trust = models.DateField(null=True, blank=True, verbose_name="fecha envío a aseguradora")
+    siniestro_aseguradora = models.CharField(max_length=20, null=True, blank=True, verbose_name="Siniestro Aseguradora")
+    fecha_recepcion_aseguradora = models.DateField(null=True, blank=True, verbose_name="fecha recepción aseguradora")
+    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
+    tramite = models.ForeignKey('SiniestroTramite', null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name="tramite_seleccionado")
+
+    def save(self, *args, **kwargs):
+        if not self.code:
+            self.code = get_code(self, 6)
+        super().save(*args, **kwargs)
+
+    @property
+    def bitacora(self):
+        return Comentario.bitacora(self)
+
+    @property
+    def media_files(self):
+        return Archivo.media_files(self)
+
+    def to_json(self):
+        o = super().to_json()
+        o['str'] = self.code
+        if self.created:
+            o['created'] = self.created.strftime('%d/%m/%Y %H:%M')
+        else:
+            o['created'] = None
+        o['estado'] = {'id': self.estado, 'name': self.get_estado_display()}
+        o['tipo_movimiento'] = {'id': self.tipo_movimiento, 'name': self.get_tipo_movimiento_display()}
+        if self.poliza:
+            o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
+        else:
+            o['poliza'] = {'id': '', 'number': ''}
+        if self.cliente:
+            o['cliente'] = {'id': self.cliente.id, 'name': self.cliente.__str__()}
+        else:
+            o['cliente'] = {'id': '', 'name': ''}
+        return o
+
+
+class SiniestroTramite(Base):
+    siniestro = models.ForeignKey(Siniestro, null=True, on_delete=models.CASCADE, related_name="tramites")
+
+    tramite_siniestro = models.CharField(max_length=20, null=True, blank=True, verbose_name="Trámite Aseguradora")
+    monto_reclamo = models.FloatField(default=0.0, verbose_name="Monto Reclamado")
+    deducible = models.FloatField(default=0.0, verbose_name="Deducible")
+    coaseguro = models.FloatField(default=0.0, verbose_name="Coaseguro")
+    gastos_presentados = models.TextField(max_length=600, null=True, blank=True)
+    no_cubierto = models.TextField(max_length=600, null=True, blank=True)
+    monto_pago = models.FloatField(default=0.0, verbose_name="Monto a pagar")
+    diagnostico = models.TextField(max_length=600, null=True, blank=True)
+    forma_pago = models.CharField(max_length=55, null=True, blank=True, default=FormaPagoSiniestro.EFECTIVO,
+                                  choices=FormaPagoSiniestro.choices())
 
 # endregion

@@ -955,7 +955,7 @@ class ReciboForm(forms.ModelForm):
             self.fields['tabla_pagos'].widget.attrs['readonly'] = 'readonly'
         else:
             self.fields['recibos'].widget.attrs['readonly'] = 'readonly'
-
+            
 
 class PagoForm(forms.ModelForm):
     prefix = 'pagocuota'
@@ -1092,3 +1092,142 @@ class CuotaForm(forms.ModelForm):
         if instance and data['monto'] == instance.monto_pagado():
             instance.estado = EstadoPago.PAGADO
             instance.save()
+
+
+class SiniestroTramiteForm(forms.ModelForm):
+    prefix = 'siniestro_tramite'
+
+    gastos_presentados = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
+
+    no_cubierto = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
+
+    diagnostico = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4'
+        }
+    ))
+
+    class Meta:
+        model = SiniestroTramite
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        data = self.cleaned_data
+        return data
+
+
+class SiniestroForm(forms.ModelForm):
+    code = forms.CharField(required=False, label="Tramite Interno", widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly',
+        }
+    ))
+
+    hora = forms.CharField(required=False, label="Hora registro", widget=forms.TextInput(
+        attrs={
+            'readonly': 'readonly'
+        }
+    ))
+    ramo = forms.CharField(required=False, label="Ramo", widget=ReadOnlyWidget)
+    sub_ramo = forms.CharField(required=False, label="Sub ramo", widget=ReadOnlyWidget)
+    grupo = forms.CharField(required=False, label="Grupo", widget=ReadOnlyWidget)
+    aseguradora = forms.CharField(required=False, label="Aseguradora", widget=ReadOnlyWidget)
+    descripcion = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={
+            'rows': 4
+        }
+    ))
+
+    cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), label='Cliente',
+                                     required=True, widget=SelectSearch)
+    drive = forms.Field(label="", required=False, widget=DriveWidget)
+    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
+
+    poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
+                                    widget=forms.Select(
+                                        choices=[]
+                                    ))
+
+    tramites_siniestro = forms.Field(required=False, label="Tramites del Siniestro",
+                                     widget=TramitesSiniestro)
+
+    tramite_por_siniestro = forms.ModelChoiceField(queryset=SiniestroTramite.objects.all(), label="",
+                                                   required=False, widget=FormWidget(
+            attrs={
+                'form': SiniestroTramiteForm,
+                'fields': (
+                    ('tramite_siniestro', 'monto_reclamo'),
+                    ('deducible', 'coaseguro'),
+                    ('gastos_presentados', 'no_cubierto'),
+                    ('diagnostico', 'monto_pago'),
+                    ('forma_pago',)
+                )
+            }
+        ))
+
+    class Meta:
+        model = Siniestro
+        fields = '__all__'
+
+    @staticmethod
+    def get_contacto_choices(poliza):
+        choices = [(None, '---------')]
+        for i in ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora):
+            choices.append((i.id, i.name))
+        return choices
+
+    @staticmethod
+    def get_poliza_choices(cliente):
+        choices = [(None, '---------')]
+        for i in Poliza.objects.filter(cliente=cliente, estado_poliza=EstadoPoliza.ACTIVA):
+            choices.append((i.id, i.no_poliza))
+        return choices
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        request = kwargs.pop('request', None)
+        updated_initial = {}
+        if instance:
+            updated_initial['fecha_recepcion'] = instance.created.strftime('%d/%m/%Y')
+            updated_initial['hora'] = instance.created.strftime('%H')
+            updated_initial['drive'] = instance
+            updated_initial['bitacora'] = instance
+            updated_initial['tramites_siniestro'] = instance
+            if instance.tramite:
+                updated_initial['tramite_por_siniestro'] = instance.tramite.id
+            if instance.poliza:
+                updated_initial['aseguradora'] = instance.poliza.aseguradora
+                updated_initial['grupo'] = instance.poliza.grupo
+                updated_initial['ramo'] = instance.poliza.ramo
+                updated_initial['sub_ramo'] = instance.poliza.sub_ramo
+
+        else:
+            if request:
+                updated_initial['user'] = request.user
+        kwargs.update(initial=updated_initial)
+        super().__init__(*args, **kwargs)
+        self.fields['contacto_aseguradora'].choices = []
+        self.fields['poliza'].choices = []
+        if instance and instance.cliente:
+            self.fields['poliza'].choices = self.get_poliza_choices(instance.cliente)
+        if instance and instance.poliza:
+            self.fields['contacto_aseguradora'].widget.choices = self.get_contacto_choices(instance.poliza)
+        if instance and (instance.estado == 'Pagado' or instance.estado == 'Rechazado'):
+            self.fields['estado'].widget.attrs['readonly'] = 'readonly'
+
+    def clean(self):
+        data = self.cleaned_data
+        return data

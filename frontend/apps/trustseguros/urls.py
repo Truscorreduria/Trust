@@ -1,9 +1,7 @@
 from django.urls import path
 from .views import *
 
-
 app_name = "trustseguros"
-
 
 urlpatterns = [
     path('', index, name="index"),
@@ -27,5 +25,6 @@ urlpatterns = [
     path('documentos/', documentos, name="documentos"),
     path('comentarios/', comentarios, name="comentarios"),
     path('cobranza/', Recibos.as_view(), name="recibos"),
+    path('siniestros/', Siniestros.as_view(), name="siniestros"),
     path('verificador/', verificador, name="verificador"),
 ]

@@ -154,3 +154,9 @@ class RecibosPrima(Widget):
 
     def format_value(self, value):
         return value
+
+class TramitesSiniestro(Widget):
+    template_name = "trustseguros/lte/widgets/tramites-siniestros.html"
+
+    def format_value(self, value):
+        return value
