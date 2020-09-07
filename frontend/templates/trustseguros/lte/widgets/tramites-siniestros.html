@@ -1,0 +1,19 @@
+{% with widget.value as instance %}
+    <input type="hidden" name="tramite" id="id_tramite"
+           {% if instance.tramite %}value="{{ instance.tramite.id }}"
+           {% else %}value=""{% endif %}>
+    <select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control"
+            {% if widget.attrs.readonly %}readonly="readonly"{% endif %}>
+        {% if instance.tramite %}            
+            {% for tramite in instance.tramites.all %}
+                <option value="{{ tramite.id }}"
+                        {% ifequal tramite.id instance.tramite.id %}selected{% endifequal %}>{{ tramite.tramite_siniestro }}</option>
+            {% endfor %}
+        {% else %}
+            <option value="" selected>---------</option>
+            {% for recibo in instance.tramites.all %}
+                <option value="{{ tramite.id }}">{{ recibo.tramite_siniestro }}</option>
+            {% endfor %}
+        {% endif %}
+    </select>
+{% endwith %}

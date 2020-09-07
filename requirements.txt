@@ -82,7 +82,7 @@ psycopg2-binary==2.8.4
 ptyprocess==0.6.0
 pycodestyle==2.5.0
 pycparser==2.19
-pycrypto==2.6.1
+#pycrypto==2.6.1
 pydot==1.4.0
 Pygments==2.5.2
 PyJWT==1.7.1

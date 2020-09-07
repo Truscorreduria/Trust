@@ -1809,3 +1809,99 @@ def iniciar_proc():
                                cliente__isnull=False, fecha_vence__lte=datetime.now())
     for p in ps:
         np = RenovarPoliza.send(p)
+
+class Siniestros(Datatables):
+    modal_width = 1200
+    model = Siniestro
+    form = SiniestroForm
+    list_display = ('code', ('Cliente', 'cliente.name'),
+                   ('Asegurado / Certificado', 'asegurado_certificado'),
+                   ('Póliza', 'poliza.number'),
+                   ('Tipo Movimiento', 'tipo_movimiento.name'),
+                   ('Estado', 'estado.name'),                  
+                   ('Siniestro Aseguradora', 'siniestro_aseguradora'))      
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Informacion general',
+            'fields': (
+                ('code', 'estado'),
+                ('cliente', 'poliza', 'ramo'),
+                ('sub_ramo', 'grupo', 'descripcion'),
+            )
+        },
+        {
+            'id': 'seguimiento',
+            'name': 'Seguimiento',
+            'fields': (
+                ('fecha_envio_trust', 'fecha_recepcion_aseguradora', 'siniestro_aseguradora', 'tramites_siniestro'),
+                ('tramite_por_siniestro',),
+            )
+        },
+        {
+            'id': 'drive',
+            'name': 'Soportes',
+            'fields': (
+                ('drive',),
+            )
+        },
+        {
+            'id': 'bita',
+            'name': 'Bitácora',
+            'fields': (
+                ('bitacora',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
+               'trustseguros/js/tramite.poliza.js',]
+    }
+
+    def save_related(self, instance, data):
+        x = data.get('siniestro_tramite-tramite_siniestro')
+        if x != '':
+            t, _ = SiniestroTramite.objects.get_or_create(siniestro=instance, tramite_siniestro=x)
+            t.monto_reclamo =  data.get('siniestro_tramite-monto_reclamo')
+            t.deducible =  data.get('siniestro_tramite-deducible')
+            t.coaseguro =  data.get('siniestro_tramite-coaseguro')
+            t.gastos_presentados =  data.get('siniestro_tramite-gastos_presentados')
+            t.no_cubierto =  data.get('siniestro_tramite-no_cubierto')
+            t.monto_pago =  data.get('siniestro_tramite-monto_pago')
+            t.diagnostico =  data.get('siniestro_tramite-diagnostico')
+            t.forma_pago =  data.get('siniestro_tramite-forma_pago')
+            t.save()
+        
+
+    def post(self, request):
+        if 'polizas' in request.POST:
+            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
+            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
+            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
+                                                for p in polizas]}, encoder=Codec, safe=False)
+        if 'contactos' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
+            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
+                                                for p in contactos],
+                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
+        return super().post(request)
+
+l =  {'id': ['1'], 
+'csrfmiddlewaretoken': ['beV18MojXMbHkTx4cUIms4XoOTgwln8ps0CEJkfmLqIPtXZGN3cTeRsmH2qQFRLw'], 
+'code': ['000001'], 'estado': ['Registrado'], 
+'cliente': ['1'], 'poliza': ['1'], 'ramo': ['PATRIMONIAL'],
+ 'sub_ramo': ['AUTOMOVIL'], 'grupo': ['CUENTAS CORPORATIVAS I'], 
+ 'descripcion': ['PRUEBA'], 'fecha_envio_trust': [''], 
+ 'fecha_recepcion_aseguradora': [''], 'siniestro_aseguradora': [''],
+  'tramite': [''], 'tramites_siniestro': [''], 
+  'siniestro_tramite-tramite_siniestro': 
+[''], 'siniestro_tramite-monto_reclamo': ['0.0'], 
+'siniestro_tramite-deducible': ['0.0'],
+ 'siniestro_tramite-coaseguro': ['0.0'], 
+ 'siniestro_tramite-gastos_presentados': [''], 'siniestro_tramite-no_cubierto': [''],
+  'siniestro_tramite-diagnostico': [''], 'siniestro_tramite-monto_pago': ['0.0'],
+   'siniestro_tramite-forma_pago': ['Efectivo'], 'save': ['save']}
+
+
+

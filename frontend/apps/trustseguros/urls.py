@@ -30,4 +30,5 @@ urlpatterns = [
     path('pagos_cancelados/', PagosCancelados.as_view(), name="pagos_cancelados"),
     path('recibos/', Recibos.as_view(), name="recibos"),
     path('calcular_tabla_pagos_tramites/', calcular_tabla_pagos_tramites, name="calcular_tabla_pagos_tramites"),
+    path('siniestros/', Siniestros.as_view(), name="siniestros"),
 ]
