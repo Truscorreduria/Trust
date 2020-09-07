@@ -83,7 +83,7 @@ $(document).ready(function () {
     $(document).on('change', 'input[name="per_comision"]', calcular_comision);
     $(document).on('change', 'input[name="per_comision"]', calcular_tabla_pagos);
 
-    $(document).on('change', 'input[name="cuotas"]', calcular_tabla_pagos);
+    $(document).on('change', 'input[name="cantidad_cuotas"]', calcular_tabla_pagos);
     $(document).on('change', 'input[name="fecha_pago"]', calcular_tabla_pagos);
     $(document).on('change', 'input[name="total"]', calcular_tabla_pagos);
 
