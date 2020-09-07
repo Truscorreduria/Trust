@@ -1189,7 +1189,8 @@ class Polizas(Datatables):
                 p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
-            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
+            p.comision = data.getlist('tabla_pagos_fecha_vence')[i]
             p.save()
 
 
@@ -1340,7 +1341,8 @@ class Tramites(Datatables):
                 p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
-            p.fecha_vence = datetime.strptime(data.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+            p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
+            p.comision = data.getlist('tabla_pagos_fecha_vence')[i]
             p.save()
 
 
