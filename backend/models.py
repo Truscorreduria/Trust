@@ -1367,7 +1367,7 @@ class Tramite(Base):
             o['cliente'] = {'id': '', 'name': ''}
         return o
 
-    def pagos(self):
+    def cuotas(self):
         return Cuota.objects.filter(tramite=self)
 
     def duracion(self):

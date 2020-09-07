@@ -1190,7 +1190,7 @@ class Polizas(Datatables):
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
-            p.comision = data.getlist('tabla_pagos_fecha_vence')[i]
+            p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i]
             p.save()
 
 
@@ -1342,7 +1342,7 @@ class Tramites(Datatables):
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
-            p.comision = data.getlist('tabla_pagos_fecha_vence')[i]
+            p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i]
             p.save()
 
 
@@ -1852,7 +1852,7 @@ class Recibos(Datatables):
                     p.numero = request.POST.getlist('tabla_pagos_numero')[i]
                     p.monto = request.POST.getlist('tabla_pagos_monto')[i]
                     p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i]
-                    p.fecha_vence = datetime.strptime(request.POST.getlist('tabla_pagos_fecha_vence')[i], '%d/%m/%Y')
+                    p.fecha_vence = parse_date(request.POST.getlist('tabla_pagos_fecha_vence')[i])
                     p.estado = self.get_status(p)
                     p.save()
 
@@ -1932,13 +1932,16 @@ class Recibos(Datatables):
     def save_related(self, instance, data):
         for i in range(0, len(data.getlist('tabla_pagos_id'))):
             if data.getlist('tabla_pagos_id')[i] == '':
-                p = Cuota(poliza=instance.recibo_editar)
+                if instance.recibo_editar:
+                    p = Cuota(tramite=instance.recibo_editar)
+                else:
+                    p = Cuota(poliza=instance)
             else:
                 p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
             p.monto = data.getlist('tabla_pagos_monto')[i]
             p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
-            p.estado = self.get_status(p)
+            p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i]
             p.save()
 
 
