@@ -1742,21 +1742,24 @@ class Recibos(Datatables):
                 },
             ]
         else:
-            return [
+            buttons = [
                 {
                     'class': 'btn btn-warning btn-perform',
                     'perform': 'modificar',
                     'callback': 'process_response',
                     'icon': 'fa fa-edit',
                     'text': 'Modificar',
-                }, {
+                },
+            ]
+            if instance.recibo_editar:
+                buttons.append({
                     'class': 'btn btn-danger btn-perform',
                     'perform': 'anular_recibo',
                     'callback': 'process_response',
                     'icon': 'fa fa-exclamation-triangle',
                     'text': 'Anular',
-                },
-            ]
+                })
+            return buttons
 
     @staticmethod
     def opencuota(instance, request):
@@ -1871,7 +1874,7 @@ class Recibos(Datatables):
                 if instance.recibo_editar:
                     recibo = instance.recibo_editar
                     recibo.genera_endoso = False
-                    recibo.pagos().delete()
+                    recibo.cuotas().delete()
                     recibo.save()
                     instance = self.get_instance(request)
                     form = self.get_form()(instance=instance)
