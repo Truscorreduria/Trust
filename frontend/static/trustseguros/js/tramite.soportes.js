@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
     const uploadFile = function (file) {
+        console.log(file);
         const data = new FormData();
         data.append('file', file);
         data.append('new', 'new');
@@ -19,7 +20,7 @@ $(document).ready(function () {
                                 <td>${response.archivo.created_user.username}</td>
                                 <td>${response.archivo.updated}</td>
                                 <td style="text-align: center;">
-                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="${ response.archivo.id }">
+                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="${response.archivo.id}">
                                         <span class="fa fa-trash"></span>
                                     </button>
                                 </td>
@@ -30,6 +31,8 @@ $(document).ready(function () {
     };
 
     $(document).on('change', '#drive-files', function () {
-        uploadFile(this.files[0]);
+        $.each(this.files, function (i, file) {
+            uploadFile(file);
+        })
     });
 });

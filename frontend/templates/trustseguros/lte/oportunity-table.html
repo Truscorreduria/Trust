@@ -595,7 +595,7 @@
                                 <td>${response.archivo.created_user.username}</td>
                                 <td>${response.archivo.updated}</td>
                                 <td style="text-align: center;">
-                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="${ response.archivo.id }"
+                                    <button type="button" class="btn btn-danger btn-table-delete" data-id="${response.archivo.id}"
                                     data-app="backend" data-model="archivo">
                                         <span class="fa fa-trash"></span>
                                     </button>
@@ -607,7 +607,9 @@
             };
 
             $(document).on('change', '#drive-files', function () {
-                uploadFile(this.files[0]);
+                $.each(this.files, function (i, o) {
+                    uploadFile(o);
+                });
             });
 
             $(document).on('click', '#bitacorabtn-add-comment', function () {
