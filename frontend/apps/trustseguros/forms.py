@@ -888,6 +888,13 @@ class ReciboForm(forms.ModelForm):
     recibos = forms.Field(required=False, label="Recibos de esta póliza",
                           widget=RecibosPrima)
 
+    prima_total = forms.FloatField(required=False, label="Prima total",
+                                   widget=forms.NumberInput(
+                                       attrs={
+                                           'readonly': 'readonly'
+                                       }
+                                   ))
+
     class Meta:
         model = Poliza
         fields = (
@@ -907,8 +914,9 @@ class ReciboForm(forms.ModelForm):
             except AttributeError:
                 pass
             updated_initial['recibos'] = instance
+            updated_initial['prima_total'] = instance.prima_total
+            updated_initial['saldo_pendiente'] = instance.saldo_pendiente
             if instance.recibo_editar:
-                print(instance.recibo_editar)
                 updated_initial['tabla_pagos'] = instance.recibo_editar
                 updated_initial['subtotal'] = instance.recibo_editar.subtotal
                 updated_initial['descuento'] = instance.recibo_editar.descuento
@@ -955,7 +963,7 @@ class ReciboForm(forms.ModelForm):
             self.fields['tabla_pagos'].widget.attrs['readonly'] = 'readonly'
         else:
             self.fields['recibos'].widget.attrs['readonly'] = 'readonly'
-            
+
 
 class PagoForm(forms.ModelForm):
     prefix = 'pagocuota'
@@ -1026,7 +1034,7 @@ class CuotaForm(forms.ModelForm):
                                               'readonly': 'readonly'
                                           }
                                       ))
-    comision_pagada = forms.FloatField(label="Comision pagada", required=False,
+    comision_pagada = forms.FloatField(label="Comision recibida", required=False,
                                        widget=forms.NumberInput(
                                            attrs={
                                                'readonly': 'readonly'
@@ -1051,11 +1059,18 @@ class CuotaForm(forms.ModelForm):
         }
     ))
 
+    moneda = forms.ModelChoiceField(label="Moneda", queryset=Moneda.objects.all(), required=False,
+                                    widget=forms.Select(
+                                        attrs={
+                                            'readonly': 'readonly',
+                                        }
+                                    ))
+
     class Meta:
         model = Cuota
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
                   'fecha_vence', 'numero', 'monto', 'dias_mora', 'monto_comision', 'estado',
-                  'monto_pagado', 'comision_pagada', 'saldo', 'comision_pendiente')
+                  'monto_pagado', 'comision_pagada', 'saldo', 'comision_pendiente', 'moneda')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -1067,6 +1082,7 @@ class CuotaForm(forms.ModelForm):
                     'numero_poliza': instance.poliza.no_poliza,
                     'aseguradora': instance.poliza.aseguradora.name,
                     'numero_recibo': instance.poliza.no_recibo,
+                    'moneda': instance.poliza.moneda,
                 }
             if instance.tramite:
                 update_initial = {
@@ -1074,6 +1090,7 @@ class CuotaForm(forms.ModelForm):
                     'numero_poliza': instance.tramite.poliza.no_poliza,
                     'aseguradora': instance.tramite.poliza.aseguradora.name,
                     'numero_recibo': instance.tramite.no_recibo,
+                    'moneda': instance.tramite.moneda,
                 }
             update_initial['pagos'] = instance.pagos
             update_initial['dias_mora'] = instance.dias_mora

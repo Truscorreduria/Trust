@@ -1765,7 +1765,7 @@ class Recibos(Datatables):
              'name': 'Información de pago',
              'fields': (
                  ('nombre_cliente', 'numero_poliza', 'aseguradora', 'estado'),
-                 ('numero_recibo', 'numero', 'fecha_vence', 'dias_mora'),
+                 ('numero_recibo', 'moneda', 'fecha_vence', 'dias_mora'),
                  ('monto', 'monto_pagado', 'saldo', 'monto_comision', 'comision_pagada', 'comision_pendiente'),
                  ('pagos',),
              )},
