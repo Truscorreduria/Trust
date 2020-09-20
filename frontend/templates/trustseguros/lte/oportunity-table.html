@@ -195,7 +195,6 @@
                     },
                     success: function (response) {
                         const $fieldset = $('.extra_data_fieldset').empty();
-                        console.log(response)
                         $.each(response, function (i, o) {
                             $fieldset.append(`
                                 <div class="row">
@@ -214,9 +213,14 @@
                                     </div>
                                 </div>
                             `)
-                        })
+                        });
                     }
-                })
+                });
+                if (_this.val() === '10'){
+                    $('.cotizacion-vehiculo').css('display', 'flex')
+                }else{
+                    $('.cotizacion-vehiculo').css('display', 'none')
+                }
             });
 
             $(document).on('keyup', '#id_cedula', function () {

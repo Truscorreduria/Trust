@@ -64,7 +64,9 @@
                     </div>
                     {% if instance.id %}
 
-                        <div class="row">
+                        <div class="row cotizacion-vehiculo"
+                             {% ifnotequal instance.sub_ramo.id 10 %}
+                             style="display: none"{% endifnotequal %}>
                             <div class="col-md-4">
                                 <div class="card">
                                     <div class="card-header">Datos cotización de vehículos</div>

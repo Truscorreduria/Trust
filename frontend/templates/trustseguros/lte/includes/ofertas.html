@@ -2,29 +2,54 @@
 
 <form action="." id="form-register" method="post">
     <input type="hidden" name="oportunity" value="{{ oportunity.id }}">
-    <table class="table">
-        <thead>
-        <tr>
-            <th></th>
-            <th>Aseguradora</th>
-            <th>Prima total</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% for oferta in oportunity.ofertas.all %}
+    {% if oportunity.cotizado %}
+        <table class="table">
+            <thead>
             <tr>
-                <td style="text-align: center; vertical-align: middle">
-                    <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}" required="required">
+                <th></th>
+                <th>Aseguradora</th>
+                <th>Prima total</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for oferta in oportunity.ofertas.all %}
+                <tr>
+                    <td style="text-align: center; vertical-align: middle">
+                        <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}" required="required">
+                    </td>
+                    <td>
+                        <img src="{{ oferta.aseguradora.logo.url }}" style="max-width: 85px">
+                    </td>
+                    <td>U$ {{ oferta.prima|intcomma }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Aseguradora</th>
+                <th>Prima total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <select name="aseguradora" id="id_aseguradora" class="form-control">
+                        {% for aseguradora in aseguradoras %}
+                            <option value="{{ aseguradora.id }}">{{ aseguradora.name }}</option>
+                        {% endfor %}
+                    </select>
                 </td>
                 <td>
-                    <img src="{{ oferta.aseguradora.logo.url }}" style="max-width: 85px">
+                    <input type="number" placeholder="PRIMA" class="form-control" name="prima" id="id_prima" required>
                 </td>
-                <td>U$ {{ oferta.prima|intcomma }}</td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    {% endif %}
     <button type="submit" class="btn btn-primary btn-trust">
         <i class="fa fa-file-archive"></i>
         <span>Registrar</span>

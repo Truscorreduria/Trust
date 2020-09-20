@@ -2051,6 +2051,10 @@ class Oportunity(BasePoliza):
             return {}
 
     @property
+    def cotizado(self):
+        return not (self.ofertas.all().count() == 0)
+
+    @property
     def dias(self):
         try:
             return (timezone.datetime.now() - self.created).days
@@ -2061,7 +2065,7 @@ class Oportunity(BasePoliza):
 
     @property
     def ofertas_columns(self):
-        return self.ofertas.all().count() + 1
+        return self.ofertas().all().count() + 1
 
     def to_json(self):
         o = super().to_json()
