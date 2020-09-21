@@ -15,12 +15,9 @@ def notificaciones_polizas_vencidas():
     #                            estado_poliza=EstadoPoliza.ACTIVA)
     ps = Poliza.objects.filter(fecha_vence__lte=day)
     for p in ps:
-        print(p.no_poliza)
-        config = p.get_config()
-        if config:
-            html = render_to_string('cotizador/email/notificacion_vence.html', {
-                'body': config.email_texto, 'poliza': p
-            })
-            send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza,
-                       "cesarabel@deltacopiers.com,gcarrion@trustcorreduria.com,sistemas@trustcorreduria.com",
-                       html=html)
+        html = render_to_string('cotizador/email/notificacion_vence.html', {
+            'poliza': p
+        })
+        send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza,
+                   "cesarabel@deltacopiers.com,gcarrion@trustcorreduria.com,sistemas@trustcorreduria.com",
+                   html=html)
