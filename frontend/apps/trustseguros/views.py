@@ -1626,7 +1626,7 @@ class Oportunidades(Datatables):
             html = render_to_string('trustseguros/lte/includes/ofertas.html',
                                     context={
                                         'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
-                                        'aseguradoras': Aseguradora.objects.filter(active=True),
+                                        'aseguradoras': Aseguradora.objects.all(),
                                     },
                                     request=request)
             return JsonResponse({
