@@ -401,6 +401,7 @@ DATE_INPUT_FORMATS = [
 
 
 CRONJOBS = [
-    ('*/10 * * * *', 'backend.cron.notificaciones_polizas_vencidas')
+    ('*/10 * * * *', 'backend.cron.notificaciones_polizas_vencidas'),
+    ('*/50 * * * *', 'backend.cron.renovacion_automatica'),
 ]
 
