@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from utils.utils import send_email
 from .models import Poliza, EstadoPoliza, ProcedenciaPoliza
 from django.template import Template, Context
+from frontend.apps.trustseguros.views import iniciar_proc as renovacion_automatica
 
 
 def notificaciones_polizas_vencidas():
@@ -19,12 +20,16 @@ def notificaciones_polizas_vencidas():
         config = p.get_config()
         if config:
             content = config.email_texto.replace('[[', '{{').replace(']]', '}}')
-            print(content)
             template = Template(content)
             context = Context({
                 'poliza': p
             })
+            destinatario = ""
+            # if p.cliente.email_personal:
+            #     destinatario += p.cliente.email_personal
+            destinatario += config.email_trust
+            if p.cesion_derecho:
+                destinatario += config.email_cesion_derecho
             html = template.render(context)
-            send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza,
-                       "cesarabel@deltacopiers.com,gcarrion@trustcorreduria.com,sistemas@trustcorreduria.com",
+            send_email('Tu póliza # %s está cerca de vencer' % p.no_poliza, destinatario,
                        html=html)
