@@ -679,12 +679,13 @@ class CotizadorConfigForm(forms.ModelForm):
                                      ))
 
     email_texto = forms.CharField(required=True, label="Contenido del correo (Accede a datos de "
-                                                       "la poliza de la siguiente manera: [[ poliza.cliente.name ]])", widget=forms.Textarea(
-        attrs={
-            'class': "htmleditor",
-            'data-autosave': "editor-content",
-        }
-    ))
+                                                       "la poliza de la siguiente manera: [[ poliza.cliente ]])",
+                                  widget=forms.Textarea(
+                                      attrs={
+                                          'class': "htmleditor",
+                                          'data-autosave': "editor-content",
+                                      }
+                                  ))
 
     class Meta:
         model = CotizadorConfig

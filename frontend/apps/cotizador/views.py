@@ -1165,10 +1165,8 @@ def invitacion(request):
             user.set_password(secret)
             user.save()
             c.cambiar_pass = True
-            context = {}
-            context['cliente'] = c.to_json()
-            context['user'] = {'id': c.user.id, 'username': c.user.username}
-            context['password'] = secret
+            context = {'cliente': c.to_json(), 'user': {'id': c.user.id, 'username': c.user.username},
+                       'password': secret}
             context = Context(context)
             html = template.render(context)
             send_email('Plan colaborador Banpro/Trust Correduría de Seguros',
