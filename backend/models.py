@@ -1956,7 +1956,7 @@ class Campain(Base):
         verbose_name = "campaña"
 
 
-class Prospect(BaseCliente, Persona, Direccion):
+class Prospect(BaseCliente, Persona, Empresa, Direccion):
 
     def __str__(self):
         return ""

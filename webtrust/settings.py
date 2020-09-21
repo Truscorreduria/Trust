@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'constance.backends.database',
     'rest_framework',
     'knox',
+    'django_crontab',
 
 ]
 
@@ -397,3 +398,9 @@ DATE_INPUT_FORMATS = [
     '%B %d %Y', '%B %d, %Y',  # 'October 25 2006', 'October 25, 2006'
     '%d %B %Y', '%d %B, %Y',  # '25 October 2006', '25 October, 2006'
 ]
+
+
+CRONJOBS = [
+    ('*/10 * * * *', 'backend.cron.notificaciones_polizas_vencidas')
+]
+

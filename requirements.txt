@@ -22,6 +22,7 @@ django-bower==5.2.0
 django-classy-tags==0.8.0
 django-constance==2.4.0
 django-crispy-forms==1.7.2
+django-crontab==0.7.1
 django-easy-pdf==0.1.1
 django-extensions==2.2.9
 django-grappelli==2.12.1
@@ -82,7 +83,7 @@ psycopg2-binary==2.8.4
 ptyprocess==0.6.0
 pycodestyle==2.5.0
 pycparser==2.19
-#pycrypto==2.6.1
+pycrypto==2.6.1
 pydot==1.4.0
 Pygments==2.5.2
 PyJWT==1.7.1
