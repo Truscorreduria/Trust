@@ -4,7 +4,6 @@
 
 {% block style %}
     {{ block.super }}
-    <link rel="stylesheet" href="{% static 'simditor/site/assets/styles/simditor.css' %}">
     <style type="text/css">
         .data-container .table td {
             min-width: 200px;
@@ -98,12 +97,6 @@
 
     <script type="text/javascript" src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'lodash/dist/lodash.min.js' %}"></script>
-
-    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/module.js' %}"></script>
-    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/uploader.js' %}"></script>
-    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/hotkeys.js' %}"></script>
-    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/dompurify.js' %}"></script>
-    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/simditor.js' %}"></script>
 
 
     <script type="text/javascript" defer>
@@ -556,7 +549,6 @@
                 })
             });
 
-
             $(document).on('submit', '#form-register', function (e) {
                 e.preventDefault();
                 let data = new FormData(this);
@@ -578,7 +570,6 @@
                     }
                 })
             });
-
 
             const uploadFile = function (file) {
                 const data = new FormData();

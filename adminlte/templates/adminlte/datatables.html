@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/growl/stylesheets/jquery.growl.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/jquery-ui/jquery-ui.min.css' %}">
+    <link rel="stylesheet" href="{% static 'simditor/site/assets/styles/simditor.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/main.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/datatables.trust.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/ui.theme.trust.css' %}">
@@ -64,6 +65,11 @@
     <script src="{% static 'adminlte/plugins/growl/javascripts/jquery.growl.js' %}"></script>
     <script src="{% static 'adminlte/plugins/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'adminlte/plugins/inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/module.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/uploader.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/hotkeys.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/dompurify.js' %}"></script>
+    <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/simditor.js' %}"></script>
     <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
     <script type="text/javascript">
 
@@ -254,6 +260,23 @@
             $.each($('.inputmask'), function (n, el) {
                 let mask = $(el).data('mask');
                 $(el).inputmask(mask);
+            });
+
+            let toolbar = ['title', 'bold', 'italic', 'underline', 'strikethrough', 'fontScale',
+                'color', '|', 'ol', 'ul', 'blockquote', 'code', 'table', '|', 'link', 'image',
+                'hr', '|', 'indent', 'outdent', 'alignment'];
+            Simditor.locale = 'es';
+            $.each($('textarea.htmleditor'), function (n, el) {
+                new Simditor({
+                    textarea: el,
+                    placeholder: 'Ingresar cuerpo del correo...',
+                    toolbar: toolbar,
+                    pasteImage: true,
+                    defaultImage: 'assets/images/image.png',
+                    upload: location.search === '?upload' ? {
+                        url: '/upload'
+                    } : false
+                });
             });
         };
 
