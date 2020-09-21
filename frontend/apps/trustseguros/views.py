@@ -1417,6 +1417,7 @@ class ConfiguracionCotizador(Datatables):
             'name': 'Correo de renovación',
             'fields': (
                 ('email_renovacion',),
+                ('email_cesion_derecho',),
                 ('email_texto',),
             )
         },

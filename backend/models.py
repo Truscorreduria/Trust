@@ -1800,6 +1800,10 @@ class CotizadorConfig(base):
     email_renovacion = models.CharField(max_length=1000, default='gcarrion@trustcorreduria.com,', null=True,
                                         verbose_name='Lista de correos adicionales que se '
                                                      'incluiran en la notificación del cliente')
+
+    email_cesion_derecho = models.CharField(max_length=1000, default='', null=True,
+                                        verbose_name='Lista de correos adicionales que se '
+                                                     'incluiran en caso de cesiones de derecho')
     email_texto = models.TextField(max_length=10000, default='', null=True, blank=True,
                                    verbose_name='Contenido del correo')
 
