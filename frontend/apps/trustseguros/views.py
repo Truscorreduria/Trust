@@ -1593,8 +1593,11 @@ class Oportunidades(Datatables):
             return JsonResponse({})
 
         if 'print' in request.POST:
+            print(request.POST)
+            oportunity = Oportunity.objects.get(id=request.POST.get('id'))
+            print(oportunity)
             return render_to_pdf_response(request, 'trustseguros/lte/pdf/oportunity.html', {
-                'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                'oportunity': oportunity
             })
 
         if 'prepare_email' in request.POST:

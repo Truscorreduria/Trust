@@ -2065,7 +2065,7 @@ class Oportunity(BasePoliza):
 
     @property
     def ofertas_columns(self):
-        return self.ofertas().all().count() + 1
+        return self.ofertas.all().count() + 1
 
     def to_json(self):
         o = super().to_json()
