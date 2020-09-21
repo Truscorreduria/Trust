@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from utils.utils import send_email
 from django.template.loader import render_to_string
-from .models import Poliza
+from .models import Poliza, EstadoPoliza
 
 
 def notificaciones_polizas_vencidas():
@@ -13,7 +13,7 @@ def notificaciones_polizas_vencidas():
     #                            fecha_vence__day=day.day,
     #                            aseguradora__isnull=False,
     #                            estado_poliza=EstadoPoliza.ACTIVA)
-    ps = Poliza.objects.filter(fecha_vence__lte=day)
+    ps = Poliza.objects.filter(fecha_vence__lte=day).exclude(estado_poliza=EstadoPoliza.RENOVADA)
     for p in ps:
         html = render_to_string('cotizador/email/notificacion_vence.html', {
             'poliza': p
