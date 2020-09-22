@@ -26,13 +26,13 @@
                        value="{{ fila.fecha_vence|date:'d/m/Y' }}">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto" class="form-control"
-                       {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
-                       value="{{ fila.monto }}">
+                <input type="number" name="{{ widget.name }}_monto" class="form-control numberinput"
+                        {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
+                       value="{{ fila.monto }}" step=".01" step=".01">
             </td>
             <td>
-                <input type="text" name="{{ widget.name }}_monto_comision" class="form-control"
-                       {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
+                <input type="number" name="{{ widget.name }}_monto_comision" class="form-control numberinput"
+                        {% ifnotequal widget.value.estado_poliza 0 %} readonly {% endifnotequal %}
                        value="{{ fila.monto_comision }}">
             </td>
             <td>

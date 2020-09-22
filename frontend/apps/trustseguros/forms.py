@@ -409,12 +409,12 @@ class PolizaForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.CharField(required=False, label="", widget=forms.TextInput(
+    prima_total = forms.CharField(required=False, label="", widget=forms.NumberInput(
         attrs={
             'readonly': 'readonly'
         }
     ), initial=0.0)
-    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.TextInput(
+    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.NumberInput(
         attrs={
             'readonly': 'readonly'
         }
