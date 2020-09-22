@@ -21,7 +21,7 @@
                     <td>
                         <img src="{{ oferta.aseguradora.logo.url }}" style="max-width: 85px">
                     </td>
-                    <td>U$ {{ oferta.prima|intcomma }}</td>
+                    <td>U$ {{ oferta.prima_total|intcomma }}</td>
                 </tr>
             {% endfor %}
             </tbody>
