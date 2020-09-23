@@ -735,8 +735,14 @@ class UserForm(forms.ModelForm):
 
 
 class ProspectForm(forms.ModelForm):
-    cedula = forms.CharField(required=True, label="Cédula")
+    cedula = forms.CharField(required=False, label="Número indentificación")
+    ruc = forms.CharField(required=False, label="Número indentificación")
     domicilio = forms.CharField(label="Dirección", required=False, widget=forms.Textarea(
+        attrs={
+            'rows': '4',
+        }
+    ))
+    observaciones = forms.CharField(label="Observaciones", required=False, widget=forms.Textarea(
         attrs={
             'rows': '4',
         }
@@ -762,8 +768,16 @@ class ProspectForm(forms.ModelForm):
             self.fields['genero'].widget.attrs['readonly'] = 'readonly'
             self.fields['estado_civil'].widget.attrs['readonly'] = 'readonly'
             self.fields['email_personal'].widget.attrs['readonly'] = 'readonly'
+            self.fields['actividad_economica'].widget.attrs['readonly'] = 'readonly'
+            self.fields['razon_social'].widget.attrs['readonly'] = 'readonly'
+            self.fields['nombre_comercial'].widget.attrs['readonly'] = 'readonly'
+            self.fields['fecha_constitucion'].widget.attrs['readonly'] = 'readonly'
+            self.fields['pagina_web'].widget.attrs['readonly'] = 'readonly'
+            self.fields['observaciones'].widget.attrs['readonly'] = 'readonly'
         else:
             self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
+            self.fields['tipo_cliente'].widget.attrs['readonly'] = 'readonly'
+            self.fields['tipo_identificacion'].widget.attrs['readonly'] = 'readonly'
 
 
 class OportunityForm(forms.ModelForm):
@@ -774,19 +788,9 @@ class OportunityForm(forms.ModelForm):
         }
     ))
     prospect = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Prospecto", required=False,
-                                      widget=FormWidget(
+                                      widget=ProspectFormWidget(
                                           attrs={
-                                              'form': ProspectForm,
-                                              'fields': (
-                                                  ('cedula', 'email_personal'),
-                                                  ('primer_nombre', 'segundo_nombre'),
-                                                  ('apellido_paterno', 'apellido_materno'),
-                                                  ('telefono', 'celular'),
-                                                  ('genero', 'estado_civil'),
-                                                  ('departamento', 'municipio'),
-                                                  ('domicilio',),
-                                              ),
-                                              'primary_key': 'cedula'
+                                              'form': ProspectForm
                                           }
                                       ))
 

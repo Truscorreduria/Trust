@@ -1005,11 +1005,9 @@ class Polizas(Datatables):
                     'perform': 'modificando',
                     'callback': 'process_response',
                 }, {
-                    'class': 'btn btn-danger btn-perform',
+                    'class': 'btn btn-danger btn-null',
                     'icon': 'fa fa-exclamation-triangle',
                     'text': 'Anular',
-                    'perform': 'cancelando',
-                    'callback': 'process_response',
                 }
                 ]
 
@@ -1492,7 +1490,7 @@ class Oportunidades(Datatables):
     modal_width = 1200
     model = Oportunity
     form = OportunityForm
-    list_display = ('code', 'prospect.full_name', 'vendedor.full_name',
+    list_display = ('code', 'prospect.name', 'vendedor.full_name',
                     ('Dias', 'dias'),
                     ('Etapa', 'status.name'),
                     'campain.name')
@@ -1650,11 +1648,17 @@ class Oportunidades(Datatables):
         return super().post(request)
 
     def save_related(self, instance, data):
+        tipo_cliente = data.get('tipo_cliente', '1')
         try:
-            prospect_form = ProspectForm(data,
-                                         instance=Prospect.objects.get(
-                                             cedula=data.get('cedula')))
-        except ObjectDoesNotExist as error:
+            if tipo_cliente == '1':
+                prospect_form = ProspectForm(data,
+                                             instance=Prospect.objects.get(
+                                                 cedula=data.get('cedula')))
+            if tipo_cliente == '2':
+                prospect_form = ProspectForm(data,
+                                             instance=Prospect.objects.get(
+                                                 ruc=data.get('ruc')))
+        except ObjectDoesNotExist:
             prospect_form = ProspectForm(data)
         if prospect_form.is_valid():
             prospect_form.save()

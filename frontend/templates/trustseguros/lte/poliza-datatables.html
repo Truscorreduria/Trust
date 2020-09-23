@@ -247,6 +247,34 @@
                 });
             });
 
+            $(document).on('click', '.btn-null', function () {
+                Swal.fire({
+                    imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",
+                    title: 'Estas seguro?',
+                    text: "Esta acción no se puede revertir. La póliza pasará a estado cancelada.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, Anúlala',
+                    cancelButtonText: 'No, Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax("{% url 'trustseguros:polizas' %}", {
+                            method: "POST",
+                            data: {
+                                id: $('input[name="id"]').val(), cancelar: 'cancelar'
+                            }, success: function (response) {
+                                redraw_object(response);
+                                update_table(response);
+                            }
+                        });
+                    } else {
+                        $('#btn-renew').removeAttr('disabled')
+                    }
+                });
+            });
+
             $(document).on('keypress', '#id_pedir_comentarios', function () {
                 const _this = $(this);
                 if (_this.val().length > 0) {

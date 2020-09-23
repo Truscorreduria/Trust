@@ -1,7 +1,6 @@
 from adminlte.widgets import *
-from backend.models import Cliente, Linea, OportunityStatus
+from backend.models import Cliente, Linea, OportunityStatus, Prospect
 from django.forms import TextInput
-from backend.models import FieldMapType, FieldMap
 
 
 class JsonWidget(Widget):
@@ -155,8 +154,20 @@ class RecibosPrima(Widget):
     def format_value(self, value):
         return value
 
+
 class TramitesSiniestro(Widget):
     template_name = "trustseguros/lte/widgets/tramites-siniestros.html"
 
     def format_value(self, value):
         return value
+
+
+class ProspectFormWidget(Widget):
+    template_name = "trustseguros/lte/widgets/prospect-form.html"
+
+    def format_value(self, value):
+        if value:
+            prospect = Prospect.objects.get(id=value)
+            return self.attrs['form'](instance=prospect)
+        else:
+            return self.attrs['form']()

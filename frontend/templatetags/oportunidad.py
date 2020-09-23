@@ -1,5 +1,5 @@
 from django import template
-from backend.models import LineaUser, OportunityQuotation, OportunityStatus
+from backend.models import LineaUser, OportunityQuotation, OportunityStatus, TipoCliente
 from django.core.exceptions import ObjectDoesNotExist
 
 register = template.Library()
@@ -90,3 +90,15 @@ def touchable(choice, status):
         return 'touchable'
     else:
         return ''
+
+
+@register.filter('display')
+def display(tipo_cliente, instance):
+    if tipo_cliente == 'persona' and instance.tipo_cliente == TipoCliente.NATURAL:
+        return 'flex'
+    if tipo_cliente == 'empresa' and instance.tipo_cliente == TipoCliente.NATURAL:
+        return 'none'
+    if tipo_cliente == 'persona' and instance.tipo_cliente == TipoCliente.JURIDICO:
+        return 'none'
+    if tipo_cliente == 'empresa' and instance.tipo_cliente == TipoCliente.JURIDICO:
+        return 'flex'

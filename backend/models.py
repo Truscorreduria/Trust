@@ -341,11 +341,12 @@ class TipoDoc:
     PASAPORTE = 2
     RESIDENTE = 3
     OTRO = 4
+    RUC = 5
 
     @classmethod
     def choices(cls):
         return (cls.CEDULA, "Cédula"), (cls.PASAPORTE, "Pasaporte"), (cls.RESIDENTE, "Cédula de residente"), \
-               (cls.OTRO, "Otro")
+               (cls.OTRO, "Otro"), (cls.RUC, "RUC")
 
 
 class TipoCliente:
@@ -1965,9 +1966,15 @@ class Prospect(BaseCliente, Persona, Empresa, Direccion):
     def __str__(self):
         return ""
 
+    def get_full_name(self):
+        if self.tipo_cliente == TipoCliente.NATURAL:
+            return self.full_name
+        if self.tipo_cliente == TipoCliente.JURIDICO:
+            return self.razon_social
+
     def to_json(self):
         o = super().to_json()
-        o['full_name'] = self.full_name
+        o['name'] = self.get_full_name()
         return o
 
 

@@ -1,0 +1,89 @@
+{% load crispy_forms_filters oportunidad %}
+
+<style type="text/css">
+    .hidden-field {
+        display: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col">{{ widget.value.tipo_cliente|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.tipo_identificacion|as_crispy_field }}</div>
+</div>
+
+<div class="row persona" style="display: {{ 'persona'|display:widget.value.instance }}">
+    <div class="col">
+        {{ widget.value.cedula|as_crispy_field }}
+        <button type="button" class="{{ widget.name }}-button-clear"
+                style="
+                        {% if not widget.value.instance %}
+                            display: none;
+                        {% endif %}
+                        color: red;
+                        background-color: pink;
+                        position: absolute;
+                        right: 15px;
+                        top: 41px;">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="col">{{ widget.value.genero|as_crispy_field }}</div>
+</div>
+
+<div class="row persona" style="display: {{ 'persona'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.primer_nombre|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.segundo_nombre|as_crispy_field }}</div>
+</div>
+
+<div class="row persona" style="display: {{ 'persona'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.apellido_paterno|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.apellido_materno|as_crispy_field }}</div>
+</div>
+
+<div class="row persona" style="display: {{ 'persona'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.celular|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.email_personal|as_crispy_field }}</div>
+</div>
+
+<div class="row empresa" style="display: {{ 'empresa'|display:widget.value.instance }}">
+    <div class="col">
+        {{ widget.value.ruc|as_crispy_field }}
+        <button type="button" class="{{ widget.name }}-button-clear"
+                style="
+                        {% if not widget.value.instance %}
+                            display: none;
+                        {% endif %}
+                        color: red;
+                        background-color: pink;
+                        position: absolute;
+                        right: 15px;
+                        top: 41px;">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+    <div class="col">{{ widget.value.actividad_economica|as_crispy_field }}</div>
+</div>
+
+<div class="row empresa" style="display: {{ 'empresa'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.razon_social|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.nombre_comercial|as_crispy_field }}</div>
+</div>
+
+<div class="row empresa" style="display: {{ 'empresa'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.fecha_constitucion|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.pagina_web|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.telefono|as_crispy_field }}</div>
+</div>
+
+<div class="row empresa" style="display: {{ 'empresa'|display:widget.value.instance }}">
+    <div class="col">{{ widget.value.observaciones|as_crispy_field }}</div>
+</div>
+
+<div class="row">
+    <div class="col">{{ widget.value.departamento|as_crispy_field }}</div>
+    <div class="col">{{ widget.value.municipio|as_crispy_field }}</div>
+</div>
+
+<div class="row">
+    <div class="col">{{ widget.value.domicilio|as_crispy_field }}</div>
+</div>
