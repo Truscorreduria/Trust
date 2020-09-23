@@ -1017,12 +1017,12 @@ class CuotaForm(forms.ModelForm):
                                           'readonly': 'readonly'
                                       }
                                   ))
-    numero = forms.IntegerField(label="Número de cuota", required=False,
-                                widget=forms.NumberInput(
-                                    attrs={
-                                        'readonly': 'readonly'
-                                    }
-                                ))
+    # numero = forms.IntegerField(label="Número de cuota", required=False,
+    #                             widget=forms.NumberInput(
+    #                                 attrs={
+    #                                     'readonly': 'readonly'
+    #                                 }
+    #                             ))
     monto = forms.FloatField(label="Valor a pagar", required=False,
                              widget=forms.NumberInput(
                                  attrs={
@@ -1082,7 +1082,7 @@ class CuotaForm(forms.ModelForm):
     class Meta:
         model = Cuota
         fields = ('nombre_cliente', 'numero_poliza', 'aseguradora', 'numero_recibo',
-                  'fecha_vence', 'numero', 'monto', 'dias_mora', 'monto_comision', 'estado',
+                  'fecha_vence', 'monto', 'dias_mora', 'monto_comision', 'estado',
                   'monto_pagado', 'comision_pagada', 'saldo', 'comision_pendiente', 'moneda')
 
     def __init__(self, *args, **kwargs):
