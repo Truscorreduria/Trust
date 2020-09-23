@@ -349,6 +349,8 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
                         'bootstrap-select#1.13.15',
                         'bootstrap-validator#0.11.9',
+                        'd3#5.16.0',
+                        'd3-arrays#2.5.0',
                         'datatables#1.10.19',
                         'datatables.net#1.10.20',
                         'datatables.net-bs#2.1.1',
@@ -364,9 +366,10 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
                         'growl#1.3.5',
                         'inputmask#4.0.8',
                         'izimodal#1.5.1',
-                        'jquery#3.4.1',
+                        'jquery#2.1.4',
                         'jquery-mask-plugin#1.14.15',
                         'jquery-ui#1.12.1',
+                        'js-beautify#1.5.10',
                         'js-xlsx#0.16.2',
                         'lodash#4.17.15',
                         'mocha#1.17.1',
@@ -375,6 +378,7 @@ BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
                         'mustache.js#3.0.1',
                         'raphael#2.2.7',
                         'simditor#2.3.28',
+                        'simditor-html#1.1.1',
                         'smartwizard#4.3.1',
                         'sweetalert2#7.33.1',
                         'tipsy#0.1.7']
@@ -399,9 +403,7 @@ DATE_INPUT_FORMATS = [
     '%d %B %Y', '%d %B, %Y',  # '25 October 2006', '25 October, 2006'
 ]
 
-
 CRONJOBS = [
     ('*/30 * * * *', 'backend.cron.notificaciones_polizas_vencidas'),
     # ('*/60 * * * *', 'backend.cron.renovacion_automatica'),
 ]
-
