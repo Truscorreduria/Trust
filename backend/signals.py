@@ -173,6 +173,8 @@ def renovar_poliza(sender, **kwargs):
     for cert in sender.datos_tecnicos.all():
         dato = DatoPoliza(poliza=nueva, extra_data=cert.extra_data)
         dato.save()
+    sender.estado_poliza = EstadoPoliza.RENOVADA
+    sender.save()
 
     return nueva
 
