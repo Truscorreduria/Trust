@@ -341,7 +341,7 @@
 
                 table.ajax.reload();
             });
-            $(document).on('keyup', 'input,textarea', function () {
+            $(document).on('keyup', 'input,textarea:not(.htmleditor)', function () {
                 const self = $(this);
                 let text = self.val().toUpperCase();
                 self.val(text);
