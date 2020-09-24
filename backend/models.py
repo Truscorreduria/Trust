@@ -1030,7 +1030,8 @@ class Poliza(BasePoliza):
     @property
     def dias_vigencia(self):
         if self.fecha_vence:
-            return (self.fecha_vence - date.today()).days
+            return (date(day=self.fecha_vence.day, month=self.fecha_vence.month,
+                         year=self.fecha_vence.year) - date.today()).days
         return None
 
     @property
@@ -1803,8 +1804,8 @@ class CotizadorConfig(base):
                                                      'incluiran en la notificación del cliente')
 
     email_cesion_derecho = models.CharField(max_length=1000, default='', null=True,
-                                        verbose_name='Lista de correos adicionales que se '
-                                                     'incluiran en caso de cesiones de derecho')
+                                            verbose_name='Lista de correos adicionales que se '
+                                                         'incluiran en caso de cesiones de derecho')
     email_texto = models.TextField(max_length=10000, default='', null=True, blank=True,
                                    verbose_name='Contenido del correo')
 
