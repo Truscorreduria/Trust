@@ -1135,10 +1135,6 @@ class Polizas(Datatables):
             return self.make_response(instance, html_form, [], 200)
         if 'renovar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
-            AddComment.send(p, request=request,
-                            comentario="Poliza en estado renovada")
-            p.estado_poliza = EstadoPoliza.RENOVADA
-            p.save()
             nueva = RenovarPoliza.send(p, request=request)[0][1]
             form = self.get_form()(instance=nueva)
             html_form = self.html_form(nueva, request, form, 'POST')
