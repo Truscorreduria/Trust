@@ -1405,7 +1405,7 @@ class Cuota(Base):
                                               default=EstadoPago.VIGENTE)
 
     monto_comision = models.FloatField(default=0.0, verbose_name="Monto de comisión")
-    fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión")
+    fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión", blank=True)
 
     def get_recibo(self):
         try:
