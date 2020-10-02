@@ -1075,7 +1075,7 @@ class Poliza(BasePoliza):
         # return True
 
     def print_cuotas(self):
-        return numero_a_letras(self.cuotas)
+        return numero_a_letras(self.cantidad_cuotas)
 
     def valor_prima(self):
         try:
