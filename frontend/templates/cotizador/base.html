@@ -135,7 +135,7 @@
         <nav class="user-menu-mobil">
             <ul>
                 {% block user-menu-mobil %}
-                    <li><a href="" class="user-menu-mobil-name">César Abel Ramírez</a></li>
+                    <li><a href="" class="user-menu-mobil-name">{{ user.get_full_name }}</a></li>
                     <li>
                         <a href="{% url 'cotizador:perfil' %}">
                             <img src="{% static 'cotizador/images/configurar.png' %}" alt="configurar">
