@@ -240,7 +240,7 @@
                         </tr>
                         {% for pago in poliza.tabla_pago %}
                             <tr>
-                                <td>{{ pago.numero }} / {{ pago.cuotas }}</td>
+                                <td>{{ pago.numero }} / {{ pago.cantidad_cuotas }}</td>
                                 <td>{{ pago.fecha|date:'d/m/Y' }}</td>
                                 <td>
                                     <table style="padding: 1.5px">
