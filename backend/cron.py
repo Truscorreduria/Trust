@@ -14,8 +14,6 @@ def notificaciones_polizas_vencidas():
                                fecha_vence__day=day.day,
                                aseguradora__isnull=False,
                                estado_poliza=EstadoPoliza.ACTIVA)
-    # ps = Poliza.objects.filter(fecha_vence__lte=day).exclude(estado_poliza=EstadoPoliza.RENOVADA)
-    print(ps.count())
     for p in ps:
         config = p.get_config()
         if config:
@@ -25,8 +23,6 @@ def notificaciones_polizas_vencidas():
                 'poliza': p
             })
             destinatario = ""
-            # if p.cliente.email_personal:
-            #     destinatario += p.cliente.email_personal
             destinatario += config.email_trust
             if p.cesion_derecho:
                 destinatario += config.email_cesion_derecho
