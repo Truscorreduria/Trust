@@ -1032,7 +1032,7 @@ class Poliza(BasePoliza):
         if self.fecha_vence and self.estado_poliza in [EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]:
             return (date(day=self.fecha_vence.day, month=self.fecha_vence.month,
                          year=self.fecha_vence.year) - date.today()).days
-        return None
+        return 0
 
     @property
     def media_files(self):
