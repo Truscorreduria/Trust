@@ -861,7 +861,7 @@ class Grupos(Datatables):
     model = Grupo
     list_display = ('name',)
     search_fields = ('name',)
-    fields = ('name',)
+    fields = ('name', 'autorenovacion')
 
 
 class SubRamos(Datatables):
@@ -2066,6 +2066,46 @@ def verificador(request):
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
-                               cliente__isnull=False, fecha_vence__lte=datetime.now())
+                               cliente__isnull=False, fecha_vence__lte=datetime.now(),
+                               grupo__in=Grupo.objects.filter(autorenovacion=True))
     for p in ps:
-        np = RenovarPoliza.send(p)
+        nueva = RenovarPoliza.send(p)
+        nueva.user = p.user
+        nueva.suma_asegurada = p.aseguradora.depreciar(p.valor_nuevo, p.anno)
+        nueva.marca = p.marca
+        nueva.modelo = p.modelo
+        nueva.chasis = p.chasis
+        nueva.anno = p.anno
+        nueva.placa = p.placa
+        nueva.color = p.color
+        nueva.circulacion = p.circulacion
+        nueva.tipo_cobertura = p.tipo_cobertura
+        nueva.porcentaje_deducible = p.porcentaje_deducible
+        nueva.porcentaje_deducible_extension = p.porcentaje_deducible_extension
+        nueva.minimo_deducible = p.minimo_deducible
+        nueva.minimo_deducible_extension = p.minimo_deducible_extension
+        nueva.moneda = p.moneda
+        nueva.costo_exceso = p.costo_exceso
+        nueva.monto_exceso = p.monto_exceso
+        nueva.valor_nuevo = p.valor_nuevo
+        nueva.suma_asegurada = p.suma_asegurada
+        nueva.subtotal = p.subtotal
+        nueva.descuento = p.descuento
+        nueva.emision = p.emision
+        nueva.iva = p.iva
+        nueva.otros = p.otros
+        nueva.total = p.total
+        nueva.per_comision = p.per_comision
+        nueva.amount_comision = p.amount_comision
+        nueva.cesion_derecho = p.cesion_derecho
+        nueva.beneficiario = p.beneficiario
+        nueva.cesioinario = p.cesioinario
+        nueva.forma_pago = p.forma_pago
+        nueva.f_pago = p.f_pago
+        nueva.medio_pago = p.medio_pago
+        nueva.m_pago = p.m_pago
+        nueva.cuotas = p.cuotas
+        nueva.moneda_cobro = p.moneda_cobro
+        nueva.banco_emisor = p.banco_emisor
+        nueva.file_circulacion = p.file_circulacion
+        nueva.save()

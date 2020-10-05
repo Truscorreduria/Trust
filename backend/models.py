@@ -644,6 +644,7 @@ class Moneda(Base):
 
 class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
+    autorenovacion = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
