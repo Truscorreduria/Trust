@@ -1,13 +1,14 @@
 {% load datatables %}
-<table class="table table-hover table-bordered">
-    <thead>
-    <tr>
-        {% for column in widget.attrs.columns %}
-            <th>{{ column.1 }}</th>
-        {% endfor %}
-    </tr>
-    </thead>
-    <tbody id="{{ widget.name }}-table">
+<div class="table-responsive">
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            {% for column in widget.attrs.columns %}
+                <th>{{ column.1 }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody id="{{ widget.name }}-table">
         {% for row in widget.value %}
             <tr>
                 {% for column in widget.attrs.columns %}
@@ -15,5 +16,6 @@
                 {% endfor %}
             </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
