@@ -2069,6 +2069,7 @@ def iniciar_proc():
                                cliente__isnull=False, fecha_vence__lte=datetime.now(),
                                grupo__in=Grupo.objects.filter(autorenovacion=True))
     for p in ps:
+        print(p.no_poliza)
         nueva = RenovarPoliza.send(p)
         nueva.user = p.user
         nueva.suma_asegurada = p.aseguradora.depreciar(p.valor_nuevo, p.anno)
