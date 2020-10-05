@@ -102,10 +102,10 @@
                                             <input type="text" name="tabla_pagos_fecha_vence" class="form-control" readonly value="${o.fecha}">
                                         </td>
                                         <td>
-                                            <input type="text" name="tabla_pagos_monto" class="form-control" value="${o.monto}">
+                                            <input type="text" name="tabla_pagos_monto" class="form-control numberinput" value="${o.monto}">
                                         </td>
                                         <td>
-                                            <input type="text" name="tabla_pagos_monto_comision" class="form-control" value="${o.monto_comision}">
+                                            <input type="text" name="tabla_pagos_monto_comision" class="form-control numberinput" value="${o.monto_comision}">
                                         </td>
                                         <td>
                                             <input type="text" name="tabla_pagos_estado" class="form-control" readonly value="${o.estado}">
@@ -142,7 +142,7 @@
             $(document).on('change', 'input[name="per_comision"]', calcular_comision);
             $(document).on('change', 'input[name="per_comision"]', calcular_tabla_pagos);
 
-            $(document).on('change', 'input[name="cuotas"]', calcular_tabla_pagos);
+            $(document).on('change', 'input[name="cantidad_cuotas"]', calcular_tabla_pagos);
             $(document).on('change', 'input[name="fecha_pago"]', calcular_tabla_pagos);
             $(document).on('change', 'input[name="total"]', calcular_tabla_pagos);
 
