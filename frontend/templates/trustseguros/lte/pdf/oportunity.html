@@ -24,10 +24,10 @@
     <table>
         <tr>
             <td>
-                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
+                {% comment %}<p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
                 <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
                 <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
-                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>{% endcomment %}
             </td>
             <td>
 
@@ -150,12 +150,12 @@
 
     <p style="text-align: justify">Agradeciendo su atención, quedamos atentos a sus comentarios.</p>
 
-    <p style="margin: 0">Atte.</p>
+    {% comment %}<p style="margin: 0">Atte.</p>
     <p style="margin: 0">{{ oportunity.vendedor.get_full_name }}</p>
     <p style="margin: 0">Trust Correduría de Seguros</p>
     <p style="margin: 0">Celular +505 8932 8850</p>
     <p style="margin: 0; color: blue; text-decoration: underline">contacto@trustcorreduria.com</p>
-    <p style="margin: 0; color: blue; text-decoration: underline; page-break-after: always">www.trustcorreduria.com</p>
+    <p style="margin: 0; color: blue; text-decoration: underline; page-break-after: always">www.trustcorreduria.com</p>{% endcomment %}
 
     <p><b>Anexo</b></p>
     <p>Cuadro comparativo por compañia</p>
@@ -196,12 +196,15 @@
         </tbody>
     </table>
 
-    <p style="margin: 0">Esta oferta es válida solo para vehículos de uso particular</p>
-    <p style="margin: 0">Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso</p>
-    <p style="margin: 0">Esta oferta no debe entenderse como cobertura de ninguna índole, ni aceptación de riesgo por parte de la(s)
+    <p style="margin: 0">Esta oferta es válida solo para vehículos de uso particular.</p>
+    <p style="margin: 0">Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso.</p>
+    <p style="margin: 0">Esta oferta no debe entenderse como cobertura de ninguna índole, ni aceptación de riesgo por
+        parte de la(s)
         compañia(s) de seguro, hasta no recibir la aceptación por escrito de usted y confirmado cobertura con la póliza
-        emitida</p>
-    <p style="margin: 0">*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e Infracciones de
-        Tránsito</p>
-    <p style="margin: 0">La suma asegurada está sujeta a revisión en dependencia de la fecha de emisión de la circulación</p>
+        emitida.</p>
+    <p style="margin: 0">*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e
+        Infracciones de
+        Tránsito.</p>
+    <p style="margin: 0">La suma asegurada está sujeta a revisión en dependencia de la fecha de emisión de la
+        circulación.</p>
 {% endblock %}
