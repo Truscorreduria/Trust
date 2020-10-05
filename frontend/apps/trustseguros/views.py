@@ -2066,11 +2066,12 @@ def verificador(request):
 
 def iniciar_proc():
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
+                               aseguradora__isnull=False,
+                               estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE],
                                cliente__isnull=False, fecha_vence__lte=datetime.now(),
                                grupo__in=Grupo.objects.filter(autorenovacion=True))
     for p in ps:
-        print(p.no_poliza)
-        nueva = RenovarPoliza.send(p)
+        nueva = RenovarPoliza.send(p)[0][1]
         nueva.user = p.user
         nueva.suma_asegurada = p.aseguradora.depreciar(p.valor_nuevo, p.anno)
         nueva.marca = p.marca
