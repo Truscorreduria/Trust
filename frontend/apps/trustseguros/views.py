@@ -1734,7 +1734,7 @@ class Recibos(Datatables):
     def get_queryset(self, filters, search_value):
         return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
 
-    def get_buttons(self, request):
+    def get_buttons(self, request, instance):
         instance = self.get_instance(request)
         if instance.modificando_recibo:
             return [
