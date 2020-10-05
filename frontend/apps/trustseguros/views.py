@@ -981,10 +981,9 @@ class Polizas(Datatables):
         return super().get_queryset(filters, search_value).filter(
             estado_poliza__in=[EstadoPoliza.PENDIENTE, EstadoPoliza.ACTIVA])
 
-    def get_buttons(self, request):
+    def get_buttons(self, request, instance):
         buttons = self.buttons.copy()
-        instance = self.get_instance(request)
-        if instance:
+        if instance.id:
             if instance.editable:
                 buttons.append({
                     'class': 'btn btn-info btn-perform',
@@ -1059,6 +1058,7 @@ class Polizas(Datatables):
             except IntegrityError as e:
                 print(e)
 
+            print(instance.editable)
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
                              'errors': errors}, status=status, encoder=Codec)
 

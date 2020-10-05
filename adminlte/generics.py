@@ -121,14 +121,14 @@ class Datatables(View):
         else:
             return self.form
 
-    def get_buttons(self, request):
+    def get_buttons(self, request, instance=None):
         return self.buttons
 
     def html_form(self, instance, request, form, method):
         return render_to_string(self.form_template,
                                 context={'opts': self.model._meta, 'fieldsets': self.fieldsets,
                                          'form': form, 'instance': instance, 'method': method,
-                                         'buttons': self.get_buttons(request)},
+                                         'buttons': self.get_buttons(request, instance=instance)},
                                 request=request)
 
     def get_list_filters(self):
