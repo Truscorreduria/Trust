@@ -522,7 +522,7 @@
                         let blob = new Blob([response], {type: 'application/pdf'});
                         let link = document.createElement('a');
                         link.href = window.URL.createObjectURL(blob);
-                        link.download = "Cotización - " + $('input[name="primer_nombre"]').val() + " " + $('input[name="apellido_paterno"]').val() + ".pdf";
+                        link.download = `Cotización - ${$('input[name="primer_nombre"]').val()} ${$('input[name="segundo_nombre"]').val()} ${$('input[name="apellido_paterno"]').val()} ${$('input[name="apellido_materno"]').val()}.pdf`;
                         link.click();
                         _this.removeAttr('disabled')
                     }
