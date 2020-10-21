@@ -2210,7 +2210,7 @@ User.add_to_class('lineas', user_lines)
 
 # region Siniestros
 
-class EstadoSiniestros:
+class EstadoSiniestrosTramites:
     REGISTRADO = 'Registrado'
     ENVIADO = 'Enviado'
     LIQUIDADO = 'Liquidado'
@@ -2223,6 +2223,14 @@ class EstadoSiniestros:
             cls.LIQUIDADO, 'Liquidado'), \
                (cls.PAGADO, 'Pagado'), (cls.RECHAZADO, 'Rechazado')
 
+class EstadoSiniestro:
+    PROCESO = 'En Proceso'    
+    PAGADO = 'Pagado'
+    DECLINADO = 'Declinado'    
+
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.PROCESO, 'En Proceso'), (cls.PAGADO, 'Pagado'), (cls.DECLINADO, 'Declinado')
 
 class FormaPagoSiniestro:
     EFECTIVO = 'Efectivo'
@@ -2245,31 +2253,48 @@ class TipoMovimientoSiniestros:
     def choices(cls):
         return (None, '---------'), (cls.REEMBOLSO, 'Reembolso de Gastos'), (cls.CHOQUE, 'Choque'), (cls.OTRO, 'Otro')
 
+class TipoAsegurado:
+    TITULAR = 'Titular'
+    DEPENDIENTE = 'Dependiente'
 
-class Siniestro(Base):
+    @classmethod
+    def choices(cls):
+        return (None, '---------'), (cls.TITULAR, 'Titular'), (cls.DEPENDIENTE, 'Dependiente')
+
+class SiniestroTramite(Base):
+    code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    fecha_registro = models.DateField(null=True, blank=True, verbose_name="fecha registro")
+    fecha_suceso = models.DateField(null=True, blank=True, verbose_name="fecha suceso")
+    estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoSiniestrosTramites.REGISTRADO,
+                              choices=EstadoSiniestrosTramites.choices())
 
-    estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoSiniestros.REGISTRADO,
-                              choices=EstadoSiniestros.choices())
-    tipo_movimiento = models.CharField(max_length=55, null=True, blank=True, default=TipoMovimientoSiniestros.REEMBOLSO,
-                                       choices=TipoMovimientoSiniestros.choices())
-    code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name='cliente_siniestro')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_siniestro")
-    fecha_recepcion = models.DateField(null=True, blank=True)
-    asegurado_certificado = models.CharField(max_length=30, null=True, blank=True,
-                                             verbose_name="Asegurado / Certificado")
+    tipo_asegurado =  models.CharField(max_length=55, null=True, blank=True, default=TipoAsegurado.TITULAR,
+                              choices=TipoAsegurado.choices())
+    nombre_asegurado = models.CharField(max_length=50, null=True, blank=True, verbose_name="nombre")   
+
+    
+    tipo_movimiento = models.CharField(max_length=55, null=True, blank=True, default=TipoMovimientoSiniestros.REEMBOLSO,
+                                       choices=TipoMovimientoSiniestros.choices())
     descripcion = models.TextField(max_length=600, null=True, blank=True)
 
-    fecha_envio_trust = models.DateField(null=True, blank=True, verbose_name="fecha envío a aseguradora")
-    siniestro_aseguradora = models.CharField(max_length=20, null=True, blank=True, verbose_name="Siniestro Aseguradora")
+    fecha_envio_trust = models.DateField(null=True, blank=True, verbose_name="fecha envío a aseguradora")    
     fecha_recepcion_aseguradora = models.DateField(null=True, blank=True, verbose_name="fecha recepción aseguradora")
-    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
-    tramite = models.ForeignKey('SiniestroTramite', null=True, blank=True, on_delete=models.SET_NULL,
-                                related_name="tramite_seleccionado")
+    tramite_aseguradora = models.CharField(max_length=20, null=True, blank=True, verbose_name="trámite aseguradora")
+
+    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True) 
+
+    monto_reclamo = models.FloatField(default=0.0, verbose_name="Monto Reclamado")
+    deducible = models.FloatField(default=0.0, verbose_name="Deducible")
+    coaseguro = models.FloatField(default=0.0, verbose_name="Coaseguro")
+    gastos_presentados = models.TextField(max_length=600, null=True, blank=True, verbose_name="detalles de gastos")
+    no_cubierto = models.TextField(max_length=600, null=True, blank=True)  
+    numero_siniestro = models.CharField(max_length=20, null=True, blank=True, verbose_name="reclamo aseguradora")
 
     def save(self, *args, **kwargs):
         if not self.code:
@@ -2303,19 +2328,53 @@ class Siniestro(Base):
             o['cliente'] = {'id': '', 'name': ''}
         return o
 
+class Siniestro(Base):
+    reclamo_aseguradora = models.CharField(max_length=10, null=True, blank=True, verbose_name="numero reclamo")
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    fecha_liquidacion = models.DateField(null=True, blank=True, verbose_name="fecha liquidacion")    
+    estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoSiniestro.PROCESO,
+                              choices=EstadoSiniestro.choices())
 
-class SiniestroTramite(Base):
-    siniestro = models.ForeignKey(Siniestro, null=True, on_delete=models.CASCADE, related_name="tramites")
-
-    tramite_siniestro = models.CharField(max_length=20, null=True, blank=True, verbose_name="Trámite Aseguradora")
-    monto_reclamo = models.FloatField(default=0.0, verbose_name="Monto Reclamado")
-    deducible = models.FloatField(default=0.0, verbose_name="Deducible")
-    coaseguro = models.FloatField(default=0.0, verbose_name="Coaseguro")
-    gastos_presentados = models.TextField(max_length=600, null=True, blank=True)
-    no_cubierto = models.TextField(max_length=600, null=True, blank=True)
-    monto_pago = models.FloatField(default=0.0, verbose_name="Monto a pagar")
-    diagnostico = models.TextField(max_length=600, null=True, blank=True)
+    cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
+                                related_name='siniestro_cliente')
+    poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
+                               related_name="siniestro_poliza") 
+    
+    deducible_aplicado = models.FloatField(default=0.0, verbose_name="Deducible aplicado")
+    deducible_pendiente = models.FloatField(default=0.0, verbose_name="Deducible pendiente")    
+    gastos_presentados = models.TextField(max_length=600, null=True, blank=True, verbose_name="detalles gastos")
+    no_cubierto = models.TextField(max_length=600, null=True, blank=True)      
+    monto_pagado = models.FloatField(default=0.0, verbose_name="Total Reclamado")
     forma_pago = models.CharField(max_length=55, null=True, blank=True, default=FormaPagoSiniestro.EFECTIVO,
-                                  choices=FormaPagoSiniestro.choices())
+                              choices=FormaPagoSiniestro.choices())
+    diagnostico = models.TextField(max_length=500, null=True, blank=True, verbose_name="Diagnostico")
+   
 
+    @property
+    def bitacora(self):
+        return Comentario.bitacora(self)
+
+    @property
+    def media_files(self):
+        return Archivo.media_files(self)
+
+    def to_json(self):
+        o = super().to_json()
+       
+        if self.created:
+            o['created'] = self.created.strftime('%d/%m/%Y %H:%M')
+        else:
+            o['created'] = None
+        o['estado'] = {'id': self.estado, 'name': self.get_estado_display()}
+        
+        if self.poliza:
+            o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
+        else:
+            o['poliza'] = {'id': '', 'number': ''}
+        if self.cliente:
+            o['cliente'] = {'id': self.cliente.id, 'name': self.cliente.__str__()}
+        else:
+            o['cliente'] = {'id': '', 'name': ''}
+        return o
 # endregion

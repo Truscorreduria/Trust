@@ -25,6 +25,7 @@ urlpatterns = [
     path('documentos/', documentos, name="documentos"),
     path('comentarios/', comentarios, name="comentarios"),
     path('cobranza/', Recibos.as_view(), name="recibos"),
-    path('siniestros/', Siniestros.as_view(), name="siniestros"),
+    path('siniestrotramite/', SiniestroTramite.as_view(), name="siniestrotramite"),
+    path('siniestro/', Siniestro.as_view(), name="siniestro"),
     path('verificador/', verificador, name="verificador"),
 ]
