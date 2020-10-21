@@ -2088,7 +2088,6 @@ def iniciar_proc():
         nueva.costo_exceso = p.costo_exceso
         nueva.monto_exceso = p.monto_exceso
         nueva.valor_nuevo = p.valor_nuevo
-        nueva.suma_asegurada = p.suma_asegurada
         nueva.subtotal = p.subtotal
         nueva.descuento = p.descuento
         nueva.emision = p.emision
