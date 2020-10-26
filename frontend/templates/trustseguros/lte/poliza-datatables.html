@@ -256,14 +256,14 @@
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Si, Anúlala',
-                    cancelButtonText: 'No, Cancelar'
+                    confirmButtonText: 'Si',
+                    cancelButtonText: 'No'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax("{% url 'trustseguros:polizas' %}", {
                             method: "POST",
                             data: {
-                                id: $('input[name="id"]').val(), cancelar: 'cancelar'
+                                id: $('input[name="id"]').val(), cancelando: 'cancelando'
                             }, success: function (response) {
                                 redraw_object(response);
                                 update_table(response);
@@ -311,6 +311,15 @@
                     }
                 })
             });
+
+            $(document).on('change', '#id_motivo_cancelacion', function () {
+                const _this = $(this);
+                if (_this.val() === '5') {
+                    $('.col-otro-motivo').css('display', 'block')
+                } else {
+                    $('.col-otro-motivo').css('display', 'none')
+                }
+            })
 
         });
 

@@ -420,12 +420,18 @@ class PolizaForm(forms.ModelForm):
         }
     ), initial=0.0)
 
+    otro_motivo = forms.CharField(required=False, label="Especificar motivo",
+                                  widget=forms.Textarea(attrs={
+                                      'rows': 4,
+                                  }))
+
     class Meta:
         model = Poliza
         fields = (
             'no_poliza', 'ramo', 'sub_ramo', 'fecha_emision', 'fecha_vence', 'aseguradora',
             'cliente', 'contratante', 'grupo', 'tipo_poliza', 'cesion_derecho', 'cesioinario',
             'estado_poliza', 'no_recibo', 'concepto', 'pedir_comentarios', 'coberturas',
+            'fecha_cancelacion', 'motivo_cancelacion', 'otro_motivo',
             'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',

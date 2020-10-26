@@ -984,6 +984,18 @@ class Polizas(Datatables):
     def get_buttons(self, request, instance):
         buttons = self.buttons.copy()
         if instance.id:
+            if instance.estado_poliza == EstadoPoliza.CANCELADA:
+                return [{
+                    'class': 'btn btn-info btn-renew',
+                    'icon': 'fa fa-fan',
+                    'text': 'Renovar',
+                }, {
+                    'class': 'btn btn-warning btn-perform',
+                    'icon': 'fa fa-edit',
+                    'text': 'Modificar',
+                    'perform': 'modificando',
+                    'callback': 'process_response',
+                }]
             if instance.editable:
                 buttons.append({
                     'class': 'btn btn-info btn-perform',
@@ -1006,7 +1018,7 @@ class Polizas(Datatables):
                 }, {
                     'class': 'btn btn-danger btn-null',
                     'icon': 'fa fa-exclamation-triangle',
-                    'text': 'Anular',
+                    'text': 'Cancelar',
                 }
                 ]
 
@@ -1115,7 +1127,7 @@ class Polizas(Datatables):
             AddComment.send(p, request=request,
                             comentario="Preparando poliza para cancelación")
             p.editable = False
-            p.perdir_comentarios = True
+            p.perdir_motivo = True
             p.cancelando = True
             p.save()
             form = self.get_form()(instance=p)
@@ -1958,137 +1970,132 @@ class Recibos(Datatables):
 
 
 class SiniestroTramite(Datatables):
-     modal_width = 1200
-     model = SiniestroTramite
-     form = SiniestroTramiteForm
-     list_display = ('code', ('Cliente', 'cliente.name'),
-                     
-                     ('Póliza', 'poliza.number'),
-                     ('Tipo Movimiento', 'tipo_movimiento.name'),
-                     ('Estado', 'estado.name'),
-                     ('Siniestro Aseguradora', 'numero_siniestro'))
-     fieldsets = [
-         {
-             'id': 'info',
-             'name': 'Informacion general',
-             'fields': (
-                 ('code', 'fecha_registro', 'fecha_suceso', 'estado'),
-                 ('cliente', 'poliza', 'ramo', 'sub_ramo'),                
-                 ('grupo', 'tipo_asegurado', 'nombre_asegurado', 'contacto_aseguradora'),
-                 ('descripcion',),
-             )
-         },
-         {
-             'id': 'seguimiento',
-             'name': 'Seguimiento',
-             'fields': (
-                 ('fecha_envio_trust', 'fecha_recepcion_aseguradora', 'tramite_aseguradora', 'numero_siniestro'),
-                 ('tipo_movimiento', 'monto_reclamo', 'deducible', 'coaseguro'),
-                 ('gastos_presentados', 'no_cubierto'),                
-             )
-         },
-         {
-             'id': 'drive',
-             'name': 'Soportes',
-             'fields': (
-                 ('drive',),
-             )
-         },
-         {
-             'id': 'bita',
-             'name': 'Bitácora',
-             'fields': (
-                 ('bitacora',),
-             )
-         },
-     ]
-     media = {
-         'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-                'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
-     }
+    modal_width = 1200
+    model = SiniestroTramite
+    form = SiniestroTramiteForm
+    list_display = ('code', ('Cliente', 'cliente.name'),
 
-    
+                    ('Póliza', 'poliza.number'),
+                    ('Tipo Movimiento', 'tipo_movimiento.name'),
+                    ('Estado', 'estado.name'),
+                    ('Siniestro Aseguradora', 'numero_siniestro'))
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Informacion general',
+            'fields': (
+                ('code', 'fecha_registro', 'fecha_suceso', 'estado'),
+                ('cliente', 'poliza', 'ramo', 'sub_ramo'),
+                ('grupo', 'tipo_asegurado', 'nombre_asegurado', 'contacto_aseguradora'),
+                ('descripcion',),
+            )
+        },
+        {
+            'id': 'seguimiento',
+            'name': 'Seguimiento',
+            'fields': (
+                ('fecha_envio_trust', 'fecha_recepcion_aseguradora', 'tramite_aseguradora', 'numero_siniestro'),
+                ('tipo_movimiento', 'monto_reclamo', 'deducible', 'coaseguro'),
+                ('gastos_presentados', 'no_cubierto'),
+            )
+        },
+        {
+            'id': 'drive',
+            'name': 'Soportes',
+            'fields': (
+                ('drive',),
+            )
+        },
+        {
+            'id': 'bita',
+            'name': 'Bitácora',
+            'fields': (
+                ('bitacora',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
+               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
+    }
 
-     def post(self, request):
-         if 'polizas' in request.POST:
-             cliente = Cliente.objects.get(id=request.POST.get('cliente'))
-             polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
-             return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
-                                                 for p in polizas]}, encoder=Codec, safe=False)
-         if 'contactos' in request.POST:
-             poliza = Poliza.objects.get(id=request.POST.get('poliza'))
-             contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
-             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
-                                                 for p in contactos],
-                                  'instance': poliza.to_json()}, encoder=Codec, safe=False)
-     
-         return super().post(request)
+    def post(self, request):
+        if 'polizas' in request.POST:
+            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
+            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
+            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
+                                                for p in polizas]}, encoder=Codec, safe=False)
+        if 'contactos' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
+            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
+                                                for p in contactos],
+                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
 
-  
+        return super().post(request)
+
 
 class Siniestro(Datatables):
-     modal_width = 1200
-     model = Siniestro
-     form = SiniestroForm
-     list_display = ('reclamo_aseguradora', ('Cliente', 'cliente.name'),                     
-                     ('Póliza', 'poliza.number'),                     
-                     ('Estado', 'estado.name'))
-     fieldsets = [
-         {
-             'id': 'info',
-             'name': 'Información general',
-             'fields': (
-                  ('reclamo_aseguradora', 'fecha_liquidacion', 'cliente', 'poliza'),
-                 ('ramo', 'sub_ramo', 'grupo', 'estado'), 
-                 ('diagnostico',), 
-             )
-         },
-          {
-              'id': 'seguimiento',
-              'name': 'Seguimiento',
-              'fields': (
-                  ('deducible_aplicado', 'deducible_pendiente', 'monto_pagado', 'forma_pago'),                 
-                  ('gastos_presentados', 'no_cubierto'), 
-                               
-              )
-          },
-         {
-             'id': 'drive',
-             'name': 'Soportes',
-             'fields': (
-                 ('drive',),
-             )
-         },
-         {
-             'id': 'bita',
-             'name': 'Bitácora',
-             'fields': (
-                 ('bitacora',),
-             )
-         },
-     ]
-     media = {
-         'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-                'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
-     }
+    modal_width = 1200
+    model = Siniestro
+    form = SiniestroForm
+    list_display = ('reclamo_aseguradora', ('Cliente', 'cliente.name'),
+                    ('Póliza', 'poliza.number'),
+                    ('Estado', 'estado.name'))
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('reclamo_aseguradora', 'fecha_liquidacion', 'cliente', 'poliza'),
+                ('ramo', 'sub_ramo', 'grupo', 'estado'),
+                ('diagnostico',),
+            )
+        },
+        {
+            'id': 'seguimiento',
+            'name': 'Seguimiento',
+            'fields': (
+                ('deducible_aplicado', 'deducible_pendiente', 'monto_pagado', 'forma_pago'),
+                ('gastos_presentados', 'no_cubierto'),
 
- 
+            )
+        },
+        {
+            'id': 'drive',
+            'name': 'Soportes',
+            'fields': (
+                ('drive',),
+            )
+        },
+        {
+            'id': 'bita',
+            'name': 'Bitácora',
+            'fields': (
+                ('bitacora',),
+            )
+        },
+    ]
+    media = {
+        'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
+               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
+    }
 
-     def post(self, request):
-         if 'polizas' in request.POST:
-             cliente = Cliente.objects.get(id=request.POST.get('cliente'))
-             polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
-             return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
-                                                 for p in polizas]}, encoder=Codec, safe=False)
-         if 'contactos' in request.POST:
-             poliza = Poliza.objects.get(id=request.POST.get('poliza'))
-             contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
-             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
-                                                 for p in contactos],
-                                  'instance': poliza.to_json()}, encoder=Codec, safe=False)
-      
-         return super().post(request)
-  
+    def post(self, request):
+        if 'polizas' in request.POST:
+            cliente = Cliente.objects.get(id=request.POST.get('cliente'))
+            polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA, cliente=cliente)
+            return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
+                                                for p in polizas]}, encoder=Codec, safe=False)
+        if 'contactos' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
+            return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
+                                                for p in contactos],
+                                 'instance': poliza.to_json()}, encoder=Codec, safe=False)
+
+        return super().post(request)
+
 
 # endregion
 

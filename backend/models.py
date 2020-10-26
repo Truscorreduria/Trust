@@ -800,6 +800,20 @@ class ActivoChoices:
         return (cls.INACTIVO, "No"), (cls.ACTIVO, "Si")
 
 
+class MotivoCancelacion:
+    NO_TOMADA = 1
+    CAMBIO_COMPANIA = 2
+    CREDITO_CANCELADO = 3
+    FALTA_PAGO = 4
+    OTROS = 5
+
+    @classmethod
+    def choices(cls):
+        return (cls.NO_TOMADA, "No tomada"), (cls.CAMBIO_COMPANIA, "Cambio de compañia"), (
+        cls.CREDITO_CANCELADO, "Crédito cancelado"), \
+               (cls.FALTA_PAGO, "Falta de pago"), (cls.OTROS, "Otros"),
+
+
 class Cobertura(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="coberturas")
     name = models.CharField(max_length=75, null=True, verbose_name="nombre")
@@ -971,6 +985,10 @@ class Poliza(BasePoliza):
     editable = models.BooleanField(default=True, blank=True)
     modificando = models.BooleanField(default=False)
     cancelando = models.BooleanField(default=False)
+    fecha_cancelacion = models.DateField(null=True, blank=True)
+    motivo_cancelacion = models.PositiveIntegerField(choices=MotivoCancelacion.choices(), null=True, blank=True)
+    otro_motivo = models.TextField(max_length=255, null=True, blank=True, verbose_name="Especificar motivo")
+    perdir_motivo = models.BooleanField(default=False, blank=True)
     perdir_comentarios = models.BooleanField(default=False, blank=True)
     pedir_soporte = models.BooleanField(default=False, blank=True)
 
@@ -2223,14 +2241,16 @@ class EstadoSiniestrosTramites:
             cls.LIQUIDADO, 'Liquidado'), \
                (cls.PAGADO, 'Pagado'), (cls.RECHAZADO, 'Rechazado')
 
+
 class EstadoSiniestro:
-    PROCESO = 'En Proceso'    
+    PROCESO = 'En Proceso'
     PAGADO = 'Pagado'
-    DECLINADO = 'Declinado'    
+    DECLINADO = 'Declinado'
 
     @classmethod
     def choices(cls):
         return (None, '---------'), (cls.PROCESO, 'En Proceso'), (cls.PAGADO, 'Pagado'), (cls.DECLINADO, 'Declinado')
+
 
 class FormaPagoSiniestro:
     EFECTIVO = 'Efectivo'
@@ -2253,6 +2273,7 @@ class TipoMovimientoSiniestros:
     def choices(cls):
         return (None, '---------'), (cls.REEMBOLSO, 'Reembolso de Gastos'), (cls.CHOQUE, 'Choque'), (cls.OTRO, 'Otro')
 
+
 class TipoAsegurado:
     TITULAR = 'Titular'
     DEPENDIENTE = 'Dependiente'
@@ -2260,6 +2281,7 @@ class TipoAsegurado:
     @classmethod
     def choices(cls):
         return (None, '---------'), (cls.TITULAR, 'Titular'), (cls.DEPENDIENTE, 'Dependiente')
+
 
 class SiniestroTramite(Base):
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
@@ -2274,26 +2296,25 @@ class SiniestroTramite(Base):
                                 related_name='cliente_siniestro')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
                                related_name="poliza_siniestro")
-    tipo_asegurado =  models.CharField(max_length=55, null=True, blank=True, default=TipoAsegurado.TITULAR,
-                              choices=TipoAsegurado.choices())
-    nombre_asegurado = models.CharField(max_length=50, null=True, blank=True, verbose_name="nombre")   
+    tipo_asegurado = models.CharField(max_length=55, null=True, blank=True, default=TipoAsegurado.TITULAR,
+                                      choices=TipoAsegurado.choices())
+    nombre_asegurado = models.CharField(max_length=50, null=True, blank=True, verbose_name="nombre")
 
-    
     tipo_movimiento = models.CharField(max_length=55, null=True, blank=True, default=TipoMovimientoSiniestros.REEMBOLSO,
                                        choices=TipoMovimientoSiniestros.choices())
     descripcion = models.TextField(max_length=600, null=True, blank=True)
 
-    fecha_envio_trust = models.DateField(null=True, blank=True, verbose_name="fecha envío a aseguradora")    
+    fecha_envio_trust = models.DateField(null=True, blank=True, verbose_name="fecha envío a aseguradora")
     fecha_recepcion_aseguradora = models.DateField(null=True, blank=True, verbose_name="fecha recepción aseguradora")
     tramite_aseguradora = models.CharField(max_length=20, null=True, blank=True, verbose_name="trámite aseguradora")
 
-    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True) 
+    contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
 
     monto_reclamo = models.FloatField(default=0.0, verbose_name="Monto Reclamado")
     deducible = models.FloatField(default=0.0, verbose_name="Deducible")
     coaseguro = models.FloatField(default=0.0, verbose_name="Coaseguro")
     gastos_presentados = models.TextField(max_length=600, null=True, blank=True, verbose_name="detalles de gastos")
-    no_cubierto = models.TextField(max_length=600, null=True, blank=True)  
+    no_cubierto = models.TextField(max_length=600, null=True, blank=True)
     numero_siniestro = models.CharField(max_length=20, null=True, blank=True, verbose_name="reclamo aseguradora")
 
     def save(self, *args, **kwargs):
@@ -2328,28 +2349,28 @@ class SiniestroTramite(Base):
             o['cliente'] = {'id': '', 'name': ''}
         return o
 
+
 class Siniestro(Base):
     reclamo_aseguradora = models.CharField(max_length=10, null=True, blank=True, verbose_name="numero reclamo")
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    fecha_liquidacion = models.DateField(null=True, blank=True, verbose_name="fecha liquidacion")    
+    fecha_liquidacion = models.DateField(null=True, blank=True, verbose_name="fecha liquidacion")
     estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoSiniestro.PROCESO,
                               choices=EstadoSiniestro.choices())
 
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name='siniestro_cliente')
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.SET_NULL,
-                               related_name="siniestro_poliza") 
-    
+                               related_name="siniestro_poliza")
+
     deducible_aplicado = models.FloatField(default=0.0, verbose_name="Deducible aplicado")
-    deducible_pendiente = models.FloatField(default=0.0, verbose_name="Deducible pendiente")    
+    deducible_pendiente = models.FloatField(default=0.0, verbose_name="Deducible pendiente")
     gastos_presentados = models.TextField(max_length=600, null=True, blank=True, verbose_name="detalles gastos")
-    no_cubierto = models.TextField(max_length=600, null=True, blank=True)      
+    no_cubierto = models.TextField(max_length=600, null=True, blank=True)
     monto_pagado = models.FloatField(default=0.0, verbose_name="Total Reclamado")
     forma_pago = models.CharField(max_length=55, null=True, blank=True, default=FormaPagoSiniestro.EFECTIVO,
-                              choices=FormaPagoSiniestro.choices())
+                                  choices=FormaPagoSiniestro.choices())
     diagnostico = models.TextField(max_length=500, null=True, blank=True, verbose_name="Diagnostico")
-   
 
     @property
     def bitacora(self):
@@ -2361,13 +2382,13 @@ class Siniestro(Base):
 
     def to_json(self):
         o = super().to_json()
-       
+
         if self.created:
             o['created'] = self.created.strftime('%d/%m/%Y %H:%M')
         else:
             o['created'] = None
         o['estado'] = {'id': self.estado, 'name': self.get_estado_display()}
-        
+
         if self.poliza:
             o['poliza'] = {'id': self.poliza.id, 'number': self.poliza.no_poliza}
         else:
