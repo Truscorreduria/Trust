@@ -2207,7 +2207,7 @@ class OportunityQuotation(Base):
     @property
     def emision_total(self):
         if self.aseguradora.emision_soa:
-            emision = round((self.emision * (self.prima + 55 + self.valor_exceso)) / 100, 2)
+            emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
         else:
             emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
         if emision < self.aseguradora.emision_min:
