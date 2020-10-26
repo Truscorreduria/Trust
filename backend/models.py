@@ -132,6 +132,7 @@ class Aseguradora(BaseEntity, Base):
     email = models.EmailField(max_length=165, verbose_name="email de contacto", null=True, blank=True)
     address = models.TextField(max_length=600, verbose_name="dirección", null=True, blank=True)
     emision = models.FloatField(default=2.0, verbose_name="derecho de emision")
+    emision_min = models.FloatField(default=0.0, verbose_name="monto de emisión mínimo")
     exceso = models.FloatField(default=6.666, verbose_name="Porcentaje Exceso")
     tarifa = models.FloatField(default=11.0, verbose_name="Tarifa por millar")
     coaseguro_robo = models.FloatField(default=20.0, verbose_name="Coaseguro robo")

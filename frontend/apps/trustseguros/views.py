@@ -773,7 +773,7 @@ class Aseguradoras(Datatables):
     modal_width = 900
     model = Aseguradora
     form = AseguradoraForm
-    list_display = ('name', 'phone', 'address', 'emision', 'exceso')
+    list_display = ('name', 'phone', 'address', 'emision', 'emision_min', 'exceso')
     fieldsets = [
         {
             'id': 'info',
@@ -783,7 +783,7 @@ class Aseguradoras(Datatables):
                 ('phone', 'email'),
                 ('emision', 'exceso', 'tarifa'),
                 ('coaseguro_robo', 'coaseguro_dano', 'deducible'),
-                ('emision_soa',),
+                ('emision_soa', 'emision_min'),
                 ('address',),
             )
         },
