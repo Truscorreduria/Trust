@@ -1957,6 +1957,7 @@ class SolicitudRenovacion(base):
 
 # endregion
 
+
 # region CRM
 
 class Linea(Base):
@@ -2204,10 +2205,14 @@ class OportunityQuotation(Base):
 
     @property
     def emision_total(self):
+        emision = 0.0
         if self.aseguradora.emision_soa:
-            return round((self.emision * (self.prima + 55 + self.valor_exceso)) / 100, 2)
+            emision = round((self.emision * (self.prima + 55 + self.valor_exceso)) / 100, 2)
         else:
-            return round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+            emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+        if emision < self.aseguradora.emision_min:
+            emision = self.aseguradora.emision_min
+        return emision
 
     @property
     def iva(self):
@@ -2226,6 +2231,7 @@ User.add_to_class('lineas', user_lines)
 
 
 # endregion
+
 
 # region Siniestros
 
