@@ -138,6 +138,7 @@ class Aseguradora(BaseEntity, Base):
     coaseguro_robo = models.FloatField(default=20.0, verbose_name="Coaseguro robo")
     coaseguro_dano = models.FloatField(default=20.0, verbose_name="Coaseguro daño")
     deducible = models.FloatField(default=100.0, verbose_name="Mínimo deducible")
+    monto_soa = models.FloatField(default=55.0, verbose_name="Monto SOA")
     emision_soa = models.BooleanField(default=False, verbose_name="Emisión sobre SOA",
                                       help_text="Esta aseguradora cobra emisión sobre el valor SOA")
 
@@ -2205,7 +2206,6 @@ class OportunityQuotation(Base):
 
     @property
     def emision_total(self):
-        emision = 0.0
         if self.aseguradora.emision_soa:
             emision = round((self.emision * (self.prima + 55 + self.valor_exceso)) / 100, 2)
         else:
@@ -2220,7 +2220,7 @@ class OportunityQuotation(Base):
 
     @property
     def prima_total(self):
-        return round(self.prima + self.emision_total + self.valor_exceso + 55 + self.iva, 2)
+        return round(self.prima + self.emision_total + self.valor_exceso + self.aseguradora.monto_soa + self.iva, 2)
 
 
 def user_lines(user):
