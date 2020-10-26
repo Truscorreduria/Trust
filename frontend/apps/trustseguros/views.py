@@ -15,8 +15,21 @@ from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from utils.utils import send_email
-from django.db.models.functions import ExtractDay, TruncDay
+from django.db.models.functions import TruncDay
 from django.db.models import Count
+from adminlte.utils import Codec
+from django.views.generic import View
+from django.db.models import Q
+
+
+def get_attr(obj, attr_name):
+    value = obj
+    for attr in attr_name.split('.'):
+        try:
+            value = getattr(value, attr)
+        except AttributeError:
+            value = None
+    return value
 
 
 def group_to_json(group):
@@ -601,47 +614,6 @@ def profile(request):
     })
 
 
-def apply_filter(queryset, estado, cliente, poliza):
-    if estado:
-        queryset = queryset.filter(estado=estado)
-    if cliente:
-        queryset = queryset.filter(cliente=cliente)
-    if poliza:
-        queryset = queryset.filter(poliza=poliza)
-    return queryset
-
-
-@login_required(login_url="/cotizador/login/")
-def reportes(request):
-    form = ReportTramiteForm(request.POST)
-    raw_data = []
-    if request.method == "POST":
-        if form.is_valid():
-            qs = Tramite.objects.filter()
-            qs = apply_filter(qs, form.cleaned_data['estado'],
-                              form.cleaned_data['cliente'],
-                              form.cleaned_data['poliza'])
-            for q in qs:
-                o = {
-                    'Número de trámite': q.code,
-                    'Tipo de trámite': q.get_tipo_tramite_display(),
-                    'Fecha de registro': q.created.strftime('%d/%m/%Y'),
-                    'Ingresado por': q.user.username,
-                    'Estado': q.get_estado_display(),
-                }
-                if q.cliente:
-                    o['Cliente'] = q.cliente.nombre
-                if q.poliza:
-                    o['Poliza'] = q.poliza.code
-                o['Duracion'] = str(q.duracion()) + " dias"
-                raw_data.append(o)
-
-            return JsonResponse({'raw_data': raw_data})
-    return render(request, 'trustseguros/lte/reportes.html', {
-        'form': ReportTramiteForm
-    })
-
-
 def tabla_cuotas(instance, request):
     total = float(request.POST.get('total', 0))
     prima_neta = float(request.POST.get('prima_neta', 0))
@@ -981,7 +953,7 @@ class Polizas(Datatables):
         return super().get_queryset(filters, search_value).filter(
             estado_poliza__in=[EstadoPoliza.PENDIENTE, EstadoPoliza.ACTIVA])
 
-    def get_buttons(self, request, instance):
+    def get_buttons(self, request, instance=None):
         buttons = self.buttons.copy()
         if instance.id:
             if instance.estado_poliza == EstadoPoliza.CANCELADA:
@@ -2035,7 +2007,7 @@ class SiniestroTramite(Datatables):
         return super().post(request)
 
 
-class Siniestro(Datatables):
+class Siniestros(Datatables):
     modal_width = 1200
     model = Siniestro
     form = SiniestroForm
@@ -2100,8 +2072,202 @@ class Siniestro(Datatables):
 # endregion
 
 
-def verificador(request):
-    return render(request, "trustseguros/lte/verificador.html")
+# region reportes
+
+
+class ReportLab(View):
+    """
+    Base class for all reports
+    """
+    form = None
+    model = None
+    filename = None
+
+    @classmethod
+    def as_view(cls, **initkwars):
+        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
+
+    def get(self, request, **kwargs):
+        return render(request, 'trustseguros/lte/reportes.html', {
+            'form': self.form, 'filename': self.filename,
+            **kwargs
+        })
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        """
+        :param queryset:
+        :param form_data:
+        :return: filtered queryset using form cleanead data
+        """
+        for filter_key in form_data.keys():
+            if form_data.get(filter_key):
+                queryset = queryset.filter(Q((filter_key, form_data.get(filter_key))))
+        return queryset
+
+    @staticmethod
+    def to_json(instance):
+        """
+        :param instance:
+        :return: return json object from instance data
+        """
+        return instance.to_json()
+
+    def post(self, request, **kwargs):
+        form = self.form(request.POST)
+        raw_data = []
+        if form.is_valid():
+            queryset = self.model.objects.all()
+            queryset = self.apply_filter(queryset, form.cleaned_data)
+            for instance in queryset:
+                raw_data.append(self.to_json(instance))
+        return JsonResponse({'raw_data': raw_data}, encoder=Codec)
+
+
+class ReportePoliza(ReportLab):
+    """
+    Base class for all póliza reports
+    """
+    model = Poliza
+    form = ReportPolizaForm
+
+    @staticmethod
+    def to_json(instance):
+        return {
+            'Número Poliza': instance.no_poliza,
+            'Fecha de registro': instance.created,
+            'Fecha Inicio': instance.fecha_emision,
+            'Fecha Fin': instance.fecha_vence,
+            'Ramo': get_attr(instance, 'ramo.name'),
+            'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
+            'Aseguradora': get_attr(instance, 'aseguradora.name'),
+            'Cliente': get_attr(instance, 'cliente.full_name'),
+            'Contratante': get_attr(instance, 'contratante.full_name'),
+            'Grupo': get_attr(instance, 'grupo.name'),
+            'Estado': get_attr(instance, 'estado_poliza'),
+            'Prima': get_attr(instance, 'prima_neta'),
+        }
+
+
+class ReportePolizaEmitida(ReportePoliza):
+    filename = "Reporte de pólizas emitidas.xlsx"
+
+
+class ReportePolizaCancelada(ReportePoliza):
+    filename = "Reporte de pólizas canceladas.xlsx"
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        queryset = queryset.filter(estado_poliza=EstadoPoliza.CANCELADA)
+        return ReportLab.apply_filter(queryset, form_data)
+
+    @staticmethod
+    def to_json(instance):
+        return {
+            'Número Poliza': instance.no_poliza,
+            'Fecha de registro': instance.created,
+            'Fecha Inicio': instance.fecha_emision,
+            'Fecha Fin': instance.fecha_vence,
+            'Fecha Cancelación': instance.fecha_cancelacion,
+            'Motivo Cancelación': instance.get_motivo_cancelacion_display(),
+            'Ramo': instance.ramo.name,
+            'Sub Ramo': instance.sub_ramo.name,
+            'Aseguradora': get_attr(instance, 'aseguradora.name'),
+            'Cliente': instance.cliente.full_name,
+            'Contratante': instance.contratante.full_name,
+            'Grupo': instance.grupo.name,
+            'Estado': instance.estado_poliza,
+            'Prima': instance.prima_neta,
+        }
+
+
+class ReportePolizaRenovada(ReportePoliza):
+    model = Poliza
+    form = ReportPolizaForm
+    filename = "Reporte de pólizas renovadas.xlsx"
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        queryset = queryset.filter(estado_poliza=EstadoPoliza.RENOVADA)
+        return ReportLab.apply_filter(queryset, form_data)
+
+
+class ReportePolizaPorVencer(ReportePoliza):
+    filename = "Reporte de pólizas por vencer.xlsx"
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        queryset = queryset.filter(estado_poliza__in=[EstadoPoliza.PENDIENTE,
+                                                      EstadoPoliza.ACTIVA])
+        return ReportLab.apply_filter(queryset, form_data)
+
+
+class ReporteTramite(ReportLab):
+    model = Tramite
+    form = ReportTramiteForm
+    filename = "Reporte de trámites.xlsx"
+
+    @staticmethod
+    def to_json(instance):
+        o = {
+            'Número de trámite': instance.code,
+            'Tipo de trámite': instance.get_tipo_tramite_display(),
+            'Fecha de registro': instance.created.strftime('%d/%m/%Y'),
+            'Ingresado por': instance.user.username,
+            'Estado': instance.get_estado_display(),
+        }
+        if instance.cliente:
+            o['Cliente'] = instance.cliente.nombre
+        if instance.poliza:
+            o['Poliza'] = instance.poliza.code
+        o['Duracion'] = str(instance.duracion()) + " dias"
+        return o
+
+
+class ReporteCRM(ReportLab):
+    model = Oportunity
+    form = ReporteCrmForm
+    filename = "Reporte de oportunidades de negocio.xlsx"
+
+    @staticmethod
+    def to_json(instance):
+        instance = Oportunity
+        return {
+            'Número': instance.code,
+            'Línea': instance.linea.name,
+            'Campaña': instance.campain.name,
+            'Ramo': instance.ramo.name,
+            'Sub Ramo': instance.sub_ramo.name,
+            'Estado': instance.status,
+            'Vendedor': instance.vendedor.username,
+            'Póliza': instance.no_poliza,
+            'Aseguradora': instance.aseguradora.name,
+            'Fecha de vencimiento': instance.fecha_vencimiento,
+            'Valor nuevo': instance.valor_nuevo,
+            'RC en exceso': instance.rc_exceso,
+            'Razón no concretada la venta': instance.get_causal_display(),
+        }
+
+
+class ReporteSiniestro(ReportLab):
+    model = Siniestro
+    form = ReporteSiniestroForm
+    filename = "Reporte de siniestros.xlsx"
+
+
+class ReporteMora(ReportLab):
+    model = Poliza
+    form = ReporteCarteraForm
+    filename = "Reporte de mora.xlsx"
+
+
+class ReporteComision(ReportLab):
+    model = Poliza
+    form = ReporteCarteraForm
+    filename = "Reporte de comisión.xlsx"
+
+
+# endregion
 
 
 def iniciar_proc():

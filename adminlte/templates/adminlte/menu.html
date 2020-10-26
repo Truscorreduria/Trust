@@ -68,153 +68,6 @@
             </li>
         {% endif %}
 
-        {% if perms.backend.trust_catalogos_aseguradora or perms.backend.trust_catalogos_grupo or perms.backend.trust_catalogos_ramo or perms.backend.trust_catalogos_subramo or perms.backend.trust_catalogos_linea or perms.backend.trust_catalogos_tarifa %}
-            <li class="nav-item has-treeview">
-                <a href="#" class="nav-link active">
-                    <i class="nav-icon fas fa-circle"></i>
-                    <p>
-                        Catálogos
-                        <i class="right fas fa-angle-left"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    {% if perms.backend.trust_catalogos_linea %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:lineas' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Líneas de negocio
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_campain %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:campains' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Campañas
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_aseguradora %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Aseguradoras
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_tarifa %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:tarifas' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Tarifas
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_grupo %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:ramos' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Ramos
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_ramo %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:subramos' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Sub ramos
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if perms.backend.trust_catalogos_subramo %}
-                        <li class="nav-item">
-                            <a href="{% url 'trustseguros:grupos' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Grupos
-                                </p>
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </li>
-        {% endif %}
-
-        {% if perms.backend.trust_cotizador_empresa or perms.backend.trust_cotizador_marca %}
-            <li class="nav-item has-treeview">
-                <a href="#" class="nav-link active">
-                    <i class="nav-icon fas fa-circle"></i>
-                    <p>
-                        Aplicaciones
-                        <i class="right fas fa-angle-left"></i>
-                    </p>
-                </a>
-                <ul class="nav nav-treeview">
-                    <li class="nav-item has-treeview">
-                        <a href="#" class="nav-link">
-                            <i class="far fa-dot-circle nav-icon"></i>
-                            <p>
-                                Cotizador
-                                <i class="right fas fa-angle-left"></i>
-                            </p>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            {% if perms.backend.trust_cotizador_empresa %}
-                                <li class="nav-item">
-                                    <a href="{% url 'trustseguros:configcotizador' %}" class="nav-link">
-                                        <i class="far fa-circle nav-icon"
-                                           style="font-size: .3em; vertical-align: middle"></i>
-                                        <p>Empresas afiliadas</p>
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% if perms.backend.trust_cotizador_marca %}
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"
-                                           style="font-size: .3em; vertical-align: middle"></i>
-                                        <p>Marcas con regargo</p>
-                                    </a>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        {% endif %}
-
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Reportes
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:reportes' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Trámites
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
         {% if user.lineas %}
             <li class="nav-item has-treeview">
                 <a href="#" class="nav-link active">
@@ -359,6 +212,217 @@
                         <i class="far fa-dot-circle nav-icon"></i>
                         <p>
                             Liquidación
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        {% if perms.backend.trust_catalogos_aseguradora or perms.backend.trust_catalogos_grupo or perms.backend.trust_catalogos_ramo or perms.backend.trust_catalogos_subramo or perms.backend.trust_catalogos_linea or perms.backend.trust_catalogos_tarifa %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Catálogos
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_catalogos_linea %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:lineas' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Líneas de negocio
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_campain %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:campains' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Campañas
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_aseguradora %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:aseguradoras' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Aseguradoras
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_tarifa %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:tarifas' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Tarifas
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_grupo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:ramos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Ramos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_ramo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:subramos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Sub ramos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_catalogos_subramo %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:grupos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Grupos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {% if perms.backend.trust_cotizador_empresa or perms.backend.trust_cotizador_marca %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Aplicaciones
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="far fa-dot-circle nav-icon"></i>
+                            <p>
+                                Cotizador
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            {% if perms.backend.trust_cotizador_empresa %}
+                                <li class="nav-item">
+                                    <a href="{% url 'trustseguros:configcotizador' %}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>Empresas afiliadas</p>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if perms.backend.trust_cotizador_marca %}
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon"
+                                           style="font-size: .3em; vertical-align: middle"></i>
+                                        <p>Marcas con regargo</p>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        {% endif %}
+
+        <li class="nav-item has-treeview">
+            <a href="#" class="nav-link active">
+                <i class="nav-icon fas fa-circle"></i>
+                <p>
+                    Reportes
+                    <i class="right fas fa-angle-left"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_poliza_emitida' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Pólizas emitidas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_poliza_cancelada' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Pólizas canceladas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_poliza_renovada' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Pólizas renovadas
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_poliza_vencer' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Pólizas por vencer
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_tramite' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Trámites
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_crm' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Oportunidades de negocio
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_siniestro' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Reporte de siniestros
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_mora' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Reporte de mora
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'trustseguros:reporte_comision' %}" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>
+                            Reporte de comisión
                         </p>
                     </a>
                 </li>
