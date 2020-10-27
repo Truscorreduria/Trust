@@ -2236,6 +2236,12 @@ class ReporteCRM(ReportLab):
 
     @staticmethod
     def to_json(instance):
+        def vencimiento(i):
+            if i.fecha_vence:
+                return i.fecha_vence.strftime('%d/%m/%Y')
+            else:
+                return None
+
         return {
             'Número': get_attr(instance, 'code'),
             'Línea': get_attr(instance, 'linea.name'),
@@ -2246,7 +2252,7 @@ class ReporteCRM(ReportLab):
             'Vendedor': get_attr(instance, 'vendedor.username'),
             'Póliza': get_attr(instance, 'no_poliza'),
             'Aseguradora': get_attr(instance, 'aseguradora.name'),
-            'Fecha de vencimiento': instance.fecha_vence.strftime('%d/%m/%Y'),
+            'Fecha de vencimiento': vencimiento(instance),
             'Valor nuevo': get_attr(instance, 'valor_nuevo'),
             'RC en exceso': get_attr(instance, 'rc_exceso'),
             'Razón no concretada la venta': instance.get_causal_display(),
