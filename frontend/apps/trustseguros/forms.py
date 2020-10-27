@@ -1269,7 +1269,7 @@ class ReportPolizaVencerForm(BasePolizaFilterForm):
     fecha_vence__lte = forms.DateField(required=True, label="Hasta")
 
 
-class ReportTramiteForm(forms.Form):True
+class ReportTramiteForm(forms.Form):
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=False,
                                      widget=SelectSearch)
