@@ -2238,18 +2238,18 @@ class ReporteCRM(ReportLab):
     def to_json(instance):
         instance = Oportunity
         return {
-            'Número': instance.code,
-            'Línea': instance.linea.name,
-            'Campaña': instance.campain.name,
-            'Ramo': instance.ramo.name,
-            'Sub Ramo': instance.sub_ramo.name,
-            'Estado': instance.status,
-            'Vendedor': instance.vendedor.username,
-            'Póliza': instance.no_poliza,
-            'Aseguradora': instance.aseguradora.name,
+            'Número': get_attr(instance, 'code'),
+            'Línea': get_attr(instance, 'linea.name'),
+            'Campaña': get_attr(instance, 'campain.name'),
+            'Ramo': get_attr(instance, 'ramo.name'),
+            'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
+            'Estado': get_attr(instance, 'status'),
+            'Vendedor': get_attr(instance, 'vendedor.username'),
+            'Póliza': get_attr(instance, 'no_poliza'),
+            'Aseguradora': get_attr(instance, 'aseguradora.name'),
             'Fecha de vencimiento': instance.fecha_vencimiento.strftime('%d/%m/%Y'),
-            'Valor nuevo': instance.valor_nuevo,
-            'RC en exceso': instance.rc_exceso,
+            'Valor nuevo': get_attr(instance, 'valor_nuevo'),
+            'RC en exceso': get_attr(instance, 'rc_exceso'),
             'Razón no concretada la venta': instance.get_causal_display(),
         }
 
