@@ -2268,9 +2268,3 @@ class ReporteComision(ReportLab):
 
 
 # endregion
-
-
-# region dashboard
-
-
-# endregion

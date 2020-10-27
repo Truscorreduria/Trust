@@ -94,7 +94,126 @@
         <section class="content">
             <div class="container-fluid">
                 {% block content %}
-                    <div id="dashboard-polizas"></div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <th colspan="5">Cobranza</th>
+                                </tr>
+                                <tr>
+                                    <th>USD</th>
+                                    <th>VIGENTE</th>
+                                    <th>30 DIAS</th>
+                                    <th>90 DIAS</th>
+                                    <th>120 DIAS</th>
+                                </tr>
+                                <tr>
+                                    <td>#</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>$ Prima</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>$ Comisión</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <th colspan="5">Cobranza</th>
+                                </tr>
+                                <tr>
+                                    <th>NIO</th>
+                                    <th>VIGENTE</th>
+                                    <th>30 DIAS</th>
+                                    <th>90 DIAS</th>
+                                    <th>120 DIAS</th>
+                                </tr>
+                                <tr>
+                                    <td>#</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>C$ Prima</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>C$ Comisión</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <th colspan="5">CRM - OPORTUNIDADES DE NEGOCIO</th>
+                                </tr>
+                                <tr>
+                                    <th>Vendedor</th>
+                                    <th>En proceso</th>
+                                    <th>Vendido</th>
+                                    <th>No Vendido</th>
+                                    <th>Total</th>
+                                </tr>
+                                <tr>
+                                    <td>#</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <th colspan="5">SINIESTRO</th>
+                                </tr>
+                                <tr>
+                                    <th>Casos reportados</th>
+                                    <th>Monto Reclamado</th>
+                                    <th>Monto Pagado</th>
+                                </tr>
+                                <tr>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 {% endblock %}
             </div>
         </section>
@@ -131,10 +250,6 @@
 <script src="{% static 'adminlte/js/lte.main.js' %}"></script>
 <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
 
-{% block javascript %}
-    <script src="{% static 'trustseguros/lte/plugins/d3/d3.min.js' %}"></script>
-    <script src="{% static 'trustseguros/lte/plugins/d3-arrays/d3-array.min.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.poliza.js' %}"></script>
-{% endblock %}
+{% block javascript %}{% endblock %}
 </body>
 </html>
