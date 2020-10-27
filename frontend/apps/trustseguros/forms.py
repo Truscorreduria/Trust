@@ -1281,9 +1281,9 @@ class ReportTramiteForm(forms.Form):
 
 
 class ReporteCrmForm(forms.Form):
-    linea = forms.ModelChoiceField(queryset=Linea.objects.all(), required=False)
-    campain = forms.ModelChoiceField(queryset=Campain.objects.all(), required=False)
-    vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=False)
+    linea = forms.ModelChoiceField(queryset=Linea.objects.all(), required=True)
+    campain = forms.ModelChoiceField(queryset=Campain.objects.all(), required=True)
+    vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=True)
     status = forms.ChoiceField(choices=(('', '---------'),) + OportunityStatus.choices(),
                                required=False)
     created__gte = forms.DateField(required=True, label="Desde")
