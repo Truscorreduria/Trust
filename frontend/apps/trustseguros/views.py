@@ -2248,13 +2248,13 @@ class ReporteCRM(ReportLab):
             'Campaña': get_attr(instance, 'campain.name'),
             'Ramo': get_attr(instance, 'ramo.name'),
             'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
-            'Estado': get_attr(instance, 'status'),
+            'Estado': get_attr(instance, 'get_status_display'),
             'Vendedor': get_attr(instance, 'vendedor.username'),
             'Póliza': get_attr(instance, 'no_poliza'),
             'Aseguradora': get_attr(instance, 'aseguradora.name'),
             'Fecha de vencimiento': vencimiento(instance),
             'Valor nuevo': get_attr(instance, 'valor_nuevo'),
-            'RC en exceso': get_attr(instance, 'rc_exceso'),
+            'Monto exceso': get_attr(instance, 'valor_exceso'),
             'Razón no concretada la venta': instance.get_causal_display(),
         }
 
