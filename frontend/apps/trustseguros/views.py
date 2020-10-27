@@ -57,7 +57,6 @@ def documentos(request):
                 file.type = type
                 file.key = original.id
                 file.save()
-                print(file.type)
             return JsonResponse({'archivo': file.to_json()}, encoder=Codec)
 
         if 'update' in request.POST:
@@ -1987,8 +1986,7 @@ class SiniestroTramite(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
+        'js': ['trustseguros/js/siniestro.tramite.soportes.js', 'trustseguros/js/siniestro.tramite.bitacora.js']
     }
 
     def post(self, request):
@@ -2049,8 +2047,8 @@ class Siniestros(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/nuevo.tramite.js', ]
+        'js': ['trustseguros/js/siniestro.soportes.js',
+               'trustseguros/js/siniestro.bitacora.js']
     }
 
     def post(self, request):
