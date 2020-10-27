@@ -1260,24 +1260,24 @@ class BasePolizaFilterForm(forms.Form):
 
 
 class ReportPolizaForm(BasePolizaFilterForm):
-    fecha_emision__gte = forms.DateField(required=False, label="Desde")
-    fecha_emision__lte = forms.DateField(required=False, label="Hasta")
+    fecha_emision__gte = forms.DateField(required=True, label="Desde")
+    fecha_emision__lte = forms.DateField(required=True, label="Hasta")
 
 
 class ReportPolizaVencerForm(BasePolizaFilterForm):
-    fecha_vence__gte = forms.DateField(required=False, label="Desde")
-    fecha_vence__lte = forms.DateField(required=False, label="Hasta")
+    fecha_vence__gte = forms.DateField(required=True, label="Desde")
+    fecha_vence__lte = forms.DateField(required=True, label="Hasta")
 
 
-class ReportTramiteForm(forms.Form):
+class ReportTramiteForm(forms.Form):True
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     cliente = forms.ModelChoiceField(queryset=Cliente.objects.all(), required=False,
                                      widget=SelectSearch)
     poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
                                     widget=SelectSearch)
     estado = forms.ChoiceField(choices=EstadoTramite.choices(), required=False)
-    created__gte = forms.DateField(required=False, label="Desde")
-    created__lte = forms.DateField(required=False, label="Hasta")
+    created__gte = forms.DateField(required=True, label="Desde")
+    created__lte = forms.DateField(required=True, label="Hasta")
 
 
 class ReporteCrmForm(forms.Form):
@@ -1286,8 +1286,8 @@ class ReporteCrmForm(forms.Form):
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=False)
     status = forms.ChoiceField(choices=(('', '---------'),) + OportunityStatus.choices(),
                                required=False)
-    created__gte = forms.DateField(required=False, label="Desde")
-    created__lte = forms.DateField(required=False, label="Hasta")
+    created__gte = forms.DateField(required=True, label="Desde")
+    created__lte = forms.DateField(required=True, label="Hasta")
 
 
 class ReporteSiniestroForm(forms.Form):
@@ -1297,8 +1297,8 @@ class ReporteSiniestroForm(forms.Form):
                                      widget=SelectSearch)
     poliza = forms.ModelChoiceField(queryset=Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA), required=False,
                                     widget=SelectSearch)
-    created__gte = forms.DateField(required=False, label="Desde")
-    created__lte = forms.DateField(required=False, label="Hasta")
+    created__gte = forms.DateField(required=True, label="Desde")
+    created__lte = forms.DateField(required=True, label="Hasta")
 
 
 class ReporteCarteraForm(forms.Form):
@@ -1306,5 +1306,5 @@ class ReporteCarteraForm(forms.Form):
     ramo = forms.ModelChoiceField(queryset=Ramo.objects.all(), required=False)
     coin = forms.ModelChoiceField(queryset=Moneda.objects.all(), required=False, label="Moneda")
     aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), required=False, label="Compañia")
-    created__gte = forms.DateField(required=False, label="Desde")
-    created__lte = forms.DateField(required=False, label="Hasta")
+    created__gte = forms.DateField(required=True, label="Desde")
+    created__lte = forms.DateField(required=True, label="Hasta")

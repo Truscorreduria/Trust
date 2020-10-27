@@ -2135,16 +2135,16 @@ class ReportePoliza(ReportLab):
     def to_json(instance):
         return {
             'Número Poliza': instance.no_poliza,
-            'Fecha de registro': instance.created,
-            'Fecha Inicio': instance.fecha_emision,
-            'Fecha Fin': instance.fecha_vence,
+            'Fecha de registro': instance.created.strftime('%d/%m/%Y'),
+            'Fecha Inicio': instance.fecha_emision.strftime('%d/%m/%Y'),
+            'Fecha Fin': instance.fecha_vence.strftime('%d/%m/%Y'),
             'Ramo': get_attr(instance, 'ramo.name'),
             'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
             'Aseguradora': get_attr(instance, 'aseguradora.name'),
             'Cliente': get_attr(instance, 'cliente.full_name'),
             'Contratante': get_attr(instance, 'contratante.full_name'),
             'Grupo': get_attr(instance, 'grupo.name'),
-            'Estado': get_attr(instance, 'estado_poliza'),
+            'Estado': instance.get_estado_poliza_display(),
             'Prima': get_attr(instance, 'prima_neta'),
         }
 
@@ -2163,12 +2163,18 @@ class ReportePolizaCancelada(ReportePoliza):
 
     @staticmethod
     def to_json(instance):
+        def cancelacion(i):
+            if i.fecha_cancelacion:
+                return i.fecha_cancelacion.strftime('%d/%m/%Y')
+            else:
+                return ''
+
         return {
             'Número Poliza': instance.no_poliza,
-            'Fecha de registro': instance.created,
-            'Fecha Inicio': instance.fecha_emision,
-            'Fecha Fin': instance.fecha_vence,
-            'Fecha Cancelación': instance.fecha_cancelacion,
+            'Fecha de registro': instance.created.strftime('%d/%m/%Y'),
+            'Fecha Inicio': instance.fecha_emision.strftime('%d/%m/%Y'),
+            'Fecha Fin': instance.fecha_vence.strftime('%d/%m/%Y'),
+            'Fecha Cancelación': cancelacion(instance),
             'Motivo Cancelación': instance.get_motivo_cancelacion_display(),
             'Ramo': instance.ramo.name,
             'Sub Ramo': instance.sub_ramo.name,
@@ -2176,7 +2182,7 @@ class ReportePolizaCancelada(ReportePoliza):
             'Cliente': instance.cliente.full_name,
             'Contratante': instance.contratante.full_name,
             'Grupo': instance.grupo.name,
-            'Estado': instance.estado_poliza,
+            'Estado': instance.get_estado_poliza_display(),
             'Prima': instance.prima_neta,
         }
 
@@ -2265,6 +2271,5 @@ class ReporteComision(ReportLab):
     model = Poliza
     form = ReporteCarteraForm
     filename = "Reporte de comisión.xlsx"
-
 
 # endregion
