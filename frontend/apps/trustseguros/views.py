@@ -2200,6 +2200,7 @@ class ReportePolizaRenovada(ReportePoliza):
 
 class ReportePolizaPorVencer(ReportePoliza):
     filename = "Reporte de pólizas por vencer.xlsx"
+    form = ReportPolizaVencerForm
 
     @staticmethod
     def apply_filter(queryset, form_data):
@@ -2248,7 +2249,7 @@ class ReporteCRM(ReportLab):
             'Vendedor': instance.vendedor.username,
             'Póliza': instance.no_poliza,
             'Aseguradora': instance.aseguradora.name,
-            'Fecha de vencimiento': instance.fecha_vencimiento,
+            'Fecha de vencimiento': instance.fecha_vencimiento.strftime('%d/%m/%Y'),
             'Valor nuevo': instance.valor_nuevo,
             'RC en exceso': instance.rc_exceso,
             'Razón no concretada la venta': instance.get_causal_display(),
