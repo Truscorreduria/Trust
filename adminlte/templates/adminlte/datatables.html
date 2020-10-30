@@ -297,15 +297,9 @@
         };
 
         $(document).ready(function () {
-            $(document)
-                .ajaxStart(function () {
-                    startLoader()
-                })
-                .ajaxStop(function () {
-                    stopLoader();
-                    apply_pluggins();
-                });
-
+            $(document).ajaxStop(function () {
+                apply_pluggins();
+            });
             $('#{{ opts.model_name }}-table').on('click', 'tbody tr', show_object);
 
             $(document).on('submit', '#{{ opts.model_name }}-form', form_submit);

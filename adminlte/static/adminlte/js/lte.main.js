@@ -34,7 +34,15 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
+    $(document)
+        .ajaxStart(function () {
+            startLoader()
+        })
+        .ajaxStop(function () {
+            stopLoader();
+        });
+
     const menu = $('a[href="' + $('input[name="path"]').val() + '"]');
     menu.addClass('active');
     menu.parents('.has-treeview').addClass('active').addClass('menu-open');
