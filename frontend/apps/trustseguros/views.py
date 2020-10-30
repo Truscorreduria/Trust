@@ -555,54 +555,9 @@ def comentarios(request):
 
 @login_required(login_url="/cotizador/login/")
 def index(request):
-    def get_grupo(poliza):
-        if poliza.grupo:
-            return poliza.grupo.name
-        else:
-            return 'SIN GRUPO'
-
-    def get_ramo(poliza):
-        if poliza.sub_ramo:
-            return poliza.sub_ramo.name
-        return "SIN RAMO"
-
-    def get_comision(poliza):
-        if poliza.estado_poliza == EstadoPoliza.ACTIVA:
-            if poliza.moneda and poliza.moneda.id == 2:
-                return round(poliza.amount_comision / 33.7, 2)
-            return poliza.amount_comision
-        return 0
-
-    def get_prima(poliza):
-        if poliza.estado_poliza == EstadoPoliza.ACTIVA:
-            if poliza.moneda and poliza.moneda.id == 2:
-                return round(poliza.prima_neta / 33.7, 2)
-            return poliza.prima_neta
-        return 0
-
-    def poliza_json(poliza):
-        return {
-            'id': poliza.id,
-            'grupo': get_grupo(poliza),
-            'status': poliza.get_estado_poliza_display(),
-            'ramo': get_ramo(poliza),
-            'comision': get_comision(poliza),
-            'prima': get_prima(poliza),
-        }
-
-    def renovacion_json(poliza):
-        return poliza
-
-    def get_renovaciones():
-        return Poliza.objects.filter(estado_poliza=EstadoPoliza.RENOVADA
-                                     ).annotate(day=TruncDay('updated')
-                                                ).values('day').annotate(c=Count('id')).values('day', 'c').order_by(
-            'day')
-
     if request.method == 'POST':
         return JsonResponse({
-            'polizas': [poliza_json(p) for p in
-                        Poliza.objects.all().exclude(estado_poliza=EstadoPoliza.RENOVADA)],
+            'oportunidades': [x.to_json() for x in Oportunity.objects.all()]
         }, encoder=Codec)
 
     return render(request, 'adminlte/index.html', {})
@@ -2315,8 +2270,12 @@ class ReporteMora(ReportLab):
 
 
 class ReporteComision(ReportLab):
-    model = Poliza
+    model = PagoCuota
     form = ReporteCarteraForm
     filename = "Reporte de comisión.xlsx"
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        return queryset
 
 # endregion

@@ -172,18 +172,23 @@
                     </div>
                     <div class="row">
                         <div class="col">
-                            <table class="table">
-                                <tbody>
+                            <table class="table" id="dashboard-crm">
+                                <thead>
                                 <tr>
                                     <th colspan="5">CRM - OPORTUNIDADES DE NEGOCIO</th>
                                 </tr>
                                 <tr>
                                     <th>Vendedor</th>
-                                    <th>En proceso</th>
+                                    <th>Pendiente</th>
+                                    <th>Cotizado</th>
+                                    <th>Contactado</th>
+                                    <th>Emision</th>
                                     <th>Vendido</th>
-                                    <th>No Vendido</th>
+                                    <th>No vendido</th>
                                     <th>Total</th>
                                 </tr>
+                                </thead>
+                                <tbody>
                                 <tr>
                                     <td>#</td>
                                     <td>-</td>
@@ -196,7 +201,7 @@
                         </div>
                         <div class="col">
                             <table class="table">
-                                <tbody>
+                                <thead>
                                 <tr>
                                     <th colspan="5">SINIESTRO</th>
                                 </tr>
@@ -205,6 +210,9 @@
                                     <th>Monto Reclamado</th>
                                     <th>Monto Pagado</th>
                                 </tr>
+                                </thead>
+
+                                <tbody>
                                 <tr>
                                     <td>-</td>
                                     <td>-</td>
@@ -250,6 +258,10 @@
 <script src="{% static 'adminlte/js/lte.main.js' %}"></script>
 <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
 
-{% block javascript %}{% endblock %}
+{% block javascript %}
+    <script src="{% static 'lodash/lodash.js' %}"></script>
+    <script src="{% static 'trustseguros/js/dashboard.crm.js' %}"></script>
+{% endblock %}
+
 </body>
 </html>
