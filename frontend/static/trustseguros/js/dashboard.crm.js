@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $.ajax('.', {
         method: 'POST',
-        data: {},
+        data: {crm: 'crm'},
         success: function (response) {
             let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
             let crm = $('#dashboard-crm tbody').empty();

@@ -555,11 +555,34 @@ def comentarios(request):
 
 @login_required(login_url="/cotizador/login/")
 def index(request):
+    def cuota_json(cuota):
+        return {
+            'id': cuota.id,
+            'prima': cuota.monto,
+            'comision': cuota.monto_comision,
+            'monto_pagado': cuota.monto_pagado(),
+            'fecha_vence': cuota.fecha_vence,
+        }
+
+    def cartera(coin):
+        polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA)
+        return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas)]
+
     if request.method == 'POST':
-        return JsonResponse({
-            'oportunidades': [x.to_json() for x in Oportunity.objects.all()],
-            'siniestros': [x.to_json() for x in Siniestro.objects.all()],
-        }, encoder=Codec)
+        response = {}
+        if 'crm' in request.POST:
+            response = {
+                'oportunidades': [x.to_json() for x in Oportunity.objects.all()],
+            }
+        if 'siniestros' in request.POST:
+            response = {
+                'siniestros': [x.to_json() for x in Siniestro.objects.all()],
+            }
+        if 'cartera' in request.POST:
+            for moneda in Moneda.objects.all():
+                response['cartera_' + moneda.moneda] = cartera(moneda)
+
+        return JsonResponse(response, encoder=Codec)
 
     return render(request, 'adminlte/index.html', {})
 

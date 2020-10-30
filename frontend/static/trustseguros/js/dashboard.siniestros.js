@@ -12,7 +12,7 @@ $(document).ready(function () {
 
     $.ajax('.', {
         method: 'POST',
-        data: {},
+        data: {siniestros: 'siniestros'},
         success: function (response) {
             let monto = response.siniestros.reduce(monto_pagado, []);
             if (monto.length > 0) {

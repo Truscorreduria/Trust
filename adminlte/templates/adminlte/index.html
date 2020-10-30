@@ -96,76 +96,44 @@
                 {% block content %}
                     <div class="row">
                         <div class="col">
-                            <table class="table">
-                                <tbody>
+                            <table class="table" id="cobranza-dolares">
+                                <thead>
                                 <tr>
-                                    <th colspan="5">Cobranza</th>
+                                    <th colspan="5">COBRANZA</th>
                                 </tr>
                                 <tr>
-                                    <th>USD</th>
+                                    <th>DÓLARES</th>
                                     <th>VIGENTE</th>
                                     <th>30 DIAS</th>
+                                    <th>60 DIAS</th>
                                     <th>90 DIAS</th>
                                     <th>120 DIAS</th>
+                                    <th>MAS</th>
+                                    <th>TOTAL</th>
                                 </tr>
-                                <tr>
-                                    <td>#</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>$ Prima</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>$ Comisión</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
+                                </thead>
+                                <tbody>
                                 </tbody>
                             </table>
                         </div>
                         <div class="col">
-                            <table class="table">
-                                <tbody>
+                            <table class="table" id="cobranza-cordobas">
+                                <thead>
                                 <tr>
-                                    <th colspan="5">Cobranza</th>
+                                    <th colspan="5">COBRANZA</th>
                                 </tr>
                                 <tr>
-                                    <th>NIO</th>
+                                    <th>CÓRDOBAS</th>
                                     <th>VIGENTE</th>
                                     <th>30 DIAS</th>
+                                    <th>60 DIAS</th>
                                     <th>90 DIAS</th>
                                     <th>120 DIAS</th>
+                                    <th>MAS</th>
+                                    <th>TOTAL</th>
                                 </tr>
-                                <tr>
-                                    <td>#</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>C$ Prima</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
-                                <tr>
-                                    <td>C$ Comisión</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                    <td>-</td>
-                                </tr>
+                                </thead>
+                                <tbody>
                                 </tbody>
                             </table>
                         </div>
@@ -262,6 +230,7 @@
     <script src="{% static 'lodash/lodash.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.crm.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.siniestros.js' %}"></script>
+    <script src="{% static 'trustseguros/js/dashboard.cartera.js' %}"></script>
 {% endblock %}
 
 </body>
