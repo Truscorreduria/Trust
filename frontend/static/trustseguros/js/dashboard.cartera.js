@@ -11,7 +11,7 @@ $(document).ready(function () {
         return obj;
     }
 
-    function reduce_data(data, start, end, field) {
+    function reduce_sum(data, start, end, field) {
         return data.reduce((acc, val) => {
             if (start !== undefined && end !== undefined) {
                 if (val.fecha_vence >= start && val.fecha_vence <= end) {
@@ -32,26 +32,49 @@ $(document).ready(function () {
         }, 0);
     }
 
+    function reduce_count(data, start, end, field) {
+        let filtered_data = [];
+        if (start !== undefined && end !== undefined) {
+            filtered_data = data.filter(obj => obj.fecha_vence >= start && obj.fecha_vence <= end)
+        }
+        if (start === undefined && end !== undefined) {
+            filtered_data = data.filter(obj => obj.fecha_vence <= end)
+        }
+        if (start !== undefined && end === undefined) {
+            filtered_data = data.filter(obj => obj.fecha_vence >= start)
+        }
+        return Object.keys(_.groupBy(filtered_data, field)).length
+    }
+
     function vencida_row(data) {
         let today = new Date();
         return `
                 <tr>
+                    <td>#</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(-30), today, 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(-60), today.addDays(-30), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(-90), today.addDays(-60), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(-120), today.addDays(-90), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, undefined, today.addDays(-120), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, undefined, today, 'poliza'))}</td>
+                </tr>
+                <tr>
                     <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-30), today, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-60), today.addDays(-30), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-90), today.addDays(-60), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-120), today.addDays(-90), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today.addDays(-120), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-30), today, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-60), today.addDays(-30), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-90), today.addDays(-60), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-120), today.addDays(-90), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today.addDays(-120), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today, 'prima'))}</td>
                 </tr>
                 <tr>
                     <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-30), today, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-60), today.addDays(-30), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-90), today.addDays(-60), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-120), today.addDays(-90), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today.addDays(-120), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-30), today, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-60), today.addDays(-30), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-90), today.addDays(-60), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(-120), today.addDays(-90), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today.addDays(-120), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today, 'comision'))}</td>
                 </tr>
             `
     }
@@ -60,22 +83,31 @@ $(document).ready(function () {
         let today = new Date();
         return `
                 <tr>
+                    <td>#</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today, today.addDays(30), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(30), today.addDays(60), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(60), today.addDays(90), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(90), today.addDays(120), 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(120), undefined, 'poliza'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, today, undefined, 'poliza'))}</td>
+                </tr>
+                <tr>
                     <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, today.addDays(30), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(30), today.addDays(60), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(60), today.addDays(90), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(90), today.addDays(120), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(120), undefined, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today, today.addDays(30), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(30), today.addDays(60), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(60), today.addDays(90), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(90), today.addDays(120), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(120), undefined, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today, undefined, 'prima'))}</td>
                 </tr>
                 <tr>
                     <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, today.addDays(30), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(30), today.addDays(60), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(60), today.addDays(90), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(90), today.addDays(120), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(120), undefined, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today, today.addDays(30), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(30), today.addDays(60), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(60), today.addDays(90), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(90), today.addDays(120), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(120), undefined, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, today, undefined, 'comision'))}</td>
                 </tr>
             `
     }
