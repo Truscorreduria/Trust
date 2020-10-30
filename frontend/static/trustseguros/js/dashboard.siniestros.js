@@ -14,7 +14,7 @@ $(document).ready(function () {
         method: 'POST',
         data: {},
         success: function (response) {
-            let monto = response.siniestros.reduce(monto_pagado, [])[0].monto_pagado;
+            let monto = response.siniestros.reduce(monto_pagado, []);
             if (monto.length > 0) {
                 monto = monto[0].monto_pagado
             } else {
