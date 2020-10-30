@@ -557,7 +557,8 @@ def comentarios(request):
 def index(request):
     if request.method == 'POST':
         return JsonResponse({
-            'oportunidades': [x.to_json() for x in Oportunity.objects.all()]
+            'oportunidades': [x.to_json() for x in Oportunity.objects.all()],
+            'siniestros': [x.to_json() for x in Siniestro.objects.all()],
         }, encoder=Codec)
 
     return render(request, 'adminlte/index.html', {})

@@ -1,10 +1,8 @@
 $(document).ready(function () {
-    console.log(_)
     $.ajax('.', {
         method: 'POST',
         data: {},
         success: function (response) {
-            console.log(response.oportunidades);
             let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
             let crm = $('#dashboard-crm tbody').empty();
             Object.keys(sellers).map(function (o, i) {
