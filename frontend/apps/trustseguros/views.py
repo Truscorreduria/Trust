@@ -2260,7 +2260,7 @@ class ReporteMora(ReportLab):
     @staticmethod
     def to_json(instance, date):
         return {
-            'Ejecutivo': get_attr(instance, 'user.username'),
+            'Grupo': get_attr(instance, 'grupo.name'),
             'Contratante': get_attr(instance, 'contratante.full_name'),
             'Asegurado': get_attr(instance, 'cliente.full_name'),
             'Número Tel': get_attr(instance, 'cliente.celular'),
