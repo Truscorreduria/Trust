@@ -566,7 +566,9 @@ def index(request):
 
     def cartera(coin):
         polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA)
-        return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas)]
+        return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas,
+                                                                    estado__in=[EstadoPago.VIGENTE,
+                                                                                EstadoPago.VENCIDO])]
 
     if request.method == 'POST':
         response = {}
