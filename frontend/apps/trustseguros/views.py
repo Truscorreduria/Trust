@@ -2273,6 +2273,7 @@ class ReporteMora(ReportLab):
             'Fecha vence': get_attr(instance, 'fecha_vence'),
             'Día de Cobro': get_attr(instance, 'fecha_pago'),
             'Forma de pago': instance.get_f_pago_display(),
+            'Medio de pago': instance.get_m_pago_display(),
             'Total': get_attr(instance, 'prima_total'),
             'Pagado': get_attr(instance, 'total_pagado'),
             'Pendiente': get_attr(instance, 'saldo_pendiente'),
