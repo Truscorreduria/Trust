@@ -1,5 +1,11 @@
 $(document).ready(function () {
 
+    Date.prototype.addDays = function (days) {
+        let date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+    };
+
     function fix_date(obj) {
         obj['fecha_vence'] = new Date(obj.fecha_vence);
         return obj;
@@ -26,47 +32,49 @@ $(document).ready(function () {
         }, 0);
     }
 
-    function vencida_row(data, today) {
+    function vencida_row(data) {
+        let today = new Date();
         return `
                 <tr>
                     <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 30, today, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 60, today - 30, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 90, today - 60, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 120, today - 90, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today - 120, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-30), today, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-60), today.addDays(-30), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-90), today.addDays(-60), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-120), today.addDays(-90), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today.addDays(-120), 'prima'))}</td>
                     <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'prima'))}</td>
                 </tr>
                 <tr>
                     <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 30, today, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 60, today - 30, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 90, today - 60, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today - 120, today - 90, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today - 120, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-30), today, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-60), today.addDays(-30), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-90), today.addDays(-60), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(-120), today.addDays(-90), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today.addDays(-120), 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'comision'))}</td>
                 </tr>
             `
     }
 
-    function corriente_row(data, today) {
+    function corriente_row(data) {
+        let today = new Date();
         return `
                 <tr>
                     <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, today + 30, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 30, today + 60, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 60, today + 90, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 90, today + 120, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 120, undefined, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, today.addDays(30), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(30), today.addDays(60), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(60), today.addDays(90), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(90), today.addDays(120), 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(120), undefined, 'prima'))}</td>
                     <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'prima'))}</td>
                 </tr>
                 <tr>
                     <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today, today + 30, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 30, today + 60, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 60, today + 90, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 90, today + 120, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(data, today + 120, undefined, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, today.addDays(30), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(30), today.addDays(60), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(60), today.addDays(90), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(90), today.addDays(120), 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today.addDays(120), undefined, 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'comision'))}</td>
                 </tr>
             `
@@ -79,19 +87,17 @@ $(document).ready(function () {
             let cartera_cordobas = response.cartera_Cordoba.map(fix_date);
             let cartera_dolares = response.cartera_Dolar.map(fix_date);
 
-            let today = new Date();
-
 
             let corriente_cordobas = $('#corriente-cordobas tbody').empty();
             let corriente_dolares = $('#corriente-dolares tbody').empty();
-            corriente_cordobas.append(corriente_row(cartera_cordobas, today));
-            corriente_dolares.append(corriente_row(cartera_dolares, today));
+            corriente_cordobas.append(corriente_row(cartera_cordobas));
+            corriente_dolares.append(corriente_row(cartera_dolares));
 
 
             let vencida_cordobas = $('#vencida-cordobas tbody').empty();
             let vencida_dolares = $('#vencida-dolares tbody').empty();
-            vencida_cordobas.append(vencida_row(cartera_cordobas, today));
-            vencida_dolares.append(vencida_row(cartera_dolares, today));
+            vencida_cordobas.append(vencida_row(cartera_cordobas));
+            vencida_dolares.append(vencida_row(cartera_dolares));
         }
     })
 });
