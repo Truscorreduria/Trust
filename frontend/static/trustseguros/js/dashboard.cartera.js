@@ -26,6 +26,52 @@ $(document).ready(function () {
         }, 0);
     }
 
+    function vencida_row(data, today) {
+        return `
+                <tr>
+                    <td>Prima</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 30, today, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 60, today - 30, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 90, today - 60, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 120, today - 90, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today - 120, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'prima'))}</td>
+                </tr>
+                <tr>
+                    <td>Comisión</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 30, today, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 60, today - 30, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 90, today - 60, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today - 120, today - 90, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today - 120, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, undefined, today, 'comision'))}</td>
+                </tr>
+            `
+    }
+
+    function corriente_row(data, today) {
+        return `
+                <tr>
+                    <td>Prima</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, today + 30, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 30, today + 60, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 60, today + 90, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 90, today + 120, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 120, undefined, 'prima'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'prima'))}</td>
+                </tr>
+                <tr>
+                    <td>Comisión</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, today + 30, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 30, today + 60, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 60, today + 90, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 90, today + 120, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today + 120, undefined, 'comision'))}</td>
+                    <td class="numberinput">${intcommas(reduce_data(data, today, undefined, 'comision'))}</td>
+                </tr>
+            `
+    }
+
     $.ajax('.', {
         method: 'POST',
         data: {cartera: 'cartera'},
@@ -36,66 +82,16 @@ $(document).ready(function () {
             let today = new Date();
 
 
-            let cordobas = $('#cobranza-cordobas tbody').empty();
-            let dolares = $('#cobranza-dolares tbody').empty();
+            let corriente_cordobas = $('#corriente-cordobas tbody').empty();
+            let corriente_dolares = $('#corriente-dolares tbody').empty();
+            corriente_cordobas.append(corriente_row(cartera_cordobas, today));
+            corriente_dolares.append(corriente_row(cartera_dolares, today));
 
-            cordobas.append(`
-                <tr>
-                    <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today, undefined, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 30, today, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 60, today - 30, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 90, today - 60, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 120, today - 90, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, undefined, today - 120, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(cartera_cordobas.reduce((acc, val) => {
-                acc += val.prima;
-                return parseFloat(acc.toFixed(2));
-            }, 0))}</td>
-                </tr>
-                <tr>
-                    <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today, undefined, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 30, today, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 60, today - 30, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 90, today - 60, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, today - 120, today - 90, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_cordobas, undefined, today - 120, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(cartera_cordobas.reduce((acc, val) => {
-                acc += val.comision;
-                return parseFloat(acc.toFixed(2));
-            }, 0))}</td>
-                </tr>
-            `);
 
-            dolares.append(`
-                <tr>
-                    <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today, undefined, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 30, today, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 60, today - 30, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 90, today - 60, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 120, today - 90, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, undefined, today - 120, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(cartera_dolares.reduce((acc, val) => {
-                acc += val.prima;
-                return parseFloat(acc.toFixed(2));
-            }, 0))}</td>
-                </tr>
-                <tr>
-                    <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today, undefined, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 30, today, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 60, today - 30, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 90, today - 60, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, today - 120, today - 90, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_data(cartera_dolares, undefined, today - 120, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(cartera_dolares.reduce((acc, val) => {
-                acc += val.comision;
-                return parseFloat(acc.toFixed(2));
-            }, 0))}</td>
-                </tr>
-            `);
+            let vencida_cordobas = $('#vencida-cordobas tbody').empty();
+            let vencida_dolares = $('#vencida-dolares tbody').empty();
+            vencida_cordobas.append(vencida_row(cartera_cordobas, today));
+            vencida_dolares.append(vencida_row(cartera_dolares, today));
         }
     })
 });
