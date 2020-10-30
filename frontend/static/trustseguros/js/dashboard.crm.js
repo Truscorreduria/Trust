@@ -15,13 +15,13 @@ $(document).ready(function () {
                 crm.append(
                     `<tr>
                         <td>${o}</td>
-                        <td>${status1.length}</td>
-                        <td>${status2.length}</td>
-                        <td>${status3.length}</td>
-                        <td>${status4.length}</td>
-                        <td>${status5.length}</td>
-                        <td>${status6.length}</td>
-                        <td>${sellers[o].length}</td>
+                        <td class="numberinput">${status1.length}</td>
+                        <td class="numberinput">${status2.length}</td>
+                        <td class="numberinput">${status3.length}</td>
+                        <td class="numberinput">${status4.length}</td>
+                        <td class="numberinput">${status5.length}</td>
+                        <td class="numberinput">${status6.length}</td>
+                        <td class="numberinput">${sellers[o].length}</td>
                     </tr>`
                 )
             });

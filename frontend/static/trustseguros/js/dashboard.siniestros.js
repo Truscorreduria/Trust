@@ -23,10 +23,9 @@ $(document).ready(function () {
             let siniestros = $('#dashboard-siniestros tbody').empty();
             siniestros.append(
                 `<tr>
-                    <td>${response.siniestros.length}</td>
-                    <td>${monto}</td>
-                    <td>${monto}</td>
-                    <td>${monto}</td>
+                    <td class="numberinput">${response.siniestros.length}</td>
+                    <td class="numberinput">${monto}</td>
+                    <td class="numberinput">${monto}</td>
                 </tr>`
             )
         }
