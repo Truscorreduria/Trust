@@ -1200,8 +1200,8 @@ class Poliza(BasePoliza):
         return self.cuotas().filter(estado__in=[
             EstadoPago.VIGENTE,
             EstadoPago.VENCIDO
-        ], fecha_vence__lt=start_date,
-            fecha_vence__gt=end_date).aggregate(Sum('monto'))['monto__sum']
+        ], fecha_vence__lte=start_date,
+            fecha_vence__gte=end_date).aggregate(Sum('monto'))['monto__sum']
 
     def saldo_mora_end(self, fecha_corte, end):
         end_date = fecha_corte - timedelta(days=end)
