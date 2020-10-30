@@ -26,6 +26,8 @@ def get_attr(obj, attr_name):
     value = obj
     for attr in attr_name.split('.'):
         try:
+            value = getattr(value, attr)()
+        except TypeError:
             value = getattr(value, attr)
         except AttributeError:
             value = None
@@ -2269,6 +2271,47 @@ class ReporteMora(ReportLab):
     model = Poliza
     form = ReporteCarteraForm
     filename = "Reporte de mora.xlsx"
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        return queryset
+
+    @staticmethod
+    def to_json(instance, date):
+        return {
+            'Ejecutivo': get_attr(instance, 'user.username'),
+            'Contratante': get_attr(instance, 'contratante.full_name'),
+            'Asegurado': get_attr(instance, 'cliente.full_name'),
+            'Número Tel': get_attr(instance, 'cliente.celular'),
+            'Correo electrónico': get_attr(instance, 'cliente.email_personal'),
+            'Póliza': get_attr(instance, 'no_poliza'),
+            'Compañía': get_attr(instance, 'aseguradora.name'),
+            'Recibo de prima': get_attr(instance, 'no_recibo'),
+            'Moneda': get_attr(instance, 'moneda'),
+            'Vigencia': get_attr(instance, 'fecha_vence'),
+            'Día de Cobro': get_attr(instance, 'fecha_pago'),
+            'Forma de pago': instance.get_f_pago_display(),
+            'Total': get_attr(instance, 'prima_total'),
+            'Pagado': get_attr(instance, 'total_pagado'),
+            'Pendiente': get_attr(instance, 'saldo_pendiente'),
+            'Corriente': instance.saldo_corriente(date),
+            '1 – 30': instance.saldo_mora_dias(date, 0, 30),
+            '31 – 60': instance.saldo_mora_dias(date, 30, 60),
+            '61 – 90': instance.saldo_mora_dias(date, 60, 90),
+            '91 – 120': instance.saldo_mora_dias(date, 90, 120),
+            'Más de 120': instance.saldo_mora_end(date, 120),
+            'Total venc.': instance.saldo_vencido(date),
+        }
+
+    def post(self, request, **kwargs):
+        form = self.form(request.POST)
+        raw_data = []
+        if form.is_valid():
+            queryset = self.model.objects.all()
+            queryset = self.apply_filter(queryset, form.cleaned_data)
+            for instance in queryset:
+                raw_data.append(self.to_json(instance, form.cleaned_data['date']))
+        return JsonResponse({'raw_data': raw_data}, encoder=Codec)
 
 
 class ReporteComision(ReportLab):

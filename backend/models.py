@@ -812,7 +812,7 @@ class MotivoCancelacion:
     @classmethod
     def choices(cls):
         return (cls.NO_TOMADA, "No tomada"), (cls.CAMBIO_COMPANIA, "Cambio de compañia"), (
-        cls.CREDITO_CANCELADO, "Crédito cancelado"), \
+            cls.CREDITO_CANCELADO, "Crédito cancelado"), \
                (cls.FALTA_PAGO, "Falta de pago"), (cls.OTROS, "Otros"),
 
 
@@ -957,9 +957,11 @@ class Poliza(BasePoliza):
     beneficiario = models.ForeignKey(Entidad, null=True, blank=True, on_delete=models.SET_NULL)
     cesioinario = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL)
 
+    #  fixme eliminar este campo
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
     f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
                                          verbose_name="forma de pago")
+    #  fixme eliminar este campo
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
                                   choices=(
                                       ('debito_automatico', 'Débito automático'),
@@ -1169,10 +1171,44 @@ class Poliza(BasePoliza):
         return self.cuotas().aggregate(Sum('monto'))['monto__sum']
 
     def saldo_pendiente(self):
-        return self.cuotas().exclude(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ]).aggregate(Sum('monto'))['monto__sum']
+
+    def total_pagado(self):
+        return self.cuotas().filter(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
 
     def recibos(self):
         return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
+
+    def saldo_corriente(self, fecha_corte):
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__gte=fecha_corte).aggregate(Sum('monto'))['monto__sum']
+
+    def saldo_vencido(self, fecha_corte):
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lt=fecha_corte).aggregate(Sum('monto'))['monto__sum']
+
+    def saldo_mora_dias(self, fecha_corte, start, end):
+        start_date = fecha_corte - timedelta(days=start)
+        end_date = fecha_corte - timedelta(days=end)
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lt=start_date,
+            fecha_vence__gt=end_date).aggregate(Sum('monto'))['monto__sum']
+
+    def saldo_mora_end(self, fecha_corte, end):
+        end_date = fecha_corte - timedelta(days=end)
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lt=end_date).aggregate(Sum('monto'))['monto__sum']
 
 
 class CoberturaPoliza(Base):

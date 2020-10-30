@@ -1304,7 +1304,6 @@ class ReporteSiniestroForm(forms.Form):
 class ReporteCarteraForm(forms.Form):
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     ramo = forms.ModelChoiceField(queryset=Ramo.objects.all(), required=False)
-    coin = forms.ModelChoiceField(queryset=Moneda.objects.all(), required=False, label="Moneda")
+    moneda = forms.ModelChoiceField(queryset=Moneda.objects.all(), required=False, label="Moneda")
     aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), required=False, label="Compañia")
-    created__gte = forms.DateField(required=True, label="Desde")
-    created__lte = forms.DateField(required=True, label="Hasta")
+    date = forms.DateField(required=True, label="Fecha de corte")
