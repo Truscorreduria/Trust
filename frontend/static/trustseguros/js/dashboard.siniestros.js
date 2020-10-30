@@ -15,7 +15,11 @@ $(document).ready(function () {
         data: {},
         success: function (response) {
             let monto = response.siniestros.reduce(monto_pagado, [])[0].monto_pagado;
-            console.log(monto)
+            if (monto.length > 0) {
+                monto = monto[0].monto_pagado
+            } else {
+                monto = 0;
+            }
             let siniestros = $('#dashboard-siniestros tbody').empty();
             siniestros.append(
                 `<tr>
