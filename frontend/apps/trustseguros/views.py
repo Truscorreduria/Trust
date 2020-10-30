@@ -2261,7 +2261,7 @@ class ReporteMora(ReportLab):
     def to_json(instance, date):
         return {
             'Grupo': get_attr(instance, 'grupo.name'),
-            'Contratante': get_attr(instance, 'contratante.full_name'),
+            'Contratante': get_attr(instance, 'contratante'),
             'Asegurado': get_attr(instance, 'cliente.full_name'),
             'Número Tel': get_attr(instance, 'cliente.celular'),
             'Correo electrónico': get_attr(instance, 'cliente.email_personal'),
