@@ -96,28 +96,31 @@
                 {% block content %}
                     <div class="row">
                         <div class="col">
-                            <table class="table" id="cobranza-dolares">
-                                <thead>
-                                <tr>
-                                    <th colspan="5">COBRANZA</th>
-                                </tr>
-                                <tr>
-                                    <th>DÓLARES</th>
-                                    <th>VIGENTE</th>
-                                    <th>30 DIAS</th>
-                                    <th>60 DIAS</th>
-                                    <th>90 DIAS</th>
-                                    <th>120 DIAS</th>
-                                    <th>MAS</th>
-                                    <th>TOTAL</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
+                            <div class="card">
+                                <table class="table" id="cobranza-dolares">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="5">COBRANZA</th>
+                                    </tr>
+                                    <tr>
+                                        <th>DÓLARES</th>
+                                        <th>VIGENTE</th>
+                                        <th>30 DIAS</th>
+                                        <th>60 DIAS</th>
+                                        <th>90 DIAS</th>
+                                        <th>120 DIAS</th>
+                                        <th>MAS</th>
+                                        <th>TOTAL</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="col">
-                            <table class="table" id="cobranza-cordobas">
+                            <div class="card">
+                                <table class="table" id="cobranza-cordobas">
                                 <thead>
                                 <tr>
                                     <th colspan="5">COBRANZA</th>
@@ -136,11 +139,13 @@
                                 <tbody>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
-                            <table class="table" id="dashboard-crm">
+                            <div class="card">
+                                <table class="table" id="dashboard-crm">
                                 <thead>
                                 <tr>
                                     <th colspan="5">CRM - OPORTUNIDADES DE NEGOCIO</th>
@@ -166,9 +171,11 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                         <div class="col">
-                            <table class="table" id="dashboard-siniestros">
+                            <div class="card">
+                                <table class="table" id="dashboard-siniestros">
                                 <thead>
                                 <tr>
                                     <th colspan="5">SINIESTRO</th>
@@ -188,6 +195,7 @@
                                 </tr>
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 {% endblock %}
