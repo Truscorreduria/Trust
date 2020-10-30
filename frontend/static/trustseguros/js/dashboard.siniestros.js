@@ -14,7 +14,7 @@ $(document).ready(function () {
         method: 'POST',
         data: {},
         success: function (response) {
-            let monto = response.siniestros.reduce(monto_pagado).monto_pagado;
+            let monto = response.siniestros.reduce(monto_pagado, [])[0].monto_pagado;
             console.log(monto)
             let siniestros = $('#dashboard-siniestros tbody').empty();
             siniestros.append(
