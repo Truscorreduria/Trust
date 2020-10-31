@@ -565,6 +565,16 @@ def index(request):
             'fecha_vence': cuota.fecha_vence,
         }
 
+    def poliza_json(poliza):
+        return {
+            'id': poliza.id,
+            'no_poliza': poliza.no_poliza,
+            'fecha_emision': poliza.fecha_emision,
+            'fecha_vence': poliza.fecha_vence,
+            'prima': poliza.prima_total(),
+            'comision': poliza.comision_total(),
+        }
+
     def cartera(coin):
         polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA)
         return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas,
@@ -584,6 +594,10 @@ def index(request):
         if 'cartera' in request.POST:
             for moneda in Moneda.objects.all():
                 response['cartera_' + moneda.moneda] = cartera(moneda)
+        if 'vencimiento' in request.POST:
+            for moneda in Moneda.objects.all():
+                response['vencimiento_' + moneda.moneda] = [poliza_json(p) for p in Poliza.objects.filter(
+                    estado_poliza=EstadoPoliza.ACTIVA, moneda=moneda)]
 
         return JsonResponse(response, encoder=Codec)
 

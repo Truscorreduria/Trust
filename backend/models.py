@@ -1168,7 +1168,10 @@ class Poliza(BasePoliza):
         return Cuota.objects.filter(poliza=self).order_by('numero')
 
     def prima_total(self):
-        return self.cuotas().aggregate(Sum('monto'))['monto__sum']
+        return self.cuotas().aggregate(Sum('monto'))['monto__sum'] or 0.0
+
+    def comision_total(self):
+        return self.cuotas().aggregate(Sum('monto_comision'))['monto_comision__sum'] or 0.0
 
     def saldo_pendiente(self):
         return self.cuotas().filter(estado__in=[
