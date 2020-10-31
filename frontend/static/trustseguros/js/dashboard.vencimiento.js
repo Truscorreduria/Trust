@@ -14,8 +14,7 @@ $(document).ready(function () {
 
     const show_data = function () {
         const data = $(this).data();
-        console.log(data)
-        const content = modal.find('.modal-body');
+        const content = modal.find('.modal-body').empty();
 
         let html = ` <table class="table">
                         <thead>
@@ -51,6 +50,22 @@ $(document).ready(function () {
         const $vencidas120 = reduce_count(data, today.addDays(90), today.addDays(120), 'id', show_data);
         const $vencidas_ = reduce_count(data, today.addDays(120), undefined, 'id', show_data);
         const $vencidast = reduce_count(data, today, undefined, 'id', show_data);
+
+        const $primas = reduce_sum(data, undefined, today, 'prima', show_data);
+        const $primas30 = reduce_sum(data, today, today.addDays(30), 'prima', show_data);
+        const $primas60 = reduce_sum(data, today.addDays(30), today.addDays(60), 'prima', show_data);
+        const $primas90 = reduce_sum(data, today.addDays(60), today.addDays(90), 'prima', show_data);
+        const $primas120 = reduce_sum(data, today.addDays(90), today.addDays(120), 'prima', show_data);
+        const $primas_ = reduce_sum(data, today.addDays(120), undefined, 'prima', show_data);
+        const $primast = reduce_sum(data, today, undefined, 'prima', show_data);
+
+        const $comision = reduce_sum(data, undefined, today, 'comision', show_data);
+        const $comision30 = reduce_sum(data, today, today.addDays(30), 'comision', show_data);
+        const $comision60 = reduce_sum(data, today.addDays(30), today.addDays(60), 'comision', show_data);
+        const $comision90 = reduce_sum(data, today.addDays(60), today.addDays(90), 'comision', show_data);
+        const $comision120 = reduce_sum(data, today.addDays(90), today.addDays(120), 'comision', show_data);
+        const $comision_ = reduce_sum(data, today.addDays(120), undefined, 'comision', show_data);
+        const $comisiont = reduce_sum(data, today, undefined, 'comision', show_data);
         return $(`
                 <tr>
                     <td>#</td>
@@ -64,26 +79,30 @@ $(document).ready(function () {
                 </tr>
                 <tr>
                     <td>Prima</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today, today.addDays(30), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(30), today.addDays(60), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(60), today.addDays(90), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(90), today.addDays(120), 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(120), undefined, 'prima'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today, undefined, 'prima'))}</td>
+                    <td class="numberinput"><a data-swap="$primas"></a></td>
+                    <td class="numberinput"><a data-swap="$primas30"></a></td>
+                    <td class="numberinput"><a data-swap="$primas60"></a></td>
+                    <td class="numberinput"><a data-swap="$primas90"></a></td>
+                    <td class="numberinput"><a data-swap="$primas120"></a></td>
+                    <td class="numberinput"><a data-swap="$primas_"></a></td>
+                    <td class="numberinput"><a data-swap="$primast"></a></td>
                 </tr>
                 <tr>
                     <td>Comisión</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today, today.addDays(30), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(30), today.addDays(60), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(60), today.addDays(90), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(90), today.addDays(120), 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(120), undefined, 'comision'))}</td>
-                    <td class="numberinput">${intcommas(reduce_sum(data, today, undefined, 'comision'))}</td>
+                    <td class="numberinput"><a data-swap="$comision"></a></td>
+                    <td class="numberinput"><a data-swap="$comision30"></a></td>
+                    <td class="numberinput"><a data-swap="$comision60"></a></td>
+                    <td class="numberinput"><a data-swap="$comision90"></a></td>
+                    <td class="numberinput"><a data-swap="$comision120"></a></td>
+                    <td class="numberinput"><a data-swap="$comision_"></a></td>
+                    <td class="numberinput"><a data-swap="$comisiont"></a></td>
                 </tr>
-            `).swapIn({$vencidas, $vencidas30, $vencidas60, $vencidas90, $vencidas120, $vencidas_, $vencidast})
-    }
+            `).swapIn({
+            $vencidas, $vencidas30, $vencidas60, $vencidas90, $vencidas120, $vencidas_, $vencidast,
+            $primas, $primas30, $primas60, $primas90, $primas120, $primas_, $primast,
+            $comision, $comision30, $comision60, $comision90, $comision120, $comision_, $comisiont,
+            })
+    };
 
     $.ajax('.', {
         method: 'POST',

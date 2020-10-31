@@ -14,40 +14,38 @@ Date.prototype.addDays = function (days) {
 };
 
 
-function reduce_sum(data, start, end, field) {
-    return data.reduce((acc, val) => {
-        if (start !== undefined && end !== undefined) {
-            if (val.fecha_vence >= start && val.fecha_vence <= end) {
-                acc = parseFloat(acc) + parseFloat(val[field])
-            }
-        }
-        if (start === undefined && end !== undefined) {
-            if (val.fecha_vence <= end) {
-                acc = parseFloat(acc) + parseFloat(val[field])
-            }
-        }
-        if (start !== undefined && end === undefined) {
-            if (val.fecha_vence >= start) {
-                acc = parseFloat(acc) + parseFloat(val[field])
-            }
-        }
-        return parseFloat(acc).toFixed(2);
+function filter_data(data, start, end) {
+    let filtered = [];
+    if (start !== undefined && end !== undefined) {
+        filtered = data.filter(obj => obj.fecha_vence >= start && obj.fecha_vence <= end)
+    }
+    if (start === undefined && end !== undefined) {
+        filtered = data.filter(obj => obj.fecha_vence <= end)
+    }
+    if (start !== undefined && end === undefined) {
+        filtered = data.filter(obj => obj.fecha_vence >= start)
+    }
+    return filtered
+}
+
+
+function reduce_sum(data, start, end, field, callback) {
+    const filtered_data = filter_data(data, start, end);
+    const value = filtered_data.reduce((acc, val) => {
+        acc += val[field];
+        return acc;
     }, 0);
+
+    return $('<a href="javascript:void(0)"></a>')
+        .text(intcommas(parseFloat(value).toFixed(2)))
+        .data(filtered_data)
+        .on('click', callback);
 }
 
 function reduce_count(data, start, end, field, callback) {
-    let filtered_data = [];
-    if (start !== undefined && end !== undefined) {
-        filtered_data = data.filter(obj => obj.fecha_vence >= start && obj.fecha_vence <= end)
-    }
-    if (start === undefined && end !== undefined) {
-        filtered_data = data.filter(obj => obj.fecha_vence <= end)
-    }
-    if (start !== undefined && end === undefined) {
-        filtered_data = data.filter(obj => obj.fecha_vence >= start)
-    }
+    const filtered_data = filter_data(data, start, end);
 
-    return $('<a href="#"></a>')
+    return $('<a href="javascript:void(0)"></a>')
         .text(Object.keys(_.groupBy(filtered_data, field)).length)
         .data(filtered_data)
         .on('click', callback);

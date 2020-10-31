@@ -558,7 +558,7 @@ def index(request):
     def cuota_json(cuota):
         return {
             'id': cuota.id,
-            'poliza': cuota.poliza.id,
+            'poliza': cuota.poliza.no_poliza,
             'prima': cuota.monto,
             'comision': cuota.monto_comision,
             'monto_pagado': cuota.monto_pagado(),
@@ -579,7 +579,8 @@ def index(request):
         polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA)
         return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas,
                                                                     estado__in=[EstadoPago.VIGENTE,
-                                                                                EstadoPago.VENCIDO])]
+                                                                                EstadoPago.VENCIDO]
+                                                                    ).order_by('fecha_vence')]
 
     if request.method == 'POST':
         response = {}
