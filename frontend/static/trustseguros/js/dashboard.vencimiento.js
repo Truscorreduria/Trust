@@ -52,7 +52,7 @@ $(document).ready(function () {
         return `
                 <tr>
                     <td>#</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today, today.addDays(30), 'id'))}</td>
+                    <td class="numberinput">${intcommas(reduce_count(data, undefined, today, 'id'))}</td>
                     <td class="numberinput">${intcommas(reduce_count(data, today, today.addDays(30), 'id'))}</td>
                     <td class="numberinput">${intcommas(reduce_count(data, today.addDays(30), today.addDays(60), 'id'))}</td>
                     <td class="numberinput">${intcommas(reduce_count(data, today.addDays(60), today.addDays(90), 'id'))}</td>
@@ -72,6 +72,7 @@ $(document).ready(function () {
                 </tr>
                 <tr>
                     <td>Comisión</td>
+                    <td class="numberinput">${intcommas(reduce_sum(data, undefined, today, 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_sum(data, today, today.addDays(30), 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(30), today.addDays(60), 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(60), today.addDays(90), 'comision'))}</td>
