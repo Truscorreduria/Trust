@@ -1,10 +1,10 @@
 $(document).ready(function () {
 
-    Date.prototype.addDays = function (days) {
-        let date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-    };
+
+    const modal = $('#dashboard-modal').iziModal({
+        width: 1200, padding: 20, fullscreen: false, zindex: 1500,
+        headerColor: '#326634'
+    });
 
     function fix_date(obj) {
         obj['fecha_emision'] = new Date(obj.fecha_vence);
@@ -12,53 +12,55 @@ $(document).ready(function () {
         return obj;
     }
 
-    function reduce_sum(data, start, end, field) {
-        return data.reduce((acc, val) => {
-            if (start !== undefined && end !== undefined) {
-                if (val.fecha_vence >= start && val.fecha_vence <= end) {
-                    acc = parseFloat(acc) + parseFloat(val[field])
-                }
-            }
-            if (start === undefined && end !== undefined) {
-                if (val.fecha_vence <= end) {
-                    acc = parseFloat(acc) + parseFloat(val[field])
-                }
-            }
-            if (start !== undefined && end === undefined) {
-                if (val.fecha_vence >= start) {
-                    acc = parseFloat(acc) + parseFloat(val[field])
-                }
-            }
-            return parseFloat(acc).toFixed(2);
-        }, 0);
-    }
+    const show_data = function () {
+        const data = $(this).data();
+        console.log(data)
+        const content = modal.find('.modal-body');
 
-    function reduce_count(data, start, end, field) {
-        let filtered_data = [];
-        if (start !== undefined && end !== undefined) {
-            filtered_data = data.filter(obj => obj.fecha_vence >= start && obj.fecha_vence <= end)
-        }
-        if (start === undefined && end !== undefined) {
-            filtered_data = data.filter(obj => obj.fecha_vence <= end)
-        }
-        if (start !== undefined && end === undefined) {
-            filtered_data = data.filter(obj => obj.fecha_vence >= start)
-        }
-        return Object.keys(_.groupBy(filtered_data, field)).length
-    }
+        let html = ` <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Número de Póliza</td>
+                                <td>Fecha de emisión</td>
+                                <td>Fecha de vencimiento</td>
+                                <td class="numberinput">Prima</td>
+                                <td class="numberinput">Comisión</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(data).map(row => `<tr>
+                                <td>${data[row].no_poliza}</td>
+                                <td>${data[row].fecha_emision.toLocaleString('es-NI').slice(0, 10)}</td>
+                                <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
+                                <td class="numberinput">${intcommas(data[row].prima)}</td>
+                                <td class="numberinput">${intcommas(data[row].comision)}</td>
+                            </tr>`).join("")}
+                        </tbody>
+                    </table>`;
+
+        content.html(html);
+        modal.iziModal('open')
+    };
 
     function corriente_row(data) {
         let today = new Date();
-        return `
+        const $vencidas = reduce_count(data, undefined, today, 'id', show_data);
+        const $vencidas30 = reduce_count(data, today, today.addDays(30), 'id', show_data);
+        const $vencidas60 = reduce_count(data, today.addDays(30), today.addDays(60), 'id', show_data);
+        const $vencidas90 = reduce_count(data, today.addDays(60), today.addDays(90), 'id', show_data);
+        const $vencidas120 = reduce_count(data, today.addDays(90), today.addDays(120), 'id', show_data);
+        const $vencidas_ = reduce_count(data, today.addDays(120), undefined, 'id', show_data);
+        const $vencidast = reduce_count(data, today, undefined, 'id', show_data);
+        return $(`
                 <tr>
                     <td>#</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, undefined, today, 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today, today.addDays(30), 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(30), today.addDays(60), 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(60), today.addDays(90), 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(90), today.addDays(120), 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today.addDays(120), undefined, 'id'))}</td>
-                    <td class="numberinput">${intcommas(reduce_count(data, today, undefined, 'id'))}</td>
+                    <td class="numberinput"><a data-swap="$vencidas"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidas30"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidas60"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidas90"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidas120"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidas_"></a></td>
+                    <td class="numberinput"><a data-swap="$vencidast"></a></td>
                 </tr>
                 <tr>
                     <td>Prima</td>
@@ -80,7 +82,7 @@ $(document).ready(function () {
                     <td class="numberinput">${intcommas(reduce_sum(data, today.addDays(120), undefined, 'comision'))}</td>
                     <td class="numberinput">${intcommas(reduce_sum(data, today, undefined, 'comision'))}</td>
                 </tr>
-            `
+            `).swapIn({$vencidas, $vencidas30, $vencidas60, $vencidas90, $vencidas120, $vencidas_, $vencidast})
     }
 
     $.ajax('.', {
@@ -95,5 +97,7 @@ $(document).ready(function () {
             polizas_cordobas.append(corriente_row(vencimiento_cordobas));
             polizas_dolares.append(corriente_row(vencimiento_dolares));
         }
-    })
+    });
+
+
 });

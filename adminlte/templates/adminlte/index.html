@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{% static 'adminlte/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/main.css' %}">
     {% block style %}
-        <link rel="stylesheet" href="{% static 'adminlte/css/dashboard.css' %}">
+        <link rel="stylesheet" href="{% static 'adminlte/plugins/izimodal/css/iziModal.min.css' %}">
     {% endblock %}
 
     <script src="{% static 'adminlte/plugins/jquery/jquery.min.js' %}"></script>
@@ -278,6 +278,10 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="izimodal" id="dashboard-modal">
+                        <div class="modal-body"></div>
+                    </div>
                 {% endblock %}
             </div>
         </section>
@@ -316,10 +320,12 @@
 
 {% block javascript %}
     <script src="{% static 'lodash/lodash.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/izimodal/js/iziModal.min.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.crm.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.siniestros.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.cartera.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.vencimiento.js' %}"></script>
+    <script src="{% static 'trustseguros/js/dashboard.js' %}"></script>
 {% endblock %}
 
 </body>
