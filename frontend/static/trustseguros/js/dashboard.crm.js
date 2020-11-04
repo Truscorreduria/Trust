@@ -1,13 +1,8 @@
 $(document).ready(function () {
-    const modal = $('#dashboard-modal').iziModal({
-        width: 1200, padding: 20, fullscreen: false, zindex: 1500,
-        headerColor: '#326634'
-    });
 
 
     const show_data = function () {
         const data = $(this).data();
-        const content = modal.find('.modal-body').empty();
         let html = ` <table class="table">
                         <thead>
                             <tr>
@@ -28,9 +23,13 @@ $(document).ready(function () {
                             </tr>`).join("")}
                         </tbody>
                     </table>`;
-
-        content.html(html);
-        modal.iziModal('open')
+        dashModal.iziModal('destroy');
+        dashModal.empty().append(html);
+        dashModal.iziModal({
+            title: 'Oportunidades de negocio',
+            width: 1200, padding: 20, fullscreen: false, zindex: 1500,
+            headerColor: '#326634'
+        }).iziModal('open')
     };
 
 

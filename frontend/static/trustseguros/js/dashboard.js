@@ -51,6 +51,9 @@ function reduce_count(data, start, end, field, callback) {
         .on('click', callback);
 }
 
+
+const dashModal = $('#dashboard-modal').iziModal({});
+
 $(document).ready(function () {
     $('.dateinput').datepicker({
         dateFormat: 'dd/mm/yy',

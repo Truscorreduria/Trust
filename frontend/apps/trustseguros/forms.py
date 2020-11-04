@@ -1312,8 +1312,16 @@ class ReporteCarteraForm(forms.Form):
 
 class DashboardFiltersForm(forms.Form):
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
-    desde = forms.DateField(required=True, label="Desde")
-    hasta = forms.DateField(required=True, label="Hasta")
+    desde = forms.DateField(required=True, label="Desde", widget=forms.DateInput(
+        attrs={
+            'class': 'form-control-sm'
+        }
+    ))
+    hasta = forms.DateField(required=True, label="Hasta", widget=forms.DateInput(
+        attrs={
+            'class': 'form-control-sm'
+        }
+    ))
 
     def __init__(self, *args, **kwargs):
         now = timezone.now()

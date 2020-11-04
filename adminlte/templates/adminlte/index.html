@@ -98,6 +98,17 @@
                     <div class="row">
                         <div class="col">
                             <div class="card">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {{ filter_form.grupo|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
                                 <table class="table" id="vencimiento-dolares">
                                     <thead>
                                     <tr>
@@ -239,29 +250,21 @@
                     <div class="row">
                         <div class="col">
                             <div class="card">
-                                <div class="row">
-                                    <div class="col-md-4 ">
-                                        {{ filter_form.grupo|as_crispy_field }}
-                                    </div>
-                                    <div class="col-md-4 ">
-                                        {{ filter_form.desde|as_crispy_field }}
-                                    </div>
-                                    <div class="col-md-4 ">
-                                        {{ filter_form.hasta|as_crispy_field }}
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col">
+                                            CRM - OPORTUNIDADES DE NEGOCIO
+                                        </div>
+                                        <div class="col">
+                                            {{ filter_form.desde|as_crispy_field }}
+                                        </div>
+                                        <div class="col">
+                                            {{ filter_form.hasta|as_crispy_field }}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="card">
                                 <table class="table" id="dashboard-crm">
                                     <thead>
-                                    <tr>
-                                        <th colspan="5">CRM - OPORTUNIDADES DE NEGOCIO</th>
-                                    </tr>
                                     <tr>
                                         <th>Vendedor</th>
                                         <th class="numberinput">Pendiente</th>

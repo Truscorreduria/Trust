@@ -1,11 +1,5 @@
 $(document).ready(function () {
 
-
-    const modal = $('#dashboard-modal').iziModal({
-        width: 1200, padding: 20, fullscreen: false, zindex: 1500,
-        headerColor: '#326634'
-    });
-
     function fix_date(obj) {
         obj['fecha_emision'] = new Date(obj.fecha_vence);
         obj['fecha_vence'] = new Date(obj.fecha_vence);
@@ -14,8 +8,6 @@ $(document).ready(function () {
 
     const show_data = function () {
         const data = $(this).data();
-        const content = modal.find('.modal-body').empty();
-
         let html = ` <table class="table">
                         <thead>
                             <tr>
@@ -37,8 +29,13 @@ $(document).ready(function () {
                         </tbody>
                     </table>`;
 
-        content.html(html);
-        modal.iziModal('open')
+        dashModal.iziModal('destroy');
+        dashModal.empty().append(html);
+        dashModal.iziModal({
+            title: 'Pólizas por vencer',
+            width: 1200, padding: 20, fullscreen: false, zindex: 1500,
+            headerColor: '#326634'
+        }).iziModal('open')
     };
 
     function corriente_row(data) {
