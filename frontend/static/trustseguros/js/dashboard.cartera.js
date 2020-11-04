@@ -97,12 +97,12 @@ $(document).ready(function () {
 
     function corriente_row(data) {
         let today = new Date();
-        const $vencidas30 = reduce_count(data, today, today.addDays(30), 'poliza', show_data);
-        const $vencidas60 = reduce_count(data, today.addDays(30), today.addDays(60), 'poliza', show_data);
-        const $vencidas90 = reduce_count(data, today.addDays(60), today.addDays(90), 'poliza', show_data);
-        const $vencidas120 = reduce_count(data, today.addDays(90), today.addDays(120), 'poliza', show_data);
-        const $vencidas_ = reduce_count(data, today.addDays(120), undefined, 'poliza', show_data);
-        const $vencidast = reduce_count(data, today, undefined, 'poliza', show_data);
+        const $vencidas30 = reduce_count(data, today, today.addDays(30), 'no_poliza', show_data);
+        const $vencidas60 = reduce_count(data, today.addDays(30), today.addDays(60), 'no_poliza', show_data);
+        const $vencidas90 = reduce_count(data, today.addDays(60), today.addDays(90), 'no_poliza', show_data);
+        const $vencidas120 = reduce_count(data, today.addDays(90), today.addDays(120), 'no_poliza', show_data);
+        const $vencidas_ = reduce_count(data, today.addDays(120), undefined, 'no_poliza', show_data);
+        const $vencidast = reduce_count(data, today, undefined, 'no_poliza', show_data);
 
         const $primas30 = reduce_sum(data, today, today.addDays(30), 'prima', show_data);
         const $primas60 = reduce_sum(data, today.addDays(30), today.addDays(60), 'prima', show_data);
