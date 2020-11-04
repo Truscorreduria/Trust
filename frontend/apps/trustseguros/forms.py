@@ -1,6 +1,7 @@
 from django import forms
 from .widgets import *
 from backend.models import *
+import calendar
 
 
 class LteFormMixing:
@@ -1307,3 +1308,19 @@ class ReporteCarteraForm(forms.Form):
     moneda = forms.ModelChoiceField(queryset=Moneda.objects.all(), required=False, label="Moneda")
     aseguradora = forms.ModelChoiceField(queryset=Aseguradora.objects.all(), required=False, label="Compañia")
     date = forms.DateField(required=True, label="Fecha de corte")
+
+
+class DashboardFiltersForm(forms.Form):
+    grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
+    desde = forms.DateField(required=True, label="Desde")
+    hasta = forms.DateField(required=True, label="Hasta")
+
+    def __init__(self, *args, **kwargs):
+        now = timezone.now()
+        desde = timezone.datetime(year=now.year, month=now.month, day=1)
+        _, days = calendar.monthrange(desde.year, desde.month)
+        hasta = desde + timedelta(days=days - 1)
+        kwargs.update(initial={
+            'desde': desde, 'hasta': hasta
+        })
+        super().__init__(*args, **kwargs)

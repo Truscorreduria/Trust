@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ES-NI">
 <head>
-    {% load static %}
+    {% load static crispy_forms_filters %}
 
     <title>{% block title %}{% endblock %}</title>
     <meta charset="utf-8">
@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'adminlte/plugins/fontawesome-free/css/all.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/adminlte.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/jquery-ui/jquery-ui.min.css' %}">
     {% block style %}
         <link rel="stylesheet" href="{% static 'adminlte/plugins/izimodal/css/iziModal.min.css' %}">
     {% endblock %}
@@ -234,6 +235,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-md-4 ">
+                                        {{ filter_form.grupo|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        {{ filter_form.desde|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-4 ">
+                                        {{ filter_form.hasta|as_crispy_field }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col">
                             <div class="card">
@@ -278,7 +298,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="izimodal" id="dashboard-modal">
                         <div class="modal-body"></div>
                     </div>

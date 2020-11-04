@@ -586,9 +586,14 @@ def index(request):
     if request.method == 'POST':
         response = {}
         if 'crm' in request.POST:
-            response = {
-                'oportunidades': [x.to_json() for x in Oportunity.objects.all()],
-            }
+            form = DashboardFiltersForm(request.POST)
+            if form.is_valid():
+                response = {
+                    'oportunidades': [x.to_json() for x in Oportunity.objects.filter(
+                        created__gte=form.cleaned_data['desde'],
+                        created__lte=form.cleaned_data['hasta'],
+                    )],
+                }
         if 'siniestros' in request.POST:
             response = {
                 'siniestros': [x.to_json() for x in Siniestro.objects.all()],
@@ -603,7 +608,7 @@ def index(request):
 
         return JsonResponse(response, encoder=Codec)
 
-    return render(request, 'adminlte/index.html', {})
+    return render(request, 'adminlte/index.html', {'filter_form': DashboardFiltersForm})
 
 
 @login_required(login_url="/cotizador/login/")

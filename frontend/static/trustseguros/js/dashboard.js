@@ -50,3 +50,9 @@ function reduce_count(data, start, end, field, callback) {
         .data(filtered_data)
         .on('click', callback);
 }
+
+$(document).ready(function () {
+    $('.dateinput').datepicker({
+        dateFormat: 'dd/mm/yy',
+    });
+});

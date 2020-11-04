@@ -41,21 +41,22 @@ $(document).ready(function () {
             .on('click', show_data)
     }
 
-    $.ajax('.', {
-        method: 'POST',
-        data: {crm: 'crm'},
-        success: function (response) {
-            let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
-            let crm = $('#dashboard-crm tbody').empty();
-            Object.keys(sellers).map(function (o, i) {
-                const status1 = make_link(sellers[o].filter(el => el.status.id === 1));
-                const status2 = make_link(sellers[o].filter(el => el.status.id === 2));
-                const status3 = make_link(sellers[o].filter(el => el.status.id === 3));
-                const status4 = make_link(sellers[o].filter(el => el.status.id === 4));
-                const status5 = make_link(sellers[o].filter(el => el.status.id === 5));
-                const status6 = make_link(sellers[o].filter(el => el.status.id === 6));
-                const total = make_link(sellers[o]);
-                crm.append($(`<tr>
+    const load_data = function () {
+        $.ajax('.', {
+            method: 'POST',
+            data: {crm: 'crm', desde: $('#id_desde').val(), hasta: $('#id_hasta').val()},
+            success: function (response) {
+                let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
+                let crm = $('#dashboard-crm tbody').empty();
+                Object.keys(sellers).map(function (o, i) {
+                    const status1 = make_link(sellers[o].filter(el => el.status.id === 1));
+                    const status2 = make_link(sellers[o].filter(el => el.status.id === 2));
+                    const status3 = make_link(sellers[o].filter(el => el.status.id === 3));
+                    const status4 = make_link(sellers[o].filter(el => el.status.id === 4));
+                    const status5 = make_link(sellers[o].filter(el => el.status.id === 5));
+                    const status6 = make_link(sellers[o].filter(el => el.status.id === 6));
+                    const total = make_link(sellers[o]);
+                    crm.append($(`<tr>
                         <td>${o}</td>
                         <td class="numberinput"><a data-swap="status1"></a></td>
                         <td class="numberinput"><a data-swap="status2"></a></td>
@@ -65,7 +66,16 @@ $(document).ready(function () {
                         <td class="numberinput"><a data-swap="status6"></a></td>
                         <td class="numberinput"><a data-swap="total"></a></td>
                     </tr>`).swapIn({status1, status2, status3, status4, status5, status6, total}))
-            });
-        }
-    })
+                });
+            }
+        })
+    };
+
+
+    $('#id_desde').on('change', load_data);
+    $('#id_hasta').on('change', load_data);
+
+
+    load_data();
+
 });
