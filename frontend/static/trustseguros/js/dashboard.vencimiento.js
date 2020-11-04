@@ -14,6 +14,9 @@ $(document).ready(function () {
                                 <td>Número de Póliza</td>
                                 <td>Fecha de emisión</td>
                                 <td>Fecha de vencimiento</td>
+                                <td>Cliente</td>
+                                <td>Contratante</td>
+                                <td>Ejecutivo</td>
                                 <td class="numberinput">Prima</td>
                                 <td class="numberinput">Comisión</td>
                             </tr>
@@ -23,6 +26,9 @@ $(document).ready(function () {
                                 <td><a href="/trustseguros/polizas/#${data[row].id}">${data[row].no_poliza}</a></td>
                                 <td>${data[row].fecha_emision.toLocaleString('es-NI').slice(0, 10)}</td>
                                 <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
+                                <td>${data[row].cliente}</td>
+                                <td>${data[row].contratante}</td>
+                                <td>${data[row].ejecutivo}</td>
                                 <td class="numberinput">${intcommas(data[row].prima)}</td>
                                 <td class="numberinput">${intcommas(data[row].comision)}</td>
                             </tr>`).join("")}
@@ -33,7 +39,7 @@ $(document).ready(function () {
         dashModal.empty().append(html);
         dashModal.iziModal({
             title: 'Pólizas por vencer',
-            width: 1200, padding: 20, fullscreen: false, zindex: 1500,
+            width: 1600, padding: 20, fullscreen: false, zindex: 1500,
             headerColor: '#326634'
         }).iziModal('open')
     };

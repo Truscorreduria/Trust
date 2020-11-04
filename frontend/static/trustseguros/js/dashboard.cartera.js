@@ -11,6 +11,9 @@ $(document).ready(function () {
                         <thead>
                             <tr>
                                 <td>Número de Póliza</td>
+                                <td>Cliente</td>
+                                <td>Contratante</td>
+                                <td>Ejecutivo</td>
                                 <td>Fecha de cuota</td>
                                 <td class="numberinput">Monto cuota</td>
                                 <td class="numberinput">Monto comisión</td>
@@ -19,6 +22,9 @@ $(document).ready(function () {
                         <tbody>
                             ${Object.keys(data).map(row => `<tr>
                                 <td><a href="/trustseguros/polizas/#${data[row].id_poliza}">${data[row].no_poliza}</a></td>
+                                <td>${data[row].cliente}</td>
+                                <td>${data[row].contratante}</td>
+                                <td>${data[row].ejecutivo}</td>
                                 <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
                                 <td class="numberinput">${intcommas(data[row].prima)}</td>
                                 <td class="numberinput">${intcommas(data[row].comision)}</td>

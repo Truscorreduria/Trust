@@ -560,6 +560,9 @@ def index(request):
             'id': cuota.id,
             'id_poliza': cuota.poliza.id,
             'no_poliza': cuota.poliza.no_poliza,
+            'ejecutivo': cuota.poliza.ejecutivo,
+            'cliente': get_attr(cuota, 'poliza.cliente.get_full_name'),
+            'contratante': get_attr(cuota, 'poliza.contratante.get_full_name'),
             'prima': cuota.monto,
             'comision': cuota.monto_comision,
             'monto_pagado': cuota.monto_pagado(),
@@ -574,6 +577,9 @@ def index(request):
             'fecha_vence': poliza.fecha_vence,
             'prima': poliza.prima_total(),
             'comision': poliza.comision_total(),
+            'ejecutivo': poliza.ejecutivo,
+            'cliente': get_attr(poliza, 'cliente.get_full_name'),
+            'contratante': get_attr(poliza, 'contratante.get_full_name'),
         }
 
     def cartera(coin):
