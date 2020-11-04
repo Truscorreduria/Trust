@@ -1985,7 +1985,8 @@ class SiniestroTramite(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/siniestro.tramite.soportes.js', 'trustseguros/js/siniestro.tramite.bitacora.js']
+        'js': ['trustseguros/js/siniestro.tramite.soportes.js', 'trustseguros/js/tramite.poliza.js',
+               'trustseguros/js/siniestro.tramite.bitacora.js']
     }
 
     def post(self, request):
@@ -2046,7 +2047,7 @@ class Siniestros(Datatables):
         },
     ]
     media = {
-        'js': ['trustseguros/js/siniestro.soportes.js',
+        'js': ['trustseguros/js/siniestro.soportes.js', 'trustseguros/js/tramite.poliza.js',
                'trustseguros/js/siniestro.bitacora.js']
     }
 
