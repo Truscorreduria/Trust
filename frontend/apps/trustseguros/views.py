@@ -558,7 +558,8 @@ def index(request):
     def cuota_json(cuota):
         return {
             'id': cuota.id,
-            'poliza': cuota.poliza.no_poliza,
+            'id_poliza': cuota.poliza.id,
+            'no_poliza': cuota.poliza.no_poliza,
             'prima': cuota.monto,
             'comision': cuota.monto_comision,
             'monto_pagado': cuota.monto_pagado(),

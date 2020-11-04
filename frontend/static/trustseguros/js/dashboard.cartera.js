@@ -23,7 +23,7 @@ $(document).ready(function () {
                         </thead>
                         <tbody>
                             ${Object.keys(data).map(row => `<tr>
-                                <td>${data[row].poliza}</td>
+                                <td><a href="/trustseguros/polizas/#${data[row].id_poliza}">${data[row].no_poliza}</a></td>
                                 <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
                                 <td class="numberinput">${intcommas(data[row].prima)}</td>
                                 <td class="numberinput">${intcommas(data[row].comision)}</td>
