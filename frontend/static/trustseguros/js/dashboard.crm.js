@@ -20,7 +20,7 @@ $(document).ready(function () {
                         </thead>
                         <tbody>
                             ${Object.keys(data).map(row => `<tr>
-                                <td>${data[row].code}</td>
+                                <td><a href="/trustseguros/oportunidades/${data[row].linea}/#${data[row].id}">${data[row].code}</a></td>
                                 <td>${data[row].prospect.name}</td>
                                 <td>${data[row].campain.name}</td>
                                 <td class="numberinput">${data[row].dias}</td>
