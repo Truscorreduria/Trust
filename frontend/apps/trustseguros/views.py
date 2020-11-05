@@ -2354,6 +2354,7 @@ class ReporteComision(ReportLab):
             'Número de cuota': get_attr(instance, 'cuota.numero'),
             '2% IR': get_attr(instance, 'ir'),
             '% Alcaldía': get_attr(instance, 'alcaldia'),
+            'Comisión recibida': get_attr(instance, 'comision_deducida'),
         }
 
 # endregion

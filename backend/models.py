@@ -1591,6 +1591,9 @@ class PagoCuota(Base):
     def alcaldia(self):
         return round(self.comision * 0.01, 2)
 
+    def comision_deducida(self):
+        return round(self.comision * 0.97, 2)
+
     def __str__(self):
         return ""
 
