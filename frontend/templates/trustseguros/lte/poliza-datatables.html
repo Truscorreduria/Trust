@@ -77,7 +77,11 @@
             const calcular_comision = function () {
                 let prima_neta = parseFloat($('input[name="prima_neta"]').val());
                 let per_comision = parseFloat($('input[name="per_comision"]').val());
-                $('input[name="amount_comision"]').val(((prima_neta * per_comision) / 100).toFixed(2))
+                let monto_comision = (prima_neta * per_comision) / 100;
+                $('input[name="amount_comision"]').val(monto_comision.toFixed(2));
+                let per_sub_comision = parseFloat($('input[name="per_comision_eje"]').val());
+                let monto_sub_comision = (monto_comision * per_sub_comision) / 100;
+                $('input[name="amount_comision_eje"]').val(monto_sub_comision.toFixed(2));
             };
 
             const calcular_tabla_pagos = function () {
