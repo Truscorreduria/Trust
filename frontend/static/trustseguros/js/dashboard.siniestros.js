@@ -13,7 +13,7 @@ $(document).ready(function () {
                         </thead>
                         <tbody>
                             ${Object.keys(data).map(row => `<tr>
-                                <td><a href="/trustseguros/siniestros/#${data[row].id}">${data[row].reclamo_aseguradora}</a></td>
+                                <td><a href="/trustseguros/siniestro/#${data[row].id}">${data[row].reclamo_aseguradora}</a></td>
                                 <td>${data[row].cliente.name}</td>
                                 <td>${data[row].poliza.number}</td>
                             </tr>`).join("")}
