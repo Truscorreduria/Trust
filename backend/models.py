@@ -953,9 +953,9 @@ class Poliza(BasePoliza):
     per_comision = models.FloatField(default=0.0, verbose_name="% comisión", null=True, blank=True, )
     amount_comision = models.FloatField(default=0.0, verbose_name="total comisión", null=True, blank=True, )
 
-    ejecutivo = models.CharField(max_length=125, null=True, blank=True)
-    per_comision_eje = models.FloatField(default=0.0, verbose_name="% comisión ejecutivo", null=True, blank=True, )
-    amount_comision_eje = models.FloatField(default=0.0, verbose_name="total comisión ejecutivo", null=True,
+    comisionista = models.CharField(max_length=125, null=True, blank=True, verbose_name="sub comisionista")
+    per_comision_eje = models.FloatField(default=0.0, verbose_name="% sub comisionista", null=True, blank=True, )
+    amount_comision_eje = models.FloatField(default=0.0, verbose_name="total sub comisionista", null=True,
                                             blank=True, )
 
     cesion_derecho = models.BooleanField(default=False, verbose_name="¿tiene cesión de derecho?")

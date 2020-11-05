@@ -436,7 +436,7 @@ class PolizaForm(forms.ModelForm):
             'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
-            'per_comision_eje', 'amount_comision_eje', 'ejecutivo'
+            'per_comision_eje', 'amount_comision_eje', 'comisionista'
         )
 
     def __init__(self, *args, **kwargs):
