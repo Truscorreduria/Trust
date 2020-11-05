@@ -475,6 +475,9 @@ class PolizaForm(forms.ModelForm):
             self.fields['cesion_derecho'].widget.attrs['readonly'] = 'readonly'
             self.fields['cesioinario'].widget.attrs['readonly'] = 'readonly'
             self.fields['concepto'].widget.attrs['readonly'] = 'readonly'
+            self.fields['comisionista'].widget.attrs['readonly'] = 'readonly'
+            self.fields['per_comision_eje'].widget.attrs['readonly'] = 'readonly'
+            self.fields['amount_comision_eje'].widget.attrs['readonly'] = 'readonly'
         if instance:
             if instance.f_pago == FormaPago.CONTADO:
                 self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
