@@ -197,7 +197,9 @@
             };
 
             $(document).on('change', '#drive-files', function () {
-                uploadFile(this.files[0]);
+                $.each(this.files, function (i, o) {
+                    uploadFile(o);
+                });
             });
 
             $(document).on('click', '#bitacorabtn-add-comment', function () {
