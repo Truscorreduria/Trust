@@ -2350,7 +2350,7 @@ class ReporteComision(ReportLab):
             'Fecha de pago': get_attr(instance, 'fecha_pago'),
             'Fecha de pago comisión': get_attr(instance, 'fecha_pago_comision'),
             'Referencia de pago': get_attr(instance, 'referencia_pago'),
-            'Medio de pago': get_attr(instance, 'medio_pago'),
+            'Medio de pago': get_attr(instance, 'get_medio_pago_display'),
             'Número de cuota': get_attr(instance, 'cuota.numero'),
             '2% IR': get_attr(instance, 'ir'),
             '% Alcaldía': get_attr(instance, 'alcaldia'),
