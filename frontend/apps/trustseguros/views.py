@@ -2345,6 +2345,7 @@ class ReporteComision(ReportLab):
             'Fecha de vencimiento': get_attr(instance, 'get_poliza.fecha_vence'),
             'Concepto': get_attr(instance, 'get_poliza.get_concepto_display'),
             'Número de recibo': get_attr(instance, 'cuota.get_recibo'),
+            'Moneda': get_attr(instance, 'get_poliza.moneda'),
             'Monto': get_attr(instance, 'monto'),
             'Comisión': get_attr(instance, 'comision'),
             'Fecha de pago': get_attr(instance, 'fecha_pago'),
