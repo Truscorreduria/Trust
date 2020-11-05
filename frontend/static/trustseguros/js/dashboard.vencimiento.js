@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     function fix_date(obj) {
-        obj['fecha_emision'] = new Date(obj.fecha_vence);
+        obj['fecha_emision'] = new Date(obj.fecha_emision);
         obj['fecha_vence'] = new Date(obj.fecha_vence);
         return obj;
     }
