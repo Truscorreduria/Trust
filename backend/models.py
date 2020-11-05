@@ -900,6 +900,8 @@ class Poliza(BasePoliza):
     concepto = models.PositiveSmallIntegerField(choices=ConceptoPoliza.choices(), default=ConceptoPoliza.NUEVA,
                                                 null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
+    ejecutivo = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+                                  related_name="ejecutivo_asignado")
     cliente = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,
                                 related_name="polizas_automovil_cliente")
     contratante = models.ForeignKey(Cliente, null=True, blank=True, on_delete=models.SET_NULL,

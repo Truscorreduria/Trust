@@ -426,6 +426,8 @@ class PolizaForm(forms.ModelForm):
                                       'rows': 4,
                                   }))
 
+    ejecutivo = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
+
     class Meta:
         model = Poliza
         fields = (
@@ -436,7 +438,7 @@ class PolizaForm(forms.ModelForm):
             'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
-            'per_comision_eje', 'amount_comision_eje', 'comisionista'
+            'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo'
         )
 
     def __init__(self, *args, **kwargs):
@@ -465,6 +467,7 @@ class PolizaForm(forms.ModelForm):
             self.fields['ramo'].widget.attrs['readonly'] = 'readonly'
             self.fields['sub_ramo'].widget.attrs['readonly'] = 'readonly'
             self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
+            self.fields['ejecutivo'].widget.attrs['readonly'] = 'readonly'
             self.fields['cliente'].widget.attrs['disabled'] = 'disabled'
             self.fields['contratante'].widget.attrs['disabled'] = 'disabled'
             self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
