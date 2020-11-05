@@ -105,19 +105,25 @@ $(document).ready(function () {
         })
     };
 
-    $.ajax('.', {
-        method: 'POST',
-        data: {vencimiento: 'vencimiento'},
-        success: function (response) {
-            let vencimiento_cordobas = response.vencimiento_Cordoba.map(fix_date);
-            let vencimiento_dolares = response.vencimiento_Dolar.map(fix_date);
-            const polizas_cordobas = $('#vencimiento-cordobas tbody').empty();
-            const polizas_dolares = $('#vencimiento-dolares tbody').empty();
+    const load_data = function () {
+        $.ajax('.', {
+            method: 'POST',
+            data: {vencimiento: 'vencimiento', 'grupo': $('select[name="grupo"]').val()},
+            success: function (response) {
+                let vencimiento_cordobas = response.vencimiento_Cordoba.map(fix_date);
+                let vencimiento_dolares = response.vencimiento_Dolar.map(fix_date);
+                const polizas_cordobas = $('#vencimiento-cordobas tbody').empty();
+                const polizas_dolares = $('#vencimiento-dolares tbody').empty();
 
-            polizas_cordobas.append(corriente_row(vencimiento_cordobas));
-            polizas_dolares.append(corriente_row(vencimiento_dolares));
-        }
-    });
+                polizas_cordobas.append(corriente_row(vencimiento_cordobas));
+                polizas_dolares.append(corriente_row(vencimiento_dolares));
+            }
+        });
+    };
+
+    load_data();
+
+    $('select[name="grupo"]').on('change', load_data)
 
 
 });

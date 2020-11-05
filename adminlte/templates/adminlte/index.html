@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ES-NI">
 <head>
-    {% load static crispy_forms_filters %}
+    {% load static datatables %}
 
     <title>{% block title %}{% endblock %}</title>
     <meta charset="utf-8">
@@ -98,9 +98,53 @@
                     <div class="row">
                         <div class="col">
                             <div class="card">
+                                <div class="card-header">
+                                    Filtros
+                                </div>
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                Grupo
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ filter_form.grupo|as_inline_field }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card card-canceladas">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col">
+                                            PÓLIZAS CANCELADAS
+                                        </div>
+                                        <div class="col">
+                                            <span class="float-right">Desde</span>
+                                        </div>
+                                        <div class="col">
+                                            {{ filter_form.desde|as_inline_field }}
+                                        </div>
+                                        <div class="col">
+                                            <span class="float-right">Hasta</span>
+                                        </div>
+                                        <div class="col">
+                                            {{ filter_form.hasta|as_inline_field }}
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
-                                    <div class="col-md-3">
-                                        {{ filter_form.grupo|as_crispy_field }}
+                                    <div class="col">
+                                        <table class="table">
+                                            <tbody>
+                                            <td>
+                                                <span id="dashboard-canceladas"></span>
+                                            </td>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -249,17 +293,23 @@
 
                     <div class="row">
                         <div class="col">
-                            <div class="card">
+                            <div class="card card-crm">
                                 <div class="card-header">
                                     <div class="row">
                                         <div class="col">
                                             CRM - OPORTUNIDADES DE NEGOCIO
                                         </div>
                                         <div class="col">
-                                            {{ filter_form.desde|as_crispy_field }}
+                                            <span class="float-right">Desde</span>
                                         </div>
                                         <div class="col">
-                                            {{ filter_form.hasta|as_crispy_field }}
+                                            {{ filter_form.desde|as_inline_field }}
+                                        </div>
+                                        <div class="col">
+                                            <span class="float-right">Hasta</span>
+                                        </div>
+                                        <div class="col">
+                                            {{ filter_form.hasta|as_inline_field }}
                                         </div>
                                     </div>
                                 </div>
@@ -346,6 +396,7 @@
     <script src="{% static 'trustseguros/js/dashboard.siniestros.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.cartera.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.vencimiento.js' %}"></script>
+    <script src="{% static 'trustseguros/js/dashboard.canceladas.js' %}"></script>
     <script src="{% static 'trustseguros/js/dashboard.js' %}"></script>
 {% endblock %}
 

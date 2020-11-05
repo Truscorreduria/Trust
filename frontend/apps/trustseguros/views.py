@@ -587,17 +587,27 @@ def index(request):
             'contratante': get_attr(poliza, 'contratante.get_full_name'),
         }
 
-    def cartera(coin):
+    def cartera(coin, group):
         polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA)
+        if group:
+            polizas = Poliza.objects.filter(moneda=coin, estado_poliza=EstadoPoliza.ACTIVA, grupo=group)
         return [cuota_json(cuota) for cuota in Cuota.objects.filter(poliza__in=polizas,
                                                                     estado__in=[EstadoPago.VIGENTE,
                                                                                 EstadoPago.VENCIDO]
                                                                     ).order_by('fecha_vence')]
 
+    def vencimiento(coin, group):
+        if group:
+            return [poliza_json(p) for p in Poliza.objects.filter(
+                estado_poliza=EstadoPoliza.ACTIVA, moneda=coin,
+                grupo=group)]
+        return [poliza_json(p) for p in Poliza.objects.filter(
+            estado_poliza=EstadoPoliza.ACTIVA, moneda=coin)]
+
     if request.method == 'POST':
+        form = DashboardFiltersForm(request.POST)
         response = {}
         if 'crm' in request.POST:
-            form = DashboardFiltersForm(request.POST)
             if form.is_valid():
                 response = {
                     'oportunidades': [x.to_json() for x in Oportunity.objects.filter(
@@ -610,12 +620,22 @@ def index(request):
                 'siniestros': [x.to_json() for x in Siniestro.objects.all()],
             }
         if 'cartera' in request.POST:
+            form.is_valid()
             for moneda in Moneda.objects.all():
-                response['cartera_' + moneda.moneda] = cartera(moneda)
+                response['cartera_' + moneda.moneda] = cartera(moneda, form.cleaned_data['grupo'])
         if 'vencimiento' in request.POST:
+            form.is_valid()
             for moneda in Moneda.objects.all():
-                response['vencimiento_' + moneda.moneda] = [poliza_json(p) for p in Poliza.objects.filter(
-                    estado_poliza=EstadoPoliza.ACTIVA, moneda=moneda)]
+                response['vencimiento_' + moneda.moneda] = vencimiento(moneda, form.cleaned_data['grupo'])
+        if 'canceladas' in request.POST:
+            if form.is_valid():
+                response = {
+                    'canceladas': [poliza_json(poliza) for poliza in Poliza.objects.filter(
+                        estado_poliza=EstadoPoliza.CANCELADA,
+                        fecha_cancelacion__gte=form.cleaned_data['desde'],
+                        fecha_cancelacion__lte=form.cleaned_data['hasta'],
+                    )]
+                }
 
         return JsonResponse(response, encoder=Codec)
 

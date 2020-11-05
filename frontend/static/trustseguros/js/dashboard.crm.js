@@ -43,7 +43,11 @@ $(document).ready(function () {
     const load_data = function () {
         $.ajax('.', {
             method: 'POST',
-            data: {crm: 'crm', desde: $('#id_desde').val(), hasta: $('#id_hasta').val()},
+            data: {
+                crm: 'crm',
+                desde: $('.card-crm input[name="desde"]').val(),
+                hasta: $('.card-crm input[name="hasta"]').val()
+            },
             success: function (response) {
                 let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
                 let crm = $('#dashboard-crm tbody').empty();
@@ -71,8 +75,8 @@ $(document).ready(function () {
     };
 
 
-    $('#id_desde').on('change', load_data);
-    $('#id_hasta').on('change', load_data);
+    $('.card-crm input[name="desde"]').on('change', load_data);
+    $('.card-crm input[name="hasta"]').on('change', load_data);
 
 
     load_data();
