@@ -25,6 +25,9 @@ function filter_data(data, start, end) {
     if (start !== undefined && end === undefined) {
         filtered = data.filter(obj => obj.fecha_vence >= start)
     }
+    if (start === undefined && end === undefined) {
+        return data
+    }
     return filtered
 }
 

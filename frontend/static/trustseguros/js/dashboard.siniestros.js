@@ -1,33 +1,47 @@
 $(document).ready(function () {
 
-    function monto_pagado(acc, val) {
-        let o = acc.filter(function (obj) {
-            return obj.id == val.id;
-        }).pop() || {name: val.id, monto_pagado: 0};
 
-        o.monto_pagado += val.monto_pagado;
-        acc.push(o);
-        return acc;
-    }
+    const show_data = function () {
+        const data = $(this).data();
+        let html = ` <table class="table">
+                        <thead>
+                            <tr>
+                                <td>Reclamo aseguradora</td>
+                                <td>Cliente</td>
+                                <td>Póliza</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.keys(data).map(row => `<tr>
+                                <td><a href="/trustseguros/siniestros/#${data[row].id}">${data[row].reclamo_aseguradora}</a></td>
+                                <td>${data[row].cliente.name}</td>
+                                <td>${data[row].poliza.number}</td>
+                            </tr>`).join("")}
+                        </tbody>
+                    </table>`;
+        dashModal.iziModal('destroy');
+        dashModal.empty().append(html);
+        dashModal.iziModal({
+            title: 'Cartera',
+            width: 1200, padding: 20, fullscreen: false, zindex: 1500,
+            headerColor: '#326634'
+        }).iziModal('open')
+    };
 
     $.ajax('.', {
         method: 'POST',
         data: {siniestros: 'siniestros'},
         success: function (response) {
-            let monto = response.siniestros.reduce(monto_pagado, []);
-            if (monto.length > 0) {
-                monto = monto[0].monto_pagado
-            } else {
-                monto = 0;
-            }
+            console.log(response)
+            const $totalcasos = reduce_count(response.siniestros, undefined, undefined, 'id', show_data);
+            const $montoreclamado = reduce_sum(response.siniestros, undefined, undefined, 'monto_reclamo', show_data);
+            const $montopagado = reduce_sum(response.siniestros, undefined, undefined, 'monto_pagado', show_data);
             let siniestros = $('#dashboard-siniestros tbody').empty();
-            siniestros.append(
-                `<tr>
-                    <td class="numberinput">${response.siniestros.length}</td>
-                    <td class="numberinput">${monto}</td>
-                    <td class="numberinput">${monto}</td>
-                </tr>`
-            )
+            let html = $(`<tr>
+                    <td class="numberinput"><a data-swap="$totalcasos"></a></td>
+                    <td class="numberinput"><a data-swap="$montopagado"></a></td>
+                </tr>`).swapIn({$montopagado, $montoreclamado, $totalcasos});
+            siniestros.append(html)
         }
     })
 });
