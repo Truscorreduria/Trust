@@ -16,7 +16,6 @@ $(document).ready(function () {
                                 <td>Ejecutivo</td>
                                 <td>Fecha de cuota</td>
                                 <td class="numberinput">Monto cuota</td>
-                                <td class="numberinput">Monto comisión</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -27,7 +26,6 @@ $(document).ready(function () {
                                 <td>${data[row].ejecutivo}</td>
                                 <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
                                 <td class="numberinput">${intcommas(data[row].prima)}</td>
-                                <td class="numberinput">${intcommas(data[row].comision)}</td>
                             </tr>`).join("")}
                         </tbody>
                     </table>`;

@@ -18,7 +18,6 @@ $(document).ready(function () {
                                 <td>Contratante</td>
                                 <td>Ejecutivo</td>
                                 <td class="numberinput">Prima</td>
-                                <td class="numberinput">Comisión</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,7 +29,6 @@ $(document).ready(function () {
                                 <td>${data[row].contratante}</td>
                                 <td>${data[row].ejecutivo}</td>
                                 <td class="numberinput">${intcommas(data[row].prima)}</td>
-                                <td class="numberinput">${intcommas(data[row].comision)}</td>
                             </tr>`).join("")}
                         </tbody>
                     </table>`;
