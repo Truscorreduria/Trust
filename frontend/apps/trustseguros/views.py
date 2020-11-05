@@ -555,12 +555,17 @@ def comentarios(request):
 
 @login_required(login_url="/cotizador/login/")
 def index(request):
+    def get_ejecutivo(poliza):
+        if poliza.ejecutivo:
+            return poliza.ejecutivo
+        return ""
+
     def cuota_json(cuota):
         return {
             'id': cuota.id,
             'id_poliza': cuota.poliza.id,
             'no_poliza': cuota.poliza.no_poliza,
-            'ejecutivo': cuota.poliza.ejecutivo,
+            'ejecutivo': get_ejecutivo(cuota.poliza),
             'cliente': get_attr(cuota, 'poliza.cliente.get_full_name'),
             'contratante': get_attr(cuota, 'poliza.contratante.get_full_name'),
             'prima': cuota.monto,
@@ -577,7 +582,7 @@ def index(request):
             'fecha_vence': poliza.fecha_vence,
             'prima': poliza.prima_total(),
             'comision': poliza.comision_total(),
-            'ejecutivo': poliza.ejecutivo,
+            'ejecutivo': get_ejecutivo(poliza),
             'cliente': get_attr(poliza, 'cliente.get_full_name'),
             'contratante': get_attr(poliza, 'contratante.get_full_name'),
         }
