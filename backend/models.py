@@ -1578,6 +1578,19 @@ class PagoCuota(Base):
     fecha_pago = models.DateField(null=True)
     fecha_pago_comision = models.DateField(null=True)
 
+    def get_poliza(self):
+        if self.cuota.poliza:
+            return self.cuota.poliza
+        elif self.cuota.tramite:
+            return self.cuota.tramite.poliza
+        return None
+
+    def ir(self):
+        return round(self.comision * 0.02, 2)
+
+    def alcaldia(self):
+        return round(self.comision * 0.01, 2)
+
     def __str__(self):
         return ""
 

@@ -2336,19 +2336,24 @@ class ReporteComision(ReportLab):
     @staticmethod
     def to_json(instance):
         return {
-            'Contratante': get_attr(instance, 'cuota.poliza.contratante'),
-            'Cliente': get_attr(instance, 'cuota.poliza.cliente'),
-            'Ramo': get_attr(instance, 'cuota.poliza.ramo'),
-            'Póliza': get_attr(instance, 'cuota.get_poliza'),
-            'Aseguradora': get_attr(instance, 'cuota.poliza.aseguradora'),
-            'Fecha de inicio': get_attr(instance, 'cuota.poliza.fecha_emision'),
-            'Fecha de vencimiento': get_attr(instance, 'cuota.poliza.fecha_vence'),
-            'Concepto': get_attr(instance, 'cuota.poliza.get_concepto_display'),
+            'Contratante': get_attr(instance, 'get_poliza.contratante'),
+            'Cliente': get_attr(instance, 'get_poliza.cliente'),
+            'Ramo': get_attr(instance, 'get_poliza.ramo'),
+            'Póliza': get_attr(instance, 'get_poliza.no_poliza'),
+            'Aseguradora': get_attr(instance, 'get_poliza.aseguradora'),
+            'Fecha de inicio': get_attr(instance, 'get_poliza.fecha_emision'),
+            'Fecha de vencimiento': get_attr(instance, 'get_poliza.fecha_vence'),
+            'Concepto': get_attr(instance, 'get_poliza.get_concepto_display'),
             'Número de recibo': get_attr(instance, 'cuota.get_recibo'),
             'Monto': get_attr(instance, 'monto'),
             'Comisión': get_attr(instance, 'comision'),
+            'Fecha de pago': get_attr(instance, 'fecha_pago'),
+            'Fecha de pago comisión': get_attr(instance, 'fecha_pago_comision'),
             'Referencia de pago': get_attr(instance, 'referencia_pago'),
             'Medio de pago': get_attr(instance, 'medio_pago'),
+            'Número de cuota': get_attr(instance, 'cuota.numero'),
+            '2% IR': get_attr(instance, 'ir'),
+            '% Alcaldía': get_attr(instance, 'alcaldia'),
         }
 
 # endregion
