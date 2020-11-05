@@ -1218,6 +1218,34 @@ class Poliza(BasePoliza):
             EstadoPago.VENCIDO
         ], fecha_vence__lt=end_date).aggregate(Sum('monto'))['monto__sum']
 
+    def comision_corriente(self, fecha_corte):
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__gte=fecha_corte).aggregate(Sum('monto_comision'))['monto_comision__sum']
+
+    def comision_vencido(self, fecha_corte):
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lt=fecha_corte).aggregate(Sum('monto_comision'))['monto_comision__sum']
+
+    def comision_mora_dias(self, fecha_corte, start, end):
+        start_date = fecha_corte - timedelta(days=start)
+        end_date = fecha_corte - timedelta(days=end)
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lte=start_date,
+            fecha_vence__gte=end_date).aggregate(Sum('monto_comision'))['monto_comision__sum']
+
+    def comision_mora_end(self, fecha_corte, end):
+        end_date = fecha_corte - timedelta(days=end)
+        return self.cuotas().filter(estado__in=[
+            EstadoPago.VIGENTE,
+            EstadoPago.VENCIDO
+        ], fecha_vence__lt=end_date).aggregate(Sum('monto_comision'))['monto_comision__sum']
+
 
 class CoberturaPoliza(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
@@ -1533,7 +1561,10 @@ class Cuota(Base):
                 o['poliza'] = {'id': self.tramite.poliza.id, 'no_poliza': self.tramite.poliza.no_poliza}
                 o['cliente'] = self.cliente_tramite
                 o['recibo'] = self.tramite.no_recibo
-            o['dias_mora'] = self.dias_mora
+            o['monto_pagado'] = self.monto_pagado()
+            o['comision_pagada'] = self.comision_pagada()
+            o['saldo'] = self.saldo()
+            o['comision_pendiente'] = self.comision_pendiente()
         return o
 
 

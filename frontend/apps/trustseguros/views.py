@@ -2330,11 +2330,25 @@ class ReporteMora(ReportLab):
 
 class ReporteComision(ReportLab):
     model = PagoCuota
-    form = ReporteCarteraForm
+    form = ReporteComisionForm
     filename = "Reporte de comisión.xlsx"
 
     @staticmethod
-    def apply_filter(queryset, form_data):
-        return queryset
+    def to_json(instance):
+        return {
+            'Contratante': get_attr(instance, 'cuota.poliza.contratante'),
+            'Cliente': get_attr(instance, 'cuota.poliza.cliente'),
+            'Ramo': get_attr(instance, 'cuota.poliza.ramo'),
+            'Póliza': get_attr(instance, 'cuota.get_poliza'),
+            'Aseguradora': get_attr(instance, 'cuota.poliza.aseguradora'),
+            'Fecha de inicio': get_attr(instance, 'cuota.poliza.fecha_emision'),
+            'Fecha de vencimiento': get_attr(instance, 'cuota.poliza.fecha_vence'),
+            'Concepto': get_attr(instance, 'cuota.poliza.get_concepto_display'),
+            'Número de recibo': get_attr(instance, 'cuota.get_recibo'),
+            'Monto': get_attr(instance, 'monto'),
+            'Comisión': get_attr(instance, 'comision'),
+            'Referencia de pago': get_attr(instance, 'referencia_pago'),
+            'Medio de pago': get_attr(instance, 'medio_pago'),
+        }
 
 # endregion

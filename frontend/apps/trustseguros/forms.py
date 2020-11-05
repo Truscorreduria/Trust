@@ -1311,6 +1311,14 @@ class ReporteCarteraForm(forms.Form):
     date = forms.DateField(required=True, label="Fecha de corte")
 
 
+class ReporteComisionForm(forms.Form):
+    poliza__ramo = forms.ModelChoiceField(queryset=Ramo.objects.all(), required=False)
+    poliza__grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
+    poliza__moneda = forms.ModelChoiceField(queryset=Moneda.objects.all(), required=False)
+    fecha_pago__gte = forms.DateField(required=True, label="Desde")
+    fecha_pago__lte = forms.DateField(required=True, label="Hasta")
+
+
 class DashboardFiltersForm(forms.Form):
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     desde = forms.DateField(required=True, label="Desde", widget=forms.DateInput(
