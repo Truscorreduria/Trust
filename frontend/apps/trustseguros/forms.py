@@ -812,6 +812,7 @@ class OportunityForm(forms.ModelForm):
     ))
     code = forms.CharField(widget=forms.HiddenInput, required=False)
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
+    campain = forms.ModelChoiceField(queryset=Campain.objects.filter(active=True))
 
     class Meta:
         model = Oportunity
