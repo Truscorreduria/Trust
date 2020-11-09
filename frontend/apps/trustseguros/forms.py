@@ -1327,7 +1327,7 @@ class ReporteComisionForm(forms.Form):
 
 
 class DashboardFiltersForm(forms.Form):
-    grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
+    grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False, empty_label='TODOS')
     desde = forms.DateField(required=True, label="Desde", widget=forms.DateInput(
         attrs={
             'class': 'form-control-sm'

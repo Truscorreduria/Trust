@@ -15,11 +15,10 @@ from django.contrib.auth.models import Group
 from django.forms.models import model_to_dict
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from utils.utils import send_email
-from django.db.models.functions import TruncDay
-from django.db.models import Count
 from adminlte.utils import Codec
 from django.views.generic import View
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 
 def get_attr(obj, attr_name):
@@ -1767,6 +1766,13 @@ class Recibos(Datatables):
             buttons = [
                 {
                     'class': 'btn btn-warning btn-perform',
+                    'perform': 'ecuenta',
+                    'callback': 'imprimir_estado_cuenta',
+                    'icon': 'fa fa-file-pdf',
+                    'text': 'Estado de cuenta',
+                },
+                {
+                    'class': 'btn btn-warning btn-perform',
                     'perform': 'modificar',
                     'callback': 'process_response',
                     'icon': 'fa fa-edit',
@@ -1949,8 +1955,21 @@ class Recibos(Datatables):
                 'html': html_form
             }, encoder=Codec)
 
-        if 'estado_cuenta' in request.POST:
-            return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {})
+        if 'ecuenta' in request.POST:
+            poliza = Poliza.objects.get(id=request.POST.get('id'))
+            pages = []
+
+            paginator = Paginator(poliza.estado_cuenta(), 40)
+
+            for p in paginator.page_range:
+                pages.append({
+                    'page': p, 'range': len(paginator.page_range),
+                    'registros': paginator.page(p)
+                })
+            return render_to_pdf_response(request, "trustseguros/lte/pdf/ecuenta.html", {
+                'poliza': poliza,
+                'pages': pages
+            })
 
         return super().post(request)
 

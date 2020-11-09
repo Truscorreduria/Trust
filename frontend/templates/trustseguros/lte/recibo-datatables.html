@@ -17,6 +17,15 @@
     {{ block.super }}
     <script type="text/javascript">
 
+        function imprimir_estado_cuenta(response, textStatus, xhr) {
+            let blob = new Blob([response], {type: 'application/pdf'});
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = `Estado de cuenta.pdf`;
+            link.click();
+            $('.btn-perform').removeAttr('disabled')
+        }
+
         $(document).ready(function () {
 
             $('.dt-buttons').css({

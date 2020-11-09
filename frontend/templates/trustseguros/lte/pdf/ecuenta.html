@@ -10,7 +10,7 @@
     <style type="text/css">
 
         @page {
-            size: letter landscape;
+            size: letter portrait;
             margin-left: 1cm;
             margin-right: 1cm;
 
@@ -40,53 +40,108 @@
         }
         }
     </style>
+    <style type="text/css">
+        #documentos td {
+            padding: 0 5px;
+        }
+
+        #documentos td.right {
+            text-align: right;
+        }
+
+        #documentos td.left {
+            text-align: left;
+        }
+
+        #documentos td.center {
+            text-align: center;
+        }
+    </style>
 {% endblock %}
 
 {% block page_header %}
-    <p>Cabecera</p>
+    <table>
+        <tr>
+            <td class="pull-right">
+                <figure>
+                    <img src="{% static 'trustseguros/img/logo.trust.oportunidad.jpeg' %}" height="100">
+                </figure>
+            </td>
+            <td>
+                <h1>Estado de cuenta</h1>
+            </td>
+            <td>
+                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
+                <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
+                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
+                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+            </td>
+        </tr>
+    </table>
 {% endblock %}
 
 {% block page_content %}
-    <p>primera pagina</p>
+    <table>
+        <tr>
+            <td>Cliente</td>
+            <td colspan="3">{{ poliza.cliente }}</td>
+            <td>Póliza</td>
+            <td>{{ poliza.no_poliza }}</td>
+        </tr>
+        <tr>
+            <td>Contratante</td>
+            <td colspan="5">{{ poliza.contratante }}</td>
+        </tr>
+        <tr>
+            <td>Ramo</td>
+            <td>{{ poliza.ramo }}</td>
+            <td>Sub ramo</td>
+            <td>{{ poliza.sub_ramo }}</td>
+            <td>Prima total</td>
+            <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
+        </tr>
+        <tr>
+            <td>Fecha inicio</td>
+            <td>{{ poliza.fecha_emision }}</td>
+            <td>Fecha vencimiento</td>
+            <td>{{ poliza.fecha_vence }}</td>
+            <td>Total pagado</td>
+            <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
+        </tr>
+        <tr>
+            <td>Forma de pago</td>
+            <td>{{ poliza.get_f_pago_display }}</td>
+            <td>Medio de pago</td>
+            <td>{{ poliza.get_m_pago_display }}</td>
+            <td>Saldo Pendiente</td>
+            <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
+        </tr>
+    </table>
 
 
-    <p>Otras paginas</p>
-    {% for page in obj.pages %}
+    {% for page in pages %}
         <div style="margin-top: 5mm">
             <font size="3" face="Courier New">
 
                 <table id="documentos">
                     <thead>
                     <tr>
-                        <th rowspan="2" style="text-align: left">Documento</th>
-                        <th rowspan="2">Fecha Límite</th>
-                        <th colspan="2">Monto</th>
-                        <th rowspan="2" colspan="2">Mora</th>
-                        <th rowspan="2" style="text-align: right; padding-right: 1mm">Total</th>
-                        <th rowspan="2" style="text-align: right; padding-right: 1mm">Estado</th>
-                    </tr>
-                    <tr>
-                        <th>IMI</th>
-                        <th>TASA</th>
+                        <th style="text-align: left">Recibo</th>
+                        <th class="left">Descripción</th>
+                        <th class="right">Monto</th>
+                        <th class="right">Monto pagado</th>
+                        <th class="right">Saldo</th>
+                        <th class="center">Estado</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for p in page.registros %}
+                    {% for row in page.registros %}
                         <tr>
-
-                            <td style="width: 90mm">{{ p.documento }}</td>
-                            <td style="text-align: center; width: 40mm;">{{ p.fecha_vence|date:'d/m/Y' }}</td>
-                            {% if p.monto_compuesto %}
-                                <td style="width: 50mm; text-align: right; margin-right: 3mm">{{ p.imi|intcomma }}</td>
-                                <td style="width: 40mm; text-align: right; margin-right: 3mm">{{ p.recoleccion|intcomma }}</td>
-                            {% else %}
-                                <td colspan="2"
-                                    style="width: 20mm; text-align: right; margin-right: 3mm">{{ p.subtotal|intcomma }}</td>
-                            {% endif %}
-                            <td style="text-align: right; width: 20mm">{{ p.mora_porcentaje }}%</td>
-                            <td style="text-align: right; width: 40mm; padding-right: 1mm">{{ p.mora|intcomma }}</td>
-                            <td style="text-align: right; width: 60mm; padding-right: 1mm">{{ p.monto|intcomma }}</td>
-                            <td style="text-align: right; width: 40mm;">{{ p.estado }}</td>
+                            {% for cell in row %}
+                                {% if cell.render %}
+                                    <td colspan="{{ cell.colspan }}" class="{{ cell.cssclass }}">{{ cell.value }}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                     </tbody>

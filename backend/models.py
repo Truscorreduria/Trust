@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg, Sum
 from image_cropping.fields import ImageCropField
 from image_cropping import ImageRatioField
+from django.db.models import Q
 
 
 class Base(base):
@@ -639,6 +640,7 @@ class Contacto(Cliente):
 
 class Moneda(Base):
     moneda = models.CharField(max_length=50)
+    simbolo = models.CharField(max_length=3, null=True, blank=True)
 
     def __str__(self):
         return self.moneda
@@ -743,7 +745,7 @@ class MedioPago:
 
     @classmethod
     def choices(cls):
-        return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depositos'), \
+        return (cls.TRANSFERENCIA, 'Transferencia'), (cls.CHEQUE, 'Cheques'), (cls.DEPOSITO, 'Depósitos'), \
                (cls.TARJETA_CREDITO, 'Tarjeta de Credito'), (cls.NOMINA, 'Deducción por Nómina'), \
                (cls.EFECTIVO, 'Efectivo'),
 
@@ -1187,7 +1189,7 @@ class Poliza(BasePoliza):
         ]).aggregate(Sum('monto'))['monto__sum']
 
     def total_pagado(self):
-        return self.cuotas().filter(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum']
+        return self.cuotas().filter(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum'] or 0.0
 
     def recibos(self):
         return Tramite.objects.filter(poliza=self, genera_endoso=True).order_by('created')
@@ -1199,10 +1201,13 @@ class Poliza(BasePoliza):
         ], fecha_vence__gte=fecha_corte).aggregate(Sum('monto'))['monto__sum']
 
     def saldo_vencido(self, fecha_corte):
+        if not fecha_corte:
+            fecha_corte = datetime.now()
         return self.cuotas().filter(estado__in=[
             EstadoPago.VIGENTE,
             EstadoPago.VENCIDO
-        ], fecha_vence__lt=fecha_corte).aggregate(Sum('monto'))['monto__sum']
+        ], fecha_vence__lt=fecha_corte
+        ).aggregate(Sum('monto'))['monto__sum'] or 0.0
 
     def saldo_mora_dias(self, fecha_corte, start, end):
         start_date = fecha_corte - timedelta(days=start)
@@ -1247,6 +1252,49 @@ class Poliza(BasePoliza):
             EstadoPago.VIGENTE,
             EstadoPago.VENCIDO
         ], fecha_vence__lt=end_date).aggregate(Sum('monto_comision'))['monto_comision__sum']
+
+    @staticmethod
+    def celda(value, render=True, colspan=1, rowspan=2, cssclass='left'):
+        return {
+            'render': render,
+            'colspan': colspan,
+            'rowspan': rowspan,
+            'value': value,
+            'cssclass': cssclass,
+        }
+
+    def estado_cuenta_recibo(self, data, field='tramite_id', value=None, no_recibo=''):
+        data.append([self.celda(f'Recibo # {no_recibo}', colspan=6),
+                     self.celda(value=None, render=False),
+                     self.celda(value=None, render=False),
+                     self.celda(value=None, render=False),
+                     self.celda(value=None, render=False),
+                     self.celda(value=None, render=False),
+                     ])
+        for cuota in Cuota.objects.filter(Q((field, value))).order_by('fecha_vence'):
+            row = list()
+            row.append(self.celda(f''))  # Recibo
+            row.append(self.celda(f'Cuota # {cuota.numero}'))  # Descripción
+            row.append(self.celda(cuota.monto, cssclass='right'))  # Monto
+            row.append(self.celda(cuota.monto_pagado, cssclass='right'))  # Monto pagado
+            row.append(self.celda(cuota.saldo, cssclass='right'))  # Saldo
+            row.append(self.celda(cuota.get_estado_display(), cssclass='center'))  # Estado
+            data.append(row)
+        return data
+
+    def estado_cuenta(self):
+        """
+        Generar estado de cuenta
+        columnas: Recibo, Descripción, Monto, Monto Pagado, Saldo, Estado
+        numero de columnas: 6
+        """
+        data = list()
+        data = self.estado_cuenta_recibo(data, field='poliza_id', value=self.id, no_recibo=self.no_recibo)
+
+        for recibo in self.recibos():
+            data = self.estado_cuenta_recibo(data, value=recibo.id, no_recibo=recibo.no_recibo)
+
+        return data
 
 
 class CoberturaPoliza(Base):
