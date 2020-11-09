@@ -125,45 +125,46 @@
 {% endblock %}
 
 {% block page_content %}
-    <table style="margin-top: 1.5cm" id="poliza">
-        <tr>
-            <th>Cliente</th>
-            <td colspan="3">{{ poliza.cliente }}</td>
-            <th>Póliza</th>
-            <td>{{ poliza.no_poliza }}</td>
-        </tr>
-        <tr>
-            <th>Contratante</th>
-            <td colspan="5">{{ poliza.contratante }}</td>
-        </tr>
-        <tr>
-            <th>Ramo</th>
-            <td>{{ poliza.ramo }}</td>
-            <th>Sub ramo</th>
-            <td>{{ poliza.sub_ramo }}</td>
-            <th>Prima total</th>
-            <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
-        </tr>
-        <tr>
-            <th>Fecha inicio</th>
-            <td>{{ poliza.fecha_emision }}</td>
-            <th>Fecha vencimiento</th>
-            <td>{{ poliza.fecha_vence }}</td>
-            <th>Total pagado</th>
-            <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
-        </tr>
-        <tr>
-            <th>Forma de pago</th>
-            <td>{{ poliza.get_f_pago_display }}</td>
-            <th>Medio de pago</th>
-            <td>{{ poliza.get_m_pago_display }}</td>
-            <th>Saldo Pendiente</th>
-            <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
-        </tr>
-    </table>
-
 
     {% for page in pages %}
+
+        <table style="margin-top: 1.5cm" id="poliza">
+            <tr>
+                <th>Cliente</th>
+                <td colspan="3">{{ poliza.cliente }}</td>
+                <th>Póliza</th>
+                <td>{{ poliza.no_poliza }}</td>
+            </tr>
+            <tr>
+                <th>Contratante</th>
+                <td colspan="5">{{ poliza.contratante }}</td>
+            </tr>
+            <tr>
+                <th>Ramo</th>
+                <td>{{ poliza.ramo }}</td>
+                <th>Sub ramo</th>
+                <td>{{ poliza.sub_ramo }}</td>
+                <th>Prima total</th>
+                <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Fecha inicio</th>
+                <td>{{ poliza.fecha_emision }}</td>
+                <th>Fecha vencimiento</th>
+                <td>{{ poliza.fecha_vence }}</td>
+                <th>Total pagado</th>
+                <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Forma de pago</th>
+                <td>{{ poliza.get_f_pago_display }}</td>
+                <th>Medio de pago</th>
+                <td>{{ poliza.get_m_pago_display }}</td>
+                <th>Saldo Pendiente</th>
+                <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
+            </tr>
+        </table>
+
         <div style="margin-top: 5mm">
             <font size="3" face="Courier New">
 
@@ -203,13 +204,18 @@
             </font>
         </div>
 
+        <h3 style="width: 100%; text-align: center"> - {{ page.page }} / {{ page.range }} -</h3>
+
         <pdf:nextpage/>
+
     {% endfor %}
 
 {% endblock %}
 
 {% block page_foot %}
-    <p>footer</p>
+    <div style="padding-top: 1cm; vertical-align: middle">
+        <h2 style="width: 100%; text-align: center"> - Trust Correduria de Seguros - </h2>
+    </div>
 {% endblock %}
 
 
