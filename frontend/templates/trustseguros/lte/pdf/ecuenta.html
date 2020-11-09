@@ -1,222 +1,238 @@
-{% extends "trustseguros/lte/pdf/base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block page_title %}Estado de Cuenta{% endblock %}</title>
 
-{% load static humanize %}
 
-{% block page_title %}
-    Estado de Cuenta
-{% endblock %}
+    {% load static humanize %}
+    {% block style_base %}
+        {% block extra_style %}
 
-{% block extra_style %}
-    <style type="text/css">
+            <style type="text/css">
 
-        @page {
-            size: letter portrait;
-            margin-left: 1cm;
-            margin-right: 1cm;
+                @page {
+                    size: letter portrait;
+                    margin-left: 1cm;
+                    margin-right: 1cm;
 
-            @frame header {
-            -pdf-frame-content: page-header;
-            margin-top: 1.0cm;
-            margin-left: 0.5cm;
-            margin-right: 0.5cm;
-            margin-bottom: 0.5cm;
-            height: 3cm;
-        }
+                    @frame header {
+                    -pdf-frame-content: page-header;
+                    margin-top: 1.0cm;
+                    margin-left: 0.5cm;
+                    margin-right: 0.5cm;
+                    margin-bottom: 0.5cm;
+                    height: 3cm;
+                }
 
-        @frame content {
-        top: 0.5cm;
-        margin-top: 3.5cm;
-        margin-bottom: 0.5cm;
-        margin-left: .5cm;
-        margin-right: .5cm;
-        }
+                @frame content {
+                top: 0.5cm;
+                margin-top: 3.5cm;
+                margin-bottom: 0.5cm;
+                margin-left: .5cm;
+                margin-right: .5cm;
+                }
 
-        @frame footer {
-        -pdf-frame-content:page-footer;
-        bottom: 0cm;
-        margin-left: 1cm;
-        margin-right: 1.5cm;
-        height: 3cm;
-        }
-        }
-    </style>
-    <style type="text/css">
+                @frame footer {
+                -pdf-frame-content:page-footer;
+                bottom: 0cm;
+                margin-left: 1cm;
+                margin-right: 1.5cm;
+                height: 3cm;
+                }
+                }
+            </style>
+            <style type="text/css">
 
-        #poliza {
-            border: .5px solid #396639;
-        }
+                #poliza {
+                    border: .5px solid #396639;
+                }
 
-        #documentos, #poliza {
-            border-collapse: collapse;
-        }
+                #documentos, #poliza {
+                    border-collapse: collapse;
+                }
 
-        #documentos th, #poliza th {
-            background-color: #396639;
-            color: white;
-            border-color: white;
-        }
+                #documentos th, #poliza th {
+                    background-color: #396639;
+                    color: white;
+                    border-color: white;
+                }
 
-        #documentos td, #documentos th,
-        #poliza td, #poliza th {
-            padding-top: 5px;
-            padding-left: 5px;
-            padding-rigth: 5px;
-        }
+                #documentos td, #documentos th,
+                #poliza td, #poliza th {
+                    padding-top: 5px;
+                    padding-left: 5px;
+                    padding-rigth: 5px;
+                }
 
-        .border-1 {
-            border: 1px solid #396639;
-        }
+                .border-1 {
+                    border: 1px solid #396639;
+                }
 
-        .border-01 {
-            border-left: 1px solid #396639;
-            border-right: 1px solid black;
-        }
+                .border-01 {
+                    border-left: 1px solid #396639;
+                    border-right: 1px solid black;
+                }
 
-        .border-011 {
-            border-left: 1px solid #396639;
-            border-right: 1px solid #396639;
-            border-bottom: 1px solid #396639;
-        }
+                .border-011 {
+                    border-left: 1px solid #396639;
+                    border-right: 1px solid #396639;
+                    border-bottom: 1px solid #396639;
+                }
 
-        #documentos td.right, #poliza td.right {
-            text-align: right;
-            padding-right: 10px;
-        }
+                #documentos td.right, #poliza td.right {
+                    text-align: right;
+                    padding-right: 10px;
+                }
 
-        #documentos td.left, #poliza td.left {
-            text-align: left;
-            padding-right: 10px;
-        }
+                #documentos td.left, #poliza td.left {
+                    text-align: left;
+                    padding-right: 10px;
+                }
 
-        #documentos td.center, #poliza td.center {
-            text-align: center;
-            padding-right: 10px;
-        }
+                #documentos td.center, #poliza td.center {
+                    text-align: center;
+                    padding-right: 10px;
+                }
 
-        .cuota {
-            border-bottom: .5px solid #396639;
-        }
+                .cuota {
+                    border-bottom: .5px solid #396639;
+                }
 
-        .pago {
-            border-bottom: .5px solid #396639;
-        }
-    </style>
-{% endblock %}
+                .pago {
+                    border-bottom: .5px solid #396639;
+                }
+            </style>
 
-{% block page_header %}
-    <table>
-        <tr>
-            <td class="pull-right">
-                <figure>
-                    <img src="{% static 'trustseguros/img/logo.trust.oportunidad.jpeg' %}" height="100">
-                </figure>
-            </td>
-            <td>
-                <h1 style="font-size: 25px">Estado de cuenta</h1>
-            </td>
-            <td>
-                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
-                <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
-                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
-                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
-            </td>
-        </tr>
-    </table>
-{% endblock %}
+        {% endblock %}
+    {% endblock %}
 
-{% block page_content %}
+</head>
 
-    {% for page in pages %}
-
-        <table style="margin-top: 1.5cm" id="poliza">
+<body>
+<div id="page-header">
+    {% block page_header %}
+        <table>
             <tr>
-                <th>Cliente</th>
-                <td colspan="3">{{ poliza.cliente }}</td>
-                <th>Póliza</th>
-                <td>{{ poliza.no_poliza }}</td>
-            </tr>
-            <tr>
-                <th>Contratante</th>
-                <td colspan="5">{{ poliza.contratante }}</td>
-            </tr>
-            <tr>
-                <th>Ramo</th>
-                <td>{{ poliza.ramo }}</td>
-                <th>Sub ramo</th>
-                <td>{{ poliza.sub_ramo }}</td>
-                <th>Prima total</th>
-                <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
-            </tr>
-            <tr>
-                <th>Fecha inicio</th>
-                <td>{{ poliza.fecha_emision }}</td>
-                <th>Fecha vencimiento</th>
-                <td>{{ poliza.fecha_vence }}</td>
-                <th>Total pagado</th>
-                <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
-            </tr>
-            <tr>
-                <th>Forma de pago</th>
-                <td>{{ poliza.get_f_pago_display }}</td>
-                <th>Medio de pago</th>
-                <td>{{ poliza.get_m_pago_display }}</td>
-                <th>Saldo Pendiente</th>
-                <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
+                <td class="pull-right">
+                    <figure>
+                        <img src="{% static 'trustseguros/img/logo.trust.oportunidad.jpeg' %}" height="100">
+                    </figure>
+                </td>
+                <td>
+                    <h1 style="font-size: 25px">Estado de cuenta</h1>
+                </td>
+                <td>
+                    <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
+                    <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
+                    <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
+                    <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+                </td>
             </tr>
         </table>
+    {% endblock %}
+</div>
 
-        <div style="margin-top: 5mm">
-            <font size="3" face="Courier New">
+<div id="page-content">
+    {% block page_content %}
 
-                <table id="documentos">
-                    <thead>
-                    <tr>
-                        <th class="center border-1" rowspan="2">Fecha</th>
-                        <th class="left border-1" rowspan="2">Descripción</th>
-                        <th class="right border-1" rowspan="2">Monto</th>
-                        <th class="center border-1" colspan="2">Pagos</th>
-                        <th class="right border-1" rowspan="2">Saldo</th>
-                        <th class="center border-1" rowspan="2">Estado</th>
-                    </tr>
-                    <tr>
-                        <th class="right border-1">Fecha de pago</th>
-                        <th class="right border-1">Monto pagado</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for row in page.registros %}
+        {% for page in pages %}
+
+            <table style="margin-top: 1.5cm" id="poliza">
+                <tr>
+                    <th>Cliente</th>
+                    <td colspan="3">{{ poliza.cliente }}</td>
+                    <th>Póliza</th>
+                    <td>{{ poliza.no_poliza }}</td>
+                </tr>
+                <tr>
+                    <th>Contratante</th>
+                    <td colspan="5">{{ poliza.contratante }}</td>
+                </tr>
+                <tr>
+                    <th>Ramo</th>
+                    <td>{{ poliza.ramo }}</td>
+                    <th>Sub ramo</th>
+                    <td>{{ poliza.sub_ramo }}</td>
+                    <th>Prima total</th>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha inicio</th>
+                    <td>{{ poliza.fecha_emision }}</td>
+                    <th>Fecha vencimiento</th>
+                    <td>{{ poliza.fecha_vence }}</td>
+                    <th>Total pagado</th>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
+                </tr>
+                <tr>
+                    <th>Forma de pago</th>
+                    <td>{{ poliza.get_f_pago_display }}</td>
+                    <th>Medio de pago</th>
+                    <td>{{ poliza.get_m_pago_display }}</td>
+                    <th>Saldo Pendiente</th>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
+                </tr>
+            </table>
+
+            <div style="margin-top: 5mm">
+                <font size="3" face="Courier New">
+
+                    <table id="documentos">
+                        <thead>
                         <tr>
-                            {% for cell in row %}
-                                {% if cell.render %}
-                                    <td
-                                            colspan="{{ cell.colspan }}"
-                                            rowspan="{{ cell.rowspan }}"
-                                            class="{{ cell.cssclass }}">
-                                        {{ cell.value }}
-                                    </td>
-                                {% endif %}
-                            {% endfor %}
+                            <th class="center border-1" rowspan="2">Fecha</th>
+                            <th class="left border-1" rowspan="2">Descripción</th>
+                            <th class="right border-1" rowspan="2">Monto</th>
+                            <th class="center border-1" colspan="4">Pagos</th>
+                            <th class="right border-1" rowspan="2">Saldo</th>
+                            <th class="center border-1" rowspan="2">Estado</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        <tr>
+                            <th class="right border-1">Fecha de pago</th>
+                            <th class="right border-1">Monto pagado</th>
+                            <th class="right border-1">Medio de pago</th>
+                            <th class="right border-1">Referencia</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in page.registros %}
+                            <tr>
+                                {% for cell in row %}
+                                    {% if cell.render %}
+                                        <td
+                                                colspan="{{ cell.colspan }}"
+                                                rowspan="{{ cell.rowspan }}"
+                                                class="{{ cell.cssclass }}">
+                                            {{ cell.value }}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
 
-            </font>
+                </font>
+            </div>
+
+            <h3 style="width: 100%; text-align: center"> - {{ page.page }} / {{ page.range }} -</h3>
+
+            <pdf:nextpage/>
+
+        {% endfor %}
+    {% endblock %}
+</div>
+
+<div id="page-footer">
+    {% block page_foot %}
+        <div style="padding-top: 1cm; vertical-align: middle">
+            <h2 style="width: 100%; text-align: center"> - Trust Correduria de Seguros - </h2>
         </div>
+    {% endblock %}
+</div>
 
-        <h3 style="width: 100%; text-align: center"> - {{ page.page }} / {{ page.range }} -</h3>
-
-        <pdf:nextpage/>
-
-    {% endfor %}
-
-{% endblock %}
-
-{% block page_foot %}
-    <div style="padding-top: 1cm; vertical-align: middle">
-        <h2 style="width: 100%; text-align: center"> - Trust Correduria de Seguros - </h2>
-    </div>
-{% endblock %}
+</body>
+</html>
 
 
 
