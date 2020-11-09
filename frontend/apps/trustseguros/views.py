@@ -1959,7 +1959,7 @@ class Recibos(Datatables):
             poliza = Poliza.objects.get(id=request.POST.get('id'))
             pages = []
 
-            paginator = Paginator(poliza.estado_cuenta(), 20)
+            paginator = Paginator(poliza.estado_cuenta(), 25)
 
             for p in paginator.page_range:
                 pages.append({
