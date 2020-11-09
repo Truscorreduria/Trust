@@ -1290,6 +1290,17 @@ class Poliza(BasePoliza):
             if _cuota.pagos().count() > 0:
                 return _cuota.pagos()[0].monto
             return ''
+            return ''
+
+        def _first_medio_pago(_cuota):
+            if _cuota.pagos().count() > 0:
+                return _cuota.pagos()[0].get_medio_pago_display()
+            return ''
+
+        def _first_referencia(_cuota):
+            if _cuota.pagos().count() > 0:
+                return _cuota.pagos()[0].referencia_pago
+            return ''
 
         recibo = None
         cuotas = []
@@ -1318,8 +1329,8 @@ class Poliza(BasePoliza):
             row.append(self.celda(cuota.monto, cssclass=f'{border_class} right cuota', rowspan=rowspan))
             row.append(self.celda(f'{_first_fecha_pago(cuota)}', cssclass=f'{border_class} center cuota'))
             row.append(self.celda(f'{_first_monto(cuota)}', cssclass=f'{border_class} right cuota'))
-            row.append(self.celda(f'{_first_monto(cuota)}', cssclass=f'{border_class} right cuota'))
-            row.append(self.celda(f'{_first_monto(cuota)}', cssclass=f'{border_class} right cuota'))
+            row.append(self.celda(f'{_first_medio_pago(cuota)}', cssclass=f'{border_class} center cuota'))
+            row.append(self.celda(f'{_first_referencia(cuota)}', cssclass=f'{border_class} left cuota'))
             row.append(self.celda(cuota.saldo, cssclass=f'{border_class} right cuota', rowspan=rowspan))
             row.append(self.celda(cuota.get_estado_display(), cssclass=f'{border_class} center cuota', rowspan=rowspan))
             data.append(row)
@@ -1332,8 +1343,8 @@ class Poliza(BasePoliza):
                         self.celda(None, render=False),
                         self.celda(f'{_fechapago(pago)}', cssclass=f'{border_class} center pago'),
                         self.celda(f'{pago.monto}', cssclass=f'{border_class} right pago'),
-                        self.celda(f'{pago.monto}', cssclass=f'{border_class} right pago'),
-                        self.celda(f'{pago.monto}', cssclass=f'{border_class} right pago'),
+                        self.celda(f'{pago.get_medio_pago_display()}', cssclass=f'{border_class} center pago'),
+                        self.celda(f'{pago.referencia_pago}', cssclass=f'{border_class} left pago'),
                         self.celda(None, render=False),
                         self.celda(None, render=False),
                     ])
