@@ -41,41 +41,64 @@
         }
     </style>
     <style type="text/css">
-        #documentos{
+
+        #poliza {
+            border: .5px solid #396639;
+        }
+
+        #documentos, #poliza {
             border-collapse: collapse;
         }
 
-        #documentos td, #documentos th {
+        #documentos th, #poliza th {
+            background-color: #396639;
+            color: white;
+            border-color: white;
+        }
+
+        #documentos td, #documentos th,
+        #poliza td, #poliza th {
             padding-top: 5px;
             padding-left: 5px;
             padding-rigth: 5px;
         }
-        .border-1{
-            border: 1px solid black;
-        }
-        .border-01{
-            border-left: 1px solid black;
-            border-right: 1px solid black;
-        }
-        .border-011{
-            border-left: 1px solid black;
-            border-right: 1px solid black;
-            border-bottom: 1px solid black;
+
+        .border-1 {
+            border: 1px solid #396639;
         }
 
-        #documentos td.right {
+        .border-01 {
+            border-left: 1px solid #396639;
+            border-right: 1px solid black;
+        }
+
+        .border-011 {
+            border-left: 1px solid #396639;
+            border-right: 1px solid #396639;
+            border-bottom: 1px solid #396639;
+        }
+
+        #documentos td.right, #poliza td.right {
             text-align: right;
             padding-right: 10px;
         }
 
-        #documentos td.left {
+        #documentos td.left, #poliza td.left {
             text-align: left;
             padding-right: 10px;
         }
 
-        #documentos td.center {
+        #documentos td.center, #poliza td.center {
             text-align: center;
             padding-right: 10px;
+        }
+
+        .cuota {
+            border-bottom: .5px solid #396639;
+        }
+
+        .pago {
+            border-bottom: .5px solid #396639;
         }
     </style>
 {% endblock %}
@@ -102,39 +125,39 @@
 {% endblock %}
 
 {% block page_content %}
-    <table style="margin-top: 1.5cm">
+    <table style="margin-top: 1.5cm" id="poliza">
         <tr>
-            <td>Cliente</td>
+            <th>Cliente</th>
             <td colspan="3">{{ poliza.cliente }}</td>
-            <td>Póliza</td>
+            <th>Póliza</th>
             <td>{{ poliza.no_poliza }}</td>
         </tr>
         <tr>
-            <td>Contratante</td>
+            <th>Contratante</th>
             <td colspan="5">{{ poliza.contratante }}</td>
         </tr>
         <tr>
-            <td>Ramo</td>
+            <th>Ramo</th>
             <td>{{ poliza.ramo }}</td>
-            <td>Sub ramo</td>
+            <th>Sub ramo</th>
             <td>{{ poliza.sub_ramo }}</td>
-            <td>Prima total</td>
+            <th>Prima total</th>
             <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
         </tr>
         <tr>
-            <td>Fecha inicio</td>
+            <th>Fecha inicio</th>
             <td>{{ poliza.fecha_emision }}</td>
-            <td>Fecha vencimiento</td>
+            <th>Fecha vencimiento</th>
             <td>{{ poliza.fecha_vence }}</td>
-            <td>Total pagado</td>
+            <th>Total pagado</th>
             <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
         </tr>
         <tr>
-            <td>Forma de pago</td>
+            <th>Forma de pago</th>
             <td>{{ poliza.get_f_pago_display }}</td>
-            <td>Medio de pago</td>
+            <th>Medio de pago</th>
             <td>{{ poliza.get_m_pago_display }}</td>
-            <td>Saldo Pendiente</td>
+            <th>Saldo Pendiente</th>
             <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
         </tr>
     </table>
@@ -164,7 +187,12 @@
                         <tr>
                             {% for cell in row %}
                                 {% if cell.render %}
-                                    <td colspan="{{ cell.colspan }}" rowspan="{{ cell.rowspan }}" class="{{ cell.cssclass }}">{{ cell.value }}</td>
+                                    <td
+                                            colspan="{{ cell.colspan }}"
+                                            rowspan="{{ cell.rowspan }}"
+                                            class="{{ cell.cssclass }}">
+                                        {{ cell.value }}
+                                    </td>
                                 {% endif %}
                             {% endfor %}
                         </tr>

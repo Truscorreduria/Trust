@@ -1274,12 +1274,22 @@ class Poliza(BasePoliza):
             if len(_cuota.pagos()) == 0:
                 return 1
             else:
-                return len(_cuota.pagos()) + 1
+                return _cuota.pagos().count()
 
         def _fechapago(_pago):
             if _pago.fecha_pago:
                 return _pago.fecha_pago.strftime("%d/%m/%Y")
             return '-'
+
+        def _first_fecha_pago(_cuota):
+            if _cuota.pagos().count() > 0:
+                return _fechapago(_cuota.pagos()[0])
+            return ''
+
+        def _first_monto(_cuota):
+            if _cuota.pagos().count() > 0:
+                return _cuota.pagos()[0].monto
+            return ''
 
         recibo = None
         cuotas = []
@@ -1289,8 +1299,8 @@ class Poliza(BasePoliza):
         if model == Poliza:
             recibo = Poliza.objects.get(id=value)
             cuotas = Cuota.objects.filter(poliza=recibo).order_by('fecha_vence')
-        data.append([self.celda(f'{cuotas[0].fecha_vence.strftime("%d/%m/%Y")}', cssclass='border-1 center'),
-                     self.celda(f'Recibo # {recibo.no_recibo}', colspan=6, cssclass='border-1 left'),
+        data.append([self.celda(f'{cuotas[0].fecha_vence.strftime("%d/%m/%Y")}', cssclass='border-1 center recibo'),
+                     self.celda(f'Recibo # {recibo.no_recibo}', colspan=6, cssclass='border-1 left recibo'),
                      self.celda(None, render=False),
                      self.celda(None, render=False),
                      self.celda(None, render=False),
@@ -1303,24 +1313,26 @@ class Poliza(BasePoliza):
             if cuota.numero == cuotas.count():
                 border_class = 'border-011'
             row = list()
-            row.append(self.celda(f'{cuota.fecha_vence}', cssclass=f'{border_class} center', rowspan=rowspan))
-            row.append(self.celda(f'Cuota # {cuota.numero}', cssclass=f'{border_class} left', rowspan=rowspan))
-            row.append(self.celda(cuota.monto, cssclass=f'{border_class} right', rowspan=rowspan))
-            row.append(self.celda(f'', cssclass=f'{border_class} center'))
-            row.append(self.celda(f'', cssclass=f'{border_class} right'))
-            row.append(self.celda(cuota.saldo, cssclass=f'{border_class} right', rowspan=rowspan))
-            row.append(self.celda(cuota.get_estado_display(), cssclass=f'{border_class} center', rowspan=rowspan))
+            row.append(self.celda(f'{cuota.fecha_vence}', cssclass=f'{border_class} center cuota', rowspan=rowspan))
+            row.append(self.celda(f'Cuota # {cuota.numero}', cssclass=f'{border_class} left cuota', rowspan=rowspan))
+            row.append(self.celda(cuota.monto, cssclass=f'{border_class} right cuota', rowspan=rowspan))
+            row.append(self.celda(f'{_first_fecha_pago(cuota)}', cssclass=f'{border_class} center cuota'))
+            row.append(self.celda(f'{_first_monto(cuota)}', cssclass=f'{border_class} right cuota'))
+            row.append(self.celda(cuota.saldo, cssclass=f'{border_class} right cuota', rowspan=rowspan))
+            row.append(self.celda(cuota.get_estado_display(), cssclass=f'{border_class} center cuota', rowspan=rowspan))
             data.append(row)
-            for pago in cuota.pagos():
-                data.append([
-                    self.celda(None, render=False),
-                    self.celda(None, render=False),
-                    self.celda(None, render=False),
-                    self.celda(f'{_fechapago(pago)}', cssclass=f'{border_class} center'),
-                    self.celda(f'{pago.monto}', cssclass=f'{border_class} right'),
-                    self.celda(None, render=False),
-                    self.celda(None, render=False),
-                ])
+            if cuota.pagos().count() > 1:
+                for n in range(1, cuota.pagos().count()):
+                    pago = cuota.pagos()[n]
+                    data.append([
+                        self.celda(None, render=False),
+                        self.celda(None, render=False),
+                        self.celda(None, render=False),
+                        self.celda(f'{_fechapago(pago)}', cssclass=f'{border_class} center pago'),
+                        self.celda(f'{pago.monto}', cssclass=f'{border_class} right pago'),
+                        self.celda(None, render=False),
+                        self.celda(None, render=False),
+                    ])
 
         return data
 
