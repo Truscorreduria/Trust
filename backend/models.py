@@ -1254,7 +1254,7 @@ class Poliza(BasePoliza):
         ], fecha_vence__lt=end_date).aggregate(Sum('monto_comision'))['monto_comision__sum']
 
     @staticmethod
-    def celda(value, render=True, colspan=1, rowspan=2, cssclass='left'):
+    def celda(value, render=True, colspan=1, rowspan=1, cssclass='left'):
         return {
             'render': render,
             'colspan': colspan,
@@ -1263,36 +1263,73 @@ class Poliza(BasePoliza):
             'cssclass': cssclass,
         }
 
-    def estado_cuenta_recibo(self, data, field='tramite_id', value=None, no_recibo=''):
-        data.append([self.celda(f'Recibo # {no_recibo}', colspan=6),
-                     self.celda(value=None, render=False),
-                     self.celda(value=None, render=False),
-                     self.celda(value=None, render=False),
-                     self.celda(value=None, render=False),
-                     self.celda(value=None, render=False),
+    def estado_cuenta_recibo(self, data, value=None, model=None):
+        """
+        Generar estado de cuenta
+        columnas: Fecha, Descripción, Monto, FechaPago, MontoPago, Saldo, Estado
+        numero de columnas: 7
+        """
+
+        def _rowspan(_cuota):
+            if len(_cuota.pagos()) == 0:
+                return 1
+            else:
+                return len(_cuota.pagos()) + 1
+
+        def _fechapago(_pago):
+            if _pago.fecha_pago:
+                return _pago.fecha_pago.strftime("%d/%m/%Y")
+            return '-'
+
+        recibo = None
+        cuotas = []
+        if model == Tramite:
+            recibo = Tramite.objects.get(id=value)
+            cuotas = Cuota.objects.filter(tramite=recibo).order_by('fecha_vence')
+        if model == Poliza:
+            recibo = Poliza.objects.get(id=value)
+            cuotas = Cuota.objects.filter(poliza=recibo).order_by('fecha_vence')
+        data.append([self.celda(f'{cuotas[0].fecha_vence.strftime("%d/%m/%Y")}', cssclass='border-1 center'),
+                     self.celda(f'Recibo # {recibo.no_recibo}', colspan=6, cssclass='border-1 left'),
+                     self.celda(None, render=False),
+                     self.celda(None, render=False),
+                     self.celda(None, render=False),
+                     self.celda(None, render=False),
+                     self.celda(None, render=False),
                      ])
-        for cuota in Cuota.objects.filter(Q((field, value))).order_by('fecha_vence'):
+        for cuota in cuotas:
+            border_class = 'border-01'
+            rowspan = _rowspan(cuota)
+            if cuota.numero == cuotas.count():
+                border_class = 'border-011'
             row = list()
-            row.append(self.celda(f''))  # Recibo
-            row.append(self.celda(f'Cuota # {cuota.numero}'))  # Descripción
-            row.append(self.celda(cuota.monto, cssclass='right'))  # Monto
-            row.append(self.celda(cuota.monto_pagado, cssclass='right'))  # Monto pagado
-            row.append(self.celda(cuota.saldo, cssclass='right'))  # Saldo
-            row.append(self.celda(cuota.get_estado_display(), cssclass='center'))  # Estado
+            row.append(self.celda(f'{cuota.fecha_vence}', cssclass=f'{border_class} center', rowspan=rowspan))
+            row.append(self.celda(f'Cuota # {cuota.numero}', cssclass=f'{border_class} left', rowspan=rowspan))
+            row.append(self.celda(cuota.monto, cssclass=f'{border_class} right', rowspan=rowspan))
+            row.append(self.celda(f'', cssclass=f'{border_class} center'))
+            row.append(self.celda(f'', cssclass=f'{border_class} right'))
+            row.append(self.celda(cuota.saldo, cssclass=f'{border_class} right', rowspan=rowspan))
+            row.append(self.celda(cuota.get_estado_display(), cssclass=f'{border_class} center', rowspan=rowspan))
             data.append(row)
+            for pago in cuota.pagos():
+                data.append([
+                    self.celda(None, render=False),
+                    self.celda(None, render=False),
+                    self.celda(None, render=False),
+                    self.celda(f'{_fechapago(pago)}', cssclass=f'{border_class} center'),
+                    self.celda(f'{pago.monto}', cssclass=f'{border_class} right'),
+                    self.celda(None, render=False),
+                    self.celda(None, render=False),
+                ])
+
         return data
 
     def estado_cuenta(self):
-        """
-        Generar estado de cuenta
-        columnas: Recibo, Descripción, Monto, Monto Pagado, Saldo, Estado
-        numero de columnas: 6
-        """
         data = list()
-        data = self.estado_cuenta_recibo(data, field='poliza_id', value=self.id, no_recibo=self.no_recibo)
+        data = self.estado_cuenta_recibo(data, value=self.id, model=Poliza)
 
         for recibo in self.recibos():
-            data = self.estado_cuenta_recibo(data, value=recibo.id, no_recibo=recibo.no_recibo)
+            data = self.estado_cuenta_recibo(data, value=recibo.id, model=Tramite)
 
         return data
 

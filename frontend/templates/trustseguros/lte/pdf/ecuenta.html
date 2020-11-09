@@ -41,20 +41,41 @@
         }
     </style>
     <style type="text/css">
-        #documentos td {
-            padding: 0 5px;
+        #documentos{
+            border-collapse: collapse;
+        }
+
+        #documentos td, #documentos th {
+            padding-top: 5px;
+            padding-left: 5px;
+            padding-rigth: 5px;
+        }
+        .border-1{
+            border: 1px solid black;
+        }
+        .border-01{
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+        .border-011{
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            border-bottom: 1px solid black;
         }
 
         #documentos td.right {
             text-align: right;
+            padding-right: 10px;
         }
 
         #documentos td.left {
             text-align: left;
+            padding-right: 10px;
         }
 
         #documentos td.center {
             text-align: center;
+            padding-right: 10px;
         }
     </style>
 {% endblock %}
@@ -68,7 +89,7 @@
                 </figure>
             </td>
             <td>
-                <h1>Estado de cuenta</h1>
+                <h1 style="font-size: 25px">Estado de cuenta</h1>
             </td>
             <td>
                 <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
@@ -126,12 +147,16 @@
                 <table id="documentos">
                     <thead>
                     <tr>
-                        <th style="text-align: left">Recibo</th>
-                        <th class="left">Descripción</th>
-                        <th class="right">Monto</th>
-                        <th class="right">Monto pagado</th>
-                        <th class="right">Saldo</th>
-                        <th class="center">Estado</th>
+                        <th class="center border-1" rowspan="2">Fecha</th>
+                        <th class="left border-1" rowspan="2">Descripción</th>
+                        <th class="right border-1" rowspan="2">Monto</th>
+                        <th class="center border-1" colspan="2">Pagos</th>
+                        <th class="right border-1" rowspan="2">Saldo</th>
+                        <th class="center border-1" rowspan="2">Estado</th>
+                    </tr>
+                    <tr>
+                        <th class="right border-1">Fecha de pago</th>
+                        <th class="right border-1">Monto pagado</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -139,7 +164,7 @@
                         <tr>
                             {% for cell in row %}
                                 {% if cell.render %}
-                                    <td colspan="{{ cell.colspan }}" class="{{ cell.cssclass }}">{{ cell.value }}</td>
+                                    <td colspan="{{ cell.colspan }}" rowspan="{{ cell.rowspan }}" class="{{ cell.cssclass }}">{{ cell.value }}</td>
                                 {% endif %}
                             {% endfor %}
                         </tr>
