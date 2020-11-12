@@ -428,6 +428,13 @@ class PolizaForm(forms.ModelForm):
 
     ejecutivo = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
 
+    oportunidad = forms.CharField(max_length=8, label='Oportunidad de negocio', required=False,
+                                  widget=forms.TextInput(
+                                      attrs={
+                                          'readonly': 'readonly'
+                                      }
+                                  ))
+
     class Meta:
         model = Poliza
         fields = (
@@ -438,7 +445,7 @@ class PolizaForm(forms.ModelForm):
             'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
-            'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo'
+            'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo', 'oportunidad'
         )
 
     def __init__(self, *args, **kwargs):
@@ -457,6 +464,8 @@ class PolizaForm(forms.ModelForm):
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
             updated_initial['prima_total'] = instance.prima_total
             updated_initial['saldo_pendiente'] = instance.saldo_pendiente
+            if instance.oportunity:
+                updated_initial['oportunidad'] = instance.oportunity.code
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         if instance and not instance.editable:
