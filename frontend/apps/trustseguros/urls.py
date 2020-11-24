@@ -32,6 +32,7 @@ urlpatterns = [
     path('reporte_poliza_renovada/', ReportePolizaRenovada.as_view(), name="reporte_poliza_renovada"),
     path('reporte_poliza_vencer/', ReportePolizaPorVencer.as_view(), name="reporte_poliza_vencer"),
     path('reporte_crm/', ReporteCRM.as_view(), name="reporte_crm"),
+    path('reporte_cotizaciones/', ReporteCotizaciones.as_view(), name="reporte_cotizaciones"),
     path('reporte_siniestro/', ReporteSiniestro.as_view(), name="reporte_siniestro"),
     path('reporte_mora/', ReporteMora.as_view(), name="reporte_mora"),
     path('reporte_comision/', ReporteComision.as_view(), name="reporte_comision"),

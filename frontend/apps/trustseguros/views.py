@@ -2315,6 +2315,47 @@ class ReporteCRM(ReportLab):
         }
 
 
+class ReporteCotizaciones(ReportLab):
+    model = Oportunity
+    form = ReporteCrmForm
+    filename = "Reporte de cotizaciones.xlsx"
+
+    @staticmethod
+    def quotation(instance, aseguradora):
+        try:
+            quotation = OportunityQuotation.objects.get(oportunity=instance, aseguradora=aseguradora)
+            return {
+                f'Suma asegurada {aseguradora.name}': quotation.suma_asegurada,
+                f'Deducible {aseguradora.name}': quotation.deducible,
+                f'Coaseguro robo {aseguradora.name}': quotation.coaseguro_robo,
+                f'Coaseguro daños {aseguradora.name}': quotation.coaseguro_dano,
+                f'Prima total {aseguradora.name}': quotation.prima_total,
+            }
+        except ObjectDoesNotExist:
+            return {
+                f'Suma asegurada {aseguradora.name}': '',
+                f'Deducible {aseguradora.name}': '',
+                f'Coaseguro robo {aseguradora.name}': '',
+                f'Coaseguro daños {aseguradora.name}': '',
+                f'Prima total {aseguradora.name}': '',
+            }
+
+    def to_json(self, instance):
+        obj = {
+            'Prospecto': get_attr(instance, 'prospect.get_full_name'),
+            'Marca': instance.data_load().get('MARCA', None),
+            'Modelo': instance.data_load().get('MODELO', None),
+            'Año': instance.data_load().get('ANIO', None),
+            'Chasis': instance.data_load().get('CHASIS', None),
+            'Motor': instance.data_load().get('MOTOR', None),
+            'Placa': instance.data_load().get('PLACA', None),
+        }
+        for aseguradora in Aseguradora.objects.filter(active=True).order_by('name'):
+            quote = self.quotation(instance, aseguradora)
+            obj = {**obj, **quote}
+        return obj
+
+
 class ReporteSiniestro(ReportLab):
     model = Siniestro
     form = ReporteSiniestroForm
