@@ -3,6 +3,9 @@ from django.template import Template, Context
 
 
 def notificaciones_polizas_vencidas():
+    """
+    Notificacion de pólizas vencidas hacia los clientes
+    """
     day = datetime.now() + timedelta(days=30)
     ps = Poliza.objects.filter(procedencia=ProcedenciaPoliza.COTIZADOR, fecha_emision__isnull=False,
                                cliente__isnull=False,
@@ -74,3 +77,18 @@ def renovacion_automatica():
         nueva.banco_emisor = p.banco_emisor
         nueva.file_circulacion = p.file_circulacion
         nueva.save()
+
+
+def notificacion_por_vencer_grupo():
+    """
+    Notificacion de pólizas vencidas por grupo.
+    """
+    inicio = datetime.now()
+    fin = inicio + timedelta(days=32)
+    for grupo in Grupo.objects.all().order_by('name'):
+        html = render_to_string('trustseguros/lte/email/notificacion.html', {
+            'polizas': Poliza.objects.filter(estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE],
+                                             grupo=grupo, fecha_vence__gte=inicio, fecha_vence__lte=fin),
+            'inicio': inicio, 'fin': fin
+        })
+        send_email("Recordatorio de Pólizas por Vencer", grupo.email_notificacion, html=html, files=None)

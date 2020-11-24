@@ -117,101 +117,13 @@ CONSTANCE_ADDITIONAL_FIELDS = {
 }
 
 CONSTANCE_CONFIG = OrderedDict([
-
     ('EMAIL_TRUST', ('gcarrion@trustcorreduria.com,',
                      'Lista de correos de Trust usados para las notificaciones del sistema')),
-
-    ('EMAIL_BANPRO', ('arlenperez@banpro.com.ni,',
-                      'Lista de correos de Banpro usados para las notificaciones del sistema')),
-
-    ('EMAIL_DEBITO_AUTOMATICO', ('ysevilla@assanet.com,pdavila@assanet.com,zvanegas@assanet.com',
-                                 'Lista de correos de sepelio usados para las notificaciones de debitos automaticos')),
-    ('DIAS_DEBITO_AUTOMATICO',
-     ('10,20', 'Dias del mes en los que se enviará el reporte de debito automático.')),
-
-    ('ASEGURADORA', (None, 'Aseguradora', 'aseguradora_field')),
-    ('RAMO', (None, 'Ramo', 'ramo_field')),
-    ('SUBRAMO', (None, 'Sub ramo', 'subramo_field')),
-    ('CONTRATANTE', (None, 'Contratante', 'cliente_field')),
-    ('LOGO_AUTOMOVIL', ('cotizador/images/aseguradoras/assa.png', 'Logo de la compañia de seguros de Accidentes.',
-                        'image_field')),
-    ('TASA_AUTOMOVIL', (10.4, 'Tarifa para el seguro de prima de vehículo')),
-    ('SOA_AUTOMOVIL', (55.0, 'Tarifa para el seguro obligatorio de vehículo')),
-    ('PORCENTAJE_DEDUCIBLE', (0.2,
-                              'Porcentaje deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')),
-    ('PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL', (0.3,
-                                                    'Porcentaje deducible solo para la cobertura de extensión territorial. Para aplicar regargo vaya a Marcas con recargo.')),
-    ('MINIMO_DEDUCIBLE', (100.0,
-                          'Mínimo deducible global. Puede ir a la seccion de marcas con recargo para cambiar este valor a una marca en específico')),
-    ('SOA_DESCUENTO', (
-        0.05, 'Descuento del Seguro Obligatorio de Vehículo. Por favor usar notación decimal (0.05 = 5%)')),
-    ('EMAIL_AUTOMOVIL', ('gcarrion@trustcorreduria.com,',
-                         'Lista de correos de automovil usados para las notificaciones del sistema')),
-
-    ('ASEGURADORA_SEPELIO', (None, 'Aseguradora', 'aseguradora_field')),
-    ('RAMO_SEPELIO', (None, 'Ramo', 'ramo_field')),
-    ('SUBRAMO_SEPELIO', (None, 'Sub ramo', 'subramo_field')),
-    ('CONTRATANTE_SEPELIO', (None, 'Contratante', 'cliente_field')),
-    ('POLIZA_SEPELIO', ('CF - 000521 - 0', 'Número de Póliza para Seguros del Titular.')),
-    ('POLIZA_SEPELIO_DEPENDIENTE', ('CF - 000564 - 0', 'Número de Póliza para Seguros del Dependiente.')),
-    ('COSTO_SEPELIO', (3.75, 'Costo del Seguro de Sepelio para empleados Banpro.')),
-    ('SUMA_SEPELIO', (1000.0, 'Suma asegurada para Seguros de Sepelio empleados Banpro.')),
-    ('LOGO_SEPELIO',
-     ('cotizador/images/aseguradoras/seguros_america.png', 'Logo de la compañia de seguros de Sepelio.')),
-    ('EMAIL_SEPELIO', ('asanchez@segurosamerica.com,',
-                       'Lista de correos de sepelio usados para las notificaciones del sistema')),
-
-    ('ASEGURADORA_ACCIDENTE', (None, 'Aseguradora', 'aseguradora_field')),
-    ('RAMO_ACCIDENTE', (None, 'Ramo', 'ramo_field')),
-    ('SUBRAMO_ACCIDENTE', (None, 'Sub ramo', 'subramo_field')),
-    ('CONTRATANTE_ACCIDENTE', (None, 'Contratante', 'cliente_field')),
-    ('POLIZA_ACCIDENTE', ('APC - 13359 - 30977', 'Número de Póliza para Seguros de Accidente Banpro.')),
-    ('COSTO_ACCIDENTE', (18.0, 'Costo del Seguro de Accidentes para empleados Banpro.')),
-    ('COSTO_CARNET_ACCIDENTE', (1.85, 'Costo del carnet para seguros de Accidente')),
-    ('SUMA_ACCIDENTE', (15000.0, 'Suma asegurada para Seguros de Accidentes del Titular.')),
-    ('SUMA_ACCIDENTE_DEPENDIENTE', (10000.0, 'Suma asegurada para Seguros de Accidentes del Dependiente.')),
-    ('LOGO_ACCIDENTE', ('cotizador/images/aseguradoras/mapfre.png', 'Logo de la compañia de seguros de Accidentes.')),
-    ('EMAIL_ACCIDENTE', ('luis.collado@mapfre.com.ni,',
-                         'Lista de correos de accidente usados para las notificaciones del sistema')),
-
-    ('ASEGURADORA_VIDA', (None, 'Aseguradora', 'aseguradora_field')),
-    ('RAMO_VIDA', (None, 'Ramo', 'ramo_field')),
-    ('SUBRAMO_VIDA', (None, 'Sub ramo', 'subramo_field')),
-    ('CONTRATANTE_VIDA', (None, 'Contratante', 'cliente_field')),
-    ('POLIZA_VIDA', ('CV-000209-0', 'Número de Póliza para Seguros de Vida Banpro.')),
-    ('SUMA_VIDA', ("22 veces el salario", 'Suma asegurada para Seguros de Accidentes del Titular.')),
-    ('LOGO_VIDA', ('cotizador/images/aseguradoras/iniser.png', 'Logo de la compañia de seguros de Accidentes.')),
-
-    ('COSTO_REMESA_ROBO', (3.0, 'Costo de la cobertura de robo en producto de remesas.')),
-    ('COSTO_REMESA_SEPELIO', (7.0, 'Costo de la cobertura de repatriación y sepelio.')),
 ])
 
 CONSTANCE_CONFIG_FIELDSETS = {
     'Configuración envio de reportes': ('EMAIL_TRUST', 'EMAIL_BANPRO', 'EMAIL_DEBITO_AUTOMATICO',
                                         'DIAS_DEBITO_AUTOMATICO'),
-
-    'Configuración cotizador automovil': (
-        'ASEGURADORA', 'RAMO', 'SUBRAMO', 'CONTRATANTE', 'TASA_AUTOMOVIL', 'SOA_AUTOMOVIL', 'PORCENTAJE_DEDUCIBLE',
-        'PORCENTAJE_DEDUCIBLE_EXTENSION_TERRITORIAL',
-        'MINIMO_DEDUCIBLE', 'SOA_DESCUENTO', 'EMAIL_AUTOMOVIL'
-    ),
-
-    'Configuración cotizador sepelio': (
-        'ASEGURADORA_SEPELIO', 'RAMO_SEPELIO', 'SUBRAMO_SEPELIO', 'CONTRATANTE_SEPELIO',
-        'POLIZA_SEPELIO', 'POLIZA_SEPELIO_DEPENDIENTE', 'COSTO_SEPELIO',
-        'SUMA_SEPELIO', 'LOGO_SEPELIO', 'EMAIL_SEPELIO'),
-
-    'Configuración cotizador accidente': (
-        'ASEGURADORA_ACCIDENTE', 'RAMO_ACCIDENTE', 'SUBRAMO_ACCIDENTE', 'CONTRATANTE_ACCIDENTE',
-        'POLIZA_ACCIDENTE', 'COSTO_ACCIDENTE', 'COSTO_CARNET_ACCIDENTE',
-        'SUMA_ACCIDENTE', 'SUMA_ACCIDENTE_DEPENDIENTE', 'LOGO_ACCIDENTE',
-        'EMAIL_ACCIDENTE'),
-
-    'Configuración cotizador vida': (
-        'ASEGURADORA_VIDA', 'RAMO_VIDA', 'SUBRAMO_VIDA', 'CONTRATANTE_VIDA',
-        'POLIZA_VIDA', 'SUMA_VIDA', 'LOGO_VIDA'),
-
-    'Configuración BANCASEGUROS remesas': ('COSTO_REMESA_ROBO', 'COSTO_REMESA_SEPELIO'),
 }
 
 GRAPPELLI_SWITCH_USER = False

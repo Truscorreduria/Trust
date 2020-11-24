@@ -649,6 +649,8 @@ class Moneda(Base):
 class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
     autorenovacion = models.BooleanField(default=False)
+    email_notificacion = models.EmailField(max_length=250, null=True, blank=True,
+                                           verbose_name="email para notificaciones")
 
     def __str__(self):
         return self.name

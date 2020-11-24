@@ -865,9 +865,9 @@ class Ramos(Datatables):
 
 class Grupos(Datatables):
     model = Grupo
-    list_display = ('name',)
+    list_display = ('name', 'email_notificacion')
     search_fields = ('name',)
-    fields = ('name', 'autorenovacion')
+    fields = ('name', 'autorenovacion', 'email_notificacion')
 
 
 class SubRamos(Datatables):
