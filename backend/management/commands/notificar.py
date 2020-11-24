@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from backend.cron import notificacion_por_vencer_grupo
+from backend.cron import notificacion_por_vencer_grupo, notificacion_vencidas_grupo
 
 
 class Command(BaseCommand):
@@ -7,3 +7,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         notificacion_por_vencer_grupo()
+        notificacion_vencidas_grupo()

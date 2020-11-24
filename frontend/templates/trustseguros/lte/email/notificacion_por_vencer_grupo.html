@@ -186,6 +186,17 @@ padding-top: 50px">
                         <span>Pólizas a vencer {{ inicio|date:'d/m/Y' }} - {{ fin|date:'d/m/Y' }}.</span>
                     </td>
                 </tr>
+
+
+                <tr>
+                    <td class="container-padding header"
+                        style="font-family:Helvetica, Arial, sans-serif;
+                        font-size:25px;font-weight:bold;color:#DF4726;
+                        display:flex;align-items:center;background-color:white;justify-content:center;
+padding-top: 10px">
+                        <span>{{ grupo.name }}</span><br>
+                    </td>
+                </tr>
                 <tr>
                     <td class="container-padding content" align="left"
                         style="padding-left:24px;padding-right:24px;padding-top:12px;padding-bottom:12px;background-color:#ffffff">
@@ -204,6 +215,19 @@ padding-top: 50px">
                                 <th>Grupo</th>
                             </tr>
                             </thead>
+                            <tbody>
+                            {% for poliza in polizas %}
+                                <tr>
+                                    <td>{{ poliza.no_poliza }}</td>
+                                    <td>{{ poliza.ramo }}</td>
+                                    <td>{{ poliza.sub_ramo }}</td>
+                                    <td>{{ poliza.aseguradora.name }}</td>
+                                    <td>{{ poliza.cliente.get_full_name }}</td>
+                                    <td>{{ poliza.fecha_vence|date:'d/m/Y' }}</td>
+                                    <td>{{ poliza.grupo }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
                         </table>
 
                     </td>

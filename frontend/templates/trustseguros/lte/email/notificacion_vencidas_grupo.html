@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml><![endif]-->
+    <!-- fix outlook zooming on 120 DPI windows devices -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- So that mobile will display zoomed in -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- enable media queries for windows phone 8 -->
+    <meta name="format-detection" content="date=no"> <!-- disable auto date linking in iOS 7-9 -->
+    <meta name="format-detection" content="telephone=no"> <!-- disable auto telephone linking in iOS 7-9 -->
+    <title>Trust Correduría de Seguros</title>
+
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        table {
+            border-spacing: 0;
+        }
+
+        table td {
+            border-collapse: collapse;
+        }
+
+        .ExternalClass {
+            width: 100%;
+        }
+
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+            line-height: 100%;
+        }
+
+        .ReadMsgBody {
+            width: 100%;
+            background-color: #ebebeb;
+        }
+
+        table {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+
+        .yshortcuts a {
+            border-bottom: none !important;
+        }
+
+        @media screen and (max-width: 599px) {
+            .force-row,
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+
+        @media screen and (max-width: 400px) {
+            .container-padding {
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+            }
+        }
+
+        .ios-footer a {
+            color: #aaaaaa !important;
+            text-decoration: underline;
+        }
+
+        a[href^="x-apple-data-detectors:"],
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        .btn {
+            position: relative;
+
+            display: block;
+            margin: 30px auto;
+            padding: 0;
+
+            overflow: hidden;
+
+            border-width: 0;
+            outline: none;
+            border-radius: 2px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+
+            background-color: #2ecc71;
+            color: #ecf0f1;
+
+            transition: background-color .3s;
+        }
+
+        .btn:hover, .btn:focus {
+            background-color: #27ae60;
+        }
+
+        .btn > * {
+            position: relative;
+        }
+
+        .btn span {
+            display: block;
+            padding: 12px 24px;
+        }
+
+        .btn:before {
+            content: "";
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+
+            display: block;
+            width: 0;
+            padding-top: 0;
+
+            border-radius: 100%;
+
+            background-color: rgba(236, 240, 241, .3);
+
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .btn:active:before {
+            width: 120%;
+            padding-top: 120%;
+
+            transition: width .2s ease-out, padding-top .2s ease-out;
+        }
+    </style>
+</head>
+{% load humanize %}
+<body style="margin:0; padding:0;" bgcolor="#F0F0F0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+<!-- 100% background wrapper (grey background) -->
+<table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0">
+    <tr>
+        <td align="center" valign="top" bgcolor="#F0F0F0" style="background-color: #F0F0F0;">
+
+            <br>
+
+            <!-- 600px container (white background) -->
+            <table border="0" width="1200" cellpadding="0" cellspacing="0" class="container"
+                   style="width:1200px; max-width:1200px">
+
+                <tr>
+                    <td style="font-family:Helvetica, Arial, sans-serif;
+                        font-size:25px;font-weight:bold;color:#DF4726;
+                        display:flex;align-items:center;background-color:white;
+                        justify-content:space-evenly!important;padding-top:50px;
+                        text-align:center;vertical-align:middle">
+
+                        <span>
+                            <img src="https://www.trustcorreduria.com/static/cotizador/images/logo.gif"
+                                 alt="" height="75">
+                        </span>
+                        <span>Pólizas vencidas {{ fecha|date:'d/m/Y' }}.</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="font-family:Helvetica, Arial, sans-serif;
+                        font-size:25px;font-weight:bold;color:#DF4726;
+                        display:flex;align-items:center;background-color:white;
+                        justify-content:center;padding-top:10px;
+                        text-align:center;vertical-align:middle;">
+                        <span>{{ grupo.name }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="container-padding content" align="left"
+                        style="padding-left:24px;padding-right:24px;padding-top:12px;
+                        padding-bottom:12px;background-color:#ffffff">
+                        <br>
+
+                        <table style="border-collapse: collapse;width: 100%;">
+                            <thead>
+                            <tr>
+                                <th>Póliza</th>
+                                <th>Ramo</th>
+                                <th>Sub Ramo</th>
+                                <th>Aseguradora</th>
+                                <th>Cliente</th>
+                                <th>Vencimiento</th>
+                                <th>Ejecutivo</th>
+                                <th>Grupo</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for poliza in polizas %}
+                                <tr>
+                                    <td>{{ poliza.no_poliza }}</td>
+                                    <td>{{ poliza.ramo }}</td>
+                                    <td>{{ poliza.sub_ramo }}</td>
+                                    <td>{{ poliza.aseguradora.name }}</td>
+                                    <td>{{ poliza.cliente.get_full_name }}</td>
+                                    <td>{{ poliza.fecha_vence|date:'d/m/Y' }}</td>
+                                    <td>{{ poliza.ejecutivo }}</td>
+                                    <td>{{ poliza.grupo }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="container-padding footer-text" align="left"
+                        style="font-family:Helvetica, Arial, sans-serif;font-size:12px;line-height:16px;color:#aaaaaa;padding-left:24px;padding-right:24px">
+                        <br><br>
+                        Managua {{ fecha }}.
+                        <br><br>
+                        <a href="https://www.trustcorreduria.com/" style="color:#aaaaaa">www.trustcorreduria.com</a><br>
+
+                        <br><br>
+
+                    </td>
+                </tr>
+            </table>
+            <!--/600px container -->
+
+
+        </td>
+    </tr>
+</table>
+<!--/100% background wrapper-->
+
+</body>
+</html>

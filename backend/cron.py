@@ -86,9 +86,23 @@ def notificacion_por_vencer_grupo():
     inicio = datetime.now()
     fin = inicio + timedelta(days=32)
     for grupo in Grupo.objects.all().order_by('name'):
-        html = render_to_string('trustseguros/lte/email/notificacion.html', {
+        html = render_to_string('trustseguros/lte/email/notificacion_por_vencer_grupo.html', {
             'polizas': Poliza.objects.filter(estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE],
                                              grupo=grupo, fecha_vence__gte=inicio, fecha_vence__lte=fin),
-            'inicio': inicio, 'fin': fin
+            'inicio': inicio, 'fin': fin, 'grupo': grupo
         })
-        send_email("Recordatorio de Pólizas por Vencer", grupo.email_notificacion, html=html, files=None)
+        send_email(f'Recordatorio de Pólizas por Vencer {grupo.name}', grupo.email_notificacion, html=html, files=None)
+
+
+def notificacion_vencidas_grupo():
+    """
+    Notificacion de pólizas vencidas por grupo.
+    """
+    hoy = datetime.now()
+    for grupo in Grupo.objects.all().order_by('name'):
+        html = render_to_string('trustseguros/lte/email/notificacion_vencidas_grupo.html', {
+            'polizas': Poliza.objects.filter(estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE],
+                                             grupo=grupo, fecha_vence__lte=hoy),
+            'fecha': hoy, 'grupo': grupo
+        })
+        send_email(f'Recordatorio de Pólizas Vencidas {grupo.name}', grupo.email_notificacion, html=html, files=None)
