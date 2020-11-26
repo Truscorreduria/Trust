@@ -62,10 +62,12 @@ def documentos(request):
 
         if 'update' in request.POST:
             a = Archivo.objects.get(id=int(request.POST.get('id')))
-            a.nombre = request.POST.get('nombre')
-
+            nombre = request.POST.get('nombre')
+            if nombre:
+                a.nombre = nombre
             try:
-                a.fecha_caducidad = request.POST.get('fecha')
+                fecha = datetime.strptime(request.POST.get('fecha'), '%d/%m/%Y')
+                a.fecha_caducidad = fecha
             except:
                 pass
 
@@ -702,10 +704,38 @@ class PersonaNatural(Datatables):
                 ('polizas',),
             )
         },
+        {
+            'id': 'documentos',
+            'name': 'Documentos',
+            'fields': (
+                ('documentos',),
+            )
+        },
     ]
     media = {
-        'js': ['trustseguros/lte/js/municipio.js', ]
+        'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/cliente.add.poliza.js',
+               'trustseguros/lte/js/cliente.documentos.js']
     }
+
+    def get_buttons(self, request, instance=None):
+        if instance.id:
+            return [
+                {
+                    'class': 'btn btn-warning btn-perform',
+                    'perform': 'save',
+                    'callback': 'add_poliza',
+                    'icon': 'fa fa-exclamation-triangle',
+                    'text': 'Añadir póliza',
+                },
+                {
+                    'class': 'btn btn-success btn-perform',
+                    'perform': 'save',
+                    'callback': 'process_response',
+                    'icon': 'fa fa-save',
+                    'text': 'Guardar',
+                },
+            ]
+        return super().get_buttons(request, instance=instance)
 
 
 class PersonaJuridica(Datatables):
@@ -1175,6 +1205,12 @@ class Polizas(Datatables):
             instance = self.get_instance(request)
             data = tabla_cuotas(instance, request)
             return JsonResponse(data, safe=False, encoder=Codec)
+        if 'add_from_customer' in request.POST:
+            customer = Cliente.objects.get(id=request.POST.get('customer'))
+            p = Poliza()
+            p.cliente = customer
+            p.save()
+            return JsonResponse({'id': p.id}, encoder=Codec)
         return super().post(request)
 
     def save_related(self, instance, data):
@@ -1530,7 +1566,15 @@ class Oportunidades(Datatables):
 
     def put(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
-        return super().put(request)
+        status = 203
+        instance = self.model()
+        form = self.get_form()(linea=self.linea)
+        html_form = self.html_form(instance, request, form, 'PUT')
+        errors = []
+
+        if 'save' in request.PUT:
+            instance, html_form, errors, status = self.process_request(request, 'PUT')
+        return self.make_response(instance, html_form, errors, status)
 
     def post(self, request, linea):
         self.linea = Linea.objects.get(id=linea)

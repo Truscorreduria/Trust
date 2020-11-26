@@ -28,4 +28,8 @@
   width: 200px;
 }
 
+input[name=campos_adicionales-CHASIS], input[name=campos_adicionales-MOTOR] {
+  min-width: 250px;
+}
+
 /*# sourceMappingURL=coberturas-field.css.map */

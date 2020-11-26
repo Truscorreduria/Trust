@@ -202,6 +202,8 @@ class ClienteJuridicioForm(forms.ModelForm):
             }
         ))
 
+    documentos = forms.Field(widget=DriveClienteWidget)
+
     class Meta:
         model = ClienteJuridico
         fields = '__all__'
@@ -291,6 +293,8 @@ class ClienteNaturalForm(forms.ModelForm):
         }
     ))
 
+    documentos = forms.Field(widget=DriveClienteWidget, required=False, label="")
+
     class Meta:
         model = ClienteNatural
         fields = '__all__'
@@ -302,6 +306,7 @@ class ClienteNaturalForm(forms.ModelForm):
         if instance:
             updated_initial['polizas'] = instance.polizas()
             updated_initial['tramites'] = instance.tramites()
+            updated_initial['documentos'] = instance.media_files
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 
@@ -366,6 +371,31 @@ class SubRamoForm(forms.ModelForm):
             updated_initial['campos_adicionales'] = instance.datos_tecnicos.all()
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+
+
+class LineaForm(forms.ModelForm):
+    formato_cotizacion = forms.CharField(required=True, label="Formato cotizacion (Accede a datos de "
+                                                              "la oportunidad de la siguiente manera: "
+                                                              "[[ poliza.cliente ]])",
+                                         widget=forms.Textarea(
+                                             attrs={
+                                                 'class': "htmleditor",
+                                                 'data-autosave': "editor-content",
+                                             }
+                                         ))
+    contenido_correo = forms.CharField(required=True, label="Contenido del correo (Accede a datos de "
+                                                            "la oportunidad de la siguiente manera: "
+                                                            "[[ poliza.cliente ]])",
+                                       widget=forms.Textarea(
+                                           attrs={
+                                               'class': "htmleditor",
+                                               'data-autosave': "editor-content",
+                                           }
+                                       ))
+
+    class Meta:
+        model = Linea
+        fields = '__all__'
 
 
 class PolizaForm(forms.ModelForm):
@@ -807,7 +837,6 @@ class OportunityForm(forms.ModelForm):
                                               'form': ProspectForm
                                           }
                                       ))
-
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
@@ -821,7 +850,7 @@ class OportunityForm(forms.ModelForm):
     ))
     code = forms.CharField(widget=forms.HiddenInput, required=False)
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True))
-    campain = forms.ModelChoiceField(queryset=Campain.objects.filter(active=True))
+    campain = forms.ModelChoiceField(queryset=Campain.objects.all())
 
     class Meta:
         model = Oportunity
@@ -829,6 +858,10 @@ class OportunityForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
+        try:
+            linea = kwargs.pop('linea')
+        except:
+            linea = None
         if instance:
             kwargs.update(
                 initial={
@@ -843,12 +876,8 @@ class OportunityForm(forms.ModelForm):
         self.fields['cotizacion'].widget.attrs['companies'] = Aseguradora.objects.filter(active=True)
         if instance:
             self.fields['cotizacion'].widget.attrs['instance'] = instance
-
-
-class LineaForm(forms.ModelForm):
-    class Meta:
-        model = Linea
-        fields = '__all__'
+        if linea:
+            self.fields['campain'].queryset = Campain.objects.filter(active=True, linea=linea)
 
 
 class CampainForm(forms.ModelForm):

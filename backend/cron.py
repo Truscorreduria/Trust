@@ -81,7 +81,7 @@ def renovacion_automatica():
 
 def notificacion_por_vencer_grupo():
     """
-    Notificacion de pólizas vencidas por grupo.
+    Notificacion de pólizas por vencer por grupo.
     """
     inicio = datetime.now()
     fin = inicio + timedelta(days=32)
@@ -106,3 +106,39 @@ def notificacion_vencidas_grupo():
             'fecha': hoy, 'grupo': grupo
         })
         send_email(f'Recordatorio de Pólizas Vencidas {grupo.name}', grupo.email_notificacion, html=html, files=None)
+
+
+def notificacion_pagos_por_vencer():
+    """
+    Notificacion de pagos vencidos
+    """
+    inicio = datetime.now()
+    fin = inicio + timedelta(days=30)
+    html = render_to_string('trustseguros/lte/email/notificacion_pagos_por_vencer.html', {
+        'pagos': Cuota.objects.filter(estado=EstadoPago.VIGENTE,
+                                      fecha_vence__gte=inicio,
+                                      fecha_vence__lte=fin),
+        'inicio': inicio,
+        'fin': fin,
+    })
+    send_email(f'Recordatorio de pagos pendientes {inicio.strftime("%d/%m/%Y")}',
+               'cesarabel@deltacopiers.com',
+               html=html,
+               files=None)
+
+
+def notificacion_pagos_vencidos():
+    """
+    Notificacion de pagos vencidos
+    """
+    hoy = datetime.now()
+    pagos = Cuota.objects.filter(estado=EstadoPago.VIGENTE,
+                                 fecha_vence__lte=hoy)
+    html = render_to_string('trustseguros/lte/email/notificacion_pagos_vencidos.html', {
+        'pagos': Poliza.objects.filter(id__in=pagos.values_list('poliza_id', flat=True)).order_by('fecha_vence'),
+        'fecha': hoy,
+    })
+    send_email(f'Recordatorio de pagos vencidos {hoy.strftime("%d/%m/%Y")}',
+               'cesarabel@deltacopiers.com',
+               html=html,
+               files=None)

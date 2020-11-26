@@ -556,6 +556,12 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
         o['name'] = self.get_full_name()
         return o
 
+    @property
+    def media_files(self):
+        return Archivo.objects.filter(type=ContentType.objects.get(
+            app_label='backend', model='cliente'
+        ), key=self.id).order_by('-updated')
+
 
 class ManagerProspecto(models.Manager):
     def get_queryset(self):
@@ -650,7 +656,7 @@ class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
     autorenovacion = models.BooleanField(default=False)
     email_notificacion = models.CharField(max_length=500, null=True, blank=True,
-                                           verbose_name="email para notificaciones")
+                                          verbose_name="email para notificaciones")
 
     def __str__(self):
         return self.name
@@ -1202,7 +1208,7 @@ class Poliza(BasePoliza):
             EstadoPago.VENCIDO
         ], fecha_vence__gte=fecha_corte).aggregate(Sum('monto'))['monto__sum']
 
-    def saldo_vencido(self, fecha_corte):
+    def saldo_vencido(self, fecha_corte=None):
         if not fecha_corte:
             fecha_corte = datetime.now()
         return self.cuotas().filter(estado__in=[
@@ -1361,6 +1367,18 @@ class Poliza(BasePoliza):
             data = self.estado_cuenta_recibo(data, value=recibo.id, model=Tramite)
 
         return data
+
+    def dias_mora(self):
+        hoy = datetime.now()
+        cuotas_vencidas = Cuota.objects.filter(poliza=self, fecha_vence__lt=hoy).order_by('fecha_vence')
+        if cuotas_vencidas.count() > 0:
+            return cuotas_vencidas[0].dias_mora
+        return 0
+
+    def nombre_ejecutivo(self):
+        if self.ejecutivo:
+            return self.ejecutivo.get_full_name()
+        return ''
 
 
 class CoberturaPoliza(Base):
@@ -1664,6 +1682,15 @@ class Cuota(Base):
         if days < 0:
             return 0
         return days
+
+    def ejecutivo(self):
+        if self.poliza:
+            if self.poliza.ejecutivo:
+                return self.poliza.ejecutivo.get_full_name
+        else:
+            if self.tramite.poliza.ejecutivo:
+                return self.tramite.poliza.ejecutivo.get_full_name
+        return ''
 
     def to_json(self):
         o = super().to_json()
@@ -2170,6 +2197,12 @@ class SolicitudRenovacion(base):
 
 class Linea(Base):
     name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
+    calcular_valor_nuevo = models.BooleanField(default=True, verbose_name="calcular valor de nuevo")
+    calcular_cotizacion = models.BooleanField(default=True, verbose_name="calcular cotizacion por aseguradora")
+    formato_cotizacion = models.TextField(max_length=10000, default='', null=True, blank=True,
+                                          verbose_name='Formato de la cotizacion')
+    contenido_correo = models.TextField(max_length=10000, default='', null=True, blank=True,
+                                        verbose_name='Contenido del correo')
 
     def __str__(self):
         return self.name
@@ -2181,7 +2214,8 @@ class LineaUser(Base):
 
 
 class Campain(Base):
-    name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
+    name = models.CharField(max_length=125, verbose_name=_("nombre de la campaña"))
+    linea = models.ForeignKey(Linea, null=True, on_delete=models.SET_NULL)
     active = models.BooleanField(default=False, verbose_name="activa")
 
     def __str__(self):
