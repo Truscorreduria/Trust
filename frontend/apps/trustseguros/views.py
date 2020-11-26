@@ -778,11 +778,39 @@ class PersonaJuridica(Datatables):
                 ('polizas',),
             )
         },
+        {
+            'id': 'documentos',
+            'name': 'Documentos',
+            'fields': (
+                ('documentos',),
+            )
+        },
     ]
     media = {
         'js': ['trustseguros/lte/js/municipio.js', 'trustseguros/lte/js/municipio-representante.js',
-               'trustseguros/lte/js/autocomplete-representante.js']
+               'trustseguros/lte/js/autocomplete-representante.js', 'trustseguros/lte/js/cliente.add.poliza.js',
+               'trustseguros/lte/js/cliente.documentos.js']
     }
+
+    def get_buttons(self, request, instance=None):
+        if instance.id:
+            return [
+                {
+                    'class': 'btn btn-warning btn-perform',
+                    'perform': 'save',
+                    'callback': 'add_poliza',
+                    'icon': 'fa fa-exclamation-triangle',
+                    'text': 'Añadir póliza',
+                },
+                {
+                    'class': 'btn btn-success btn-perform',
+                    'perform': 'save',
+                    'callback': 'process_response',
+                    'icon': 'fa fa-save',
+                    'text': 'Guardar',
+                },
+            ]
+        return super().get_buttons(request, instance=instance)
 
     def save_related(self, instance, data):
         try:
