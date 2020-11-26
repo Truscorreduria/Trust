@@ -202,7 +202,7 @@ class ClienteJuridicioForm(forms.ModelForm):
             }
         ))
 
-    documentos = forms.Field(widget=DriveClienteWidget)
+    documentos = forms.Field(widget=DriveClienteWidget, required=False, label="")
 
     class Meta:
         model = ClienteJuridico
