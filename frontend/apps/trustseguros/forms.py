@@ -217,6 +217,7 @@ class ClienteJuridicioForm(forms.ModelForm):
             updated_initial['contactos'] = instance.contactos()
             updated_initial['polizas'] = instance.polizas()
             updated_initial['tramites'] = instance.tramites()
+            updated_initial['documentos'] = instance.media_files
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
 
