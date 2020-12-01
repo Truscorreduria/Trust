@@ -211,7 +211,6 @@ class ClienteJuridicioForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         request = kwargs.pop('request', None)
-        super(ClienteJuridicioForm, self).__init__(*args, **kwargs)
         updated_initial = {}
         if instance:
             updated_initial['contactos'] = instance.contactos()
@@ -375,24 +374,10 @@ class SubRamoForm(forms.ModelForm):
 
 
 class LineaForm(forms.ModelForm):
-    formato_cotizacion = forms.CharField(required=True, label="Formato cotizacion (Accede a datos de "
-                                                              "la oportunidad de la siguiente manera: "
-                                                              "[[ poliza.cliente ]])",
-                                         widget=forms.Textarea(
-                                             attrs={
-                                                 'class': "htmleditor",
-                                                 'data-autosave': "editor-content",
-                                             }
-                                         ))
-    contenido_correo = forms.CharField(required=True, label="Contenido del correo (Accede a datos de "
-                                                            "la oportunidad de la siguiente manera: "
-                                                            "[[ poliza.cliente ]])",
-                                       widget=forms.Textarea(
-                                           attrs={
-                                               'class': "htmleditor",
-                                               'data-autosave': "editor-content",
-                                           }
-                                       ))
+    aseguradoras = forms.ModelMultipleChoiceField(queryset=Aseguradora.objects.all(),
+                                                  widget=forms.CheckboxSelectMultiple,
+                                                  label="Aseguradoras con las que cotiza.",
+                                                  required=False)
 
     class Meta:
         model = Linea
@@ -845,7 +830,7 @@ class OportunityForm(forms.ModelForm):
 
     cotizacion = forms.Field(label="", required=False, widget=CotizacionWidget(
         attrs={
-            'companies': Aseguradora.objects.all(),
+            'companies': [],
             'instance': None,
         }
     ))
@@ -874,11 +859,12 @@ class OportunityForm(forms.ModelForm):
                 }
             )
         super().__init__(*args, **kwargs)
-        self.fields['cotizacion'].widget.attrs['companies'] = Aseguradora.objects.filter(active=True)
         if instance:
             self.fields['cotizacion'].widget.attrs['instance'] = instance
+            self.fields['cotizacion'].widget.attrs['companies'] = instance.linea.aseguradoras.all()
         if linea:
             self.fields['campain'].queryset = Campain.objects.filter(active=True, linea=linea)
+            self.fields['cotizacion'].widget.attrs['companies'] = linea.aseguradoras.all()
 
 
 class CampainForm(forms.ModelForm):

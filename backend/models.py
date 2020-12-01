@@ -2199,10 +2199,7 @@ class Linea(Base):
     name = models.CharField(max_length=125, verbose_name=_("nombre de la línea"))
     calcular_valor_nuevo = models.BooleanField(default=True, verbose_name="calcular valor de nuevo")
     calcular_cotizacion = models.BooleanField(default=True, verbose_name="calcular cotizacion por aseguradora")
-    formato_cotizacion = models.TextField(max_length=10000, default='', null=True, blank=True,
-                                          verbose_name='Formato de la cotizacion')
-    contenido_correo = models.TextField(max_length=10000, default='', null=True, blank=True,
-                                        verbose_name='Contenido del correo')
+    aseguradoras = models.ManyToManyField(Aseguradora, blank=True, verbose_name="Aseguradoras con las que cotiza")
 
     def __str__(self):
         return self.name

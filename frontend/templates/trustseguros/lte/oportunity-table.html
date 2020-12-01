@@ -360,11 +360,30 @@
                 })
             };
 
-            $(document).on('change', '.aseguradora-check', cotizar);
-            $(document).on('change', '#id_valor_nuevo', cotizar);
-            $(document).on('change', '#id_rc_exceso', cotizar);
-            $(document).on('change', '#id_valor_exceso', cotizar);
-            $(document).on('change', '#id_ANIO', cotizar);
+            {% if linea.calcular_cotizacion %}
+                $(document).on('change', '.aseguradora-check', cotizar);
+                $(document).on('change', '#id_valor_nuevo', cotizar);
+                $(document).on('change', '#id_rc_exceso', cotizar);
+                $(document).on('change', '#id_valor_exceso', cotizar);
+                $(document).on('change', '#id_ANIO', cotizar);
+            {% else %}
+                $(document).on('change', '.aseguradora-check', function () {
+                    const _this = $(this);
+                    if (_this.is(':checked')) {
+                        $(`#table-cotizacion input[data-aseguradora="${_this.val()}"]`)
+                            .removeAttr('disabled')
+                            .attr('placeholder', '0.0')
+                            .val('')
+                    } else {
+                        $(`#table-cotizacion input[data-aseguradora="${_this.val()}"]`)
+                            .attr('disabled', 'disabled')
+                            .attr('placeholder', '-')
+                            .val('')
+                    }
+
+                });
+            {% endif %}
+
             $(document).on('click', '.status-circle.touchable', cambiar_status);
 
             function get_keys(data) {
@@ -699,11 +718,12 @@
                 })
             };
 
-            $(document).on('change', '#id_ANIO', calcular_valor_nuevo);
-            $(document).on('change', '#id_CHASIS', calcular_valor_nuevo);
-            $(document).on('change', '#id_MARCA', calcular_valor_nuevo);
-            $(document).on('change', '#id_MODELO', calcular_valor_nuevo);
-
+            {% if linea.calcular_valor_nuevo %}
+                $(document).on('change', '#id_ANIO', calcular_valor_nuevo);
+                $(document).on('change', '#id_CHASIS', calcular_valor_nuevo);
+                $(document).on('change', '#id_MARCA', calcular_valor_nuevo);
+                $(document).on('change', '#id_MODELO', calcular_valor_nuevo);
+            {% endif %}
             $(document).on('change', '#id_tipo_cliente', function () {
                 if ($(this).val() === '1') {
                     $('.row.persona').css('display', 'flex');

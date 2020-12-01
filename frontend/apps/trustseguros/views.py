@@ -1565,7 +1565,7 @@ class Roles(Datatables):
 
 class Oportunidades(Datatables):
     linea = None
-    modal_width = 1200
+    modal_width = 1400
     model = Oportunity
     form = OportunityForm
     list_display = ('code', 'prospect.name', 'vendedor.full_name',
@@ -1590,7 +1590,7 @@ class Oportunidades(Datatables):
 
     def get(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
-        return super().get(request, import_form=ImportDataForm)
+        return super().get(request, import_form=ImportDataForm, linea=self.linea)
 
     def put(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
