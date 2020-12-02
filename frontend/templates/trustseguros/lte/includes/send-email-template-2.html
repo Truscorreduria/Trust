@@ -1,4 +1,4 @@
-{% load static humanize %}
+{% load static humanize mathfilters %}
 <form action="." method="post" enctype="multipart/form-data" id="send-mail-form">
     {% csrf_token %}
 
@@ -33,10 +33,15 @@
         <p> Sr(a) {{ oportunity.prospect.full_name }}, permítanos presentarle una cotización de seguro para su vehículo con las mejores condiciones del mercado. Para esta cotización hemos buscado alternativas en compañías de seguros con prestigio Nacional.</p>
 
 
-        <p>A continuación las opciones de seguro:</p>
 
         <table style="margin-top: 10mm; border-collapse: collapse">
         <thead>
+{#        <tr>#}
+{#            <th colspan="{{ oportunity.ofertas_columns }}" class=""#}
+{#                style="background-color: #51972d">#}
+{#                Comparativo de sumas aseguradas, coaseguros y primas#}
+{#            </th>#}
+{#        </tr>#}
         <tr>
             <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
             {% for oferta in oportunity.ofertas.all %}
@@ -90,32 +95,22 @@
         </tbody>
     </table>
 
-        <p>Los requisitos para tomar la póliza son:</p>
+        <p>Favor indicarnos a qué dirección le podemos hacer llegar el carnet y póliza renovada; también solicito de
+            su amable colaboración con el envío del soporte de cancelación de crédito a fin de invalidar las cesiones
+            de derechos y realizar el cambio de contratante; en este sentido, adjunto carta de cambio de
+            intermediario, para realizar dicho cambio de contratante.
+            </p>
 
-        <ul>
-    <li>Copia de cédula</li>
-
-    <li>Copia de circulación</li>
-
-    <li>Inspección del vehículo</li>
-    </ul>
-        <p>Adjunto encontrará una cotización formal.</p>
-        <p>En caso que usted prefiera trabajar con otra compañía, nos lo hace saber para presentarle oferta con las mejores condiciones del mercado.</p>
-
-        <p>Agradeciendo nuevamente su confianza en nosotros, me despido en espera de su aprobación.</p>
-        <p>Saludos cordiales.</p>
     </div>
         <br>
         <p>Atentamente</p>
         <p style="margin: 0">
-            <span
-                    style="color: rgb(136, 136, 136);"><b><span
-                    style="color: rgb(47, 85, 151);">{{ oportunity.vendedor.get_full_name }}&nbsp;</span></b></span>
-            <br><font color="#2f5597">Seguros de consumo<br></font>
-        </p>
-        <p style="margin: 0">
             <b>
-                <span style="color: rgb(56, 87, 35);">Trust Correduría de Seguros SA</span>
+                <span style="color: rgb(47, 85, 151);">{{ oportunity.vendedor.get_full_name }}&nbsp;</span>
+            </b>
+            <br>
+            <b>
+                <span style="color: rgb(47, 85, 151);">Trust Correduría de Seguros SA</span>
             </b>
             <br>
             <b>
@@ -128,7 +123,7 @@
             <br>
             <b>
                 <span style="color: rgb(56, 87, 35);">
-                    Email:&nbsp;<a
+                    <a
                         href="mailto:{{ oportunity.vendedor.email }}"
                         target="_blank">{{ oportunity.vendedor.email }}</a>
                 </span>
@@ -136,7 +131,7 @@
             <br>
             <b>
                 <span style="color: rgb(56, 87, 35);"><a href="http://www.trustcorreduria.com/"
-              target="_blank">www.trustcorreduria.com</a></span>
+                                                         target="_blank">www.trustcorreduria.com</a></span>
             </b>
         </p>
     </textarea>

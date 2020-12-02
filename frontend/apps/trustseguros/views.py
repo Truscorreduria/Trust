@@ -33,6 +33,13 @@ def get_attr(obj, attr_name):
     return value
 
 
+def parse_float(string, optional=0.0):
+    try:
+        return float(string.replace(',', ''))
+    except ValueError:
+        return optional
+
+
 def group_to_json(group):
     return model_to_dict(group)
 
@@ -1678,15 +1685,19 @@ class Oportunidades(Datatables):
             return JsonResponse({})
 
         if 'print' in request.POST:
-            oportunity = Oportunity.objects.get(id=request.POST.get('id'))
-            return render_to_pdf_response(request, 'trustseguros/lte/pdf/oportunity.html', {
-                'oportunity': oportunity
-            })
+            return render_to_pdf_response(request,
+                                          [f'trustseguros/lte/pdf/oportunity-{self.linea.id}.html',
+                                           f'trustseguros/lte/pdf/oportunity.html',
+                                           ],
+                                          {
+                                              'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                                          })
 
         if 'prepare_email' in request.POST:
-            html = render_to_string('trustseguros/lte/includes/send-email-template.html',
+            html = render_to_string([f'trustseguros/lte/includes/send-email-template-{self.linea.id}.html',
+                                     f'trustseguros/lte/includes/send-email-template.html'],
                                     context={
-                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
                                     },
                                     request=request)
             return JsonResponse({
@@ -1793,18 +1804,21 @@ class Oportunidades(Datatables):
         if not instance.linea.calcular_cotizacion:
             for idx, ida in enumerate(data.getlist('cotizacion')):
                 cotizacion_aseguradora = Aseguradora.objects.get(id=ida)
-                cotizacion_suma_asegurada = float(data.getlist('cotizacion_suma_asegurada')[idx].replace(',', ''))
-                cotizacion_deducible = float(data.getlist('cotizacion_deducible')[idx].replace(',', ''))
-                cotizacion_coaseguro_dano = float(data.getlist('cotizacion_coaseguro_dano')[idx].replace(',', ''))
-                cotizacion_coaseguro_robo = float(data.getlist('cotizacion_coaseguro_robo')[idx].replace(',', ''))
-                cotizacion_prima = float(data.getlist('cotizacion_prima')[idx].replace(',', ''))
+                cotizacion_suma_asegurada = parse_float(data.getlist('cotizacion_suma_asegurada')[idx])
+                cotizacion_deducible = parse_float(data.getlist('cotizacion_deducible')[idx])
+                cotizacion_coaseguro_dano = parse_float(data.getlist('cotizacion_coaseguro_dano')[idx])
+                cotizacion_coaseguro_robo = parse_float(data.getlist('cotizacion_coaseguro_robo')[idx])
+                cotizacion_prima = parse_float(data.getlist('cotizacion_prima')[idx])
                 oq, _ = OportunityQuotation.objects.get_or_create(
                     aseguradora=cotizacion_aseguradora,
                     oportunity=instance,
                 )
                 oq.marca = data.get('MARCA')
                 oq.modelo = data.get('MODELO')
-                oq.anno = int(data.get('ANIO'))
+                try:
+                    oq.anno = int(data.get('ANIO'))
+                except:
+                    pass
                 oq.suma_asegurada = cotizacion_suma_asegurada
                 oq.deducible = cotizacion_deducible
                 oq.coaseguro_robo = cotizacion_coaseguro_dano

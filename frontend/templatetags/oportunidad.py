@@ -39,8 +39,10 @@ def checked(company, oportunity):
 @register.filter('disabled')
 def disabled(company, oportunity):
     try:
-        OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity)
-        return ''
+        o = OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity)
+        if not o.oportunity.linea.calcular_cotizacion:
+            return ''
+        return 'disabled'
     except:
         return 'disabled'
 
