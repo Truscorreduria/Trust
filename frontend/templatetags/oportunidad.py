@@ -36,6 +36,15 @@ def checked(company, oportunity):
         return ''
 
 
+@register.filter('disabled')
+def disabled(company, oportunity):
+    try:
+        OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity)
+        return ''
+    except:
+        return 'disabled'
+
+
 @register.filter('suma')
 def suma(company, oportunity):
     try:
@@ -71,7 +80,7 @@ def coaseguro_robo(company, oportunity):
 @register.filter('prima')
 def prima(company, oportunity):
     try:
-        return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).prima_total
+        return OportunityQuotation.objects.get(aseguradora=company, oportunity=oportunity).total
     except:
         return '-'
 

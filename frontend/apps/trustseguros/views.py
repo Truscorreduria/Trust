@@ -1772,6 +1772,9 @@ class Oportunidades(Datatables):
                             cotizacion.coaseguro_dano, cotizacion.deducible, \
                             cotizacion.exceso = aseguradora.calcular_tarifa()
                         cotizacion.emision = aseguradora.emision
+                        cotizacion.suma_asegurada = cotizacion.get_suma_asegurada
+                        cotizacion.prima = cotizacion.get_prima
+                        cotizacion.total = cotizacion.prima_total
                         cotizacion.save()
                     except:
                         OportunityQuotation.objects.get(aseguradora=aseguradora,
@@ -1786,6 +1789,36 @@ class Oportunidades(Datatables):
         if 'cambiar_status' in data:
             instance.status = int(data.get('siguiente_status'))
             instance.save()
+
+        if not instance.linea.calcular_cotizacion:
+            for idx, ida in enumerate(data.getlist('cotizacion')):
+                cotizacion_aseguradora = Aseguradora.objects.get(id=ida)
+                cotizacion_suma_asegurada = float(data.getlist('cotizacion_suma_asegurada')[idx].replace(',', ''))
+                cotizacion_deducible = float(data.getlist('cotizacion_deducible')[idx].replace(',', ''))
+                cotizacion_coaseguro_dano = float(data.getlist('cotizacion_coaseguro_dano')[idx].replace(',', ''))
+                cotizacion_coaseguro_robo = float(data.getlist('cotizacion_coaseguro_robo')[idx].replace(',', ''))
+                cotizacion_prima = float(data.getlist('cotizacion_prima')[idx].replace(',', ''))
+                oq, _ = OportunityQuotation.objects.get_or_create(
+                    aseguradora=cotizacion_aseguradora,
+                    oportunity=instance,
+                )
+                oq.marca = data.get('MARCA')
+                oq.modelo = data.get('MODELO')
+                oq.anno = int(data.get('ANIO'))
+                oq.suma_asegurada = cotizacion_suma_asegurada
+                oq.deducible = cotizacion_deducible
+                oq.coaseguro_robo = cotizacion_coaseguro_dano
+                oq.coaseguro_dano = cotizacion_coaseguro_robo
+                oq.total = cotizacion_prima
+                oq.save()
+
+            for aseguradora in Aseguradora.objects.all():
+                if not str(aseguradora.id) in data.getlist('cotizacion'):
+                    try:
+                        OportunityQuotation.objects.get(aseguradora=aseguradora,
+                                                        oportunity=instance).delete()
+                    except ObjectDoesNotExist:
+                        pass
 
 
 # endregion
@@ -2515,4 +2548,21 @@ class ReporteComision(ReportLab):
             'Comisión recibida': get_attr(instance, 'comision_deducida'),
         }
 
+
 # endregion
+
+
+l = {
+    'campain': ['1'], 'days': ['0'], 'ramo': ['5'], 'sub_ramo': ['10'], 'vendedor': ['5'], 'tipo_cliente': ['1'],
+    'tipo_identificacion': ['1'], 'cedula': ['2012806720003H'], 'genero': [''], 'primer_nombre': ['MANUEL'],
+    'segundo_nombre': ['SALVADOR'], 'apellido_paterno': ['FLORES'], 'apellido_materno': ['LEZAMA'],
+    'celular': ['25527742'], 'email_personal': ['manuelfloreses@gmailcom'], 'ruc': [''], 'actividad_economica': [''],
+    'razon_social': [''], 'nombre_comercial': [''], 'fecha_constitucion': [''], 'pagina_web': [''],
+    'telefono': ['25527742'], 'observaciones': [''], 'departamento': [''], 'municipio': [''], 'domicilio': [
+        '2 REPARTO BARTOLOME CHICO TRIPA 5C NORTE 2C OESTE                                                  '],
+    'no_poliza': [''], 'aseguradora': [''], 'fecha_vence': [''], 'extra_data': [''], 'COLOR': [''], 'MOTOR': [''],
+    'ANIO': [''], 'CERTIFICADO': [''], 'CHASIS': [''], 'MARCA': [''], 'MODELO': [''], 'PLACA': [''],
+    'valor_nuevo': ['0.0'], 'rc_exceso': ['3'], 'valor_exceso': ['0.0'], 'cotizacion': ['1'],
+    'cotizacion_suma_asegurada': ['1'], 'cotizacion_deducible': ['1'], 'cotizacion_coaseguro_dano': ['1'],
+    'cotizacion_coaseguro_robo': ['1'], 'cotizacion_prima': ['1'], 'save': ['save']
+}

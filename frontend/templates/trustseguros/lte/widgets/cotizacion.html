@@ -50,7 +50,7 @@
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right">
                     <input type="text" class="simpletext dollar"
-                           disabled
+                           {{ company|disabled:oportunity }}
                            name="{{ widget.name }}_suma_asegurada"
                            value="{{ company|suma:oportunity|intcomma }}"
                            data-aseguradora="{{ company.id }}">
@@ -62,7 +62,7 @@
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right">
                     <input type="text" class="simpletext dollar"
-                           disabled
+                           {{ company|disabled:oportunity }}
                            name="{{ widget.name }}_deducible"
                            value="{{ company|deducible:oportunity|intcomma }}"
                            data-aseguradora="{{ company.id }}">
@@ -74,7 +74,7 @@
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right">
                     <input type="text" class="simpletext percent"
-                           disabled
+                           {{ company|disabled:oportunity }}
                            name="{{ widget.name }}_coaseguro_dano"
                            value="{{ company|coaseguro_dano:oportunity|intcomma }}"
                            data-aseguradora="{{ company.id }}">
@@ -86,7 +86,7 @@
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right">
                     <input type="text" class="simpletext percent"
-                           disabled
+                           {{ company|disabled:oportunity }}
                            name="{{ widget.name }}_coaseguro_robo"
                            value="{{ company|coaseguro_robo:oportunity|intcomma }}"
                            data-aseguradora="{{ company.id }}">
@@ -98,7 +98,7 @@
             {% for company in widget.attrs.companies %}
                 <td style="text-align: right">
                     <input type="text" class="simpletext dollar"
-                           disabled
+                           {{ company|disabled:oportunity }}
                            name="{{ widget.name }}_prima"
                            value="{{ company|prima:oportunity|intcomma }}"
                            data-aseguradora="{{ company.id }}">

@@ -2411,28 +2411,29 @@ class Oportunity(BasePoliza):
 class OportunityQuotation(Base):
     oportunity = models.ForeignKey(Oportunity, on_delete=models.CASCADE, related_name="ofertas")
     aseguradora = models.ForeignKey(Aseguradora, on_delete=models.CASCADE)
-
     marca = models.CharField(max_length=65, null=True, blank=True)
     modelo = models.CharField(max_length=65, null=True, blank=True)
     anno = models.CharField(max_length=65, null=True, blank=True)
-
     factor_depreciacion = models.FloatField(default=0.0, blank=True)
-    emision = models.FloatField(default=0.0, blank=True, verbose_name="Derecha de emision")
+    emision = models.FloatField(default=0.0, blank=True, verbose_name="Derecho de emision")
     exceso = models.FloatField(default=0.0, blank=True, verbose_name="Tarifa Exceso")
     tarifa = models.FloatField(default=0.0, blank=True, verbose_name="Tarifa por millar")
     coaseguro_robo = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro robo")
     coaseguro_dano = models.FloatField(default=0.0, blank=True, verbose_name="Coaseguro daño")
     deducible = models.FloatField(default=0.0, blank=True, verbose_name="Mínimo deducible")
+    suma_asegurada = models.FloatField(default=0.0, blank=True, verbose_name="Suma asegurada")
+    prima = models.FloatField(default=0.0, blank=True)
+    total = models.FloatField(default=0.0, blank=True)
 
     @property
-    def suma_asegurada(self):
+    def get_suma_asegurada(self):
         try:
             return self.aseguradora.depreciar(self.oportunity.valor_nuevo, self.anno)
         except AttributeError:
             return 0.0
 
     @property
-    def prima(self):
+    def get_prima(self):
         return round((self.oportunity.valor_nuevo * self.tarifa) / 1000, 2)
 
     @property
