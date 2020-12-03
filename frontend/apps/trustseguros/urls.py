@@ -10,6 +10,7 @@ urlpatterns = [
     path('persona_juridica/', PersonaJuridica.as_view(), name="persona_juridica"),
     path('lineas/', Lineas.as_view(), name="lineas"),
     path('campains/', Campains.as_view(), name="campains"),
+    path('tipo_doc/', TiposDocumentos.as_view(), name="tipo_doc"),
     path('aseguradoras/', Aseguradoras.as_view(), name="aseguradoras"),
     path('tarifas/', Tarifas.as_view(), name="tarifas"),
     path('grupos/', Grupos.as_view(), name="grupos"),

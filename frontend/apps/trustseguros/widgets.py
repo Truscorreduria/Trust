@@ -66,7 +66,7 @@ class DriveClienteWidget(Widget):
     template_name = "trustseguros/lte/widgets/drive-cliente.html"
 
     def format_value(self, value):
-        return value
+        return [self.attrs['form'](instance=x) for x in value]
 
 
 class BitacoraWidget(Widget):

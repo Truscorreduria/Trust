@@ -1033,6 +1033,7 @@ class Poliza(BasePoliza):
             ("trust_catalogos_tarifa", "Catálogos Tarifas(trustseguros)"),
             ("trust_catalogos_linea", "Línea de negocios(trustseguros)"),
             ("trust_catalogos_campain", "Campañas(trustseguros)"),
+            ("trust_catalogos_documenttypes", "Documentos PLD(trustseguros)"),
             ("trust_catalogos_grupo", "Catálogos Grupos(trustseguros)"),
             ("trust_catalogos_ramo", "Catálogos Ramos(trustseguros)"),
             ("trust_catalogos_subramo", "Catálogos Sub Ramos(trustseguros)"),
@@ -1878,6 +1879,16 @@ class Notificacion(Base):
 # region Utils
 
 
+class DocumentType(base):
+    name = models.CharField(max_length=125, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "documento"
+
+
 class Archivo(base):
     created = models.DateTimeField(auto_now_add=True)
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
@@ -1893,6 +1904,8 @@ class Archivo(base):
     type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     key = models.PositiveIntegerField(null=True)
     tag = models.CharField(max_length=35, null=True, blank=True)
+    tipo_doc = models.ForeignKey(DocumentType, null=True, blank=True, verbose_name="Tipo de documento",
+                                 on_delete=models.SET_NULL)
 
     @classmethod
     def media_files(cls, obj):

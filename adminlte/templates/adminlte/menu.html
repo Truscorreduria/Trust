@@ -298,6 +298,16 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if perms.backend.trust_catalogos_documenttypes %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:tipo_doc' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Documentos PLD
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </li>
         {% endif %}

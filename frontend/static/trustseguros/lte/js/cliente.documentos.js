@@ -57,5 +57,20 @@ $(document).ready(function () {
                 console.log(response)
             }
         })
-    })
+    });
+
+    $(document).on('change', 'select[name="tipo_doc"]', function () {
+        const _this = $(this);
+        $.ajax($ajax_soporte, {
+            method: 'POST',
+            data: {
+                'id': _this.data('id'),
+                'tipo_doc': _this.val(),
+                'update': 'update',
+            },
+            success: function (response) {
+                console.log(response)
+            }
+        })
+    });
 });

@@ -231,6 +231,18 @@ class ClienteJuridicioForm(forms.ModelForm):
         return data
 
 
+class ArchivoClienteForm(forms.ModelForm):
+    class Meta:
+        model = Archivo
+        fields = ('tipo_doc',)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['tipo_doc'].widget.attrs['data-id'] = instance.id
+
+
 class ClienteNaturalForm(forms.ModelForm):
     empresa = forms.ModelChoiceField(queryset=ClienteJuridico.objects.all(), required=False)
     primer_nombre = forms.CharField(required=True)
@@ -293,7 +305,11 @@ class ClienteNaturalForm(forms.ModelForm):
         }
     ))
 
-    documentos = forms.Field(widget=DriveClienteWidget, required=False, label="")
+    documentos = forms.Field(widget=DriveClienteWidget(
+        attrs={
+            'form': ArchivoClienteForm
+        }
+    ), required=False, label="")
 
     class Meta:
         model = ClienteNatural

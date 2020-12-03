@@ -77,6 +77,11 @@ def documentos(request):
                 a.fecha_caducidad = fecha
             except:
                 pass
+            try:
+                tipo_doc = DocumentType.objects.get(id=request.POST.get('tipo_doc'))
+                a.tipo_doc = tipo_doc
+            except:
+                pass
 
             a.save()
             return JsonResponse(a.to_json(), encoder=Codec)
@@ -1029,6 +1034,13 @@ class Tarifas(Datatables):
     ]
 
 
+class TiposDocumentos(Datatables):
+    model = DocumentType
+    list_display = ('name',)
+    search_fields = ('name',)
+    fields = ('name',)
+
+
 # endregion
 
 
@@ -1711,10 +1723,9 @@ class Oportunidades(Datatables):
         if 'send_email' in request.POST:
             files = []
             cotizacion = render_to_pdf([f'trustseguros/lte/pdf/oportunity-{self.linea.id}.html',
-                                           f'trustseguros/lte/pdf/oportunity.html',
-                                           ], {
-                'oportunity': Oportunity.objects.get(id=request.POST.get('oportunity_id'))
-            })
+                                        f'trustseguros/lte/pdf/oportunity.html', ], {
+                                           'oportunity': Oportunity.objects.get(id=request.POST.get('oportunity_id'))
+                                       })
 
             files.append(("attachment", ("Oferta.pdf", cotizacion)))
 
