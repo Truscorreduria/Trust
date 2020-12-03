@@ -2224,7 +2224,9 @@ class Campain(Base):
 
     def to_json(self):
         o = super().to_json()
-        o['linea'] = {'id': self.linea.id, 'name': self.linea.name}
+        if self.id:
+            if self.linea:
+                o['linea'] = {'id': self.linea.id, 'name': self.linea.name}
         return o
 
 
