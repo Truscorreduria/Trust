@@ -1,4 +1,3 @@
-{% load datatables %}
 <style type="text/css">
     .fileContainer {
         margin: 0 5px;
@@ -46,25 +45,7 @@
 
     <tbody id="{{ widget.name }}-list">
     {% for file in widget.value %}
-        <tr>
-            <td style="display: flex; align-items: center">
-                <a href="{{ file.instance.archivo.url }}" target="_blank" style="margin-right: 10px"><i class="fa fa-eye"></i></a>
-                {{ file.tipo_doc|as_inline_field }}  </td>
-            <td>{{ file.instance.created_user }}</td>
-            <td>{{ file.instance.updated }}</td>
-            <td>
-                <input type="text" class="form-control dateinput" name="fecha_caducidad"
-                        {% if file.instance.fecha_caducidad %}
-                       value="{{ file.instance.fecha_caducidad|date:'d/m/Y' }}" {% endif %}
-                       data-id="{{ file.instance.id }}">
-            </td>
-            <td style="text-align: center;">
-                <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.instance.id }}"
-                        data-app="backend" data-model="archivo">
-                    <span class="fa fa-trash"></span>
-                </button>
-            </td>
-        </tr>
+        {% include 'trustseguros/lte/widgets/drive-cliente-row.html' %}
     {% endfor %}
     </tbody>
 </table>
