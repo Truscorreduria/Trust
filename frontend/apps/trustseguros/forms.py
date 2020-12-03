@@ -140,6 +140,18 @@ class RepresentanteForm(forms.ModelForm):
             self.fields['cedula'].widget.attrs['readonly'] = 'readonly'
 
 
+class ArchivoClienteForm(forms.ModelForm):
+    class Meta:
+        model = Archivo
+        fields = ('tipo_doc',)
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        super().__init__(*args, **kwargs)
+        if instance:
+            self.fields['tipo_doc'].widget.attrs['data-id'] = instance.id
+
+
 class ClienteJuridicioForm(forms.ModelForm):
     razon_social = forms.CharField(required=True)
     ruc = forms.CharField(required=True, widget=forms.TextInput(
@@ -202,7 +214,11 @@ class ClienteJuridicioForm(forms.ModelForm):
             }
         ))
 
-    documentos = forms.Field(widget=DriveClienteWidget, required=False, label="")
+    documentos = forms.Field(widget=DriveClienteWidget(
+        attrs={
+            'form': ArchivoClienteForm
+        }
+    ), required=False, label="")
 
     class Meta:
         model = ClienteJuridico
@@ -229,18 +245,6 @@ class ClienteJuridicioForm(forms.ModelForm):
             if ClienteJuridico.objects.filter(ruc=data).count() > 0:
                 raise forms.ValidationError("Ya existe otro cliente con esta identificación!")
         return data
-
-
-class ArchivoClienteForm(forms.ModelForm):
-    class Meta:
-        model = Archivo
-        fields = ('tipo_doc',)
-
-    def __init__(self, *args, **kwargs):
-        instance = kwargs.get('instance')
-        super().__init__(*args, **kwargs)
-        if instance:
-            self.fields['tipo_doc'].widget.attrs['data-id'] = instance.id
 
 
 class ClienteNaturalForm(forms.ModelForm):
