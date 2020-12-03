@@ -672,6 +672,7 @@ class Ramo(Base):
 class SubRamo(Base):
     ramo = models.ForeignKey(Ramo, on_delete=models.CASCADE)
     name = models.CharField(max_length=65, verbose_name="nombre")
+    show_quotation = models.BooleanField(default=False, verbose_name="mostrar módulo de cotizacion de automóviles")
 
     def __str__(self):
         return self.name

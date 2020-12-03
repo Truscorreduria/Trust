@@ -948,6 +948,7 @@ class SubRamos(Datatables):
             'name': 'Información general',
             'fields': (
                 ('name', 'ramo'),
+                ('show_quotation',),
             )
         },
         {
@@ -1597,7 +1598,8 @@ class Oportunidades(Datatables):
 
     def get(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
-        return super().get(request, import_form=ImportDataForm, linea=self.linea)
+        return super().get(request, import_form=ImportDataForm, linea=self.linea,
+                           ramos_auto=SubRamo.objects.filter(show_quotation=True))
 
     def put(self, request, linea):
         self.linea = Linea.objects.get(id=linea)
@@ -2562,21 +2564,4 @@ class ReporteComision(ReportLab):
             'Comisión recibida': get_attr(instance, 'comision_deducida'),
         }
 
-
 # endregion
-
-
-l = {
-    'campain': ['1'], 'days': ['0'], 'ramo': ['5'], 'sub_ramo': ['10'], 'vendedor': ['5'], 'tipo_cliente': ['1'],
-    'tipo_identificacion': ['1'], 'cedula': ['2012806720003H'], 'genero': [''], 'primer_nombre': ['MANUEL'],
-    'segundo_nombre': ['SALVADOR'], 'apellido_paterno': ['FLORES'], 'apellido_materno': ['LEZAMA'],
-    'celular': ['25527742'], 'email_personal': ['manuelfloreses@gmailcom'], 'ruc': [''], 'actividad_economica': [''],
-    'razon_social': [''], 'nombre_comercial': [''], 'fecha_constitucion': [''], 'pagina_web': [''],
-    'telefono': ['25527742'], 'observaciones': [''], 'departamento': [''], 'municipio': [''], 'domicilio': [
-        '2 REPARTO BARTOLOME CHICO TRIPA 5C NORTE 2C OESTE                                                  '],
-    'no_poliza': [''], 'aseguradora': [''], 'fecha_vence': [''], 'extra_data': [''], 'COLOR': [''], 'MOTOR': [''],
-    'ANIO': [''], 'CERTIFICADO': [''], 'CHASIS': [''], 'MARCA': [''], 'MODELO': [''], 'PLACA': [''],
-    'valor_nuevo': ['0.0'], 'rc_exceso': ['3'], 'valor_exceso': ['0.0'], 'cotizacion': ['1'],
-    'cotizacion_suma_asegurada': ['1'], 'cotizacion_deducible': ['1'], 'cotizacion_coaseguro_dano': ['1'],
-    'cotizacion_coaseguro_robo': ['1'], 'cotizacion_prima': ['1'], 'save': ['save']
-}
