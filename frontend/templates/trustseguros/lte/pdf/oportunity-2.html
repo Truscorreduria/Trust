@@ -269,4 +269,44 @@
         </tr>
     </table>
 
+    <p>Sin más a que referirnos, le saludamos y agradecemos siempre por considerar a Trust Correduría de
+        Seguros como su asesor de los recursos económicos a ser reembolsados por accidentes que se
+        efectúen en su unidad automotriz y/o rembolsos por gastos médicos y daños a terceros.
+    </p>
+
+    <p>Agradeciendo su atención, quedamos atentos a sus comentarios.</p>
+
+
+    <br>
+    <p>Atentamente</p>
+    <p style="margin: 0">
+        <b>
+            <span style="color: rgb(47, 85, 151);">{{ oportunity.vendedor.get_full_name }}&nbsp;</span>
+        </b>
+        <br>
+        <b>
+            <span style="color: rgb(47, 85, 151);">Trust Correduría de Seguros SA</span>
+        </b>
+        <br>
+        <b>
+            <span style="color: rgb(56, 87, 35);">Teléfono: +505 2251-0108</span>
+        </b>
+        <br>
+        <b>
+            <span style="color: rgb(56, 87, 35);">Celular: {{ oportunity.vendedor.profile.celular }}</span>
+        </b>
+        <br>
+        <b>
+                <span style="color: rgb(56, 87, 35);">
+                    <a
+                            href="mailto:{{ oportunity.vendedor.email }}"
+                            target="_blank">{{ oportunity.vendedor.email }}</a>
+                </span>
+        </b>
+        <br>
+        <b>
+                <span style="color: rgb(56, 87, 35);"><a href="http://www.trustcorreduria.com/"
+                                                         target="_blank">www.trustcorreduria.com</a></span>
+        </b>
+    </p>
 {% endblock %}
