@@ -1710,7 +1710,9 @@ class Oportunidades(Datatables):
 
         if 'send_email' in request.POST:
             files = []
-            cotizacion = render_to_pdf('trustseguros/lte/pdf/oportunity.html', {
+            cotizacion = render_to_pdf([f'trustseguros/lte/pdf/oportunity-{self.linea.id}.html',
+                                           f'trustseguros/lte/pdf/oportunity.html',
+                                           ], {
                 'oportunity': Oportunity.objects.get(id=request.POST.get('oportunity_id'))
             })
 
