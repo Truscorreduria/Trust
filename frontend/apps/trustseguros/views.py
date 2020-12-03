@@ -865,7 +865,8 @@ class Lineas(Datatables):
 class Campains(Datatables):
     model = Campain
     form = CampainForm
-    list_display = ('name',)
+    list_display = ('name', ('Línea', 'linea.name'), 'active')
+    list_filter = ('linea', 'active')
 
 
 class Aseguradoras(Datatables):

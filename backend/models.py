@@ -2222,6 +2222,11 @@ class Campain(Base):
     class Meta:
         verbose_name = "campaña"
 
+    def to_json(self):
+        o = super().to_json()
+        o['linea'] = {'id': self.linea.id, 'name': self.linea.name}
+        return o
+
 
 class Prospect(BaseCliente, Persona, Empresa, Direccion):
 
