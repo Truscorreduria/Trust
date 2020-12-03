@@ -23,19 +23,20 @@
 {% block page_header %}
     <table>
         <tr>
+
+            <td class="pull-right">
+                <figure>
+                    <img src="{% static 'trustseguros/img/trust-logo-300px.jpeg' %}" height="100">
+                </figure>
+            </td>
+            <td>
+
+            </td>
             <td>
                 <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
                 <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
                 <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
                 <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
-            </td>
-            <td>
-
-            </td>
-            <td class="pull-right">
-                <figure>
-                    <img src="{% static 'trustseguros/img/logo.trust.oportunidad.jpeg' %}" height="100">
-                </figure>
             </td>
         </tr>
     </table>
@@ -43,15 +44,16 @@
 
 
 {% block content %}
+    <p style="float: right; text-align: right; font-weight: 900">Managua, Nicaragua</p>
+    <p style="float: right; text-align: right; font-weight: 900">{{ today|date:'d/m/Y' }}</p>
+
+    <p><b>Referencia:</b> Oferta de seguro para vehículo</p>
 
     <p style="font-size: 10pt"><b>Sr(a). {% if oportunity.prospect %}{{ oportunity.prospect.full_name }}{% endif %}</b>
     </p>
 
-    <p style="text-align: justify">Es muy grato para nosotros presentar estas alternativas de programas de seguros
-        y atenderle en todo lo concerniente a las mismas.</p>
-
-    <p style="text-align: justify">Para esta cotización hemos buscado opciones en compañias de seguros con
-        prestigio Nacional, en base a la siguiente información:</p>
+    <p style="text-align: justify">Es muy grato para nosotros poder remitirle el programa de seguro de renovación y a su
+        vez agradecerle la confianza para atenderle en todo lo concerniente a la misma.</p>
 
     <table>
         <thead>
@@ -79,12 +81,17 @@
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Año</b></td>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.ANIO }}</td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Placa</b></td>
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oportunity.data_load.PLACA }}</td>
         </tr>
 
         </tbody>
     </table>
 
-    <table style="margin-top: 10mm">
+    <p style="margin-bottom:0">El detalle de coberturas, límites de responsabilidad, deducibles, coaseguros y primas son
+        los siguientes:</p>
+
+    <table style="margin-top: 2mm">
         <thead>
         <tr>
             <th colspan="{{ oportunity.ofertas_columns }}" style="background-color: darkgreen;
@@ -150,22 +157,15 @@
 
     <p style="text-align: justify">Agradeciendo su atención, quedamos atentos a sus comentarios.</p>
 
-    {% comment %}<p style="margin: 0">Atte.</p>
-    <p style="margin: 0">{{ oportunity.vendedor.get_full_name }}</p>
-    <p style="margin: 0">Trust Correduría de Seguros</p>
-    <p style="margin: 0">Celular +505 8932 8850</p>
-    <p style="margin: 0; color: blue; text-decoration: underline">contacto@trustcorreduria.com</p>
-    <p style="margin: 0; color: blue; text-decoration: underline; page-break-after: always">www.trustcorreduria.com</p>{% endcomment %}
 
     <div style="page-break-after: always"></div>
+
     <p><b>Anexo</b></p>
     <p>Cuadro comparativo por compañia</p>
 
     {% if oportunity.rc_exceso %}
         <p><b>Cotización con Exceso por U$ {{ oportunity.valor_exceso|intcomma }}</b></p>
     {% endif %}
-
-
     <table style="margin-bottom: 3mm">
         <thead>
         <tr>
@@ -196,16 +196,20 @@
         {% endfor %}
         </tbody>
     </table>
+    <div style="page-break-after: always"></div>
 
-    <p style="margin: 0">Esta oferta es válida solo para vehículos de uso particular.</p>
-    <p style="margin: 0">Esta oferta es válida por 15 dias y está sujeta a cambios sin previo aviso.</p>
-    <p style="margin: 0">Esta oferta no debe entenderse como cobertura de ninguna índole, ni aceptación de riesgo por
-        parte de la(s)
-        compañia(s) de seguro, hasta no recibir la aceptación por escrito de usted y confirmado cobertura con la póliza
-        emitida.</p>
-    <p style="margin: 0">*Responsabilidad Civil Obligatoria, Ley 431 Ley para el Régimen de Circulación Vehicular e
-        Infracciones de
-        Tránsito.</p>
-    <p style="margin: 0">La suma asegurada está sujeta a revisión en dependencia de la fecha de emisión de la
-        circulación.</p>
+
+    <p><b>Compañía de Seguros Para Elegir:</b></p>
+
+    <table>
+    <tr>
+        {% for oferta in oportunity.ofertas.all %}
+            <td style="text-align: center; padding: 0 50px; vertical-align: middle;">
+                <span>{{ oferta.aseguradora.name }}</span>
+                <img src="{% static 'trustseguros/lte/images/cuadro.png' %}"></img>
+            </td>
+        {% endfor %}
+    </tr>
+    </table>
+
 {% endblock %}

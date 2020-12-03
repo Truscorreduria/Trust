@@ -1692,7 +1692,8 @@ class Oportunidades(Datatables):
                                            f'trustseguros/lte/pdf/oportunity.html',
                                            ],
                                           {
-                                              'oportunity': Oportunity.objects.get(id=request.POST.get('id'))
+                                              'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
+                                              'today': timezone.now(),
                                           })
 
         if 'prepare_email' in request.POST:
