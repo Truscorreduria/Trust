@@ -68,7 +68,7 @@ def documentos(request):
                 html = render_to_string('trustseguros/lte/widgets/drive-cliente-row.html', {
                     'file': ArchivoClienteForm(instance=file)
                 })
-            return JsonResponse({'html': html}, encoder=Codec)
+            return JsonResponse({'html': html, 'archivo': file.to_json()}, encoder=Codec)
 
         if 'update' in request.POST:
             a = Archivo.objects.get(id=int(request.POST.get('id')))
