@@ -892,6 +892,8 @@ class Aseguradoras(Datatables):
                 ('emision', 'exceso', 'tarifa'),
                 ('coaseguro_robo', 'coaseguro_dano', 'deducible'),
                 ('emision_soa', 'emision_min', 'monto_soa'),
+                ('calc_alt',),
+                ('sorcv', 'csorcv', 'cdp'),
                 ('address',),
             )
         },

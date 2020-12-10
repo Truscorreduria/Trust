@@ -142,6 +142,11 @@ class Aseguradora(BaseEntity, Base):
     monto_soa = models.FloatField(default=55.0, verbose_name="Monto SOA")
     emision_soa = models.BooleanField(default=False, verbose_name="Emisión sobre SOA",
                                       help_text="Esta aseguradora cobra emisión sobre el valor SOA")
+    calc_alt = models.BooleanField(default=False, verbose_name="Método de calculo alternativo",
+                                   help_text="Al activar esta opción se invalida las configuraciones anteriores")
+    sorcv = models.FloatField(default=0.0, verbose_name="SOA sin emisión")
+    csorcv = models.PositiveIntegerField(default=0, verbose_name="coberturas SOA")
+    cdp = models.PositiveIntegerField(default=0, verbose_name="coberturas daños propios")
 
     def __str__(self):
         return self.name
