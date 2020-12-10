@@ -2233,6 +2233,7 @@ class LineaUser(Base):
 class Campain(Base):
     name = models.CharField(max_length=125, verbose_name=_("nombre de la campaña"))
     linea = models.ForeignKey(Linea, null=True, on_delete=models.SET_NULL)
+    anno = models.PositiveIntegerField(default=2020, verbose_name="año base")
     active = models.BooleanField(default=False, verbose_name="activa")
 
     def __str__(self):
