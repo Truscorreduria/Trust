@@ -143,7 +143,8 @@ class Aseguradora(BaseEntity, Base):
     emision_soa = models.BooleanField(default=False, verbose_name="Emisión sobre SOA",
                                       help_text="Esta aseguradora cobra emisión sobre el valor SOA")
     calc_alt = models.BooleanField(default=False, verbose_name="Método de calculo alternativo",
-                                   help_text="Al activar esta opción se invalida las configuraciones anteriores")
+                                   help_text="Al activar esta opción se usa un método de calculo "
+                                             "ligeramente diferente, detallado en la documentación")
     sorcv = models.FloatField(default=0.0, verbose_name="SOA sin emisión")
     csorcv = models.PositiveIntegerField(default=0, verbose_name="coberturas SOA")
     cdp = models.PositiveIntegerField(default=0, verbose_name="coberturas daños propios")
@@ -2471,20 +2472,30 @@ class OportunityQuotation(Base):
 
     @property
     def emision_total(self):
-        if self.aseguradora.emision_soa:
-            emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
+        if self.aseguradora.calc_alt:
+            emision = round((self.emision * (self.prima + self.aseguradora.sorcv)) / 100, 2)
         else:
-            emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+            if self.aseguradora.emision_soa:
+                emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
+            else:
+                emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
         if emision < self.aseguradora.emision_min:
             emision = self.aseguradora.emision_min
         return emision
 
     @property
     def iva(self):
+        if self.aseguradora.calc_alt:
+            soade = (self.emision_total / (self.aseguradora.csorcv + self.aseguradora.cdp)) * self.aseguradora.csorcv
+            soade = soade + self.aseguradora.sorcv
+            return round(
+                ((self.prima + self.aseguradora.sorcv + self.emision_total) - soade + self.valor_exceso) * 0.15, 2)
         return round((self.prima + self.emision_total + self.valor_exceso) * 0.15, 2)
 
     @property
     def prima_total(self):
+        if self.aseguradora.calc_alt:
+            return round(self.prima + self.aseguradora.sorcv + self.emision_total + self.valor_exceso + self.iva, 2)
         return round(self.prima + self.emision_total + self.valor_exceso + self.aseguradora.monto_soa + self.iva, 2)
 
 
