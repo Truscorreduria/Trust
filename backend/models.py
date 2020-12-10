@@ -155,9 +155,10 @@ class Aseguradora(BaseEntity, Base):
     def depreciacion(self):
         return Anno.objects.filter(aseguradora=self)
 
-    def depreciar(self, valor_nuevo, anno):
-        today = datetime.now()
-        antiguedad = today.year - int(anno)
+    def depreciar(self, valor_nuevo, anno, year=None):
+        if not year:
+            year = datetime.now().year
+        antiguedad = year - int(anno)
         if antiguedad < 0:
             antiguedad = 0
         tabla = self.depreciacion()
@@ -2456,7 +2457,7 @@ class OportunityQuotation(Base):
     @property
     def get_suma_asegurada(self):
         try:
-            return self.aseguradora.depreciar(self.oportunity.valor_nuevo, self.anno)
+            return self.aseguradora.depreciar(self.oportunity.valor_nuevo, self.anno, self.oportunity.campain.anno)
         except AttributeError:
             return 0.0
 
