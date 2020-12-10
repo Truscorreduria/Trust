@@ -2473,7 +2473,7 @@ class OportunityQuotation(Base):
     @property
     def emision_total(self):
         if self.aseguradora.calc_alt:
-            emision = round((self.emision * (self.prima + self.aseguradora.sorcv)) / 100, 2)
+            emision = round((self.emision * (self.prima + self.aseguradora.sorcv + self.valor_exceso)) / 100, 2)
         else:
             if self.aseguradora.emision_soa:
                 emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
