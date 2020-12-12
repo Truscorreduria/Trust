@@ -2474,6 +2474,7 @@ class OportunityQuotation(Base):
 
     @property
     def emision_total(self):
+        minq = False
         if self.aseguradora.calc_alt:
             emision = round((self.emision * (self.prima + self.aseguradora.sorcv + self.valor_exceso)) / 100, 2)
         else:
@@ -2483,22 +2484,35 @@ class OportunityQuotation(Base):
                 emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
         if emision < self.aseguradora.emision_min:
             emision = self.aseguradora.emision_min
-        return emision
+            minq = True
+        else:
+            emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+        return emision, minq
 
     @property
     def iva(self):
+        emision, minq = self.emision_total
         if self.aseguradora.calc_alt:
-            soade = (self.emision_total / (self.aseguradora.csorcv + self.aseguradora.cdp)) * self.aseguradora.csorcv
-            soade = soade + self.aseguradora.sorcv
-            return round(
-                ((self.prima + self.aseguradora.sorcv + self.emision_total) - soade + self.valor_exceso) * 0.15, 2)
-        return round((self.prima + self.emision_total + self.valor_exceso) * 0.15, 2)
+            if not minq:
+                soade = (emision / (self.aseguradora.csorcv + self.aseguradora.cdp)) * self.aseguradora.csorcv
+                soade = soade + self.aseguradora.sorcv
+                return round(
+                    ((self.prima + self.aseguradora.sorcv + emision) - soade + self.valor_exceso) * 0.15, 2)
+            else:
+                emision = round(self.prima * 0.02, 2)
+                return round((self.prima + emision) * 0.15, 2)
+        return round((self.prima + emision + self.valor_exceso) * 0.15, 2)
 
     @property
     def prima_total(self):
+        emision, minq = self.emision_total
         if self.aseguradora.calc_alt:
-            return round(self.prima + self.aseguradora.sorcv + self.emision_total + self.valor_exceso + self.iva, 2)
-        return round(self.prima + self.emision_total + self.valor_exceso + self.aseguradora.monto_soa + self.iva, 2)
+            if not minq:
+                return round(self.prima + self.aseguradora.sorcv + emision + self.valor_exceso + self.iva, 2)
+            else:
+                emision = round(self.prima * 0.02, 2)
+                return round(self.prima + emision + self.iva + self.aseguradora.monto_soa, 2)
+        return round(self.prima + emision + self.valor_exceso + self.aseguradora.monto_soa + self.iva, 2)
 
 
 def user_lines(user):
