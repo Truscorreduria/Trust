@@ -2463,7 +2463,7 @@ class OportunityQuotation(Base):
 
     @property
     def get_prima(self):
-        print(f'tarifa a usar: {self.tarifa}')
+        print(f'tarifa a usar: {self.tarifa}, aseguradora: {self.aseguradora.name}')
         return round((self.oportunity.valor_nuevo * self.tarifa) / 1000, 2)
 
     @property
@@ -2493,7 +2493,7 @@ class OportunityQuotation(Base):
     @property
     def iva(self):
         emision, minq = self.emision_total
-        print('calculando iva')
+        print(f'calculando iva, aseguradora: {self.aseguradora.name}')
         print(f'emision: {emision}, minq: {minq}')
         print(f'prima: {self.get_prima}')
         if self.aseguradora.calc_alt:
