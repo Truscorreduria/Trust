@@ -2476,18 +2476,18 @@ class OportunityQuotation(Base):
     def emision_total(self):
         minq = False
         if self.aseguradora.calc_alt:
-            emision = round((self.emision * (self.prima + self.aseguradora.sorcv + self.valor_exceso)) / 100, 2)
+            emision = round((self.emision * (self.get_prima + self.aseguradora.sorcv + self.valor_exceso)) / 100, 2)
         else:
             if self.aseguradora.emision_soa:
-                emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
+                emision = round((self.emision * (self.get_prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
             else:
-                emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+                emision = round((self.emision * (self.get_prima + self.valor_exceso)) / 100, 2)
         print(f'emision {emision}')
         if emision < self.aseguradora.emision_min:
             emision = self.aseguradora.emision_min
             minq = True
         else:
-            emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+            emision = round((self.emision * (self.get_prima + self.valor_exceso)) / 100, 2)
         return emision, minq
 
     @property
