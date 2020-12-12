@@ -2495,7 +2495,7 @@ class OportunityQuotation(Base):
         emision, minq = self.emision_total
         print('calculando iva')
         print(f'emision: {emision}, minq: {minq}')
-        print(f'prima: {self.prima}')
+        print(f'prima: {self.get_prima}')
         if self.aseguradora.calc_alt:
             if not minq:
                 soade = (emision / (self.aseguradora.csorcv + self.aseguradora.cdp)) * self.aseguradora.csorcv
