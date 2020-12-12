@@ -2482,6 +2482,7 @@ class OportunityQuotation(Base):
                 emision = round((self.emision * (self.prima + self.aseguradora.monto_soa + self.valor_exceso)) / 100, 2)
             else:
                 emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
+        print(f'emision {emision}')
         if emision < self.aseguradora.emision_min:
             emision = self.aseguradora.emision_min
             minq = True
@@ -2492,6 +2493,9 @@ class OportunityQuotation(Base):
     @property
     def iva(self):
         emision, minq = self.emision_total
+        print('calculando iva')
+        print(f'emision: {emision}, minq: {minq}')
+        print(f'prima: {self.prima}')
         if self.aseguradora.calc_alt:
             if not minq:
                 soade = (emision / (self.aseguradora.csorcv + self.aseguradora.cdp)) * self.aseguradora.csorcv
@@ -2500,7 +2504,8 @@ class OportunityQuotation(Base):
                     ((self.prima + self.aseguradora.sorcv + emision) - soade + self.valor_exceso) * 0.15, 2)
             else:
                 emision = round(self.prima * 0.02, 2)
-                return round((self.prima + emision) * 0.15, 2)
+                print(f'nueva emision recalculada: {emision}')
+                return round((self.prima + emision + self.valor_exceso) * 0.15, 2)
         return round((self.prima + emision + self.valor_exceso) * 0.15, 2)
 
     @property
