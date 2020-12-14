@@ -2487,9 +2487,9 @@ class OportunityQuotation(Base):
                 emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
         if emision < self.aseguradora.emision_min:
             emision = self.aseguradora.emision_min
+            minq = True
         else:
             emision = round((self.emision * (self.prima + self.valor_exceso)) / 100, 2)
-            minq = True
         return emision, minq
 
     @property
