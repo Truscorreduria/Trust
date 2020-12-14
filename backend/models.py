@@ -2509,12 +2509,6 @@ class OportunityQuotation(Base):
     @property
     def prima_total(self):
         emision, minq = self.emision_total
-        print(f'aseguradora: {self.aseguradora.name}')
-        print(f'prima: {self.prima}')
-        print(f'soa: {self.aseguradora.monto_soa}')
-        print(f'emision: {emision}')
-        print(f'minq: {minq}')
-        print(f'iva: {self.iva}')
         if self.aseguradora.calc_alt:
             if not minq:
                 return round(self.prima + self.aseguradora.sorcv + emision + self.valor_exceso + self.iva, 2)
