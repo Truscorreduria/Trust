@@ -316,3 +316,8 @@ class TarifaAdmin(ImportExportModelAdmin):
     search_fields = ('marca', 'modelo', 'exceso', 'tarifa', 'coaseguro_robo', 'coaseguro_dano',
                      'deducible', 'aseguradora__name')
     list_filter = ('aseguradora',)
+
+
+@admin.register(Prospect)
+class ProspectAdmin(admin.ModelAdmin):
+    list_display = ('cedula', 'nombre')
