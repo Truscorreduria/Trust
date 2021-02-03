@@ -301,6 +301,10 @@ class OportunityAdmin(admin.ModelAdmin):
         'linea',
         'prospect',
         'status')
+    list_filter = (
+        'campain',
+        'linea',
+        'status')
     inlines = [OportunityRows, ]
 
 
