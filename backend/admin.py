@@ -320,4 +320,5 @@ class TarifaAdmin(ImportExportModelAdmin):
 
 @admin.register(Prospect)
 class ProspectAdmin(admin.ModelAdmin):
+    search_fields = ('cedula', )
     list_display = ('cedula', 'nombre')
