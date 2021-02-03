@@ -19,6 +19,7 @@ from adminlte.utils import Codec
 from django.views.generic import View
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.core.exceptions import MultipleObjectsReturned
 
 
 def get_attr(obj, attr_name):
@@ -1669,39 +1670,42 @@ class Oportunidades(Datatables):
                     p = None
                     cedula = request.POST.getlist(prospect['cedula'])[n]
                     if len(cedula) == 14:
-                        datos_vehiculo = {}
-                        p, _ = Prospect.objects.get_or_create(cedula=cedula)
-                        o = Oportunity()
-                        o.prospect = p
-                        for column in columns:
-                            choice = request.POST.getlist("choice_" + column)[n]
-                            value = request.POST.getlist(column)[n]
-                            if choice and choice != '':
-                                if choice in prospect.keys():
-                                    p.__setattr__(choice, value)
+                        try:
+                            datos_vehiculo = {}
+                            p, _ = Prospect.objects.get_or_create(cedula=cedula)
+                            o = Oportunity()
+                            o.prospect = p
+                            for column in columns:
+                                choice = request.POST.getlist("choice_" + column)[n]
+                                value = request.POST.getlist(column)[n]
+                                if choice and choice != '':
+                                    if choice in prospect.keys():
+                                        p.__setattr__(choice, value)
 
-                                if choice in oportunity.keys():
-                                    if choice == 'fecha_vence':
-                                        o.fecha_vence = timezone.datetime.strptime(value, '%d/%m/%Y')
-                                    else:
-                                        o.__setattr__(choice, value)
+                                    if choice in oportunity.keys():
+                                        if choice == 'fecha_vence':
+                                            o.fecha_vence = timezone.datetime.strptime(value, '%d/%m/%Y')
+                                        else:
+                                            o.__setattr__(choice, value)
 
-                                if choice not in oportunity.keys() and choice not in prospect.keys():
-                                    extra_data[choice] = value
+                                    if choice not in oportunity.keys() and choice not in prospect.keys():
+                                        extra_data[choice] = value
 
-                                if choice in automovil.keys():
-                                    datos_vehiculo[automovil[choice]] = value
+                                    if choice in automovil.keys():
+                                        datos_vehiculo[automovil[choice]] = value
 
-                        p.save()
-                        o.extra_data = json.dumps(extra_data)
-                        o.linea = self.linea
-                        o.campain = form.cleaned_data['campain']
-                        o.ramo = form.cleaned_data['ramo']
-                        o.sub_ramo = form.cleaned_data['sub_ramo']
-                        o.vendedor = form.cleaned_data['vendedor']
-                        if oportunity['valor_nuevo'] == '':
-                            o.valor_nuevo = Referencia.valor_nuevo(datos_vehiculo).get('valor')
-                        o.save()
+                            p.save()
+                            o.extra_data = json.dumps(extra_data)
+                            o.linea = self.linea
+                            o.campain = form.cleaned_data['campain']
+                            o.ramo = form.cleaned_data['ramo']
+                            o.sub_ramo = form.cleaned_data['sub_ramo']
+                            o.vendedor = form.cleaned_data['vendedor']
+                            if oportunity['valor_nuevo'] == '':
+                                o.valor_nuevo = Referencia.valor_nuevo(datos_vehiculo).get('valor')
+                            o.save()
+                        except MultipleObjectsReturned:
+                            print(f'error con la cedula {cedula}')
             return JsonResponse({})
 
         if 'print' in request.POST:
