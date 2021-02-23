@@ -88,7 +88,7 @@ $(document).ready(function () {
         return (`<tr>
                     <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_materno}</td>
                     <td>Reembolso de Gastos por Accidente.</td>
-                    <td>U$ {{ user.config.suma_accidente_depentediente|intcomma }}</td>
+                    <td>U$ {{ user.config.suma_accidente_dependiente|intcomma }}</td>
                     <td>U$ ${costo}</td>
                 </tr>`)
     }
