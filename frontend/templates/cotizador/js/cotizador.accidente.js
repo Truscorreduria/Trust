@@ -86,7 +86,7 @@ $(document).ready(function () {
 
     function rowCotizacionAccidente(obj, costo) {
         return (`<tr>
-                    <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_paterno}</td>
+                    <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_materno}</td>
                     <td>Reembolso de Gastos por Accidente.</td>
                     <td>U$ {{ user.config.suma_accidente_depentediente|intcomma }}</td>
                     <td>U$ ${costo}</td>
@@ -95,7 +95,7 @@ $(document).ready(function () {
 
     function rowDocumentosAccidente(obj) {
         return (`<tr>
-                    <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_paterno}</td>
+                    <td>${obj.primer_nombre} ${obj.segundo_nombre} ${obj.apellido_paterno} ${obj.apellido_materno}</td>
                     <td>
                         <div class="form-group">
                             <select class="form-control form-control-sm tipo-identidad" required>
@@ -188,7 +188,6 @@ $(document).ready(function () {
             dependientes[i]['tipo_identificacion'] = $(tr).find('.tipo-identidad').val();
             dependientes[i]['documento_adjunto'] = $(tr).find('.documento-adjunto')[0].files[0];
         });
-        console.log(dependientes);
         $.each(dependientes, function (i, o) {
             data.append('parentesco', o.parentesco);
             data.append('primer_nombre', o.primer_nombre);
