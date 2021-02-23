@@ -2242,6 +2242,7 @@ class Campain(Base):
 
     class Meta:
         verbose_name = "campaña"
+        ordering = ['name']
 
     def to_json(self):
         o = super().to_json()
