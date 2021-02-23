@@ -183,7 +183,7 @@ $(document).ready(function () {
 
     function getFormData() {
         const dependientes = JSON.parse(localStorage.getItem("dependientes_accidente"));
-        data = new FormData();
+        const data = new FormData();
         $.each($('#table-documentos-accidente tbody tr'), function (i, tr) {
             dependientes[i]['tipo_identificacion'] = $(tr).find('.tipo-identidad').val();
             dependientes[i]['documento_adjunto'] = $(tr).find('.documento-adjunto')[0].files[0];
