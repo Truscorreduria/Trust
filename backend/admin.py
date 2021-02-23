@@ -80,7 +80,7 @@ class ReferenciaAdmin(ImportExportModelAdmin):
 class CuotasTabular(admin.TabularInline):
     model = Cuota
     extra = 0
-    exclude = ('tramite', )
+    exclude = ('tramite',)
 
 
 @admin.register(Poliza)
@@ -94,7 +94,7 @@ class PolizaAdmin(ImportExportModelAdmin):
                      'cliente__apellido_paterno', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
-    inlines = [CuotasTabular, ]
+    inlines = [CuotasTabular]
     fieldsets = (
         ('Datos Personales', {
             'classes': ('grp-collapse', 'grp-open'),
@@ -324,5 +324,5 @@ class TarifaAdmin(ImportExportModelAdmin):
 
 @admin.register(Prospect)
 class ProspectAdmin(admin.ModelAdmin):
-    search_fields = ('cedula', )
+    search_fields = ('cedula',)
     list_display = ('cedula', 'nombre')

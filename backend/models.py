@@ -905,6 +905,8 @@ class BasePoliza(Base):
 
 
 class Poliza(BasePoliza):
+    user_create = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+                                    verbose_name="usuario que registra")
     procedencia = models.PositiveSmallIntegerField(choices=ProcedenciaPoliza.choices(), null=True)
 
     tipo_poliza = models.PositiveSmallIntegerField(choices=TipoPoliza.choices(), default=TipoPoliza.INDIVIDUAL,
