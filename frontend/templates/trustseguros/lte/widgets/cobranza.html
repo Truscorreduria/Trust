@@ -55,10 +55,8 @@
                        value="{{ fila.dias_mora }}">
             </td>
             <td>
-                {% ifnotequal fila.estado 3 %}
-                    <button type="button" class="btn btn-info btn-edit-cuota"
-                            data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
-                {% endifnotequal %}
+                <button type="button" class="btn btn-info btn-edit-cuota"
+                        data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
             </td>
         </tr>
     {% endfor %}
