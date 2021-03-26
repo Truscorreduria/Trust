@@ -10,8 +10,10 @@
         <th>Fecha pago comisión</th>
         <th>Comisión cobrada</th>
         <th>
-            <button type="button" class="btn btn-info btn-add-cuota"
-            ><i class="fa fa-plus"></i></button>
+            {% ifnotequal widget.attrs.cuota.estado 3 %}
+                <button type="button" class="btn btn-info btn-add-cuota"
+                ><i class="fa fa-plus"></i></button>
+            {% endifnotequal %}
         </th>
     </tr>
     </thead>

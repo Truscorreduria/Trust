@@ -1043,6 +1043,15 @@ class PagoForm(forms.ModelForm):
         model = PagoCuota
         fields = ('monto', 'referencia_pago', 'medio_pago', 'fecha_pago', 'comision', 'fecha_pago_comision')
 
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        super().__init__(*args, **kwargs)
+        if instance and instance.cuota.estado == EstadoPago.PAGADO:
+            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['monto'].widget.attrs['readonly'] = 'readonly'
+            self.fields['referencia_pago'].widget.attrs['readonly'] = 'readonly'
+            self.fields['medio_pago'].widget.attrs['readonly'] = 'readonly'
+
 
 class CuotaForm(forms.ModelForm):
     nombre_cliente = forms.CharField(label="Nombre del cliente", required=False,
@@ -1172,6 +1181,8 @@ class CuotaForm(forms.ModelForm):
             kwargs.update(initial=update_initial)
         super().__init__(*args, **kwargs)
         self.fields['estado'].widget.attrs['readonly'] = 'readonly'
+        if instance:
+            self.fields['pagos'].widget.attrs['cuota'] = instance
 
     def save(self, commit=True):
         super().save(commit)

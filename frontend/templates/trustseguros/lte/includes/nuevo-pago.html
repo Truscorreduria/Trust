@@ -21,9 +21,11 @@
         {{ form.comision|as_inline_field }}
     </td>
     <td>
-        <button type="button" class="btn btn-danger btn-del-pago"
-                {% if form.instance.id %}data-id="{{ form.instance.id }}"{% endif %}>
-            <i class="fa fa-trash"></i>
-        </button>
+        {% ifnotequal form.instance.cuota.estado 3 %}
+            <button type="button" class="btn btn-danger btn-del-pago"
+                    {% if form.instance.id %}data-id="{{ form.instance.id }}"{% endif %}>
+                <i class="fa fa-trash"></i>
+            </button>
+        {% endifnotequal %}
     </td>
 </tr>
