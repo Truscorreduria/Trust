@@ -481,7 +481,8 @@ class PolizaForm(forms.ModelForm):
             'f_pago', 'm_pago', 'cantidad_cuotas', 'fecha_pago', 'subtotal', 'descuento',
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'campos_adicionales', 'drive', 'bitacora',
-            'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo', 'oportunidad'
+            'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo', 'oportunidad',
+            'user_create',
         )
 
     def __init__(self, *args, **kwargs):
@@ -1010,23 +1011,29 @@ class ReciboForm(forms.ModelForm):
         self.fields['aseguradora'].widget.attrs['readonly'] = 'readonly'
         self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
         self.fields['grupo'].widget.attrs['readonly'] = 'readonly'
-        if instance and not instance.modificando_recibo:
-            self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
-            self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
-            self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
-            self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
-            self.fields['emision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['iva'].widget.attrs['readonly'] = 'readonly'
-            self.fields['otros'].widget.attrs['readonly'] = 'readonly'
-            self.fields['total'].widget.attrs['readonly'] = 'readonly'
-            self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
-            self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
-            self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
-            self.fields['tabla_pagos'].widget.attrs['readonly'] = 'readonly'
-        else:
-            self.fields['recibos'].widget.attrs['readonly'] = 'readonly'
+        if instance:
+            if not instance.modificando_recibo:
+                self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
+                self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
+                self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
+                self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+                self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+                self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+                self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+                self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+                self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+                self.fields['total'].widget.attrs['readonly'] = 'readonly'
+                self.fields['per_comision'].widget.attrs['readonly'] = 'readonly'
+                self.fields['suma_asegurada'].widget.attrs['readonly'] = 'readonly'
+                self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
+                self.fields['tabla_pagos'].widget.attrs['readonly'] = 'readonly'
+            else:
+                self.fields['recibos'].widget.attrs['readonly'] = 'readonly'
+                if instance.con_pagos():
+                    self.fields['f_pago'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
 
 
 class PagoForm(forms.ModelForm):

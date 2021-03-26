@@ -31,7 +31,7 @@
             </td>
             <td>
                 <input type="text" name="{{ widget.name }}_monto" class="form-control numberinput"
-                        {% if widget.attrs.readonly %} readonly {% endif %}
+                        {% if widget.attrs.readonly or fila.estado == 3 %} readonly {% endif %}
                        value="{{ fila.monto }}">
             </td>
             <td>
@@ -41,7 +41,7 @@
             </td>
             <td>
                 <input type="text" name="{{ widget.name }}_monto_comision" class="form-control numberinput"
-                        {% if widget.attrs.readonly %} readonly {% endif %}
+                        {% if widget.attrs.readonly or fila.estado == 3 %} readonly {% endif %}
                        value="{{ fila.monto_comision }}">
             </td>
             <td>
@@ -55,8 +55,10 @@
                        value="{{ fila.dias_mora }}">
             </td>
             <td>
-                <button type="button" class="btn btn-info btn-edit-cuota"
-                        data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
+                {% ifnotequal fila.estado 3 %}
+                    <button type="button" class="btn btn-info btn-edit-cuota"
+                            data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
+                {% endifnotequal %}
             </td>
         </tr>
     {% endfor %}

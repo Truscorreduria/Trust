@@ -1207,6 +1207,9 @@ class Poliza(BasePoliza):
             EstadoPago.VENCIDO
         ]).aggregate(Sum('monto'))['monto__sum']
 
+    def con_pagos(self):
+        return self.saldo_pendiente() != self.prima_total()
+
     def total_pagado(self):
         return self.cuotas().filter(estado=EstadoPago.PAGADO).aggregate(Sum('monto'))['monto__sum'] or 0.0
 
