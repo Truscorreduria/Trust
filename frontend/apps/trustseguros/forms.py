@@ -433,7 +433,7 @@ class PolizaForm(forms.ModelForm):
                 ('cliente', 'Cliente'),
                 ('user', 'Ingresado por'),
                 ('poliza', 'Póliza'),
-                ('', 'Ver'),
+                ('ver', 'Ver'),
             )
         }
     ))
