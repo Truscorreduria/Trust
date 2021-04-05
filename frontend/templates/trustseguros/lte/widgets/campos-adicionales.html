@@ -58,12 +58,12 @@
             {% endfor %}
 
             <td style="text-align: center">
-                <input type="hidden" name="{{ widget.name }}_id" value="{{ row.id }}"
+                <input type="hidden" name="{{ widget.name }}_id" value="{{ row.id|stringformat:"f" }}"
                        class="{{ widget.name }}-id">
                 <input type="hidden" name="{{ widget.name }}" value="{{ row.extra_data }}"
                        class="{{ widget.name }}-value">
                 {% if widget.value.editable %}
-                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id }}"
+                    <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ row.id|stringformat:"f" }}"
                             data-model="datopoliza" data-app="backend">
                         <i class="fa fa-trash"></i>
                     </button>
