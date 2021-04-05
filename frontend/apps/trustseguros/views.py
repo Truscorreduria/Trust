@@ -667,9 +667,10 @@ def profile(request):
 
 
 def tabla_cuotas(instance, request):
-    total = float(request.POST.get('total', 0))
-    prima_neta = float(request.POST.get('prima_neta', 0).replace(',', ''))
-    per_comision = float(request.POST.get('per_comision', 0).replace(',', ''))
+    print(request.POST)
+    total = float(request.POST.get('total', '0'))
+    prima_neta = float(request.POST.get('prima_neta', '0'))
+    per_comision = float(request.POST.get('per_comision', '0'))
     fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cantidad_cuotas'))
     return calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
@@ -842,7 +843,6 @@ class PersonaJuridica(Datatables):
             print(rf.errors)
         instance.representante = rf.instance
         instance.save()
-        print(rf.cleaned_data)
         for i in range(1, len(data.getlist('contacto_id'))):
             if data.getlist('contacto_id')[i] == '':
                 c = Contacto(contacto=instance)
@@ -980,7 +980,6 @@ class SubRamos(Datatables):
     ]
 
     def save_related(self, instance, data):
-        print(data)
         for i in range(1, len(data.getlist('cobertura_id'))):
             if data.getlist('cobertura_id')[i] == '':
                 c = Cobertura(sub_ramo=instance)
@@ -1162,7 +1161,6 @@ class Polizas(Datatables):
             except IntegrityError as e:
                 print(e)
 
-            print(instance.editable)
         return JsonResponse({'instance': instance.to_json(), 'form': html_form,
                              'errors': errors}, status=status, encoder=Codec)
 
