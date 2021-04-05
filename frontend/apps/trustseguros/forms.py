@@ -448,8 +448,8 @@ class PolizaForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.FloatField(required=False, label="", initial=0.0, widget=forms.TextInput)
-    saldo_pendiente = forms.FloatField(required=False, label="", initial=0.0, widget=forms.TextInput)
+    prima_total = forms.CharField(required=False, label="", initial=0.0)
+    saldo_pendiente = forms.CharField(required=False, label="", initial=0.0)
 
     otro_motivo = forms.CharField(required=False, label="Especificar motivo",
                                   widget=forms.Textarea(attrs={
