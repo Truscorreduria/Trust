@@ -1,19 +1,19 @@
 {% with widget.value as instance %}
     <input type="hidden" name="recibo_editar" id="id_recibo_editar"
-           {% if instance.recibo_modificar %}value="{{ instance.recibo_modificar.id }}"
+           {% if instance.recibo_modificar %}value="{{ instance.recibo_modificar.id|stringformat:'i' }}"
            {% else %}value=""{% endif %}>
     <select name="{{ widget.name }}" id="{{ widget.attrs.id }}" class="form-control"
             {% if widget.attrs.readonly %}readonly="readonly"{% endif %}>
         {% if instance.recibo_editar %}
             <option value="">{{ instance.no_recibo }}</option>
             {% for recibo in instance.recibos %}
-                <option value="{{ recibo.id }}"
+                <option value="{{ recibo.id|stringformat:'i' }}"
                         {% ifequal recibo.id instance.recibo_editar.id %}selected{% endifequal %}>{{ recibo.no_recibo }}</option>
             {% endfor %}
         {% else %}
             <option value="" selected>{{ instance.no_recibo }}</option>
             {% for recibo in instance.recibos %}
-                <option value="{{ recibo.id }}">{{ recibo.no_recibo }}</option>
+                <option value="{{ recibo.id|stringformat:'i' }}">{{ recibo.no_recibo }}</option>
             {% endfor %}
         {% endif %}
     </select>

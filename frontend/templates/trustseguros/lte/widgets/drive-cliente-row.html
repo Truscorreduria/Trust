@@ -13,7 +13,7 @@
                data-id="{{ file.instance.id }}">
     </td>
     <td style="text-align: center;">
-        <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.instance.id }}"
+        <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.instance.id|stringformat:'i' }}"
                 data-app="backend" data-model="archivo">
             <span class="fa fa-trash"></span>
         </button>

@@ -50,7 +50,7 @@
             <td>{{ file.created_user }}</td>
             <td>{{ file.updated }}</td>
             <td style="text-align: center;">
-                <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.id }}"
+                <button type="button" class="btn btn-danger btn-table-delete" data-id="{{ file.id|stringformat:'i' }}"
                 data-app="backend" data-model="archivo">
                     <span class="fa fa-trash"></span>
                 </button>
