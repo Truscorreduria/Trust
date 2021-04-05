@@ -413,17 +413,6 @@ class PolizaForm(forms.ModelForm):
                                          required=False, label="Cesionario")
     coberturas = forms.Field(label="", required=False, widget=CoberturasWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
-    amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
-        attrs={
-            'readonly': 'readonly'
-        }
-    ))
-    total = forms.FloatField(label="Total", required=False, initial=0.0,
-                             widget=forms.NumberInput(
-                                 attrs={
-                                     'readonly': 'readonly'
-                                 }
-                             ))
     campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
     tramites = forms.Field(label="", required=False, widget=TableBordered(
         attrs={
@@ -458,12 +447,12 @@ class PolizaForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.CharField(required=False, label="", widget=forms.NumberInput(
+    prima_total = forms.CharField(required=False, label="", widget=forms.TextInput(
         attrs={
             'readonly': 'readonly'
         }
     ), initial=0.0)
-    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.NumberInput(
+    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.TextInput(
         attrs={
             'readonly': 'readonly'
         }
@@ -497,7 +486,7 @@ class PolizaForm(forms.ModelForm):
             'user_create',
         )
         localized_fields = ('subtotal', 'descuento', 'emision', 'iva', 'otros', 'suma_asegurada',
-                            'amount_comision', 'prima_neta', 'total', 'amount_comision')
+                            'amount_comision', 'prima_neta', 'total', 'prima_total', 'saldo_pendiente')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -520,6 +509,8 @@ class PolizaForm(forms.ModelForm):
                 updated_initial['oportunidad'] = instance.oportunity.code
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
+        self.fields['total'].widget.attrs['readonly'] = 'readonly'
+        self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
         if instance and not instance.editable:
             self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'

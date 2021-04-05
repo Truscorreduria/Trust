@@ -667,10 +667,9 @@ def profile(request):
 
 
 def tabla_cuotas(instance, request):
-    print(request.POST)
-    total = float(request.POST.get('total', '0'))
-    prima_neta = float(request.POST.get('prima_neta', '0'))
-    per_comision = float(request.POST.get('per_comision', '0'))
+    total = float(request.POST.get('total', '0').replace(',', ''))
+    prima_neta = float(request.POST.get('prima_neta', '0').replace(',', ''))
+    per_comision = float(request.POST.get('per_comision', '0').replace(',', ''))
     fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cantidad_cuotas'))
     return calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
@@ -1291,9 +1290,9 @@ class Polizas(Datatables):
             else:
                 p = Cuota.objects.get(id=int(data.getlist('tabla_pagos_id')[i]))
             p.numero = data.getlist('tabla_pagos_numero')[i]
-            p.monto = data.getlist('tabla_pagos_monto')[i]
+            p.monto = data.getlist('tabla_pagos_monto')[i].replace(',', '')
             p.fecha_vence = parse_date(data.getlist('tabla_pagos_fecha_vence')[i])
-            p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i]
+            p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i].replace(',', '')
             p.save()
 
 
