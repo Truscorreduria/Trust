@@ -1761,7 +1761,7 @@ class Oportunidades(Datatables):
             })
 
         if 'register' in request.POST:
-            oportunity = Oportunity.objects.get(id=request.POST.get('oportunity'))
+            oportunity = Oportunity.objects.get(id=request.POST.get('oportunity').replace(',', ''))
             aseguradora = Aseguradora.objects.get(id=request.POST.get('aseguradora'))
             poliza = oportunity.registrar(aseguradora)
             return JsonResponse({
