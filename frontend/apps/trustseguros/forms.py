@@ -2,6 +2,7 @@ from django import forms
 from .widgets import *
 from backend.models import *
 import calendar
+from django.contrib.humanize.templatetags.humanize import intcomma
 
 
 class LteFormMixing:
@@ -447,16 +448,8 @@ class PolizaForm(forms.ModelForm):
     pedir_comentarios = forms.Field(required=False,
                                     widget=PedirComentarioWidget)
 
-    prima_total = forms.CharField(required=False, label="", widget=forms.TextInput(
-        attrs={
-            'readonly': 'readonly'
-        }
-    ), initial=0.0)
-    saldo_pendiente = forms.CharField(required=False, label="", widget=forms.TextInput(
-        attrs={
-            'readonly': 'readonly'
-        }
-    ), initial=0.0)
+    prima_total = forms.FloatField(required=False, label="", initial=0.0, widget=forms.TextInput)
+    saldo_pendiente = forms.FloatField(required=False, label="", initial=0.0, widget=forms.TextInput)
 
     otro_motivo = forms.CharField(required=False, label="Especificar motivo",
                                   widget=forms.Textarea(attrs={
@@ -503,14 +496,16 @@ class PolizaForm(forms.ModelForm):
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
-            updated_initial['prima_total'] = instance.prima_total
-            updated_initial['saldo_pendiente'] = instance.saldo_pendiente
+            updated_initial['prima_total'] = intcomma(instance.prima_total())
+            updated_initial['saldo_pendiente'] = intcomma(instance.saldo_pendiente())
             if instance.oportunity:
                 updated_initial['oportunidad'] = instance.oportunity.code
         kwargs.update(initial=updated_initial)
         super().__init__(*args, **kwargs)
         self.fields['total'].widget.attrs['readonly'] = 'readonly'
         self.fields['amount_comision'].widget.attrs['readonly'] = 'readonly'
+        self.fields['prima_total'].widget.attrs['readonly'] = 'readonly'
+        self.fields['saldo_pendiente'].widget.attrs['readonly'] = 'readonly'
         if instance and not instance.editable:
             self.fields['no_poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['no_recibo'].widget.attrs['readonly'] = 'readonly'
