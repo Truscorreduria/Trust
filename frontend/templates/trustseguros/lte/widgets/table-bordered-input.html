@@ -42,7 +42,7 @@
                 <td>
                     {% ifequal forloop.counter0 0 %}
                         <input type="hidden" name="{{ widget.attrs.model }}"
-                               value="{{ row.instance.id }}">
+                               value="{{ row.instance.id|stringformat:"i" }}">
                     {% endifequal %}
                     {{ row|datatables_field:column|as_inline_field }}
                 </td>

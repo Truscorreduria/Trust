@@ -19,7 +19,7 @@
                             {% endfor %}>
                 </td>
                 <td class="cobertura-description">
-                    <input type="hidden" name="cobertura" value="{{ cobertura.id }}">
+                    <input type="hidden" name="cobertura" value="{{ cobertura.id|stringformat:'i' }}">
                     {{ cobertura.name }}
                 </td>
                 <td class="cobertura-amount">

@@ -20,7 +20,7 @@
     {% for fila in widget.value.cuotas %}
         <tr>
             <td>
-                <input type="hidden" name="{{ widget.name }}_id" value="{{ fila.id }}">
+                <input type="hidden" name="{{ widget.name }}_id" value="{{ fila.id|stringformat:'i' }}">
                 <input type="text" name="{{ widget.name }}_numero" class="form-control" readonly
                        value="{{ fila.numero }}" style="text-align: center">
             </td>
