@@ -2,7 +2,7 @@
 <tr>
     <td>
         <input type="hidden" name="{{ form.prefix }}"
-               value="{% if form.instance.id %}{{ form.instance.id }}{% endif %}">
+               value="{% if form.instance.id %}{{ form.instance.id|stringformat:'i' }}{% endif %}">
         {{ form.fecha_pago|as_inline_field }}
     </td>
     <td>
@@ -23,7 +23,7 @@
     <td>
         {% ifnotequal form.instance.cuota.estado 3 %}
             <button type="button" class="btn btn-danger btn-del-pago"
-                    {% if form.instance.id %}data-id="{{ form.instance.id }}"{% endif %}>
+                    {% if form.instance.id %}data-id="{{ form.instance.id|stringformat:'i' }}"{% endif %}>
                 <i class="fa fa-trash"></i>
             </button>
         {% endifnotequal %}
