@@ -589,22 +589,22 @@ class TramiteForm(forms.ModelForm):
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
     tabla_pagos = forms.Field(label="", required=False, widget=TablaPagosWidget)
-    amount_comision = forms.FloatField(label="Total comisión", required=False, widget=forms.NumberInput(
+    amount_comision = forms.CharField(label="Total comisión", required=False, widget=forms.TextInput(
         attrs={
             'readonly': 'readonly'
         }
     ))
-    prima_neta = forms.FloatField(required=False, label="", widget=forms.NumberInput(
+    prima_neta = forms.CharField(required=False, label="", widget=forms.TextInput(
         attrs={
             'readonly': 'readonly',
         }
     ))
-    total = forms.FloatField(label="Total", required=False, initial=0.0,
-                             widget=forms.NumberInput(
-                                 attrs={
-                                     'readonly': 'readonly'
-                                 }
-                             ))
+    total = forms.CharField(label="Total", required=False, initial=0.0,
+                            widget=forms.TextInput(
+                                attrs={
+                                    'readonly': 'readonly'
+                                }
+                            ))
     poliza = forms.ModelChoiceField(queryset=Poliza.objects.all(), required=False,
                                     widget=forms.Select(
                                         choices=[]
