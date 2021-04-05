@@ -56,7 +56,7 @@
             </td>
             <td>
                 <button type="button" class="btn btn-info btn-edit-cuota"
-                        data-cuota="{{ fila.id }}"><i class="fa fa-edit"></i></button>
+                        data-cuota="{{ fila.id|stringformat:'i' }}"><i class="fa fa-edit"></i></button>
             </td>
         </tr>
     {% endfor %}
