@@ -668,8 +668,8 @@ def profile(request):
 
 def tabla_cuotas(instance, request):
     total = float(request.POST.get('total', 0))
-    prima_neta = float(request.POST.get('prima_neta', 0))
-    per_comision = float(request.POST.get('per_comision', 0))
+    prima_neta = float(request.POST.get('prima_neta', 0).replace(',', ''))
+    per_comision = float(request.POST.get('per_comision', 0).replace(',', ''))
     fecha_pago = datetime.strptime(request.POST.get('fecha_pago'), '%d/%m/%Y')
     cuotas = int(request.POST.get('cantidad_cuotas'))
     return calcular_tabla_cuotas(prima_neta, per_comision, total, fecha_pago, cuotas, instance)
