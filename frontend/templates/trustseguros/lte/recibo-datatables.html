@@ -130,7 +130,14 @@
             $(document).on('change', '#id_cantidad_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
             $(document).on('change', 'input[name="total"]', calcular_tabla_pagos);
-            $(document).on('change', 'input[name="per_comision"]', calcular_tabla_pagos);
+            $(document).on('change', 'input[name="per_comision"]', function () {
+                const percent = parseFloat($(this).val());
+                $.each($('input[name="tabla_pagos_monto"]'), function (i, o) {
+                    const monto = parseFloat($(o).val());
+                    const comision = (monto * percent) / 100
+                    $('input[name="tabla_pagos_monto_comision"]').val(comision.toFixed(2));
+                });
+            });
 
             $(document).on('change', '#id_f_pago', function () {
                 if ($(this).val() === "1") {

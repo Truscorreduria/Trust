@@ -85,7 +85,7 @@
             return li;
         }
 
-        const modal_width = parseInt('{{ modal_width }}');
+        const modal_width = parseInt('{{ modal_width|stringformat:"f" }}');
 
         function process_response(response, textStatus, xhr) {
             redraw_object(response);

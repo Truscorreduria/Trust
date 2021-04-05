@@ -882,14 +882,14 @@ class Aseguradoras(Datatables):
     modal_width = 900
     model = Aseguradora
     form = AseguradoraForm
-    list_display = ('name', 'phone', 'address', 'emision', 'emision_min', 'monto_soa', 'exceso')
+    list_display = ('code', 'name', 'phone', 'address', 'emision', 'emision_min', 'monto_soa', 'exceso')
     fieldsets = [
         {
             'id': 'info',
             'name': 'Información general',
             'fields': (
-                ('name', 'ruc'),
-                ('phone', 'email'),
+                ('code', 'name'),
+                ('ruc', 'phone', 'email'),
                 ('emision', 'exceso', 'tarifa'),
                 ('coaseguro_robo', 'coaseguro_dano', 'deducible'),
                 ('emision_soa', 'emision_min', 'monto_soa'),
@@ -1003,6 +1003,7 @@ class SubRamos(Datatables):
             else:
                 c = CampoAdicional.objects.get(id=int(data.getlist('campoadicional_id')[i]))
             f = CampoAdicionalForm({
+                'ramo_campo_adicional-order': data.getlist('ramo_campo_adicional-order')[i],
                 'ramo_campo_adicional-name': data.getlist('ramo_campo_adicional-name')[i],
                 'ramo_campo_adicional-label': data.getlist('ramo_campo_adicional-label')[i],
             }, instance=c)
@@ -1065,7 +1066,7 @@ class Polizas(Datatables):
     list_filter = ('estado_poliza', 'grupo', 'sub_ramo')
     media = {
         'js': ['trustseguros/lte/js/fecha-vence.js', ],
-        'css': ['trustseguros/lte/css/coberturas-field.css', ]
+        'css': ['trustseguros/lte/css/coberturas-field.css', 'trustseguros/lte/css/recibo.fields.localize.css', ]
     }
 
     def get_queryset(self, filters, search_value):
@@ -1316,8 +1317,8 @@ class Tramites(Datatables):
                 ('code', 'fecha', 'hora', 'tipo_tramite'),
                 ('cliente', 'poliza', 'ramo'),
                 ('sub_ramo', 'grupo', 'aseguradora', 'contacto_aseguradora'),
-                ('solicitado_por', 'medio_solicitud', 'estado', 'genera_endoso'),
-                ('user', 'descripcion'),
+                ('solicitado_por', 'medio_solicitud', 'estado', 'user'),
+                ('descripcion', 'genera_endoso', 'remplaza_recibo'),
             )
         },
         {
@@ -1338,7 +1339,8 @@ class Tramites(Datatables):
     media = {
         'js': ['trustseguros/js/tramite.anular.js', 'trustseguros/js/tramite.finalizar.js',
                'trustseguros/js/tramite.soportes.js', 'trustseguros/js/tramite.bitacora.js',
-               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ]
+               'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ],
+        'css': ['trustseguros/lte/css/recibo.fields.localize.css', ]
     }
 
     def post(self, request):
@@ -1368,7 +1370,6 @@ class Tramites(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'confirmar' in request.POST:
-            print(request.POST)
             status = 200
             errors = []
             p = self.model.objects.get(id=int(request.POST.get('id')))
@@ -1876,6 +1877,9 @@ class Recibos(Datatables):
     list_template = "trustseguros/lte/recibo-datatables.html"
     list_display = ('no_poliza', 'cliente.name', 'fecha_emision', 'fecha_vence', 'grupo.name', 'estado_poliza.label')
     search_fields = ('no_poliza', 'cliente__nombre')
+    media = {
+        'css': ['trustseguros/lte/css/recibo.fields.localize.css', ]
+    }
 
     class Meta:
         verbose_name = "Recibo"
@@ -1884,6 +1888,8 @@ class Recibos(Datatables):
 
     @staticmethod
     def get_status(cuota):
+        if cuota.estado == EstadoPago.PAGADO:
+            return cuota.estado
         today = datetime.now()
         if cuota.fecha_vence > today:
             return EstadoPago.VIGENTE

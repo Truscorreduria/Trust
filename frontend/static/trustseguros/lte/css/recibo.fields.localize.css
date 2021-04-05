@@ -1,0 +1,6 @@
+input[name="subtotal"], input[name="descuento"], input[name="emision"], input[name="iva"],
+input[name="otros"], input[name="suma_asegurada"] {
+    text-align: right;
+    padding-right: 1.75rem;
+    max-width: 223px;
+}

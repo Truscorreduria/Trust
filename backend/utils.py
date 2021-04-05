@@ -17,7 +17,8 @@ def calcular_tabla_cuotas(prima_neta, comision, total, fecha_pago, cuotas, insta
                 'mora': mora}
 
     try:
-        instance.cuotas().delete()
+        if not instance.con_pagos():
+            instance.cuotas().delete()
     except AttributeError:
         pass
 

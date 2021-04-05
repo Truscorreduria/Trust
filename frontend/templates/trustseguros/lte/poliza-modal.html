@@ -27,6 +27,10 @@
                         Soportes</a>
                 </li>
                 <li class="nav-item">
+                    <a data-toggle="tab" href="#{{ opts.model_name }}-tramites" class="nav-link">
+                        Trámites</a>
+                </li>
+                <li class="nav-item">
                     <a data-toggle="tab" href="#{{ opts.model_name }}-bitacora" class="nav-link">
                         Bitácora</a>
                 </li>
@@ -236,6 +240,9 @@
                         <div id="{{ opts.model_name }}-adicionales"
                              class="tab-pane fade">
                             {{ form.campos_adicionales }}
+                        </div>
+                        <div id="{{ opts.model_name }}-tramites">
+                            {{ form.tramites }}
                         </div>
                         <div id="{{ opts.model_name }}-drive-files"
                              class="tab-pane fade">

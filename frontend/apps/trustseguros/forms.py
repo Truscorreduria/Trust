@@ -354,7 +354,7 @@ class CampoAdicionalForm(forms.ModelForm):
 
     class Meta:
         model = CampoAdicional
-        fields = ('name', 'label',)
+        fields = ('order', 'name', 'label',)
 
 
 class RamoForm(forms.ModelForm):
@@ -425,6 +425,18 @@ class PolizaForm(forms.ModelForm):
                                  }
                              ))
     campos_adicionales = forms.Field(label="", required=False, widget=CamposAdicionalesWidget)
+    tramites = forms.Field(label="", required=False, widget=TableBordered(
+        attrs={
+            'columns': (
+                ('code', 'Número de trámite'),
+                ('tipo_tramite', 'Tipo trámite'),
+                ('cliente', 'Cliente'),
+                ('user', 'Ingresado por'),
+                ('poliza', 'Póliza'),
+                ('', 'Ver'),
+            )
+        }
+    ))
     drive = forms.Field(label="", required=False, widget=DriveWidget)
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
@@ -484,6 +496,8 @@ class PolizaForm(forms.ModelForm):
             'per_comision_eje', 'amount_comision_eje', 'comisionista', 'ejecutivo', 'oportunidad',
             'user_create',
         )
+        localized_fields = ('subtotal', 'descuento', 'emision', 'iva', 'otros', 'suma_asegurada',
+                            'amount_comision', 'prima_neta', 'total', 'amount_comision')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -496,6 +510,7 @@ class PolizaForm(forms.ModelForm):
                 pass
             updated_initial['coberturas'] = instance
             updated_initial['tabla_pagos'] = instance
+            updated_initial['tramites'] = instance.tramites()
             updated_initial['drive'] = instance
             updated_initial['bitacora'] = instance
             updated_initial['pedir_comentarios'] = instance.perdir_comentarios
@@ -612,6 +627,8 @@ class TramiteForm(forms.ModelForm):
     class Meta:
         model = Tramite
         exclude = ('editable',)
+        localized_fields = ('subtotal', 'descuento', 'emision', 'iva', 'otros', 'suma_asegurada',
+                            'amount_comision', 'prima_neta', 'total', 'amount_comision')
 
     @staticmethod
     def get_contacto_choices(poliza):
@@ -862,6 +879,7 @@ class OportunityForm(forms.ModelForm):
     class Meta:
         model = Oportunity
         exclude = ('linea',)
+        localized_fields = ('valor_nuevo', 'valor_exceso')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
@@ -882,10 +900,10 @@ class OportunityForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if instance:
             self.fields['cotizacion'].widget.attrs['instance'] = instance
-            self.fields['cotizacion'].widget.attrs['companies'] = instance.linea.aseguradoras.all()
+            self.fields['cotizacion'].widget.attrs['companies'] = instance.linea.aseguradoras.all().order_by('code')
         if linea:
             self.fields['campain'].queryset = Campain.objects.filter(active=True, linea=linea)
-            self.fields['cotizacion'].widget.attrs['companies'] = linea.aseguradoras.all()
+            self.fields['cotizacion'].widget.attrs['companies'] = linea.aseguradoras.all().order_by('code')
 
 
 class CampainForm(forms.ModelForm):
@@ -969,6 +987,8 @@ class ReciboForm(forms.ModelForm):
             'emision', 'iva', 'otros', 'total', 'per_comision', 'suma_asegurada',
             'amount_comision', 'moneda', 'tabla_pagos', 'recibo_editar', 'recibos'
         )
+        localized_fields = ('subtotal', 'descuento', 'emision', 'iva', 'otros', 'suma_asegurada',
+                            'amount_comision', 'prima_neta', 'total', 'amount_comision')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
@@ -1034,6 +1054,12 @@ class ReciboForm(forms.ModelForm):
                     self.fields['m_pago'].widget.attrs['readonly'] = 'readonly'
                     self.fields['cantidad_cuotas'].widget.attrs['readonly'] = 'readonly'
                     self.fields['fecha_pago'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['subtotal'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['descuento'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['emision'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['iva'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['otros'].widget.attrs['readonly'] = 'readonly'
+                    self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
 
 
 class PagoForm(forms.ModelForm):

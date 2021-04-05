@@ -152,6 +152,9 @@ class Aseguradora(BaseEntity, Base):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ['code', ]
+
     def depreciacion(self):
         return Anno.objects.filter(aseguradora=self)
 
@@ -691,7 +694,7 @@ class SubRamo(Base):
         return o
 
     def campos_adicionales(self):
-        return CampoAdicional.objects.filter(sub_ramo=self)
+        return CampoAdicional.objects.filter(sub_ramo=self).order_by('order')
 
     def coberturas_en_cotizacion(self):
         return Cobertura.objects.filter(sub_ramo=self, en_cotizacion=ActivoChoices.ACTIVO)
@@ -700,11 +703,15 @@ class SubRamo(Base):
 class CampoAdicional(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="datos_tecnicos",
                                  null=True)
+    order = models.PositiveSmallIntegerField(null=True, blank=True)
     name = models.CharField(max_length=65, verbose_name="nombre")
     label = models.CharField(max_length=65, verbose_name="etiqueta")
 
     def __str__(self):
         return self.label
+
+    class Meta:
+        ordering = ['order', ]
 
 
 class TipoCobertura:
@@ -1028,6 +1035,8 @@ class Poliza(BasePoliza):
     modificando_recibo = models.BooleanField(default=False)
     recibo_editar = models.ForeignKey('Tramite', on_delete=models.SET_NULL, null=True, blank=True,
                                       related_name="recibo_a_editar", verbose_name="recibo a editar")
+    recibo_principal = models.ForeignKey('Tramite', on_delete=models.SET_NULL, null=True, blank=True,
+                                         related_name="recibo_principal", verbose_name="recibo principal")
 
     class Meta:
         ordering = ['fecha_vence', ]
@@ -1394,6 +1403,9 @@ class Poliza(BasePoliza):
             return self.ejecutivo.get_full_name()
         return ''
 
+    def tramites(self):
+        return Tramite.objects.filter(poliza=self).order_by('created')
+
 
 class CoberturaPoliza(Base):
     poliza = models.ForeignKey(Poliza, on_delete=models.CASCADE)
@@ -1527,6 +1539,7 @@ class Tramite(Base):
     ), null=True, blank=True)
 
     genera_endoso = models.BooleanField(default=False)
+    remplaza_recibo = models.BooleanField(default=False, verbose_name="reemplaza recibo principal")
     editable = models.BooleanField(default=True)
 
     f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
@@ -1549,6 +1562,15 @@ class Tramite(Base):
         if not self.code:
             self.code = get_code(self, 6)
         super().save(*args, **kwargs)
+
+    @property
+    def trust_url(self):
+        return reverse('trustseguros:tramites')
+
+    @property
+    def ver(self):
+        tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
+        return mark_safe(tag)
 
     @property
     def bitacora(self):
@@ -1676,7 +1698,7 @@ class Cuota(Base):
         return json_object(self.tramite.cliente, Cliente)
 
     def pagos(self):
-        return PagoCuota.objects.filter(cuota=self)
+        return PagoCuota.objects.filter(cuota=self).order_by('fecha_pago')
 
     def monto_pagado(self):
         return self.pagos().aggregate(Sum('monto'))['monto__sum'] or 0.0

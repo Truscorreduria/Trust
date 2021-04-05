@@ -229,6 +229,8 @@ USE_L10N = True
 
 USE_TZ = False
 
+USE_THOUSAND_SEPARATOR = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -252,7 +254,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
-
 )
 
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
