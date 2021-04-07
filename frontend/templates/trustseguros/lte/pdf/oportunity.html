@@ -36,7 +36,7 @@
                 <figure>
                     <img src="{% static 'trustseguros/img/logo-oportunidad.png' %}" height="100">
                 </figure>
-                <p>{{ oportunity.updated|naturalday }}</p>
+                <p>{{ oportunity.updated|date:'d/m/Y' }}</p>
             </td>
         </tr>
     </table>
