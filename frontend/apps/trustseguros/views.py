@@ -1897,7 +1897,8 @@ class Recibos(Datatables):
         return self.Meta
 
     def get_queryset(self, filters, search_value):
-        return super().get_queryset(filters, search_value).filter(estado_poliza=EstadoPoliza.ACTIVA)
+        return super().get_queryset(filters, search_value).filter(
+            estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.CANCELADA])
 
     def get_buttons(self, request, instance):
         instance = self.get_instance(request)
