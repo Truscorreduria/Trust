@@ -923,7 +923,7 @@ class Poliza(BasePoliza):
     fecha_vence = models.DateField(null=True, blank=True, verbose_name="fecha fin de vigencia")
     fecha_pago = models.DateField(null=True, blank=True)
     code = models.CharField(max_length=25, null=True, blank=True)
-    no_recibo = models.CharField(max_length=25, null=True, blank=True, verbose_name="número de recibo")
+    no_recibo = models.CharField(max_length=25, null=True, verbose_name="número de recibo")
     concepto = models.PositiveSmallIntegerField(choices=ConceptoPoliza.choices(), default=ConceptoPoliza.NUEVA,
                                                 null=True, blank=True)
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="polizas_automovil")
@@ -993,7 +993,7 @@ class Poliza(BasePoliza):
 
     #  fixme eliminar este campo
     forma_pago = models.CharField(max_length=25, default="anual", null=True, blank=True, )
-    f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True, blank=True,
+    f_pago = models.PositiveIntegerField(choices=FormaPago.choices(), null=True,
                                          verbose_name="forma de pago")
     #  fixme eliminar este campo
     medio_pago = models.CharField(max_length=25, null=True, blank=True,
@@ -1002,9 +1002,9 @@ class Poliza(BasePoliza):
                                       ('deduccion_nomina', 'Deducción de nómina'),
                                       ('deposito_referenciado', 'Depósito referenciado'),
                                   ))
-    m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True, blank=True,
+    m_pago = models.PositiveIntegerField(choices=MedioPago.choices(), null=True,
                                          verbose_name="medio de pago", )
-    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True, blank=True)
+    cantidad_cuotas = models.PositiveIntegerField(default=1, null=True)
     monto_cuota = models.FloatField(default=0.0, null=True, blank=True, )
     moneda_cobro = models.CharField(max_length=3, null=True, blank=True)
     banco_emisor = models.CharField(max_length=25, null=True, blank=True)
