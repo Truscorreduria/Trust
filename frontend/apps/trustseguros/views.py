@@ -2031,8 +2031,8 @@ class Recibos(Datatables):
                     else:
                         p = Cuota.objects.get(id=int(request.POST.getlist('tabla_pagos_id')[i]))
                     p.numero = request.POST.getlist('tabla_pagos_numero')[i]
-                    p.monto = request.POST.getlist('tabla_pagos_monto')[i]
-                    p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i]
+                    p.monto = request.POST.getlist('tabla_pagos_monto')[i].replace(',', '')
+                    p.monto_comision = request.POST.getlist('tabla_pagos_monto_comision')[i].replace(',', '')
                     p.fecha_vence = parse_date(request.POST.getlist('tabla_pagos_fecha_vence')[i])
                     p.estado = self.get_status(p)
                     p.save()
