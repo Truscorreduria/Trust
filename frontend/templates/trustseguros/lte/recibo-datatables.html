@@ -125,7 +125,6 @@
             $(document).on('change', 'input[name="otros"]', calcular_total);
 
             $(document).on('change', 'input[name="prima_neta"]', calcular_comision);
-            $(document).on('change', 'input[name="per_comision"]', calcular_comision);
 
             $(document).on('change', '#id_cantidad_cuotas', calcular_tabla_pagos);
             $(document).on('change', '#id_fecha_pago', calcular_tabla_pagos);
@@ -137,6 +136,7 @@
                     const comision = (monto * percent) / 100
                     $('input[name="tabla_pagos_monto_comision"]').val(comision.toFixed(2));
                 });
+                calcular_comision();
             });
 
             $(document).on('change', '#id_f_pago', function () {
