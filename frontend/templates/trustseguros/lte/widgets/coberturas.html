@@ -23,7 +23,7 @@
                     {{ cobertura.name }}
                 </td>
                 <td class="cobertura-amount">
-                    <input type="number" class="form-control" style="max-width: 150px" name="monto"
+                    <input type="text" class="form-control" style="max-width: 150px" name="monto"
                            value="{{ widget.value|valor_cobertura:cobertura }}"
                            {% if not widget.value.editable %}readonly{% endif%}>
                 </td>
