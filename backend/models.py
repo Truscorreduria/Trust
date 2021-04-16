@@ -1670,6 +1670,9 @@ class Cuota(Base):
     monto_comision = models.FloatField(default=0.0, verbose_name="Monto de comisión")
     fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión", blank=True)
 
+    class Meta:
+        ordering = ['fecha_vence',]
+
     def get_recibo(self):
         try:
             return self.poliza.no_recibo
