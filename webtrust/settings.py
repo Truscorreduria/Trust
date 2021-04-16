@@ -318,10 +318,8 @@ DATE_INPUT_FORMATS = [
 ]
 
 CRONJOBS = [
-    # ('* * * * *', 'ruta.python.funcion_a_ejecutar'),  minutos, horas, diasemana, diames, mes
     ('*/30 * * * *', 'backend.cron.notificaciones_polizas_vencidas'),
     ('0 2 * * *', 'backend.cron.renovacion_automatica'),
-
     ('0 * * * *', 'backend.cron.notificacion_por_vencer_grupo'),
     ('0 * * * *', 'backend.cron.notificacion_vencidas_grupo'),
     ('0 * * * *', 'backend.cron.notificacion_pagos_por_vencer'),
