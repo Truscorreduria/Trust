@@ -107,14 +107,14 @@
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Suma asegurada</b>
             </td>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
                     U$ {{ oferta.suma_asegurada|intcomma }}</td>
             {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
                     U$ {{ oferta.deducible|intcomma }}</td>
             {% endfor %}
@@ -122,7 +122,7 @@
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro robo</b>
             </td>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
                     %
                 </td>
@@ -130,7 +130,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Coaseguro daños</b></td>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
                     %
                 </td>
@@ -138,7 +138,7 @@
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Prima total</b></td>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
                     U$ {{ oferta.total|intcomma }}</td>
             {% endfor %}

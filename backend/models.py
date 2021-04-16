@@ -2420,6 +2420,9 @@ class Oportunity(BasePoliza):
     def bitacora(self):
         return Comentario.bitacora(self)
 
+    def ofertas_cotizacion(self):
+        return OportunityQuotation.objects.filter(oportunity=self).order_by('aseguradora__code')
+
     def registrar(self, aseguradora):
         p = Poliza(oportunity=self)
         cliente, _ = ClienteNatural.objects.get_or_create(cedula=self.prospect.cedula, tipo_cliente=TipoCliente.NATURAL,
