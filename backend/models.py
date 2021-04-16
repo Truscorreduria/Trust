@@ -1757,6 +1757,9 @@ class PagoCuota(Base):
     fecha_pago = models.DateField(null=True)
     fecha_pago_comision = models.DateField(null=True)
 
+    class Meta:
+        ordering = ['fecha_pago', ]
+
     def get_poliza(self):
         if self.cuota.poliza:
             return self.cuota.poliza
