@@ -122,7 +122,7 @@ def notificacion_pagos_por_vencer():
         'fin': fin,
     })
     send_email(f'Recordatorio de pagos pendientes {inicio.strftime("%d/%m/%Y")}',
-               'cesarabel@deltacopiers.com',
+               'sistemas@trustcorreduria.com',
                html=html,
                files=None)
 
@@ -139,6 +139,6 @@ def notificacion_pagos_vencidos():
         'fecha': hoy,
     })
     send_email(f'Recordatorio de pagos vencidos {hoy.strftime("%d/%m/%Y")}',
-               'cesarabel@deltacopiers.com',
+               'sistemas@trustcorreduria.com',
                html=html,
                files=None)
