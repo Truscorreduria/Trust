@@ -10,7 +10,6 @@
                 <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
                       data-toggle="validator">
                     <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id }}"{% endif %}>
-
                     {% csrf_token %}
                     <div class="row">
                         <div class="col">
@@ -124,6 +123,9 @@
 
                         </div>
 
+                    </div>
+                    <div class="row">
+                        {{ form.bitacora }}
                     </div>
                 </form>
             </div>

@@ -955,6 +955,8 @@ class ReciboForm(forms.ModelForm):
                                        }
                                    ))
 
+    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
+
     class Meta:
         model = Poliza
         fields = (
@@ -978,6 +980,7 @@ class ReciboForm(forms.ModelForm):
             updated_initial['recibos'] = instance
             updated_initial['prima_total'] = instance.prima_total
             updated_initial['saldo_pendiente'] = instance.saldo_pendiente
+            updated_initial['bitacora'] = instance
             if instance.recibo_editar:
                 updated_initial['tabla_pagos'] = instance.recibo_editar
                 updated_initial['subtotal'] = instance.recibo_editar.subtotal

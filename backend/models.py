@@ -1463,7 +1463,6 @@ class EstadoTramite:
 
 class Tramite(Base):
     tipo_tramite = models.PositiveSmallIntegerField(choices=TipoTramite.choices(), null=True)
-
     contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
