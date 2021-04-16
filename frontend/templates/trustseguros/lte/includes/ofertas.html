@@ -13,7 +13,7 @@
             </thead>
 
             <tbody>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <tr>
                     <td style="text-align: center; vertical-align: middle">
                         <input type="radio" name="aseguradora" value="{{ oferta.aseguradora.id }}" required="required">

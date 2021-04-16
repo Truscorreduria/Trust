@@ -39,7 +39,7 @@
         <thead>
         <tr>
             <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
-            {% for oferta in oportunity.ofertas.all %}
+            {% for oferta in oportunity.ofertas_cotizacion %}
                 <th style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
                     <img src="https://www.trustcorreduria.com{{ oferta.aseguradora.logo.url }}" width="65">
                 </th>
