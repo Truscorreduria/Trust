@@ -114,10 +114,12 @@ def notificacion_pagos_por_vencer():
     """
     inicio = datetime.now()
     fin = inicio + timedelta(days=30)
+    cuotas = Cuota.objects.filter(estado=EstadoPago.VIGENTE,
+                                  fecha_vence__gte=inicio,
+                                  fecha_vence__lte=fin)
+    print(cuotas.count())
     html = render_to_string('trustseguros/lte/email/notificacion_pagos_por_vencer.html', {
-        'pagos': Cuota.objects.filter(estado=EstadoPago.VIGENTE,
-                                      fecha_vence__gte=inicio,
-                                      fecha_vence__lte=fin),
+        'pagos': cuotas,
         'inicio': inicio,
         'fin': fin,
     })

@@ -1670,7 +1670,7 @@ class Cuota(Base):
     fecha_pago_comision = models.DateField(null=True, verbose_name="Fecha de pago comisión", blank=True)
 
     class Meta:
-        ordering = ['fecha_vence',]
+        ordering = ['fecha_vence', ]
 
     def get_recibo(self):
         try:
@@ -1726,8 +1726,10 @@ class Cuota(Base):
             if self.poliza.ejecutivo:
                 return self.poliza.ejecutivo.get_full_name
         else:
-            if self.tramite.poliza.ejecutivo:
+            try:
                 return self.tramite.poliza.ejecutivo.get_full_name
+            except AttributeError:
+                pass
         return ''
 
     def to_json(self):

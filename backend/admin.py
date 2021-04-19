@@ -128,8 +128,6 @@ class PolizaAdmin(ImportExportModelAdmin):
         }),
     )
 
-    readonly_fields = ('no_poliza', 'no_recibo')
-
 
 @admin.register(Tramite)
 class TramiteAdmin(admin.ModelAdmin):
