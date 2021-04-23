@@ -139,8 +139,8 @@ $(document).ready(function () {
         $.each(dependientes, function (i, o) {
             cotizacion.append(rowCotizacionSepelio(o));
         });
-        let suma = {{ user.config.suma_sepelio }} * dependientes.length;
-        let prima = {{ user.config.costo_sepelio }} * dependientes.length;
+        let suma = {{ user.config.suma_sepelio|stringformat:'i' }} * dependientes.length;
+        let prima = {{ user.config.costo_sepelio|stringformat:'i' }} * dependientes.length;
         $('#span-suma-asegurada-cotizacion-sepelio').empty().html(intcommas(suma.toFixed(1)));
         $('#span-total-cotizacion-sepelio').empty().html(intcommas(prima.toFixed(2)));
         $('#h2-anual-sepelio').empty().html(intcommas(prima.toFixed(2)));
