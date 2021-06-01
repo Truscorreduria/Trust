@@ -188,9 +188,23 @@ class ClienteJuridicioForm(forms.ModelForm):
                 ('fecha_vence', 'Fecha fin'),
                 ('dias_vigencia', 'Vence'),
                 ('grupo', 'Grupo'),
-                ('suma_asegurada', 'Suma asegurada'),
                 ('total', 'Prima neta'),
-                ('tipo_poliza_display', 'Tipo póliza'),
+                ('estado', 'Estado'),
+                ('ver', ''),
+            )
+        }
+    ))
+    polizas_renovadas = forms.Field(label="", required=False, widget=TableBordered(
+        attrs={
+            'columns': (
+                ('no_poliza', 'Número de póliza'),
+                ('aseguradora', 'Aseguradora'),
+                ('ramo', 'Ramo'),
+                ('fecha_emision', 'Fecha inicio'),
+                ('fecha_vence', 'Fecha fin'),
+                ('dias_vigencia', 'Vence'),
+                ('grupo', 'Grupo'),
+                ('total', 'Prima neta'),
                 ('estado', 'Estado'),
                 ('ver', ''),
             )
@@ -231,7 +245,8 @@ class ClienteJuridicioForm(forms.ModelForm):
         updated_initial = {}
         if instance:
             updated_initial['contactos'] = instance.contactos()
-            updated_initial['polizas'] = instance.polizas()
+            updated_initial['polizas'] = instance.polizas_activas_section().order_by('no_poliza')
+            updated_initial['polizas_renovadas'] = instance.polizas_renovadas_section().order_by('no_poliza')
             updated_initial['tramites'] = instance.tramites()
             updated_initial['documentos'] = instance.media_files
         kwargs.update(initial=updated_initial)
@@ -301,9 +316,23 @@ class ClienteNaturalForm(forms.ModelForm):
                 ('fecha_vence', 'Fecha fin'),
                 ('dias_vigencia', 'Vence'),
                 ('grupo', 'Grupo'),
-                ('suma_asegurada', 'Suma asegurada'),
                 ('total', 'Prima neta'),
-                ('tipo_poliza_display', 'Tipo póliza'),
+                ('estado', 'Estado'),
+                ('ver', ''),
+            )
+        }
+    ))
+    polizas_renovadas = forms.Field(label="", required=False, widget=TableBordered(
+        attrs={
+            'columns': (
+                ('no_poliza', 'Número de póliza'),
+                ('aseguradora', 'Aseguradora'),
+                ('ramo', 'Ramo'),
+                ('fecha_emision', 'Fecha inicio'),
+                ('fecha_vence', 'Fecha fin'),
+                ('dias_vigencia', 'Vence'),
+                ('grupo', 'Grupo'),
+                ('total', 'Prima neta'),
                 ('estado', 'Estado'),
                 ('ver', ''),
             )
@@ -325,7 +354,8 @@ class ClienteNaturalForm(forms.ModelForm):
         request = kwargs.pop('request', None)
         updated_initial = {}
         if instance:
-            updated_initial['polizas'] = instance.polizas()
+            updated_initial['polizas'] = instance.polizas_activas_section().order_by('no_poliza')
+            updated_initial['polizas_renovadas'] = instance.polizas_renovadas_section().order_by('no_poliza')
             updated_initial['tramites'] = instance.tramites()
             updated_initial['documentos'] = instance.media_files
         kwargs.update(initial=updated_initial)

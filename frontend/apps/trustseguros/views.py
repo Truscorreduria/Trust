@@ -678,7 +678,7 @@ def tabla_cuotas(instance, request):
 # region Clientes
 
 class PersonaNatural(Datatables):
-    modal_width = 1200
+    modal_width = 1400
     model = ClienteNatural
     form = ClienteNaturalForm
     list_display = ('primer_nombre', 'segundo_nombre', 'apellido_paterno', 'apellido_materno', 'cedula')
@@ -714,10 +714,17 @@ class PersonaNatural(Datatables):
             )
         },
         {
-            'id': 'polizas',
-            'name': 'Pólizas',
+            'id': 'polizas_activas',
+            'name': 'Pólizas Activas',
             'fields': (
                 ('polizas',),
+            )
+        },
+        {
+            'id': 'historial_polizas',
+            'name': 'Pólizas Histórico',
+            'fields': (
+                ('polizas_renovadas',),
             )
         },
         {
@@ -755,7 +762,7 @@ class PersonaNatural(Datatables):
 
 
 class PersonaJuridica(Datatables):
-    modal_width = 1200
+    modal_width = 1400
     model = ClienteJuridico
     form = ClienteJuridicioForm
     list_display = ('razon_social', 'ruc', 'actividad_economica', 'pagina_web')
@@ -788,10 +795,17 @@ class PersonaJuridica(Datatables):
             )
         },
         {
-            'id': 'polizas',
-            'name': 'Pólizas',
+            'id': 'polizas_activas',
+            'name': 'Pólizas Activas',
             'fields': (
                 ('polizas',),
+            )
+        },
+        {
+            'id': 'historial_polizas',
+            'name': 'Pólizas Histórico',
+            'fields': (
+                ('polizas_renovadas',),
             )
         },
         {

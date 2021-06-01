@@ -512,6 +512,13 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
     def polizas(self):
         return Poliza.objects.filter(cliente=self)
 
+    def polizas_activas_section(self):
+        return self.polizas().filter(estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE])
+
+    def polizas_renovadas_section(self):
+        return self.polizas().filter(estado_poliza__in=[EstadoPoliza.RENOVADA, EstadoPoliza.CANCELADA,
+                                                        EstadoPoliza.ANULADA])
+
     def tramites(self):
         return Tramite.objects.filter(cliente=self)
 
