@@ -74,7 +74,7 @@
                             <td class="td-buttons">
                                 {% if o.is_renovable %}
                                     <button class="btn btn-trust btn-trust-sm btn-renovacion"
-                                            data-poliza="{{ o.id }}">Renovación
+                                            data-poliza="{{ o.id|floatformat:'i' }}">Renovación
                                     </button>
                                 {% endif %}
                                 {% ifequal o.tipo_cobertura '2' %}
@@ -88,7 +88,7 @@
                                 {% endifequal %}
 
                                 <button class="btn btn-trust btn-trust-sm imprimir-auto"
-                                        data-poliza="{{ o.id }}"
+                                        data-poliza="{{ o.id|floatformat:'i' }}"
                                         {% ifequal o.no_poliza 'pendiente' %}
                                         data-url="{% url 'cotizador:print_orden_trabajo' %}"
                                         {% else %}
@@ -98,7 +98,7 @@
                                 >Imprimir
                                 </button>
                                 <button class="btn btn-trust btn-trust-sm baja-auto"
-                                        data-poliza="{{ o.id }}">Dar de Baja
+                                        data-poliza="{{ o.id|floatformat:'i' }}">Dar de Baja
                                 </button>
                                 {% comment %}<button class="btn btn-trust btn-trust-sm renovacion-auto"
                                         data-poliza="{{ o.id }}">Renovación
@@ -142,7 +142,7 @@
                     <td class="td-buttons">
                         {% if orden.id %}
                             <button class="btn btn-trust btn-trust-sm cambiar-beneficiario-sepelio"
-                                    data-orden="{{ o.orden.id }}" data-beneficiario="{{ o.id }}">
+                                    data-orden="{{ o.orden.id|floatformat:'i' }}" data-beneficiario="{{ o.id|floatformat:'i' }}">
                                 Cambiar beneficiario
                             </button>
                         {% endif %}
@@ -159,13 +159,13 @@
                         <td class="td-buttons">
                             {% if o.orden %}
                                 <button class="btn btn-trust btn-trust-sm imprimir-sepelio"
-                                        data-orden="{{ o.orden.id }}" data-beneficiario="{{ o.id }}">
+                                        data-orden="{{ o.orden.id|floatformat:'i' }}" data-beneficiario="{{ o.id|floatformat:'i' }}">
                                     Imprimir
                                 </button>
                             {% endif %}
 
                             <button class="btn btn-trust btn-trust-sm baja"
-                                    data-beneficiario="{{ o.id }}" data-type="CF">
+                                    data-beneficiario="{{ o.id|floatformat:'i' }}" data-type="CF">
                                 Dar de baja
                             </button>
 
@@ -219,13 +219,13 @@
                         <td class="td-buttons">
                             {% if orden.id %}
                                 <button class="btn btn-trust btn-trust-sm imprimir-accidente"
-                                        data-orden="{{ o.orden.id }}" data-beneficiario="{{ o.id }}">
+                                        data-orden="{{ o.orden.id|floatformat:'i' }}" data-beneficiario="{{ o.id|floatformat:'i' }}">
                                     Imprimir
                                 </button>
                             {% endif %}
 
                             <button class="btn btn-trust btn-trust-sm baja"
-                                    data-beneficiario="{{ o.id }}" data-type="AP">
+                                    data-beneficiario="{{ o.id|floatformat:'i' }}" data-type="AP">
                                 Dar de baja
                             </button>
                         </td>
