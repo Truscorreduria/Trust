@@ -406,7 +406,7 @@
             <td>Monto / Cuota</td>
         </tr>
         <tr>
-            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas }}) {% ifequal poliza.cuotas 1 %}Pago{% else %}
+            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas.count }}) {% ifequal poliza.cuotas.count 1 %}Pago{% else %}
                 Pagos{% endifequal %}</td>
             <td>
                 {% ifequal poliza.medio_pago 'deduccion_nomina' %}Dedución por Nómina{% endifequal %}

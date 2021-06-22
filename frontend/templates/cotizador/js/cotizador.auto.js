@@ -169,7 +169,7 @@ $(document).ready(function () {
             method: "POST",
             data: {marca: m, modelo: mo, anno: year, exceso: exceso, chasis: chasis},
             success: function (response) {
-                //console.log(response);
+                console.log(response);
                 let porcentaje = response.porcentaje;
                 let minimo = parseFloat(response.minimo_deducible).toFixed(2);
                 let porcentaje_extension = response.porcentaje_extension;
@@ -241,17 +241,7 @@ $(document).ready(function () {
                         text: "El número de chasis de tu vehículo ya se encuentra registrado. Hemos corregido la cotización en base al valor nuevo de tu vehículo. Tu nuevo total a pagar es " + intcommas((response.total).toFixed(2)),
                         imageUrl: "{% static 'cotizador/images/trusty/cool.png' %}"
                     })
-                };
-                /*const $cantidadCuotas = $('#cantidad_cuotas').empty();
-                if ($('#tipo-cobertura').val() === '1') {
-                    for (let i = 2; i <= 12; i++) {
-                        $cantidadCuotas.append(optionCuota(i));
-                    }
-                } else {
-                    for (let i = 2; i <= 24; i++) {
-                        $cantidadCuotas.append(optionCuota(i));
-                    }
-                }*/
+                }
 
                 calcular_cuota();
 
@@ -323,7 +313,7 @@ $(document).ready(function () {
     $('.nav-link').on('click', function () {
         var valor = $(this).attr('href').replace('#', '');
         $('#tipo-cobertura').val(valor);
-        if (valor == '1') {
+        if (valor === '1') {
             $('#card-cesion-derecho').css('display', 'none');
             $('#custom-radio-deposito-referenciado').css('display', 'none');
             $('#custom-radio-pago-mensual').css('display', 'block');
@@ -333,7 +323,7 @@ $(document).ready(function () {
                 $cantidadCuotas.append(optionCuota(i));
             }
 
-        } else if (valor == '2') {
+        } else if (valor === '2') {
             $('#card-cesion-derecho').css('display', 'block');
             $('#custom-radio-deposito-referenciado').css('display', 'block');
             $('#custom-radio-pago-mensual').css('display', 'block');
