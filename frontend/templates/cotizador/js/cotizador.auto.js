@@ -146,11 +146,10 @@ $(document).ready(function () {
     }
 
     const calcular_cuota = function () {
-        let tipo_cobertura = $('#tipo-cobertura').val();
-        if (tipo_cobertura === '2') {
-            var total = parseFloat($('#total-pagar').val());
-        } else {
-            var total = parseFloat($('#total-pagar-basica').val());
+        const tipo_cobertura = $('#tipo-cobertura').val();
+        let total = parseFloat($('#total-pagar').val());
+        if (tipo_cobertura === '1') {
+            total = parseFloat($('#total-pagar-basica').val());
         }
         $('#h2-anual').html(intcommas(parseFloat(total).toFixed(2)));
         let numero_cuotas = parseFloat($('#cantidad_cuotas').val());
