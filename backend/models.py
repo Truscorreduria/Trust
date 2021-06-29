@@ -787,13 +787,13 @@ class EstadoPoliza:
     RENOVADA = 3
     CANCELADA = 4
     ANULADA = 5
-    OTRO = 6
+    NORENOVADA = 6
 
     @classmethod
     def choices(cls):
         return (cls.PENDIENTE, "Pendiente"), (cls.ACTIVA, "Activa"), (cls.VENCIDA, "Vencida"), (
             cls.RENOVADA, "Renovada"), \
-               (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.OTRO, "Otro")
+               (cls.CANCELADA, "Cancelada"), (cls.ANULADA, "Anulada"), (cls.NORENOVADA, "No renovada")
 
 
 class TipoPoliza:
