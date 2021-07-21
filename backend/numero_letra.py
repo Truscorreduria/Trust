@@ -14,7 +14,7 @@ MAX_NUMERO = 999999999999
 
 UNIDADES = (
     'cero',
-    'uno',
+    'un',
     'dos',
     'tres',
     'cuatro',

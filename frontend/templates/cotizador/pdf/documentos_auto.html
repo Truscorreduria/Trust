@@ -663,7 +663,7 @@
             <td>Monto / Cuota</td>
         </tr>
         <tr>
-            <td>{{ poliza.print_cuotas }} ({{ poliza.cuotas }}) {% ifequal poliza.cuotas 1 %}Pago{% else %}
+            <td>{{ poliza.print_cuotas }} {% ifequal poliza.cuotas.count 0 %}Pago{% else %}
                 Pagos{% endifequal %}</td>
             <td>Directo En Caja</td>
             <td>{{ poliza.fecha_pago.day }} del mes correspondiente</td>
