@@ -65,9 +65,9 @@
         </tr>
     </table>
 
-    <center>
+    {% comment %}<center>
         <h1><b>RECIBO DE PRIMA No. {{ poliza.no_recibo }}</b></h1>
-    </center>
+    </center>{% endcomment %}
 
     <div class="row">
         <div style="width: 100%;text-align: right">Fecha: {{ poliza.fecha_emision|date:'d/m/Y' }}</div>
@@ -343,7 +343,6 @@
             <td colspan="4" style="font-size: 0.9em">RUC J0310000003831</td>
         </tr>
     </table>
-
 
     <p style="width: 100%; color: red; font-weight: 900; text-align: right;
     margin: 0 180px 0 0; padding: 0; font-size: 1.3em">
