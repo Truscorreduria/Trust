@@ -449,8 +449,7 @@ class PolizaForm(forms.ModelForm):
         attrs={
             'columns': (
                 ('code', 'Número de trámite'),
-                ('get_tipo_tramite_display', 'Tipo trámite'),
-                ('cliente', 'Cliente'),
+                ('tipo_tramite_display', 'Tipo trámite'),
                 ('user', 'Ingresado por'),
                 ('poliza', 'Póliza'),
                 ('created', 'Fecha de registro'),

@@ -1570,6 +1570,10 @@ class Tramite(Base):
         super().save(*args, **kwargs)
 
     @property
+    def tipo_tramite_display(self):
+        return self.get_tipo_tramite_display()
+
+    @property
     def trust_url(self):
         return reverse('trustseguros:tramites')
 
