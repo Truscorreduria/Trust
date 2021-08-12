@@ -705,7 +705,8 @@ class TramiteForm(forms.ModelForm):
             self.fields['poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
 
-    def clean_no_recibo(self, value):
+    def clean_no_recibo(self):
+        value = self.cleaned_data
         if self.instance:
             if self.instance.id:
                 related = Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True)
