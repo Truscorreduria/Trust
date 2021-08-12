@@ -709,8 +709,8 @@ class TramiteForm(forms.ModelForm):
         value = self.cleaned_data.get('no_recibo')
         if self.instance and value:
             if self.instance.id:
-                related = Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True)
-                related.push(self.instance.poliza.no_recibo)
+                related = list(Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True))
+                related.append(self.instance.poliza.no_recibo)
                 if value in related:
                     raise forms.ValidationError('Recibo de prima duplicado, por favor revise')
         return value
