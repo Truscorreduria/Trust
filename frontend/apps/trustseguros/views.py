@@ -1088,18 +1088,6 @@ class Polizas(Datatables):
     def get_buttons(self, request, instance=None):
         buttons = self.buttons.copy()
         if instance.id:
-            if instance.estado_poliza == EstadoPoliza.CANCELADA:
-                return [{
-                    'class': 'btn btn-info btn-renew',
-                    'icon': 'fa fa-fan',
-                    'text': 'Renovar',
-                }, {
-                    'class': 'btn btn-warning btn-perform',
-                    'icon': 'fa fa-edit',
-                    'text': 'Modificar',
-                    'perform': 'modificando',
-                    'callback': 'process_response',
-                }]
             if instance.editable:
                 buttons.append({
                     'class': 'btn btn-info btn-perform',
@@ -1147,7 +1135,7 @@ class Polizas(Datatables):
                     'callback': 'process_response',
                 }]
 
-            if instance.estado == EstadoPoliza.CANCELADA:
+            if instance.estado in [EstadoPoliza.CANCELADA, EstadoPoliza.RENOVADA, EstadoPoliza.NORENOVADA]:
                 buttons = []
         return buttons
 
