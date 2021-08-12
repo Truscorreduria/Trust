@@ -3,8 +3,10 @@
 
 
 {% block style %}
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/bootstrap-select/dist/css/bootstrap-select.min.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/plugins/izimodal/css/iziModal.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.css' %}">
 {% endblock %}
 
 
@@ -29,14 +31,17 @@
             <div class="modal-body"></div>
         </div>
     </div>
-
 {% endblock %}
 
 
 {% block javascript %}
+    <script src="{% static 'adminlte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'adminlte/js/datatables.ES_NI.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
     <script src="{% static 'adminlte/plugins/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'adminlte/plugins/izimodal/js/iziModal.js' %}"></script>
     <script src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('.dateinput').datepicker({
@@ -78,11 +83,21 @@
                 const thead = make_thead(columns);
                 const tbody = make_tbody(columns, data);
                 return (`<div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" id="report-table">
                         <thead>${thead}</thead>
                         <tbody>${tbody}</tbody>
                         </table>
                         </div>
+                `)
+            }
+            const make_download_btn = function () {
+                return (`
+                    <div class="row float-right">
+                    <button type="button" class="btn btn-info btn-download">
+                        <i class="fa fa-file-excel"></i>
+                        Descargar
+                    </button>
+                </div>
                 `)
             }
 
@@ -96,17 +111,34 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        const modalbody = reportmodal.find('.modal-body');
-                        modalbody.html(export_to_html(response.raw_data))
-                        reportmodal.iziModal('destroy');
-                        reportmodal.iziModal({
-                            title: _this.data('filename').replace('.xlsx', ''),
-                            headerColor: '#88A0B9',
-                            openFullscreen: true,
-                            zindex: 1500,
-                        })
-                        reportmodal.iziModal('open');
-                        // export_to_excel(response.raw_data, _this.data('filename'));
+                        if (response.raw_data.length > 0) {
+                            const modalbody = reportmodal.find('.modal-body');
+                            modalbody.html(export_to_html(response.raw_data));
+                            modalbody.append(make_download_btn())
+                            reportmodal.iziModal('destroy');
+                            reportmodal.iziModal({
+                                title: _this.data('filename').replace('.xlsx', ''),
+                                headerColor: '#88A0B9',
+                                openFullscreen: true,
+                                zindex: 1500,
+                            })
+                            reportmodal.iziModal('open');
+                            $('#report-table').dataTable({
+                                dom: 'Bfrtip',
+                                language: ES_ni,
+                            })
+                            $('.btn-download')
+                                .off('click')
+                                .on('click', () => {
+                                    export_to_excel(response.raw_data, _this.data('filename'));
+                                })
+
+                        } else {
+                            swal({
+                                title: 'No se encontraron registros',
+                                type: 'error',
+                            })
+                        }
                     }
                 })
             })
