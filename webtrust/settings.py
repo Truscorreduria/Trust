@@ -320,8 +320,8 @@ DATE_INPUT_FORMATS = [
 CRONJOBS = [
     ('*/30 * * * *', 'backend.cron.notificaciones_polizas_vencidas'),
     ('0 2 * * *', 'backend.cron.renovacion_automatica'),
-    ('0 * * * *', 'backend.cron.notificacion_por_vencer_grupo'),
-    ('0 * * * *', 'backend.cron.notificacion_vencidas_grupo'),
-    ('0 * * * *', 'backend.cron.notificacion_pagos_por_vencer'),
-    ('0 * * * *', 'backend.cron.notificacion_pagos_vencidos'),
+    ('0 3 * * *', 'backend.cron.notificacion_por_vencer_grupo'),
+    ('0 4 * * *', 'backend.cron.notificacion_vencidas_grupo'),
+    ('0 5 * * *', 'backend.cron.notificacion_pagos_por_vencer'),
+    ('0 6 * * *', 'backend.cron.notificacion_pagos_vencidos'),
 ]
