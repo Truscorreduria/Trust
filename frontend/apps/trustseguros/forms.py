@@ -705,15 +705,15 @@ class TramiteForm(forms.ModelForm):
             self.fields['poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
 
-    def clean_no_recibo(self):
-        value = self.cleaned_data
-        if self.instance:
-            if self.instance.id:
-                related = Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True)
-                related.push(self.instance.poliza.no_recibo)
-                if value in related:
-                    raise forms.ValidationError('Recibo de prima duplicado, por favor revise')
-        return value
+    # def clean_no_recibo(self):
+    #     value = self.cleaned_data
+    #     if self.instance:
+    #         if self.instance.id:
+    #             related = Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True)
+    #             related.push(self.instance.poliza.no_recibo)
+    #             if value in related:
+    #                 raise forms.ValidationError('Recibo de prima duplicado, por favor revise')
+    #     return value
 
 
 class FieldMapForm(forms.ModelForm):
