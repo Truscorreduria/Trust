@@ -517,7 +517,7 @@ class Cliente(BaseCliente, Persona, Empresa, Direccion):
 
     def polizas_renovadas_section(self):
         return self.polizas().filter(estado_poliza__in=[EstadoPoliza.RENOVADA, EstadoPoliza.CANCELADA,
-                                                        EstadoPoliza.ANULADA])
+                                                        EstadoPoliza.ANULADA, EstadoPoliza.NORENOVADA])
 
     def tramites(self):
         return Tramite.objects.filter(cliente=self)
@@ -1111,7 +1111,7 @@ class Poliza(BasePoliza):
 
     @property
     def ver(self):
-        tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
+        tag = '<a class="btn" href="%s#%s" target="_blank">Ver</a>' % (self.trust_url, self.id)
         return mark_safe(tag)
 
     @property
@@ -1575,7 +1575,7 @@ class Tramite(Base):
 
     @property
     def ver(self):
-        tag = '<a class="btn" href="%s#%s">Ver</a>' % (self.trust_url, self.id)
+        tag = '<a class="btn" href="%s#%s" target="_blank">Ver</a>' % (self.trust_url, self.id)
         return mark_safe(tag)
 
     @property

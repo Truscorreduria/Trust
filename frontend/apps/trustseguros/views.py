@@ -1109,22 +1109,25 @@ class Polizas(Datatables):
                     'callback': 'process_response',
                 })
             else:
-                buttons = [{
-                    'class': 'btn btn-info btn-renew',
-                    'icon': 'fa fa-fan',
-                    'text': 'Renovar',
-                }, {
-                    'class': 'btn btn-warning btn-perform',
-                    'icon': 'fa fa-edit',
-                    'text': 'Modificar',
-                    'perform': 'modificando',
-                    'callback': 'process_response',
-                }, {
-                    'class': 'btn btn-danger btn-null',
-                    'icon': 'fa fa-exclamation-triangle',
-                    'text': 'Cancelar',
-                }
-                ]
+                if instance.estado_poliza in [EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]:
+                    buttons = [{
+                        'class': 'btn btn-info btn-renew',
+                        'icon': 'fa fa-fan',
+                        'text': 'Renovar',
+                    }, {
+                        'class': 'btn btn-warning btn-perform',
+                        'icon': 'fa fa-edit',
+                        'text': 'Modificar',
+                        'perform': 'modificando',
+                        'callback': 'process_response',
+                    }, {
+                        'class': 'btn btn-danger btn-null',
+                        'icon': 'fa fa-exclamation-triangle',
+                        'text': 'Cancelar',
+                    }
+                    ]
+                else:
+                    buttons = []
 
             if instance.modificando:
                 buttons = [{

@@ -449,10 +449,12 @@ class PolizaForm(forms.ModelForm):
         attrs={
             'columns': (
                 ('code', 'Número de trámite'),
-                ('tipo_tramite', 'Tipo trámite'),
+                ('get_tipo_tramite_display', 'Tipo trámite'),
                 ('cliente', 'Cliente'),
                 ('user', 'Ingresado por'),
                 ('poliza', 'Póliza'),
+                ('created', 'Fecha de registro'),
+                ('estado', 'Estado'),
                 ('ver', 'Ver'),
             )
         }
@@ -703,6 +705,15 @@ class TramiteForm(forms.ModelForm):
             self.fields['moneda'].widget.attrs['readonly'] = 'readonly'
             self.fields['poliza'].widget.attrs['readonly'] = 'readonly'
             self.fields['cliente'].widget.attrs['readonly'] = 'readonly'
+
+    def clean_no_recibo(self, value):
+        if self.instance:
+            if self.instance.id:
+                related = Tramite.objects.filter(poliza=self.instance.poliza).values_list('no_recibo', flat=True)
+                related.push(self.instance.poliza.no_recibo)
+                if value in related:
+                    raise forms.ValidationError('Recibo de prima duplicado, por favor revise')
+        return value
 
 
 class FieldMapForm(forms.ModelForm):
@@ -1363,8 +1374,8 @@ class SiniestroForm(forms.ModelForm):
 class BasePolizaFilterForm(forms.Form):
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     ramo = forms.ModelChoiceField(queryset=SubRamo.objects.all(), required=False)
-    tipo_poliza = forms.ChoiceField(choices=TipoPoliza.choices(), required=False)
-    user = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=False)
+    user = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=False,
+                                  label="Usuario")
 
 
 class ReportPolizaForm(BasePolizaFilterForm):
