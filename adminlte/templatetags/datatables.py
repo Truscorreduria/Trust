@@ -16,7 +16,7 @@ def datatables_label(form, fieldname):
 @register.filter(name="datatables_field")
 def datatables_field(form, fieldname):
     try:
-        return form[fieldname]
+        return form[fieldname] or "-"
     except KeyError:
         return ""
 
