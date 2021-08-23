@@ -451,7 +451,7 @@ class PolizaForm(forms.ModelForm):
                 ('code', 'Número de trámite'),
                 ('tipo_tramite_display', 'Tipo trámite'),
                 ('user', 'Ingresado por'),
-                ('poliza', 'Póliza'),
+                ('no_recibo', 'Número de recibo'),
                 ('created', 'Fecha de registro'),
                 ('estado', 'Estado'),
                 ('ver', 'Ver'),
