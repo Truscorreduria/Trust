@@ -602,6 +602,7 @@ def index(request):
             'ejecutivo': get_ejecutivo(poliza),
             'cliente': get_attr(poliza, 'cliente.get_full_name'),
             'contratante': get_attr(poliza, 'contratante.get_full_name'),
+            'grupo': get_attr(poliza, 'grupo.name'),
         }
 
     def cartera(coin, group):
