@@ -6,6 +6,17 @@ $.fn.extend({
     }
 });
 
+const export_to_excel = function (data, filename) {
+    const row_data = [];
+    $.each(Object.keys(data), function(i, o){
+        row_data.push(data[o])
+    });
+    const book = XLSX.utils.book_new();
+    const sheet = XLSX.utils.json_to_sheet(row_data);
+    XLSX.utils.book_append_sheet(book, sheet, 'Datos');
+    XLSX.writeFile(book, filename);
+};
+
 
 Date.prototype.addDays = function (days) {
     let date = new Date(this.valueOf());

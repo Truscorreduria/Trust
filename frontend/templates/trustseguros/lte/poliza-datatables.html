@@ -254,6 +254,34 @@
                 });
             });
 
+            $(document).on('click', '.btn-norenew', function () {
+                Swal.fire({
+                    imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",
+                    title: 'Estas seguro?',
+                    text: "Esta acción no se puede revertir. La poliza se cambiará a estado no renovada y se ocultará.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, Procede',
+                    cancelButtonText: 'No, Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax("{% url 'trustseguros:polizas' %}", {
+                            method: "POST",
+                            data: {
+                                id: $('input[name="id"]').val(), norenovar: 'norenovar'
+                            }, success: function (response) {
+                                redraw_object(response);
+                                update_table(response);
+                            }
+                        });
+                    } else {
+                        $('#btn-norenew').removeAttr('disabled')
+                    }
+                });
+            });
+
             $(document).on('click', '.btn-null', function () {
                 Swal.fire({
                     imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",

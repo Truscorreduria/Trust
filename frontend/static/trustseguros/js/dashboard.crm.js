@@ -3,33 +3,54 @@ $(document).ready(function () {
 
     const show_data = function () {
         const data = $(this).data();
-        let html = ` <table class="table">
-                        <thead>
-                            <tr>
-                                <td>Número</td>
-                                <td>Prospecto</td>
-                                <td>Campaña</td>
-                                <td class="numberinput">Días</td>
-                                <td class="numberinput">Valor nuevo</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${Object.keys(data).map(row => `<tr>
-                                <td><a href="/trustseguros/oportunidades/${data[row].linea}/#${data[row].id}">${data[row].code}</a></td>
-                                <td>${data[row].prospect.name}</td>
-                                <td>${data[row].campain.name}</td>
-                                <td class="numberinput">${data[row].dias}</td>
-                                <td class="numberinput">${data[row].valor_nuevo}</td>
-                            </tr>`).join("")}
-                        </tbody>
-                    </table>`;
+        let html = `<div class="container-fluid">
+                        <div class="table-responsive">
+                            <table class="table" id="report-table" style="width: 100%">
+                                <thead>
+                                    <tr>
+                                        <td>Número</td>ikk
+                                        <td>Prospecto</td>
+                                        <td>Campaña</td>
+                                        <td class="numberinput">Días</td>
+                                        <td class="numberinput">Valor nuevo</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.keys(data).map(row => `<tr>
+                                        <td><a href="/trustseguros/oportunidades/${data[row].linea}/#${data[row].id}">${data[row].code}</a></td>
+                                        <td>${data[row].prospect.name}</td>
+                                        <td>${data[row].campain.name}</td>
+                                        <td class="numberinput">${data[row].dias}</td>
+                                        <td class="numberinput">${data[row].valor_nuevo}</td>
+                                    </tr>`).join("")}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row float-right">
+                            <button type="button" class="btn btn-info btn-download">
+                                <i class="fa fa-file-excel"></i>
+                                Descargar
+                            </button>
+                        </div>
+                    </div>`;
         dashModal.iziModal('destroy');
         dashModal.empty().append(html);
         dashModal.iziModal({
             title: 'Oportunidades de negocio',
             width: 1200, padding: 20, fullscreen: false, zindex: 1500,
             headerColor: '#326634'
-        }).iziModal('open')
+        }).iziModal('open');
+
+        $('#report-table').dataTable({
+            dom: 'Bfrtip',
+            language: ES_ni,
+        });
+
+        $('.btn-download')
+            .off('click')
+            .on('click', () => {
+                export_to_excel(data, "Oportunidades de negocio.xlsx");
+            })
     };
 
 
@@ -49,6 +70,7 @@ $(document).ready(function () {
                 hasta: $('.card-crm input[name="hasta"]').val()
             },
             success: function (response) {
+                debugger
                 let sellers = _.groupBy(response.oportunidades, 'vendedor.full_name');
                 let crm = $('#dashboard-crm tbody').empty();
                 Object.keys(sellers).map(function (o, i) {

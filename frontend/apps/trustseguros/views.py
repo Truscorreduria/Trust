@@ -621,6 +621,17 @@ def index(request):
         return [poliza_json(p) for p in Poliza.objects.filter(
             estado_poliza=EstadoPoliza.ACTIVA, moneda=coin)]
 
+    def oportunidad_to_json(oportunidad):
+        return {
+            'id': get_attr(oportunidad, 'id'),
+            'campain': get_attr(oportunidad, 'campain.name'),
+            'linea': get_attr(oportunidad, 'linea.name'),
+            'status': get_attr(oportunidad, 'get_status_display'),
+            'valor_nuevo': get_attr(oportunidad, 'valor_nuevo'),
+            'valor_exceso': get_attr(oportunidad, 'valor_exceso'),
+            **oportunidad.data_load()
+        }
+
     if request.method == 'POST':
         form = DashboardFiltersForm(request.POST)
         response = {}
@@ -1099,6 +1110,10 @@ class Polizas(Datatables):
             else:
                 if instance.estado_poliza in [EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]:
                     buttons = [{
+                        'class': 'btn btn-default btn-norenew',
+                        'icon': 'fa fa-fan',
+                        'text': 'No Renovar',
+                    }, {
                         'class': 'btn btn-info btn-renew',
                         'icon': 'fa fa-fan',
                         'text': 'Renovar',
@@ -1247,6 +1262,13 @@ class Polizas(Datatables):
             form = self.get_form()(instance=nueva)
             html_form = self.html_form(nueva, request, form, 'POST')
             return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
+        if 'norenovar' in request.POST:
+            p = Poliza.objects.get(id=request.POST.get('id'))
+            p.estado_poliza = EstadoPoliza.NORENOVADA
+            p.save()
+            form = self.get_form()(instance=p)
+            html_form = self.html_form(p, request, form, 'POST')
+            return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'import_data' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
             file = request.FILES['file']
@@ -2459,6 +2481,7 @@ class ReporteCRM(ReportLab):
             'Número': get_attr(instance, 'code'),
             'Línea': get_attr(instance, 'linea.name'),
             'Campaña': get_attr(instance, 'campain.name'),
+            'Prospecto': get_attr(instance, 'prospect.get_full_name'),
             'Ramo': get_attr(instance, 'ramo.name'),
             'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
             'Estado': instance.get_status_display(),

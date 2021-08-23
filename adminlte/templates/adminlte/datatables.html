@@ -46,7 +46,6 @@
 
 
 {% block javascript %}
-
     <script type="text/javascript">
         const $ajax_getCollection = "{% url 'ajax_getCollection' %}";
         const $ajax_autocomplete = "{% url 'ajax_autocomplete' %}";
@@ -54,7 +53,6 @@
         const $ajax_soporte = "{% url 'trustseguros:documentos' %}";
         const $ajax_bitacora = "{% url 'trustseguros:comentarios' %}";
     </script>
-
     <script src="{% static 'adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
     <script src="{% static 'adminlte/plugins/moment/moment.min.js' %}"></script>
     <script src="{% static 'adminlte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
@@ -66,7 +64,6 @@
     <script src="{% static 'adminlte/plugins/growl/javascripts/jquery.growl.js' %}"></script>
     <script src="{% static 'adminlte/plugins/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
     <script src="{% static 'adminlte/plugins/inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
-
     <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/module.js' %}"></script>
     <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/uploader.js' %}"></script>
     <script type="text/javascript" src="{% static 'simditor/site/assets/scripts/hotkeys.js' %}"></script>
@@ -76,6 +73,8 @@
     <script type="text/javascript" src="{% static 'simditor-html/lib/simditor-html.js' %}"></script>
     <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
     <script type="text/javascript">
+
+        let object_changed = false;
 
         function li_errors(errors) {
             let li = ``;
@@ -90,6 +89,7 @@
         function process_response(response, textStatus, xhr) {
             redraw_object(response);
             if (xhr.status === 200) {
+                object_changed = false;
                 update_table(response);
                 $.growl.notice({
                     title: `Notificación`,
@@ -114,7 +114,7 @@
                 processData: false,
                 contentType: false,
                 success: function (response, textStatus, xhr) {
-                    callback(response, textStatus, xhr)
+                    callback(response, textStatus, xhr);
                 },
                 error: function (error) {
                     $.growl.error({
@@ -296,6 +296,13 @@
             }
         };
 
+        const form_changed = function () {
+            $(window).on('beforeunload', function () {
+                return '¿Estas seguro que deseas salir?';
+            });
+            object_changed = true;
+        };
+
         $(document).ready(function () {
             $(document).ajaxStop(function () {
                 apply_pluggins();
@@ -303,6 +310,8 @@
             $('#{{ opts.model_name }}-table').on('click', 'tbody tr', show_object);
 
             $(document).on('submit', '#{{ opts.model_name }}-form', form_submit);
+
+            $(document).on('change', '#{{ opts.model_name }}-form .form-control', form_changed);
 
             $(document).on('click', '.btn-perform', function () {
                 const form = $('#{{ opts.model_name }}-form')[0];
@@ -341,6 +350,28 @@
                 self.val(text);
             });
 
+            $(modal).on('closed', function (e) {
+                if (object_changed) {
+                    swal({
+                        title: '¿Estas seguro que quieres cerrar este formulario?',
+                        text: "Tienes cambios sin guardar!",
+                        imageUrl: "{% static 'cotizador/images/trusty/pregunta.png' %}",
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Si, cerrar!',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.value) {
+                            $(window).off('beforeunload');
+                            object_changed = false;
+                        } else {
+                            modal.iziModal('toggle')
+                        }
+                    })
+                }
+
+            });
         });
 
         function get_hash() {
@@ -353,7 +384,6 @@
         get_hash();
 
     </script>
-
     {% for script in media.js %}
         <script src="{% static script %}"></script>
     {% endfor %}

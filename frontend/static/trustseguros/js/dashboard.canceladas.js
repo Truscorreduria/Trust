@@ -8,30 +8,40 @@ $(document).ready(function () {
 
     const show_data = function () {
         const data = $(this).data();
-        let html = ` <table class="table">
-                        <thead>
-                            <tr>
-                                <td>Número de Póliza</td>
-                                <td>Fecha de emisión</td>
-                                <td>Fecha de vencimiento</td>
-                                <td>Cliente</td>
-                                <td>Contratante</td>
-                                <td>Ejecutivo</td>
-                                <td class="numberinput">Prima</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${Object.keys(data).map(row => `<tr>
-                                <td><a href="/trustseguros/polizas/#${data[row].id}">${data[row].no_poliza}</a></td>
-                                <td>${data[row].fecha_emision.toLocaleString('es-NI').slice(0, 10)}</td>
-                                <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
-                                <td>${data[row].cliente}</td>
-                                <td>${data[row].contratante}</td>
-                                <td>${data[row].ejecutivo}</td>
-                                <td class="numberinput">${intcommas(data[row].prima)}</td>
-                            </tr>`).join("")}
-                        </tbody>
-                    </table>`;
+        let html = `<div class="container-fluid" id="report-table"> 
+                        <div class="table-responsive">
+                            <table class="table" style="width: 100%">
+                            <thead>
+                                <tr>
+                                    <td>Número de Póliza</td>
+                                    <td>Fecha de emisión</td>
+                                    <td>Fecha de vencimiento</td>
+                                    <td>Cliente</td>
+                                    <td>Contratante</td>
+                                    <td>Ejecutivo</td>
+                                    <td class="numberinput">Prima</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.keys(data).map(row => `<tr>
+                                    <td><a href="/trustseguros/polizas/#${data[row].id}">${data[row].no_poliza}</a></td>
+                                    <td>${data[row].fecha_emision.toLocaleString('es-NI').slice(0, 10)}</td>
+                                    <td>${data[row].fecha_vence.toLocaleString('es-NI').slice(0, 10)}</td>
+                                    <td>${data[row].cliente}</td>
+                                    <td>${data[row].contratante}</td>
+                                    <td>${data[row].ejecutivo}</td>
+                                    <td class="numberinput">${intcommas(data[row].prima)}</td>
+                                </tr>`).join("")}
+                            </tbody>
+                        </table>
+                        </div>
+                        <div class="row float-right">
+                            <button type="button" class="btn btn-info btn-download">
+                                <i class="fa fa-file-excel"></i>
+                                Descargar
+                            </button>
+                        </div>
+                    </div>`;
 
         dashModal.iziModal('destroy');
         dashModal.empty().append(html);
@@ -39,7 +49,17 @@ $(document).ready(function () {
             title: 'Pólizas por vencer',
             width: 1600, padding: 20, fullscreen: false, zindex: 1500,
             headerColor: '#326634'
-        }).iziModal('open')
+        }).iziModal('open');
+
+        $('#report-table').dataTable({
+            dom: 'Bfrtip',
+            language: ES_ni,
+        });
+        $('.btn-download')
+            .off('click')
+            .on('click', () => {
+                export_to_excel(data, "Pólizas canceladas.xlsx");
+            })
     };
 
     const load_data = function () {
