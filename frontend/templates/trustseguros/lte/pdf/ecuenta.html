@@ -154,7 +154,7 @@
                     <th>Sub ramo</th>
                     <td>{{ poliza.sub_ramo }}</td>
                     <th>Prima total</th>
-                    <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|intcomma }}</td>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.prima_total|floatformat:'2'|intcomma }}</td>
                 </tr>
                 <tr>
                     <th>Fecha inicio</th>
@@ -162,7 +162,7 @@
                     <th>Fecha vencimiento</th>
                     <td>{{ poliza.fecha_vence }}</td>
                     <th>Total pagado</th>
-                    <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|intcomma }}</td>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.total_pagado|floatformat:'2'|intcomma }}</td>
                 </tr>
                 <tr>
                     <th>Forma de pago</th>
@@ -170,7 +170,7 @@
                     <th>Medio de pago</th>
                     <td>{{ poliza.get_m_pago_display }}</td>
                     <th>Saldo Pendiente</th>
-                    <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|intcomma }}</td>
+                    <td>{{ poliza.moneda.simbolo }} {{ poliza.saldo_pendiente|floatformat:'2'|intcomma }}</td>
                 </tr>
             </table>
 
@@ -215,7 +215,7 @@
                 </font>
             </div>
 
-            <h3 style="width: 100%; text-align: center"> - {{ page.page }} / {{ page.range }} -</h3>
+            <div style="width: 100%; text-align: center; margin-top:5mm"> - {{ page.page }} / {{ page.range }} -</div>
 
             <pdf:nextpage/>
 

@@ -1348,14 +1348,17 @@ class Poliza(BasePoliza):
         if model == Poliza:
             recibo = Poliza.objects.get(id=value)
             cuotas = Cuota.objects.filter(poliza=recibo).order_by('fecha_vence')
-        data.append([self.celda(f'{cuotas[0].fecha_vence.strftime("%d/%m/%Y")}', cssclass='border-1 center recibo'),
-                     self.celda(f'Recibo # {recibo.no_recibo}', colspan=8, cssclass='border-1 left recibo'),
-                     self.celda(None, render=False),
-                     self.celda(None, render=False),
-                     self.celda(None, render=False),
-                     self.celda(None, render=False),
-                     self.celda(None, render=False),
-                     ])
+
+        if len(cuotas) > 0:
+            data.append([self.celda(f'{cuotas[0].fecha_vence.strftime("%d/%m/%Y")}', cssclass='border-1 center recibo'),
+                         self.celda(f'Recibo # {recibo.no_recibo}', colspan=8, cssclass='border-1 left recibo'),
+                         self.celda(None, render=False),
+                         self.celda(None, render=False),
+                         self.celda(None, render=False),
+                         self.celda(None, render=False),
+                         self.celda(None, render=False),
+                         ])
+
         for cuota in cuotas:
             border_class = 'border-01'
             rowspan = _rowspan(cuota)
