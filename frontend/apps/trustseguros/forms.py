@@ -709,7 +709,9 @@ class TramiteForm(forms.ModelForm):
         value = self.cleaned_data.get('no_recibo')
         if self.instance and value:
             if self.instance.id:
-                related = list(Tramite.objects.filter(poliza=self.instance.poliza).exclude(id=self.instance.id).values_list('no_recibo', flat=True))
+                related = list(
+                    Tramite.objects.filter(poliza=self.instance.poliza).exclude(id=self.instance.id).values_list(
+                        'no_recibo', flat=True))
                 related.append(self.instance.poliza.no_recibo)
                 if value in related:
                     raise forms.ValidationError('Recibo de prima duplicado, por favor revise')
@@ -988,7 +990,10 @@ class ReciboForm(forms.ModelForm):
 
     recibos = forms.Field(required=False, label="Recibos de esta póliza",
                           widget=RecibosPrima)
-
+    no_tramite = forms.CharField(required=False, label="Número de trámite",
+                                 widget=forms.TextInput(attrs={
+                                     'readonly': 'readonly'
+                                 }))
     prima_total = forms.FloatField(required=False, label="Prima total",
                                    widget=forms.NumberInput(
                                        attrs={
@@ -1039,6 +1044,7 @@ class ReciboForm(forms.ModelForm):
                 updated_initial['m_pago'] = instance.recibo_editar.m_pago
                 updated_initial['cantidad_cuotas'] = instance.recibo_editar.cantidad_cuotas
                 updated_initial['fecha_pago'] = instance.recibo_editar.fecha_pago
+                updated_initial['no_tramite'] = instance.recibo_editar.code
             else:
                 updated_initial['tabla_pagos'] = instance
                 updated_initial['prima_neta'] = instance.prima_neta
