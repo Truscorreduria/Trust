@@ -175,39 +175,32 @@
                 <tr>
                     <td class="container-padding header"
                         style="font-family:Helvetica, Arial, sans-serif;
-                        font-size:25px;font-weight:bold;color:#DF4726;
-                        display:flex;align-items:center;background-color:white;justify-content:space-evenly;
-padding-top: 50px">
+                        font-size:25px;font-weight:bold;color:#DF4726;padding-top: 50px">
+                        <table>
+                            <tr>
+                                <td>
+                                    <span>
+                                        <img src="https://www.trustcorreduria.com/static/cotizador/images/logo.gif"
+                                             alt="" height="75">
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>Pólizas a vencer {{ grupo.name }}.</span>
+                                </td>
+                            </tr>
+                        </table>
 
-                        <span>
-                            <img src="https://www.trustcorreduria.com/static/cotizador/images/logo.gif"
-                                 alt="" height="75">
-                        </span>
-                        <span>Pólizas a vencer {{ inicio|date:'d/m/Y' }} - {{ fin|date:'d/m/Y' }}.</span>
+
                     </td>
                 </tr>
 
-
-                <tr>
-                    <td class="container-padding header"
-                        style="font-family:Helvetica, Arial, sans-serif;
-                        font-size:25px;font-weight:bold;color:#DF4726;
-                        display:flex;align-items:center;background-color:white;justify-content:center;
-padding-top: 10px">
-                        <span>{{ grupo.name }}</span><br>
-                    </td>
-                </tr>
                 <tr>
                     <td class="container-padding content" align="left"
                         style="padding-left:24px;padding-right:24px;padding-top:12px;padding-bottom:12px;background-color:#ffffff">
-                        <br>
-
                         <table style="border-collapse: collapse;width: 100%;">
                             <thead>
                             <tr>
                                 <th>Póliza</th>
-                                <th>Ramo</th>
-                                <th>Sub Ramo</th>
                                 <th>Aseguradora</th>
                                 <th>Cliente</th>
                                 <th>Vencimiento</th>
@@ -218,12 +211,14 @@ padding-top: 10px">
                             <tbody>
                             {% for poliza in polizas %}
                                 <tr>
-                                    <td>{{ poliza.no_poliza }}</td>
-                                    <td>{{ poliza.ramo }}</td>
-                                    <td>{{ poliza.sub_ramo }}</td>
+                                    <td>
+                                        <a href="https://www.trustcorreduria.com/trustseguros/polizas/#{{ poliza.id|floatformat:'i' }}"
+                                           target="_blank">{{ poliza.no_poliza }}</a>
+                                    </td>
                                     <td>{{ poliza.aseguradora.name }}</td>
                                     <td>{{ poliza.cliente.get_full_name }}</td>
                                     <td>{{ poliza.fecha_vence|date:'d/m/Y' }}</td>
+                                    <td>{{ poliza.ejecutivo }}</td>
                                     <td>{{ poliza.grupo }}</td>
                                 </tr>
                             {% endfor %}
@@ -235,12 +230,12 @@ padding-top: 10px">
                 <tr>
                     <td class="container-padding footer-text" align="left"
                         style="font-family:Helvetica, Arial, sans-serif;font-size:12px;line-height:16px;color:#aaaaaa;padding-left:24px;padding-right:24px">
-                        <br><br>
-                        Managua {{ inicio }}.
-                        <br><br>
+                        <br>
+                        Managua.
+                        <br>
                         <a href="https://www.trustcorreduria.com/" style="color:#aaaaaa">www.trustcorreduria.com</a><br>
 
-                        <br><br>
+                        <br>
 
                     </td>
                 </tr>

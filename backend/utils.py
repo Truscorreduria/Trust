@@ -1,5 +1,20 @@
 import calendar
 from datetime import timedelta, datetime
+from openpyxl import Workbook
+from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
+from django.http import HttpResponse, HttpResponseRedirect
+
+
+def render_to_excell(data, filename="Reporte.xlsx"):
+    book = Workbook()
+    sheet = book.active
+    for row in data:
+        sheet.append(row)
+    response = HttpResponse(content_type="application/ms-excel")
+    content = "attachment; filename={0}".format(filename)
+    response["Content-Disposition"] = content
+    book.save(response)
+    return response
 
 
 def daysOfNextMont(last_day):
