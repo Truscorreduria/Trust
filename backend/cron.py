@@ -148,9 +148,7 @@ def notificacion_pagos_vencidos():
                files=None)
 
 
-def polizas_por_vencer_30():
-    hoy = datetime.now()
-    fecha = hoy + timedelta(days=30)
+def notificar_polizas_por_vencer(fecha):
     grupos = Grupo.objects.all()
     for grupo in grupos:
         polizas = Poliza.objects.filter(grupo=grupo,
@@ -159,33 +157,49 @@ def polizas_por_vencer_30():
                                         fecha_vence__day=fecha.day,
                                         estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]
                                         )
-        html = render_to_string('trustseguros/lte/email/notificacion_por_vencer_grupo.html', {
-            'grupo': grupo,
-            'polizas': polizas,
-        })
-        attachment = BytesIO()
-        book = Workbook()
-        sheet = book.active
-        sheet.append([
-            'Número de Póliza',
-            'Cliente',
-            'Fecha de vencimiento',
-            'Grupo',
-            'Ejecutivo',
-        ])
-        for poliza in polizas:
+        if polizas and polizas.count() > 0:
+            html = render_to_string('trustseguros/lte/email/notificacion_por_vencer_grupo.html', {
+                'grupo': grupo,
+                'polizas': polizas,
+            })
+            attachment = BytesIO()
+            book = Workbook()
+            sheet = book.active
             sheet.append([
-                poliza.no_poliza,
-                poliza.cliente.get_full_name(),
-                poliza.fecha_vence.strftime('%d/%m/%y'),
-                poliza.grupo.name,
-                poliza.ejecutivo.get_full_name(),
+                'Número de Póliza',
+                'Cliente',
+                'Fecha de vencimiento',
+                'Grupo',
+                'Ejecutivo',
             ])
-        book.save(attachment)
-        subject = f'Recordatorio de Pólizas por Vencer {grupo.name}'
-        files = [("attachment", ('Polizas por vencer.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
-        send_email(subject,
-                   grupo.email_notificacion,
-                   html=html,
-                   files=files
-                   )
+            for poliza in polizas:
+                sheet.append([
+                    poliza.no_poliza,
+                    poliza.cliente.get_full_name(),
+                    poliza.fecha_vence.strftime('%d/%m/%y'),
+                    poliza.grupo.name,
+                    poliza.ejecutivo.get_full_name(),
+                ])
+            book.save(attachment)
+            subject = f'Recordatorio de Pólizas por Vencer {grupo.name}'
+            files = [("attachment", ('Polizas por vencer.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
+            send_email(subject,
+                       grupo.email_notificacion,
+                       html=html,
+                       files=files
+                       )
+
+
+def polizas_por_vencer_30():
+    hoy = datetime.now()
+    fecha = hoy + timedelta(days=30)
+    notificar_polizas_por_vencer(fecha)
+
+
+def polizas_por_vencer_60():
+    hoy = datetime.now()
+    fecha = hoy + timedelta(days=60)
+    notificar_polizas_por_vencer(fecha)
+
+
+

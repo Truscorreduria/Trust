@@ -161,70 +161,43 @@
 {% load humanize %}
 <body style="margin:0; padding:0;" bgcolor="#F0F0F0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
 
-<!-- 100% background wrapper (grey background) -->
 <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" bgcolor="#F0F0F0">
     <tr>
-        <td align="center" valign="top" bgcolor="#F0F0F0" style="background-color: #F0F0F0;">
+        <td align="center" valign="top" bgcolor="#F0F0F0" style="background-color: #F0F0F0; color: #000000">
 
-            <br>
-
-            <!-- 600px container (white background) -->
             <table border="0" width="1200" cellpadding="0" cellspacing="0" class="container"
                    style="width:1200px; max-width:1200px">
 
                 <tr>
-                    <td class="container-padding header"
-                        style="font-family:Helvetica, Arial, sans-serif;
-                        font-size:25px;font-weight:bold;color:#DF4726;padding-top: 50px">
-                        <table>
-                            <tr>
-                                <td>
-                                    <span>
-                                        <img src="https://www.trustcorreduria.com/static/cotizador/images/logo.gif"
-                                             alt="" height="75">
-                                    </span>
-                                </td>
-                                <td>
-                                    <span>Pólizas a vencer {{ grupo.name }}.</span>
-                                </td>
-                            </tr>
-                        </table>
+                    <td class="container-padding content" align="center"
+                        style="background-color:#ffffff; padding-bottom: 50px;">
+                        <img src="https://www.trustcorreduria.com/static/seguros/wp-content/uploads/2018/05/trust-logo-300px.png"
+                             alt="" height="75">
+                    </td>
+                </tr>
 
-
+                <tr>
+                    <td class="container-padding content" align="center"
+                        style="background-color:#ffffff; font-size: 22pt">
+                        Pólizas a vencer {{ grupo.name }} ({{ polizas.count }})
                     </td>
                 </tr>
 
                 <tr>
                     <td class="container-padding content" align="left"
                         style="padding-left:24px;padding-right:24px;padding-top:12px;padding-bottom:12px;background-color:#ffffff">
-                        <table style="border-collapse: collapse;width: 100%;">
-                            <thead>
-                            <tr>
-                                <th>Póliza</th>
-                                <th>Aseguradora</th>
-                                <th>Cliente</th>
-                                <th>Vencimiento</th>
-                                <th>Ejecutivo</th>
-                                <th>Grupo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for poliza in polizas %}
-                                <tr>
-                                    <td>
-                                        <a href="https://www.trustcorreduria.com/trustseguros/polizas/#{{ poliza.id|floatformat:'i' }}"
-                                           target="_blank">{{ poliza.no_poliza }}</a>
-                                    </td>
-                                    <td>{{ poliza.aseguradora.name }}</td>
-                                    <td>{{ poliza.cliente.get_full_name }}</td>
-                                    <td>{{ poliza.fecha_vence|date:'d/m/Y' }}</td>
-                                    <td>{{ poliza.ejecutivo }}</td>
-                                    <td>{{ poliza.grupo }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-
+                        {% for poliza in polizas %}
+                            <div style="border-bottom: 1px solid silver; margin-bottom:25px;">
+                                <div><b>Póliza:</b> <a
+                                        href="https://www.trustcorreduria.com/trustseguros/polizas/#{{ poliza.id|floatformat:'i' }}"
+                                        target="_blank">{{ poliza.no_poliza }}</a></div>
+                                <div><b>Cliente:</b> {{ poliza.cliente.get_full_name }}</div>
+                                <div><b>Fecha Vencimiento:</b> {{ poliza.fecha_vence|date:'d/m/Y' }}</div>
+                                <div><b>Aseguradora:</b> {{ poliza.aseguradora.name }}</div>
+                                <div><b>Grupo:</b> {{ poliza.grupo }}</div>
+                                <div><b>Ejecutivo:</b> {{ poliza.ejecutivo }}</div>
+                            </div>
+                        {% endfor %}
                     </td>
                 </tr>
                 <tr>
@@ -240,13 +213,10 @@
                     </td>
                 </tr>
             </table>
-            <!--/600px container -->
-
 
         </td>
     </tr>
 </table>
-<!--/100% background wrapper-->
 
 </body>
 </html>
