@@ -119,7 +119,6 @@ def notificacion_pagos_por_vencer():
     cuotas = Cuota.objects.filter(estado=EstadoPago.VIGENTE,
                                   fecha_vence__gte=inicio,
                                   fecha_vence__lte=fin)
-    print(cuotas.count())
     html = render_to_string('trustseguros/lte/email/notificacion_pagos_por_vencer.html', {
         'pagos': cuotas,
         'inicio': inicio,
@@ -202,4 +201,25 @@ def polizas_por_vencer_60():
     notificar_polizas_por_vencer(fecha)
 
 
+def notificar_poliza_por_vencer_cliente_email(poliza, cliente, email):
+    pass
 
+
+def polizas_por_vencer_cliente():
+    now = datetime.now()
+    fecha = now + timedelta(days=32)
+    polizas = Poliza.objects.filter(estado_poliza=EstadoPoliza.ACTIVA,
+                                    fecha_vence__day=fecha.day,
+                                    fecha_vence__month=fecha.month,
+                                    fecha_vence__year=fecha.year,
+                                    )
+    if polizas and polizas.count() > 0:
+        for poliza in polizas:
+            cliente = poliza.cliente
+            if cliente.tipo_cliente == TipoCliente.NATURAL and cliente.email_personal:
+                notificar_poliza_por_vencer_cliente_email(poliza, cliente, cliente.email_personal)
+            if cliente.tipo_cliente == TipoCliente.JURIDICO:
+                contactos = Contacto.objects.filter(cliente=cliente)
+                if contactos and contactos.count() > 0:
+                    if contactos[0].email:
+                        notificar_poliza_por_vencer_cliente_email(poliza, cliente, contactos[0].email)
