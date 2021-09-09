@@ -1464,3 +1464,15 @@ class DashboardFiltersForm(forms.Form):
             'desde': desde, 'hasta': hasta
         })
         super().__init__(*args, **kwargs)
+
+
+class GrupoForm(forms.ModelForm):
+    email_cliente = forms.CharField(label="", required=False,
+                                    widget=forms.Textarea(attrs={
+                                        'class': "htmleditor",
+                                        'data-autosave': "editor-content",
+                                    }))
+
+    class Meta:
+        model = Grupo
+        fields = '__all__'

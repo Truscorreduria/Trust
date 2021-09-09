@@ -674,6 +674,8 @@ class Grupo(Base):
     autorenovacion = models.BooleanField(default=False)
     email_notificacion = models.CharField(max_length=500, null=True, blank=True,
                                           verbose_name="email para notificaciones")
+    email_cliente = models.TextField(max_length=10000, default='', null=True, blank=True,
+                                   verbose_name='Contenido del correo')
 
     def __str__(self):
         return self.name

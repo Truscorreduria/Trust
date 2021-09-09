@@ -966,10 +966,28 @@ class Ramos(Datatables):
 
 
 class Grupos(Datatables):
+    modal_width = 900
     model = Grupo
+    form = GrupoForm
     list_display = ('name', 'email_notificacion')
     search_fields = ('name',)
-    fields = ('name', 'autorenovacion', 'email_notificacion')
+    fieldsets = [
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('name', 'email_notificacion'),
+                ('autorenovacion',),
+            ),
+        },
+        {
+            'id': 'notificacion',
+            'name': 'Notificaciónes para clientes',
+            'fields': (
+                ('email_cliente',),
+            ),
+        },
+    ]
 
 
 class SubRamos(Datatables):
