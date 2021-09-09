@@ -151,7 +151,7 @@ def notificar_polizas_por_vencer(fecha):
                     poliza.ejecutivo.get_full_name(),
                 ])
             book.save(attachment)
-            subject = f'Recordatorio de Pólizas por Vencer {grupo.name}'
+            subject = f'Recordatorio de Pólizas por Vencer {grupo.name} {fecha.strftime("%d/%m/%y")}'
             files = [("attachment", ('Polizas por vencer.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
             send_email(subject,
                        grupo.email_notificacion,
