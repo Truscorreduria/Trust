@@ -673,9 +673,11 @@ class Grupo(Base):
     name = models.CharField(max_length=65, verbose_name="nombre")
     autorenovacion = models.BooleanField(default=False)
     email_notificacion = models.CharField(max_length=500, null=True, blank=True,
-                                          verbose_name="email para notificaciones")
+                                          verbose_name="email para notificaciones de pólizas a vencer")
     email_cliente = models.TextField(max_length=10000, default='', null=True, blank=True,
-                                   verbose_name='Contenido del correo')
+                                     verbose_name='Contenido del correo')
+    notificacion_cliente = models.BooleanField(default=True,
+                                               verbose_name="activar notificaciónes que se envian al cliente")
 
     def __str__(self):
         return self.name
@@ -1461,6 +1463,23 @@ class TipoTramite:
                (cls.RENOVACION, "Renovaciones"), (cls.LIQUIDACION, "Liquidaciones")
 
 
+class SubTipoTramite:
+    INCLUSION = 1
+    EXCLUSION = 2
+    RENOVACION = 3
+    AUMENTO_SUMA = 4
+    DISMINUCION_SUMA = 5
+    CANCELACION = 6
+    MODIFICACION = 7
+
+    @classmethod
+    def choices(cls):
+        return (cls.INCLUSION, "Inclusión"), (cls.EXCLUSION, "Exclusión"), \
+               (cls.RENOVACION, "Renovación"), (cls.AUMENTO_SUMA, "Aumento de Suma"), \
+               (cls.DISMINUCION_SUMA, "Disminución de suma"), (cls.CANCELACION, "Cancelación"), \
+               (cls.MODIFICACION, "Modificación")
+
+
 class EstadoTramite:
     ENPROCESO = 'En Proceso'
     PENDIENTE = 'Pendiente documentación'
@@ -1475,6 +1494,8 @@ class EstadoTramite:
 
 class Tramite(Base):
     tipo_tramite = models.PositiveSmallIntegerField(choices=TipoTramite.choices(), null=True)
+    sub_tipo_tramite = models.PositiveSmallIntegerField(choices=SubTipoTramite.choices(), null=True, blank=True,
+                                                        verbose_name="sub tipo de trámite")
     contacto_aseguradora = models.ForeignKey(ContactoAseguradora, null=True, on_delete=models.SET_NULL, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

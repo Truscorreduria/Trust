@@ -2,6 +2,12 @@ from .signals import *
 from django.template import Template, Context
 from io import BytesIO
 from openpyxl import Workbook
+from twilio.rest import Client
+from django.conf import settings
+
+account_sid = settings.TWILIO_ACCOUNT_SID
+auth_token = settings.TWILIO_AUTH_TOKEN
+client = Client(account_sid, auth_token)
 
 
 def notificaciones_polizas_vencidas():
@@ -172,8 +178,27 @@ def polizas_por_vencer_60():
     notificar_polizas_por_vencer(fecha)
 
 
-def notificar_poliza_por_vencer_cliente_email(poliza, cliente, email):
-    pass
+def notificar_poliza_por_vencer_cliente_email(poliza, email):
+    email = "sistemas@trustcorreduria.com,xangcastle@gmail.com"
+    grupo = poliza.grupo
+    content = grupo.email_cliente.replace('[[', '{{').replace(']]', '}}')
+    template = Template(content)
+    context = Context({
+        'poliza': poliza
+    })
+    html = template.render(context)
+    send_email('Tu póliza # %s está cerca de vencer' % poliza.no_poliza, email,
+               html=html)
+
+
+def notificar_poliza_por_vencer_cliente_sms(poliza, numero):
+    numero = "+50583545689"
+    message = client.messages.create(
+        body=f'Tu póliza # {poliza.no_poliza} está cerca de vencer',
+        from_='+15017122661',
+        to=numero
+    )
+    return message.sid
 
 
 def polizas_por_vencer_cliente():
@@ -188,9 +213,51 @@ def polizas_por_vencer_cliente():
         for poliza in polizas:
             cliente = poliza.cliente
             if cliente.tipo_cliente == TipoCliente.NATURAL and cliente.email_personal:
-                notificar_poliza_por_vencer_cliente_email(poliza, cliente, cliente.email_personal)
+                notificar_poliza_por_vencer_cliente_email(poliza, cliente.email_personal)
+                if cliente.celular:
+                    pass
+                    # notificar_poliza_por_vencer_cliente_sms(poliza, cliente.celular)
             if cliente.tipo_cliente == TipoCliente.JURIDICO:
                 contactos = Contacto.objects.filter(cliente=cliente)
                 if contactos and contactos.count() > 0:
                     if contactos[0].email:
-                        notificar_poliza_por_vencer_cliente_email(poliza, cliente, contactos[0].email)
+                        notificar_poliza_por_vencer_cliente_email(poliza, contactos[0].email)
+                    if contactos[0].celular:
+                        pass
+                        # notificar_poliza_por_vencer_cliente_sms(poliza, contactos[0].celular)
+
+
+def polizas_vencidas():
+    now = datetime.now()
+    grupos = Grupo.objects.all()
+    for grupo in grupos:
+        polizas = Poliza.objects.filter(grupo=grupo,
+                                        fecha_vence__year=now.year,
+                                        fecha_vence__month=now.month,
+                                        fecha_vence__day=now.day,
+                                        estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]
+                                        )
+        if polizas and polizas.count() > 0:
+            attachment = BytesIO()
+            book = Workbook()
+            sheet = book.active
+            sheet.append([
+                'Número de Póliza',
+                'Cliente',
+                'Fecha de vencimiento',
+                'Grupo',
+                'Ejecutivo',
+            ])
+            for poliza in polizas:
+                sheet.append([
+                    poliza.no_poliza,
+                    poliza.cliente.get_full_name(),
+                    poliza.fecha_vence.strftime('%d/%m/%y'),
+                    poliza.grupo.name,
+                    poliza.ejecutivo.get_full_name(),
+                ])
+            book.save(attachment)
+            files = [("attachment", ('Polizas por vencer.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
+            send_email(f'Pólizas vencidas al día de hoy {now.strftime("%d/%m/%Y")} {grupo.name}',
+                       html=f'Cantidad de pólizas vencidas {polizas.count()}',
+                       files=files)

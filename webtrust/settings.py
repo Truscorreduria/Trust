@@ -323,3 +323,6 @@ CRONJOBS = [
     ('0 5 * * *', 'backend.cron.notificacion_pagos_por_vencer'),
     ('0 6 * * *', 'backend.cron.notificacion_pagos_vencidos'),
 ]
+
+TWILIO_ACCOUNT_SID = "AC27a7a911a29899bb2e26db62dcaefed0"
+TWILIO_AUTH_TOKEN = "07032e4e35bdf750beec2090e5e83c5f"

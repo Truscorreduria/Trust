@@ -985,6 +985,7 @@ class Grupos(Datatables):
             'name': 'Notificaciónes para clientes',
             'fields': (
                 ('email_cliente',),
+                ('notificacion_cliente',),
             ),
         },
     ]
@@ -1349,6 +1350,7 @@ class Tramites(Datatables):
     model = Tramite
     form = TramiteForm
     form_template = "trustseguros/lte/tramite-modal.html"
+    list_template = "trustseguros/lte/tramite-table.html"
     list_display = ('code', 'tipo_tramite.name', ('Cliente', 'cliente.name'),
                     ('Ingresado por', 'user.username'), ('Poliza', 'poliza.number'),
                     ('Fecha de registro', 'created'), ('Estado', 'estado.name'))
@@ -1387,6 +1389,23 @@ class Tramites(Datatables):
                'trustseguros/js/tramite.poliza.js', 'trustseguros/js/tramite.tablapagos.js', ],
         'css': ['trustseguros/lte/css/recibo.fields.localize.css', ]
     }
+
+    def get_buttons(self, request, instance=None):
+        buttons = self.buttons.copy()
+        if instance:
+            buttons.insert(0, {
+                'class': 'btn btn-warning btn-print',
+                'icon': 'fa fa-print',
+                'text': 'Imprimir Remisión',
+            })
+            buttons.insert(0, {
+                'class': 'btn btn-warning btn-perform',
+                'icon': 'fa fa-envelope',
+                'text': 'Enviar Remisión',
+                'perform': 'preparar_remision',
+                'callback': 'process_response',
+            })
+        return buttons
 
     def post(self, request):
         if 'finalizar' in request.POST:
@@ -1481,6 +1500,13 @@ class Tramites(Datatables):
             instance = self.get_instance(request)
             data = tabla_cuotas(instance, request)
             return JsonResponse(data, safe=False, encoder=Codec)
+        if 'imprimir_remision' in request.POST:
+            tramite = self.get_instance(request)
+            return render_to_pdf_response(request, 'trustseguros/lte/pdf/remision.html', {
+                'tramite': tramite
+            })
+        if 'preparar_remision' in request.POST:
+            return JsonResponse({}, encoder=Codec, safe=False)
         return super().post(request)
 
     def save_related(self, instance, data):

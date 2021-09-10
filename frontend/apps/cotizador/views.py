@@ -1121,7 +1121,6 @@ def iniciar_proc():
         nueva.file_circulacion = p.file_circulacion
         nueva.estado_poliza = EstadoPoliza.PENDIENTE
         nueva.save()
-        print(nueva)
         p.estado_poliza = EstadoPoliza.RENOVADA
 
         if s:

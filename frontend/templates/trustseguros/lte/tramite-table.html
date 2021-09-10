@@ -1,0 +1,30 @@
+{% extends 'adminlte/datatables.html' %}
+
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const imprimir_remision = function () {
+                const _this = $(this);
+                $.ajax('.', {
+                    method: "POST",
+                    data: {
+                        'imprimir_remision': 'imprimir_remision',
+                        'id': $('input[name="id"]').val()
+                    },
+                    success: function (response) {
+                        let blob = new Blob([response], {type: 'application/pdf'});
+                        let link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = `Remisión.pdf`;
+                        link.click();
+                        _this.removeAttr('disabled')
+                    }
+                })
+            };
+
+            $(document).on('click', '.btn-print', imprimir_remision);
+        })
+    </script>
+{% endblock %}

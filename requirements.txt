@@ -1,3 +1,4 @@
+arabic-reshaper==2.1.3
 asgiref==3.2.7
 astroid==2.1.0
 attrs==19.3.0
@@ -7,7 +8,7 @@ bleach==3.1.0
 cairocffi==1.0.2
 CairoSVG==2.3.1
 certifi==2018.11.29
-# cffi==1.12.3
+cffi==1.14.4
 chardet==3.0.4
 cryptography==2.8
 cssselect2==0.2.1
@@ -39,6 +40,7 @@ djangorestframework==3.11.0
 easy-thumbnails==2.5
 entrypoints==0.3
 et-xmlfile==1.0.1
+future==0.18.2
 gender-guesser==0.4.0
 html5lib==1.0.1
 httplib2==0.12.0
@@ -65,11 +67,11 @@ more-itertools==8.0.2
 nbconvert==5.6.1
 nbformat==4.4.0
 notebook==6.0.2
-# numpy==1.17.0
+numpy==1.20.0
 oauthlib==3.0.0
 odfpy==1.3.6
 openpyxl==2.5.9
-# pandas==0.24.2
+pandas==1.2.2
 pandocfilters==1.4.2
 parso==0.5.2
 pep8==1.7.1
@@ -78,7 +80,6 @@ pickleshare==0.7.5
 Pillow==5.3.0
 prometheus-client==0.7.1
 prompt-toolkit==2.0.10
-#psycopg2==2.7.6.1
 psycopg2-binary==2.8.4
 ptyprocess==0.6.0
 pycodestyle==2.5.0
@@ -92,6 +93,7 @@ pyparsing==2.3.0
 PyPDF2==1.26.0
 Pyphen==0.9.5
 pyrsistent==0.15.6
+python-bidi==0.4.2
 python-dateutil==2.8.0
 python3-openid==3.1.0
 pytz==2018.7
@@ -113,7 +115,7 @@ testpath==0.4.4
 tinycss2==1.0.2
 tornado==6.0.3
 traitlets==4.3.3
-typed-ast==1.1.0
+twilio==6.63.2
 ua-parser==0.8.0
 unicodecsv==0.14.1
 urllib3==1.24.1
@@ -123,7 +125,7 @@ WeasyPrint==47
 webencodings==0.5.1
 widgetsnbextension==3.5.1
 wrapt==1.10.11
-xhtml2pdf==0.2.3
+xhtml2pdf==0.2.5
 xlrd==1.1.0
 xlwt==1.3.0
 zipp==0.6.0
