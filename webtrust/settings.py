@@ -322,6 +322,10 @@ CRONJOBS = [
     ('0 2 * * *', 'backend.cron.renovacion_automatica'),
     ('0 5 * * *', 'backend.cron.notificacion_pagos_por_vencer'),
     ('0 6 * * *', 'backend.cron.notificacion_pagos_vencidos'),
+    ('0 1 * * *', 'backend.cron.polizas_por_vencer_30'),
+    ('0 2 * * *', 'backend.cron.polizas_por_vencer_60'),
+    ('0 3 * * *', 'backend.cron.polizas_por_vencer_cliente'),
+    ('0 4 * * *', 'backend.cron.polizas_vencidas'),
 ]
 
 TWILIO_ACCOUNT_SID = "AC27a7a911a29899bb2e26db62dcaefed0"

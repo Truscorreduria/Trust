@@ -257,8 +257,9 @@ def polizas_vencidas():
                     poliza.ejecutivo.get_full_name(),
                 ])
             book.save(attachment)
-            files = [("attachment", ('Polizas por vencer.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
+            files = [("attachment", ('Polizas vencidas.xlsx', attachment.getvalue(), 'application/vnd.ms-excel')), ]
             send_email(f'Pólizas vencidas al día de hoy {now.strftime("%d/%m/%Y")} {grupo.name}',
                        receipt='sistemas@trustcorreduria.com',
                        html=f'Cantidad de pólizas vencidas {polizas.count()}',
                        files=files)
+

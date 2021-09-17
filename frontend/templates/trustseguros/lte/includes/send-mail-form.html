@@ -1,0 +1,18 @@
+<form action="." method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            {{ form.from }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.to }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.content }}
+        </div>
+    </div>
+</form>
