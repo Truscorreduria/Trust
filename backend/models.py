@@ -2409,6 +2409,9 @@ class OportunityCausal:
 
 
 class Oportunity(BasePoliza):
+    user_create = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+                                    verbose_name="usuario que registra",
+                                    related_name="%(app_label)s_%(class)s_usuario_crea")
     code = models.CharField(max_length=6, null=True, blank=True, verbose_name="Número")
     campain = models.ForeignKey(Campain, on_delete=models.CASCADE, verbose_name=_("campaña"), null=True)
     linea = models.ForeignKey(Linea, on_delete=models.CASCADE, verbose_name=_("linea"), null=True)

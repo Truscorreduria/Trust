@@ -1931,6 +1931,10 @@ class Oportunidades(Datatables):
                     except ObjectDoesNotExist:
                         pass
 
+    def pre_save(self, instance, request):
+        instance.user_create = request.user
+        return instance
+
 
 # endregion
 
