@@ -1492,6 +1492,8 @@ class EstadoTramite:
 
 
 class Tramite(Base):
+    user_create = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+                                    verbose_name="usuario que registra")
     tipo_tramite = models.PositiveSmallIntegerField(choices=TipoTramite.choices(), null=True)
     sub_tipo_tramite = models.PositiveSmallIntegerField(choices=SubTipoTramite.choices(), null=True, blank=True,
                                                         verbose_name="sub tipo de trámite")
