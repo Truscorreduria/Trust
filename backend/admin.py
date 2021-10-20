@@ -3,7 +3,7 @@ from image_cropping.admin import ImageCroppingMixin
 from grappelli_extras.admin import entidad_admin
 from import_export.admin import ImportExportModelAdmin
 from .models import *
-from .forms import MarcaRecargoForm, InvitationForm
+from .forms import MarcaRecargoForm, InvitationForm, PolizaForm
 from django.shortcuts import render
 
 
@@ -114,7 +114,8 @@ class PolizaAdmin(ImportExportModelAdmin):
                 ('cedula', 'tipo_cobertura'),
                 ('telefono', 'celular'),
                 ('cesion_derecho', 'beneficiario'),
-                'domicilio'
+                'domicilio',
+                'media'
             )
         }),
         ('Datos del Vehículo', {
@@ -137,6 +138,7 @@ class PolizaAdmin(ImportExportModelAdmin):
             )
         }),
     )
+    form = PolizaForm
 
 
 @admin.register(Tramite)

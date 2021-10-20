@@ -78,3 +78,34 @@ class MarcaRecargoForm(forms.ModelForm):
 
 class InvitationForm(forms.Form):
     html = forms.CharField(widget=forms.Textarea)
+
+
+class SoportesWidget(forms.Widget):
+    template_name = 'backend/widgets/soportes.html'
+
+    def format_value(self, value):
+        if value:
+            content_type = ContentType.objects.get(app_label=value._meta.app_label,
+                                                   model=value._meta.model_name)
+            return {
+                'type': content_type,
+                'pk': value.pk,
+            }
+        return {}
+
+
+class PolizaForm(forms.ModelForm):
+    media = forms.Field(label="Soportes", required=False,
+                        widget=SoportesWidget())
+
+    class Meta:
+        model = Poliza
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance:
+            kwargs.update(initial={
+                'media': instance
+            })
+        super(PolizaForm, self).__init__(*args, **kwargs)

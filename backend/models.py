@@ -17,7 +17,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Avg, Sum
 from image_cropping.fields import ImageCropField
 from image_cropping import ImageRatioField
-from django.db.models import Q
 
 
 class Base(base):
