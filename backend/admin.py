@@ -82,6 +82,11 @@ class CoberturaPolizaTabular(admin.TabularInline):
     extra = 0
 
 
+class DatoPolizaTabular(admin.TabularInline):
+    model = DatoPoliza
+    extra = 0
+
+
 class CuotasTabular(admin.TabularInline):
     model = Cuota
     extra = 0
@@ -99,7 +104,7 @@ class PolizaAdmin(ImportExportModelAdmin):
                      'cliente__apellido_paterno', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
-    inlines = [CuotasTabular, CoberturaPolizaTabular]
+    inlines = [CuotasTabular, CoberturaPolizaTabular, DatoPolizaTabular]
     fieldsets = (
         ('Datos Personales', {
             'classes': ('grp-collapse', 'grp-open'),
