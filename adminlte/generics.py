@@ -270,9 +270,9 @@ class Datatables(View):
         status = 203
         instance = self.model()
         try:
-            form = self.get_form()(request=request)
+            form = self.get_form()(instance=instance, request=request)
         except TypeError:
-            form = self.get_form()
+            form = self.get_form()(instance=instance)
         html_form = self.html_form(instance, request, form, 'PUT')
         errors = []
 

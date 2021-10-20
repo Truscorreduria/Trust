@@ -1174,35 +1174,6 @@ class Polizas(Datatables):
                 buttons = []
         return buttons
 
-    def put(self, request):
-        status = 203
-        instance = self.model()
-        form = self.get_form()()
-        html_form = self.html_form(instance, request, form, 'PUT')
-        errors = []
-
-        if 'save' in request.PUT:
-            try:
-                form = self.get_form()(request.PUT)
-                if form.is_valid():
-                    form.save()
-                    instance = form.instance
-                    AddComment.send(instance, request=request,
-                                    comentario="Creado en estado %s" % instance.get_estado_poliza_display())
-                    status = 200
-                    self.save_related(instance=instance, data=request.PUT)
-                    form = self.get_form()(instance=instance)
-                    html_form = self.html_form(instance, request, form, "POST")
-                else:
-                    errors = [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
-                    print(errors)
-                    html_form = self.html_form(instance, request, form, "PUT")
-            except IntegrityError as e:
-                print(e)
-
-        return JsonResponse({'instance': instance.to_json(), 'form': html_form,
-                             'errors': errors}, status=status, encoder=Codec)
-
     def post(self, request):
         if 'activar' in request.POST:
             p = Poliza.objects.get(id=request.POST.get('id'))
@@ -1346,6 +1317,11 @@ class Polizas(Datatables):
 
     def pre_save(self, instance, request):
         instance.user_create = request.user
+        return instance
+
+    def pos_save(self, instance, request):
+        AddComment.send(instance, request=request,
+                        comentario="Creado en estado %s" % instance.get_estado_poliza_display())
         return instance
 
 
