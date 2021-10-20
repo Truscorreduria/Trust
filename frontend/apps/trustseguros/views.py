@@ -1344,6 +1344,10 @@ class Polizas(Datatables):
             p.monto_comision = data.getlist('tabla_pagos_monto_comision')[i].replace(',', '')
             p.save()
 
+    def pre_save(self, instance, request):
+        instance.user_create = request.user
+        return instance
+
 
 class Tramites(Datatables):
     modal_width = 1200

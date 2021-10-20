@@ -198,6 +198,12 @@ class Datatables(View):
     def get_form_errors(form):
         return [{'key': f, 'errors': e.get_json_data()} for f, e in form.errors.items()]
 
+    def pre_save(self, instance, request):
+        return instance
+
+    def pos_save(self, instance, request):
+        return instance
+
     def process_request(self, request, method, instance=None):
         status = 200
         errors = []
@@ -206,8 +212,10 @@ class Datatables(View):
         else:
             form = self.get_form()(request.POST)
         if form.is_valid():
-            form.save()
-            instance = form.instance
+            instance = form.save(commit=False)
+            instance = self.pre_save(instance, request)
+            instance.save()
+            instance = self.pos_save(instance, request)
             self.save_related(instance=instance, data=request.POST)
             form = self.get_form()(instance=instance)
             method = "POST"
