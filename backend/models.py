@@ -461,6 +461,9 @@ class Entidad(BaseEntity, Base):
 
 
 class BaseCliente(Base):
+    user_create = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL,
+                                    verbose_name="usuario que registra",
+                                    related_name="%(app_label)s_%(class)s_usuario_crea")
     nombre = models.CharField(max_length=600, null=True, blank=True)
     tipo_identificacion = models.PositiveSmallIntegerField(choices=TipoDoc.choices(), default=TipoDoc.CEDULA, null=True,
                                                            blank=True)

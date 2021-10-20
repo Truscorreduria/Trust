@@ -772,6 +772,10 @@ class PersonaNatural(Datatables):
             ]
         return super().get_buttons(request, instance=instance)
 
+    def pre_save(self, instance, request):
+        instance.user_create = request.user
+        return instance
+
 
 class PersonaJuridica(Datatables):
     modal_width = 1400
@@ -882,6 +886,10 @@ class PersonaJuridica(Datatables):
             c.celular = data.getlist('cliente_contacto-celular')[i]
             c.email_personal = data.getlist('cliente_contacto-email_personal')[i]
             c.save()
+
+    def pre_save(self, instance, request):
+        instance.user_create = request.user
+        return instance
 
 
 # endregion
