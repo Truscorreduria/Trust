@@ -1399,11 +1399,9 @@ class Tramites(Datatables):
                 'text': 'Imprimir Remisión',
             })
             buttons.insert(0, {
-                'class': 'btn btn-warning btn-perform',
+                'class': 'btn btn-warning btn-send',
                 'icon': 'fa fa-envelope',
                 'text': 'Enviar Remisión',
-                'perform': 'preparar_remision',
-                'callback': 'process_response',
             })
         return buttons
 
@@ -1506,7 +1504,15 @@ class Tramites(Datatables):
                 'tramite': tramite
             })
         if 'preparar_remision' in request.POST:
-            return JsonResponse({}, encoder=Codec, safe=False)
+            instance = self.get_instance(request)
+            form = EmailForm()
+            html = render_to_string('trustseguros/lte/includes/send-mail-form.html', {
+                'instance': instance,
+                'form': form,
+            })
+            return JsonResponse({
+                'html': html
+            }, encoder=Codec, safe=False)
         return super().post(request)
 
     def save_related(self, instance, data):

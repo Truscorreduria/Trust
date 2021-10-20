@@ -25,6 +25,20 @@
             };
 
             $(document).on('click', '.btn-print', imprimir_remision);
+            $(document).on('click', '.btn-send', function () {
+                const form = document.querySelector('form');
+                perform_action(form, 'preparar_remision', response => {
+                    modal.iziModal('destroy');
+                    modal.html(response.html);
+                    modal.iziModal({
+                        title: 'Enviar remisión',
+                        subtitle: 'Por favor lee el correo antes de enviar',
+                        width: 600, padding: 20, fullscreen: false, zindex: 1500,
+                        headerColor: '#326634'
+                    })
+                        .iziModal('open');
+                })
+            });
         })
     </script>
 {% endblock %}

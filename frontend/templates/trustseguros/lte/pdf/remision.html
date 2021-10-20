@@ -9,13 +9,29 @@
             size: letter portrait;
             margin: 1.5cm;
         }
-
-{% comment %}        body {
-            font-family: "Helvetica", "sans-serif";
-            color: #333333;
-            font-size: 10pt;
-        }{% endcomment %}
     </style>
+{% endblock %}
+
+{% block page_header %}
+    <table>
+        <tr>
+
+            <td class="pull-right">
+                <figure>
+                    <img src="{% static 'trustseguros/img/trust-logo-300px.png' %}" height="100">
+                </figure>
+            </td>
+            <td>
+
+            </td>
+            <td>
+                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
+                <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
+                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
+                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+            </td>
+        </tr>
+    </table>
 {% endblock %}
 
 

@@ -1476,3 +1476,15 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = '__all__'
+
+
+class EmailForm(forms.Form):
+    remiter = forms.CharField(max_length=250, required=True, label="de")
+    to = forms.CharField(max_length=250, required=True, label="Para")
+    subject = forms.CharField(max_length=250, required=True, label="Asunto")
+    body = forms.CharField(max_length=250, required=True, label="",
+                           widget=forms.Textarea(
+                               attrs={
+                                   'class': 'htmleditor'
+                               }
+                           ))

@@ -80,7 +80,7 @@ class ReferenciaAdmin(ImportExportModelAdmin):
 class CuotasTabular(admin.TabularInline):
     model = Cuota
     extra = 0
-    exclude = ('tramite',)
+    fields = ('monto', 'numero', 'fecha_vence', 'estado', 'monto_comision', 'fecha_pago_comision',)
 
 
 @admin.register(Poliza)
@@ -136,6 +136,7 @@ class TramiteAdmin(admin.ModelAdmin):
                     'nombres', 'apellidos', 'cedula', 'email', 'telefono', 'estado')
     list_filter = ('referente', 'movimiento', 'estado')
     search_fields = ('nombres', 'apellidos', 'cedula', 'email', 'telefono')
+    inlines = [CuotasTabular]
     # fieldsets = (
     #     ('', {
     #         'classes': ('grp-collapse', 'grp-open'),

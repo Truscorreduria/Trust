@@ -17,6 +17,34 @@
     <link rel="stylesheet" href="{% static 'adminlte/css/datatables.trust.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/ui.theme.trust.css' %}">
     <link rel="stylesheet" href="{% static 'adminlte/css/buttons.css' %}">
+    <style type="text/css">
+        .send-mail-input {
+            color: grey;
+        }
+
+        .send-mail-input {
+            outline: none;
+            border: none;
+            width: 80%;
+        }
+
+        .send-email-attachment {
+            display: flex;
+            padding: 20px;
+        }
+
+        .send-email-attachment figure {
+            cursor: pointer;
+        }
+
+        .send-email-attachment figure:active {
+            transform: scale(.95);
+        }
+
+        .send-email-attachment img {
+            width: 85px;
+        }
+    </style>
     {% for link in media.css %}
         <link rel="stylesheet" href="{% static link %}">
     {% endfor %}
