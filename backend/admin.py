@@ -77,6 +77,11 @@ class ReferenciaAdmin(ImportExportModelAdmin):
     list_filter = ('marca', ModeloListFilter, 'anno')
 
 
+class CoberturaPolizaTabular(admin.TabularInline):
+    model = CoberturaPoliza
+    extra = 0
+
+
 class CuotasTabular(admin.TabularInline):
     model = Cuota
     extra = 0
@@ -94,7 +99,7 @@ class PolizaAdmin(ImportExportModelAdmin):
                      'cliente__apellido_paterno', 'marca', 'modelo', 'chasis', 'no_poliza')
     list_filter = ('marca', 'tipo_cobertura', 'medio_pago')
     change_form_template = 'cotizador/admin/poliza.html'
-    inlines = [CuotasTabular]
+    inlines = [CuotasTabular, CoberturaPolizaTabular]
     fieldsets = (
         ('Datos Personales', {
             'classes': ('grp-collapse', 'grp-open'),
