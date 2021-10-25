@@ -23,8 +23,8 @@
                     }
                 })
             };
-
             $(document).on('click', '.btn-print', imprimir_remision);
+            $(document).on('click', '.email-attachment', imprimir_remision);
             $(document).on('click', '.btn-send', function () {
                 const form = document.querySelector('form');
                 perform_action(form, 'preparar_remision', response => {
@@ -39,6 +39,23 @@
                         .iziModal('open');
                 })
             });
+            $(document).on('submit', '.send-mail-form', function (e) {
+                e.preventDefault();
+                const data = new FormData(this);
+                data.append('enviar_remision', 'enviar_remision')
+                $.ajax('.', {
+                    method: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response)
+                    },
+                    error: function(response){
+                        console.log(response)
+                    }
+                })
+            })
         })
     </script>
 {% endblock %}

@@ -1,32 +1,47 @@
-{% load crispy_forms_filters %}
-<form action="." method="post">
+{% load static crispy_forms_filters %}
+<form action="." method="post" class="send-mail-form">
     {% csrf_token %}
+    <input type="hidden" name="id" value="{{ instance.id }}">
 
     <table style="width: 100%">
         <tr>
             <td>
-                <span class="send-mail-label">{{ form.remiter.label|capfirst }}:</span>
-                <input class="send-mail-input" type="text" name="{{ form.remiter.name }}"
-                        {% if form.remiter.value %} value="{{ form.remiter.value }}"{% endif %}>
+                <span class="send-mail-label">{{ form.de.label|capfirst }}:</span>
+                <input class="send-mail-input" type="text" name="{{ form.de.name }}"
+                        {% if form.de.value %} value="{{ form.de.value }}"{% endif %}>
             </td>
         </tr>
         <tr>
             <td>
-                <span class="send-mail-label">{{ form.to.label|capfirst }}:</span>
-                <input class="send-mail-input" type="text" name="{{ form.to.name }}"
-                        {% if form.to.value %} value="{{ form.to.value }}"{% endif %}>
+                <span class="send-mail-label">{{ form.para.label|capfirst }}:</span>
+                <input class="send-mail-input" type="text" name="{{ form.para.name }}"
+                        {% if form.para.value %} value="{{ form.para.value }}"{% endif %}>
             </td>
         </tr>
         <tr>
-            <td><span class="send-mail-label">{{ form.subject.label|capfirst }}:</span>
-                <input class="send-mail-input" type="text" name="{{ form.subject.name }}"
-                       {% if form.subject.value %}value="{{ form.subject.value }}"{% endif %}>
+            <td><span class="send-mail-label">{{ form.asunto.label|capfirst }}:</span>
+                <input class="send-mail-input" type="text" name="{{ form.asunto.name }}"
+                       {% if form.asunto.value %}value="{{ form.asunto.value }}"{% endif %}>
             </td>
         </tr>
     </table>
     <div class="row">
         <div class="col">
-            {{ form.body }}
+            <textarea name="{{ form.contenido.name }}" cols="30" rows="10" class="htmleditor"></textarea>
         </div>
+    </div>
+
+    <div class="send-email-attachment">
+        <figure class="email-attachment">
+            <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
+            <figcaption>Cotización</figcaption>
+        </figure>
+    </div>
+
+    <div class="send-email-buttons" style="display: flex; justify-content: flex-end">
+        <button type="submit" class="btn btn-primary btn-trust btn-send-mail">
+            <i class="fa fa-paper-plane"></i>
+            <span>Enviar</span>
+        </button>
     </div>
 </form>

@@ -1479,12 +1479,12 @@ class GrupoForm(forms.ModelForm):
 
 
 class EmailForm(forms.Form):
-    remiter = forms.CharField(max_length=250, required=True, label="de")
-    to = forms.CharField(max_length=250, required=True, label="Para")
-    subject = forms.CharField(max_length=250, required=True, label="Asunto")
-    body = forms.CharField(max_length=250, required=True, label="",
-                           widget=forms.Textarea(
-                               attrs={
-                                   'class': 'htmleditor'
-                               }
-                           ))
+    de = forms.CharField(max_length=250, required=True, label="de")
+    para = forms.CharField(max_length=250, required=True, label="Para")
+    asunto = forms.CharField(max_length=250, required=True, label="Asunto")
+    contenido = forms.CharField(max_length=10000, required=True, label="",
+                                widget=forms.Textarea(
+                                    attrs={
+                                        'class': 'htmleditor'
+                                    }
+                                ))

@@ -9,26 +9,28 @@
             size: letter portrait;
             margin: 1.5cm;
         }
+
+        body {
+            font-size: 12pt;
+        }
     </style>
 {% endblock %}
 
 {% block page_header %}
-    <table>
+    <table style="font-size: 10pt;">
         <tr>
 
-            <td class="pull-right">
+            <td>
                 <figure>
                     <img src="{% static 'trustseguros/img/trust-logo-300px.png' %}" height="100">
                 </figure>
             </td>
-            <td>
-
-            </td>
-            <td>
-                <p style="padding: 0; margin: 0;">Edificio Coworking Office Center.</p>
-                <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N.</p>
-                <p style="padding: 0; margin: 0;">Managua, Nicaragua</p>
-                <p style="padding: 0; margin: 0;">Teléfono (505) 2251 0108</p>
+            <td colspan="2" style="text-align:right">
+                <p style="color: #406840; font-weight: bold; padding: 0; margin: 0">Edificio Oficentro GZ. Planta Baja,
+                    MANAGUA, NICARAGUA</p>
+                <p style="padding: 0; margin: 0;">Del busto José Martí 1c E, 1c N. Barrio Largaespada.</p>
+                <p style="padding: 0; margin: 0;">Teléfono fijo +505 2251 0108, Teléfono Móvil +505 5871 3406</p>
+                <p style="padding: 0; margin: 0;">J0310000323194</p>
             </td>
         </tr>
     </table>
@@ -36,5 +38,61 @@
 
 
 {% block content %}
-    <p>texto de pruebas</p>
+    <table style="margin-top: 1cm; margin-bottom: 2cm;">
+        <tr>
+            <td style="text-align: right; font-weight: bold">Managua, Nicaragua</td>
+        </tr>
+        <tr>
+            <td style="text-align: right; font-weight: bold">12 de Agosto 2021</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Lic. Ana Graciela Aguilar</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Aceitera El Real S.A.</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Sus manos</td>
+        </tr>
+    </table>
+
+    <table style="margin-top: 1cm; margin-bottom: 1cm;">
+        <tr>
+            <td><b>Referencia:</b> {{ tramite.get_sub_tipo_tramite_display }}</td>
+        </tr>
+        <tr>
+            <td><b>Asegurado:</b> {{ tramite.cliente }}</td>
+        </tr>
+        <tr>
+            <td><b>Póliza:</b> {{ tramite.poliza.no_poliza }}</td>
+        </tr>
+    </table>
+
+    <p>Por este media hago formal entrega de adenda por {{ tramite.get_sub_tipo_tramite_display }}. A continuación,
+        detallo lo entregado:</p>
+
+    <table style="border: 1px solid black; border-collapse: collapse;">
+        <tr>
+            <td style="padding-top: 3px; padding-left: 3px"><b>Recibo de prima/monto</b></td>
+            <td style="padding-top: 3px; padding-left: 3px"><b>{{ tramite.no_recibo }}</b></td>
+            <td style="padding-top: 3px; padding-left: 3px"><b>${{ tramite.total }}</b></td>
+        </tr>
+        <tr>
+            <td style="padding-top: 3px; padding-left: 3px"><b>Asegurado/Certificado:</b></td>
+            <td style="padding-top: 3px; padding-left: 3px"><b>Mariana Varela</b></td>
+            <td style="padding-top: 3px; padding-left: 3px"><b>925</b></td>
+        </tr>
+    </table>
+
+    <p>Sin otro particular.</p>
+    <p style="margin-bottom: 4cm">Saludos cordiales.</p>
+
+    <div style="text-align: center; width: 100%;">
+        <p style="margin: 0; padding: 0;"><b style="color: #42698d">{{ user.get_full_name }}</b></p>
+        <p style="margin: 0; padding: 0;">Ejecutiva de Cuentas Jr.</p>
+        <p style="margin: 0; padding: 0;">Trust Correduría de Seguros</p>
+        <p style="margin: 0; padding: 0;">Cel. +505 8742-7466</p>
+        <p style="margin: 0; padding: 0;">Email. <a
+                href="email:{{ user.email }}">{{ user.email }}</a></p>
+    </div>
 {% endblock %}

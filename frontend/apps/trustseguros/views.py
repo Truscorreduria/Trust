@@ -1489,18 +1489,35 @@ class Tramites(Datatables):
         if 'imprimir_remision' in request.POST:
             tramite = self.get_instance(request)
             return render_to_pdf_response(request, 'trustseguros/lte/pdf/remision.html', {
-                'tramite': tramite
+                'tramite': tramite,
+                'user': request.user,
             })
         if 'preparar_remision' in request.POST:
             instance = self.get_instance(request)
-            form = EmailForm()
+            form = EmailForm(initial={
+                'de': request.user.email,
+                'asunto': f'Remisión de trámite #{instance.code}',
+            })
             html = render_to_string('trustseguros/lte/includes/send-mail-form.html', {
                 'instance': instance,
                 'form': form,
-            })
+            }, request=request)
             return JsonResponse({
                 'html': html
             }, encoder=Codec, safe=False)
+        if 'enviar_remision' in request.POST:
+            instance = self.get_instance(request)
+            form = EmailForm(request.POST)
+            if form.is_valid():
+                pass
+            else:
+                html = render_to_string('trustseguros/lte/includes/send-mail-form.html', {
+                    'instance': instance,
+                    'form': form,
+                }, request=request)
+            return JsonResponse({
+                'html': html
+            }, status=500)
         return super().post(request)
 
     def save_related(self, instance, data):
