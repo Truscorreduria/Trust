@@ -43,10 +43,7 @@
             <td style="text-align: right; font-weight: bold">Managua, Nicaragua</td>
         </tr>
         <tr>
-            <td style="text-align: right; font-weight: bold">12 de Agosto 2021</td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold">Lic. Ana Graciela Aguilar</td>
+            <td style="text-align: right; font-weight: bold">{{ tramite.created }}</td>
         </tr>
         <tr>
             <td style="font-weight: bold">Aceitera El Real S.A.</td>
@@ -77,21 +74,17 @@
             <td style="padding-top: 3px; padding-left: 3px"><b>{{ tramite.no_recibo }}</b></td>
             <td style="padding-top: 3px; padding-left: 3px"><b>${{ tramite.total }}</b></td>
         </tr>
-        <tr>
-            <td style="padding-top: 3px; padding-left: 3px"><b>Asegurado/Certificado:</b></td>
-            <td style="padding-top: 3px; padding-left: 3px"><b>Mariana Varela</b></td>
-            <td style="padding-top: 3px; padding-left: 3px"><b>925</b></td>
-        </tr>
     </table>
+    <p>{{ tramite.descripcion }}</p>
 
     <p>Sin otro particular.</p>
     <p style="margin-bottom: 4cm">Saludos cordiales.</p>
 
     <div style="text-align: center; width: 100%;">
         <p style="margin: 0; padding: 0;"><b style="color: #42698d">{{ user.get_full_name }}</b></p>
-        <p style="margin: 0; padding: 0;">Ejecutiva de Cuentas Jr.</p>
+        <p style="margin: 0; padding: 0;">Ejecutivo/a de Cuentas Jr.</p>
         <p style="margin: 0; padding: 0;">Trust Correduría de Seguros</p>
-        <p style="margin: 0; padding: 0;">Cel. +505 8742-7466</p>
+{#        <p style="margin: 0; padding: 0;">Cel. +505 8742-7466</p>#}
         <p style="margin: 0; padding: 0;">Email. <a
                 href="email:{{ user.email }}">{{ user.email }}</a></p>
     </div>
