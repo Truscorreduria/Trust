@@ -2748,6 +2748,11 @@ class SiniestroTramite(Base):
             o['cliente'] = {'id': '', 'name': ''}
         return o
 
+    class Meta:
+        permissions = (
+            ("trust_siniestros_tramites", "Trámites Siniestros(trustseguros)"),
+        )
+
 
 class Siniestro(Base):
     reclamo_aseguradora = models.CharField(max_length=10, null=True, blank=True, verbose_name="numero reclamo")
@@ -2797,4 +2802,20 @@ class Siniestro(Base):
         else:
             o['cliente'] = {'id': '', 'name': ''}
         return o
+
+    class Meta:
+        permissions = (
+            ("trust_siniestros", "Siniestros(trustseguros)"),
+        )
+
+# endregion
+
+# region Travel
+
+# class AsistenciaTravel(base):
+#     fecha_emision = models.DateField()
+#     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+#     fecha_salida = models.DateField()
+#     fecha_regreso = models.DateField()
+
 # endregion

@@ -190,33 +190,39 @@
             </li>
         {% endif %}
 
-        <li class="nav-item has-treeview">
-            <a href="#" class="nav-link active">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Siniestros
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:siniestrotramite' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Trámites
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'trustseguros:siniestro' %}" class="nav-link">
-                        <i class="far fa-dot-circle nav-icon"></i>
-                        <p>
-                            Liquidación
-                        </p>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        {% if perms.backend.trust_siniestros_tramites or perms.backend.trust_siniestros_tramites %}
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link active">
+                    <i class="nav-icon fas fa-circle"></i>
+                    <p>
+                        Siniestros
+                        <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    {% if perms.backend.trust_siniestros_tramites %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:siniestrotramite' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Trámites
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if perms.backend.trust_siniestros_tramites %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:siniestro' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Liquidación
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
 
         {% if perms.backend.trust_catalogos_aseguradora or perms.backend.trust_catalogos_grupo or perms.backend.trust_catalogos_ramo or perms.backend.trust_catalogos_subramo or perms.backend.trust_catalogos_linea or perms.backend.trust_catalogos_tarifa %}
             <li class="nav-item has-treeview">
