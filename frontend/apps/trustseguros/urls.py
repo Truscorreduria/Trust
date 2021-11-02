@@ -27,6 +27,14 @@ urlpatterns = [
     path('cobranza/', Recibos.as_view(), name="recibos"),
     path('siniestrotramite/', SiniestroTramite.as_view(), name="siniestrotramite"),
     path('siniestro/', Siniestros.as_view(), name="siniestro"),
+    path('travel_currencies/', CurrencyTravelView.as_view(), name="travel_currencies"),
+    path('travel_categories/', PlanCategoryTravelView.as_view(), name="travel_categories"),
+    path('travel_territories/', TerritoryTravelView.as_view(), name="travel_territories"),
+    path('travel_countries/', CountryTravelView.as_view(), name="travel_countries"),
+    path('travel_cities/', CityTravelView.as_view(), name="travel_cities"),
+
+
+
     path('reporte_tramite/', ReporteTramite.as_view(), name="reporte_tramite"),
     path('reporte_poliza_emitida/', ReportePolizaEmitida.as_view(), name="reporte_poliza_emitida"),
     path('reporte_poliza_cancelada/', ReportePolizaCancelada.as_view(), name="reporte_poliza_cancelada"),

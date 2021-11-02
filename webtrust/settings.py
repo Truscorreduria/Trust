@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'accounts',
     'reports',
     'api',
+    'travel_bridge',
 
     'adminlte',
     'django_user_agents',
@@ -330,3 +331,6 @@ CRONJOBS = [
 
 TWILIO_ACCOUNT_SID = "AC27a7a911a29899bb2e26db62dcaefed0"
 TWILIO_AUTH_TOKEN = "07032e4e35bdf750beec2090e5e83c5f"
+
+TRAVEL_URL = 'http://146.148.79.211/banpro_dev/'
+TRAVEL_KEY = 'd2ec2eb4-8002-4957-9059-3018bd1b606e'

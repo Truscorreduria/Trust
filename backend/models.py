@@ -2808,14 +2808,88 @@ class Siniestro(Base):
             ("trust_siniestros", "Siniestros(trustseguros)"),
         )
 
+
 # endregion
 
 # region Travel
 
-# class AsistenciaTravel(base):
-#     fecha_emision = models.DateField()
-#     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
-#     fecha_salida = models.DateField()
-#     fecha_regreso = models.DateField()
+
+class CurrencyTravel(base):
+    iso = models.CharField(max_length=4, primary_key=True)
+    name = models.CharField(max_length=160, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class PlanCategoryTravel(base):
+    name = models.CharField(max_length=160, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class PlanTravel(base):
+    title = models.CharField(max_length=160, verbose_name="nombre")
+    description = models.CharField(max_length=160, verbose_name="descripción")
+    languaje = models.CharField(max_length=3, verbose_name="lenguaje")
+    plan_category = models.ForeignKey(PlanCategoryTravel, on_delete=models.CASCADE, verbose_name="categoria")
+    num_pas = models.PositiveSmallIntegerField(verbose_name="")
+    min_tiempo = models.PositiveSmallIntegerField(verbose_name="")
+    max_tiempo = models.PositiveSmallIntegerField(verbose_name="")
+    min_age = models.PositiveSmallIntegerField(verbose_name="")
+    max_age = models.PositiveSmallIntegerField(verbose_name="")
+    normal_age = models.PositiveSmallIntegerField(verbose_name="")
+    family_plan = models.CharField(max_length=1, verbose_name="es plan familiar?")
+    plan_local = models.CharField(max_length=1, verbose_name="es plan local?")
+    combo = models.CharField(max_length=1, verbose_name="es combo?")
+    modo_plan = models.CharField(max_length=1, verbose_name="modo del plan")
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+class BenefitTravel(base):
+    name = models.CharField(max_length=160, verbose_name="nombre")
+    plan = models.ForeignKey(PlanTravel, on_delete=models.CASCADE)
+    valor_eng = models.CharField(max_length=160)
+    valor_spa = models.CharField(max_length=160)
+    extended_info = models.TextField(max_length=600, verbose_name="información adicional")
+
+    def __str__(self):
+        return self.name
+
+
+class TerritoryTravel(base):
+    name = models.CharField(max_length=160, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class CountryTravel(base):
+    iso = models.CharField(max_length=3, primary_key=True)
+    name = models.CharField(max_length=160, verbose_name="nombre")
+
+    def __str__(self):
+        return self.name
+
+
+class CityTravel(base):
+    iso = models.CharField(max_length=25, primary_key=True)
+    country = models.ForeignKey(CountryTravel, on_delete=models.CASCADE)
+    name = models.CharField(max_length=160, verbose_name="nombre")
+    state = models.CharField(max_length=160, verbose_name="estado")
+
+    def __str__(self):
+        return self.name
+
+
+class AsistenciaTravel(base):
+    fecha_emision = models.DateField()
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    fecha_salida = models.DateField()
+    fecha_regreso = models.DateField()
 
 # endregion

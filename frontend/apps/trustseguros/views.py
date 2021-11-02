@@ -2369,6 +2369,41 @@ class Siniestros(Datatables):
 # endregion
 
 
+# region travel banpro
+
+class CurrencyTravelView(Datatables):
+    model = CurrencyTravel
+    fields = ('iso', 'name')
+    list_display = ('iso', 'name')
+
+
+class PlanCategoryTravelView(Datatables):
+    model = PlanCategoryTravel
+    fields = ('name',)
+    list_display = ('name',)
+
+
+class TerritoryTravelView(Datatables):
+    model = TerritoryTravel
+    fields = ('name',)
+    list_display = ('name',)
+
+
+class CountryTravelView(Datatables):
+    model = CountryTravel
+    fields = ('name',)
+    list_display = ('name',)
+
+
+class CityTravelView(Datatables):
+    model = CityTravel
+    fields = ('name',)
+    list_display = ('name',)
+
+
+# endregion
+
+
 # region reportes
 
 

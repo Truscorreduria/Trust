@@ -212,7 +212,7 @@
         const open_object = function (id) {
             $.ajax('.', {
                 method: "POST",
-                data: {id: id, 'open': 'open'},
+                data: {pk: id, 'open': 'open'},
                 success: function (response, respose_text, xhr) {
                     modal.iziModal('destroy');
                     modal.empty().append(response.form);
@@ -229,7 +229,7 @@
 
         const show_object = function () {
             const obj = table.row(this).data();
-            open_object(obj.id);
+            open_object(obj.pk);
         };
 
         const redraw_object = function (response) {

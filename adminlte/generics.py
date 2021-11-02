@@ -258,7 +258,7 @@ class Datatables(View):
 
             return JsonResponse(self.get_data(start, per_page, filters, search_value, draw, order), encoder=Codec)
         if 'open' in request.POST:
-            instance = self.model.objects.get(id=int(request.POST.get('id')))
+            instance = self.model.objects.get(pk=request.POST.get('pk'))
             form = self.get_form()(instance=instance)
             html_form = self.html_form(instance, request, form, 'POST')
         if 'save' in request.POST:
