@@ -1497,12 +1497,6 @@ class PassengersTravelForm(forms.ModelForm):
 
 
 class AsistenciaTravelForm(forms.ModelForm):
-    cliente = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Cliente", required=False,
-                                     widget=ProspectFormWidget(
-                                         attrs={
-                                             'form': ProspectForm
-                                         }
-                                     ))
     passengers = forms.Field(label="datos de los acompañantes", required=False,
                              widget=TableBorderedInput(
                                  attrs={

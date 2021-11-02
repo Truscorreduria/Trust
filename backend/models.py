@@ -2889,7 +2889,7 @@ class CityTravel(base):
 
 class AsistenciaTravel(base):
     fecha_emision = models.DateField()
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(PlanCategoryTravel, on_delete=models.PROTECT, null=True)
     plan = models.ForeignKey(PlanTravel, on_delete=models.PROTECT, null=True)
     pais_origen = models.ForeignKey(CountryTravel, on_delete=models.PROTECT, null=True)
     territorio_destino = models.ForeignKey(TerritoryTravel, on_delete=models.PROTECT, null=True)
@@ -2901,6 +2901,10 @@ class AsistenciaTravel(base):
     documento = models.CharField(max_length=60, null=True, blank=True)
     referencia = models.CharField(max_length=60, null=True, blank=True)
     consideraciones_generales = models.TextField(max_length=500, null=True, blank=True)
+    nombre_contacto = models.CharField(max_length=255, null=True, verbose_name="nombre del contacto")
+    ap_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido paterno del contacto")
+    am_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido materno del contacto")
+    email_contacto = models.CharField(max_length=255, null=True, verbose_name="email del contacto")
 
     def get_array(self, field):
         return {
@@ -2908,7 +2912,7 @@ class AsistenciaTravel(base):
         }
 
     def authorize_data(self):
-        pasageros = self.passengers.all().count() + 1
+        pasageros = self.passengers.all().count()
         nombre_contacto = f'{self.cliente.primer_nombre} {self.cliente.segundo_nombre}'
         ap_contacto = self.cliente.apellido_paterno
         am_contacto = self.cliente.apellido_materno

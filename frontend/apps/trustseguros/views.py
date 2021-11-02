@@ -2424,7 +2424,7 @@ class AsistenciaTravelView(Datatables):
     modal_width = 1200
     model = AsistenciaTravel
     form = AsistenciaTravelForm
-    list_display = ('cliente',)
+    list_display = ('codigo',)
     list_template = 'trustseguros/lte/asistencia-table.html'
     fieldsets = (
         {
@@ -2435,7 +2435,6 @@ class AsistenciaTravelView(Datatables):
                 ('pais_origen', 'territorio_destino', 'fecha_salida', 'fecha_regreso'),
                 ('valor', 'documento', 'referencia'),
                 ('ruta',),
-                ('cliente',),
                 ('passengers',),
             )
         },
