@@ -2905,6 +2905,8 @@ class AsistenciaTravel(base):
     ap_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido paterno del contacto")
     am_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido materno del contacto")
     email_contacto = models.CharField(max_length=255, null=True, verbose_name="email del contacto")
+    moneda = models.ForeignKey(CurrencyTravel, on_delete=models.PROTECT, null=True)
+    tasa_cambio = models.FloatField(null=True, blank=True, verbose_name="tasa de cambio")
 
     def get_array(self, field):
         return {

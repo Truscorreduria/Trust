@@ -2433,8 +2433,8 @@ class AsistenciaTravelView(Datatables):
             'fields': (
                 ('codigo', 'fecha_emision', 'plan'),
                 ('pais_origen', 'territorio_destino', 'fecha_salida', 'fecha_regreso'),
-                ('valor', 'documento', 'referencia'),
-                ('ruta',),
+                ('nombre_contacto', 'ap_contacto', 'am_contacto'),
+                ('email_contacto', 'moneda', 'tasa_cambio'),
                 ('passengers',),
             )
         },
