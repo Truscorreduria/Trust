@@ -2401,6 +2401,25 @@ class CityTravelView(Datatables):
     list_display = ('name',)
 
 
+class PlanTravelView(Datatables):
+    modal_width = 1200
+    model = PlanTravel
+    fieldsets = (
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('title',),
+                ('description',),
+                ('languaje', 'plan_category', 'family_plan', 'plan_local'),
+                ('min_tiempo', 'max_tiempo', 'min_age', 'max_age'),
+                ('combo', 'modo_plan', 'num_pas', 'is_active'),
+            )
+        },
+    )
+    list_display = ('title',)
+
+
 # endregion
 
 

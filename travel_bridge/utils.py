@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from .api import *
 from backend.models import *
 
@@ -25,19 +26,25 @@ def fetch_territory():
 
 def fetch_country():
     for country in countries():
-        travel_country, _ = CountryTravel.objects.get_or_create(iso=country['iso_country'])
-        travel_country.name = country['description']
-        travel_country.save()
+        try:
+            travel_country, _ = CountryTravel.objects.get_or_create(iso=country['iso_country'])
+            travel_country.name = country['description']
+            travel_country.save()
+        except IntegrityError:
+            print(country)
 
 
 def fetch_city():
     for country in CountryTravel.objects.all():
         for city in cities(country.iso):
-            travel_city, _ = CityTravel.objects.get_or_create(iso=city['iso_city'],
-                                                              country=country)
-            travel_city.name = city['cities_description']
-            travel_city.state = city['states_description']
-            travel_city.save()
+            try:
+                travel_city, _ = CityTravel.objects.get_or_create(iso=city['iso_city'],
+                                                                  country=country)
+                travel_city.name = city['cities_description']
+                travel_city.state = city['states_description']
+                travel_city.save()
+            except IntegrityError:
+                print(city)
 
 
 def fetch_plan():
@@ -63,10 +70,13 @@ def fetch_plan():
 def fetch_benefit():
     for plan in PlanTravel.objects.all():
         for city in cities(plan.iso):
-            travel_benefit, _ = BenefitTravel.objects.get_or_create(iso=city['id_benefit'])
-            travel_benefit.plan = plan
-            travel_benefit.name = city['name']
-            travel_benefit.valor_eng = city['valor_eng']
-            travel_benefit.valor_spa = city['valor_spa']
-            travel_benefit.extended_info = city['extended_info']
-            travel_benefit.save()
+            try:
+                travel_benefit, _ = BenefitTravel.objects.get_or_create(iso=city['id_benefit'])
+                travel_benefit.plan = plan
+                travel_benefit.name = city['name']
+                travel_benefit.valor_eng = city['valor_eng']
+                travel_benefit.valor_spa = city['valor_spa']
+                travel_benefit.extended_info = city['extended_info']
+                travel_benefit.save()
+            except IntegrityError:
+                print(city)

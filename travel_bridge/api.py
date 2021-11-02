@@ -9,7 +9,7 @@ def get_json(url, data=None):
     response = requests.get(url, headers=headers, params=data)
     if response.status_code == 200:
         json_data = response.json()
-        if data['success'] == 1:
+        if json_data['success'] == 1:
             return json_data['events']
         else:
             print(data, json_data)

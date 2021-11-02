@@ -32,6 +32,7 @@ urlpatterns = [
     path('travel_territories/', TerritoryTravelView.as_view(), name="travel_territories"),
     path('travel_countries/', CountryTravelView.as_view(), name="travel_countries"),
     path('travel_cities/', CityTravelView.as_view(), name="travel_cities"),
+    path('travel_plans/', PlanTravelView.as_view(), name="travel_plans"),
 
 
 

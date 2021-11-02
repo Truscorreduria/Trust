@@ -2830,20 +2830,21 @@ class PlanCategoryTravel(base):
 
 
 class PlanTravel(base):
-    title = models.CharField(max_length=160, verbose_name="nombre")
-    description = models.CharField(max_length=160, verbose_name="descripción")
+    title = models.CharField(max_length=160, verbose_name="nombre", null=True)
+    description = models.CharField(max_length=160, verbose_name="descripción", null=True)
     languaje = models.CharField(max_length=3, verbose_name="lenguaje")
-    plan_category = models.ForeignKey(PlanCategoryTravel, on_delete=models.CASCADE, verbose_name="categoria")
-    num_pas = models.PositiveSmallIntegerField(verbose_name="")
-    min_tiempo = models.PositiveSmallIntegerField(verbose_name="")
-    max_tiempo = models.PositiveSmallIntegerField(verbose_name="")
-    min_age = models.PositiveSmallIntegerField(verbose_name="")
-    max_age = models.PositiveSmallIntegerField(verbose_name="")
-    normal_age = models.PositiveSmallIntegerField(verbose_name="")
-    family_plan = models.CharField(max_length=1, verbose_name="es plan familiar?")
-    plan_local = models.CharField(max_length=1, verbose_name="es plan local?")
-    combo = models.CharField(max_length=1, verbose_name="es combo?")
-    modo_plan = models.CharField(max_length=1, verbose_name="modo del plan")
+    plan_category = models.ForeignKey(PlanCategoryTravel, on_delete=models.CASCADE, verbose_name="categoria",
+                                      null=True)
+    num_pas = models.PositiveSmallIntegerField(verbose_name="número de pasajeros", null=True)
+    min_tiempo = models.PositiveSmallIntegerField(verbose_name="tiempo mínimo", null=True)
+    max_tiempo = models.PositiveSmallIntegerField(verbose_name="tiempo máximo", null=True)
+    min_age = models.PositiveSmallIntegerField(verbose_name="edad mínima", null=True)
+    max_age = models.PositiveSmallIntegerField(verbose_name="edad máxima", null=True)
+    normal_age = models.PositiveSmallIntegerField(verbose_name="edad usual", null=True)
+    family_plan = models.CharField(max_length=1, verbose_name="es plan familiar?", null=True)
+    plan_local = models.CharField(max_length=1, verbose_name="es plan local?", null=True)
+    combo = models.CharField(max_length=1, verbose_name="es combo?", null=True)
+    modo_plan = models.CharField(max_length=1, verbose_name="modo del plan", null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
