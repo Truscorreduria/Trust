@@ -2895,5 +2895,43 @@ class AsistenciaTravel(base):
     territorio_destino = models.ForeignKey(TerritoryTravel, on_delete=models.PROTECT, null=True)
     fecha_salida = models.DateField()
     fecha_regreso = models.DateField()
+    codigo = models.CharField(max_length=60, null=True, blank=True)
+    valor = models.FloatField(null=True, blank=True)
+    ruta = models.CharField(max_length=500, null=True, blank=True)
+    documento = models.CharField(max_length=60, null=True, blank=True)
+    referencia = models.CharField(max_length=60, null=True, blank=True)
+    consideraciones_generales = models.TextField(max_length=500, null=True, blank=True)
+
+    def get_array(self, field):
+        return {
+            'item': self.passengers.all().values_list(field, flat=True)
+        }
+
+    def authorize_data(self):
+        pasageros = self.passengers.all().count() + 1
+        nombre_contacto = f'{self.cliente.primer_nombre} {self.cliente.segundo_nombre}'
+        ap_contacto = self.cliente.apellido_paterno
+        am_contacto = self.cliente.apellido_materno
+        email_contacto = self.cliente.email_personal
+        nombres = self.get_array('nombres')
+        apellidos = self.get_array('apellidos')
+        telefonos = self.get_array('telefono')
+        documentos = self.get_array('documento')
+        nacimientos = self.get_array('nacimiento')
+        return {pasageros, nombre_contacto, ap_contacto,
+                am_contacto, email_contacto, nombres, apellidos,
+                telefonos, documentos, nacimientos}
+
+
+class PassengersTravel(base):
+    asistencia = models.ForeignKey(AsistenciaTravel, on_delete=models.CASCADE,
+                                   related_name="passengers")
+    nombres = models.CharField(max_length=150)
+    apellidos = models.CharField(max_length=150)
+    telefono = models.CharField(max_length=150, verbose_name="teléfono")
+    correo = models.CharField(max_length=150, verbose_name="correo electrónico")
+    nacimiento = models.CharField(max_length=150, verbose_name="fecha de nacimiento")
+    documento = models.CharField(max_length=150, verbose_name="tipo de documento")
+    observaciones_medicas = models.CharField(max_length=150, verbose_name="observaciones médicas")
 
 # endregion

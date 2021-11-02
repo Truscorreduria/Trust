@@ -1488,3 +1488,36 @@ class EmailForm(forms.Form):
                                         'class': 'htmleditor'
                                     }
                                 ))
+
+
+class PassengersTravelForm(forms.ModelForm):
+    class Meta:
+        model = PassengersTravel
+        exclude = ('asistencia', )
+
+
+class AsistenciaTravelForm(forms.ModelForm):
+    cliente = forms.ModelChoiceField(queryset=Prospect.objects.all(), label="Cliente", required=False,
+                                     widget=ProspectFormWidget(
+                                         attrs={
+                                             'form': ProspectForm
+                                         }
+                                     ))
+    passengers = forms.Field(label="datos de los acompañantes", required=False,
+                             widget=TableBorderedInput(
+                                 attrs={
+                                     'form': PassengersTravelForm
+                                 }
+                             ))
+
+    class Meta:
+        model = AsistenciaTravel
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['codigo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['valor'].widget.attrs['readonly'] = 'readonly'
+        self.fields['documento'].widget.attrs['readonly'] = 'readonly'
+        self.fields['referencia'].widget.attrs['readonly'] = 'readonly'
+        self.fields['ruta'].widget.attrs['readonly'] = 'readonly'

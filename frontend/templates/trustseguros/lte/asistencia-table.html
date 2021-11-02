@@ -1,0 +1,139 @@
+{% extends 'adminlte/datatables.html' %}
+{% load crispy_forms_filters static %}
+
+
+{% block style %}
+    {{ block.super }}
+    <style type="text/css">
+        .data-container .table td {
+            min-width: 200px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+
+
+    <script type="text/javascript" defer>
+        $(document).ready(function () {
+
+            $(document).on('keyup', '#id_cedula', function () {
+                $(this).autocomplete({
+                    minLength: 2,
+                    source: "{% url 'ajax_autocomplete' %}" + "?app_label=backend&model=prospect&column_name=cedula&column_value=cedula&filters=tipo_cliente=1",
+                    select: function (i, o) {
+                        $('#id_primer_nombre').val(o.item.obj.primer_nombre).removeAttr('readonly');
+                        $('#id_segundo_nombre').val(o.item.obj.segundo_nombre).removeAttr('readonly');
+                        $('#id_apellido_paterno').val(o.item.obj.apellido_paterno).removeAttr('readonly');
+                        $('#id_apellido_materno').val(o.item.obj.apellido_materno).removeAttr('readonly');
+                        $('#id_departamento').val(o.item.obj.departamento).removeAttr('readonly');
+                        $('#id_municipio').val(o.item.obj.municipio).removeAttr('readonly');
+                        $('#id_estado_civil').val(o.item.obj.estado_civil).removeAttr('readonly');
+                        $('#id_genero').val(o.item.obj.genero).removeAttr('readonly');
+                        $('#id_telefono').val(o.item.obj.telefono).removeAttr('readonly');
+                        $('#id_celular').val(o.item.obj.celular).removeAttr('readonly');
+                        $('#id_domicilio').val(o.item.obj.domicilio).removeAttr('readonly');
+                        $('#id_email_personal').val(o.item.obj.email_personal).removeAttr('readonly');
+                        $('#id_cedula').attr('readonly', 'readonly');
+                        $('#id_tipo_cliente').attr('readonly', 'readonly');
+                        $('#id_tipo_identificacion').attr('readonly', 'readonly');
+                        $('.prospect-button-clear').css('display', 'initial');
+                    }
+                });
+
+                if ($(this).val().length === 14) {
+                    $('#id_primer_nombre').removeAttr('readonly');
+                    $('#id_segundo_nombre').removeAttr('readonly');
+                    $('#id_apellido_paterno').removeAttr('readonly');
+                    $('#id_apellido_materno').removeAttr('readonly');
+                    $('#id_departamento').removeAttr('readonly');
+                    $('#id_municipio').removeAttr('readonly');
+                    $('#id_estado_civil').removeAttr('readonly');
+                    $('#id_genero').removeAttr('readonly');
+                    $('#id_telefono').removeAttr('readonly');
+                    $('#id_celular').removeAttr('readonly');
+                    $('#id_domicilio').removeAttr('readonly');
+                    $('#id_email_personal').removeAttr('readonly');
+                    $('#id_cedula').attr('readonly', 'readonly');
+                    $('#id_tipo_cliente').attr('readonly', 'readonly');
+                    $('#id_tipo_identificacion').attr('readonly', 'readonly');
+                    $('.prospect-button-clear').css('display', 'initial');
+                }
+            });
+
+            $(document).on('keyup', '#id_ruc', function () {
+                $(this).autocomplete({
+                    minLength: 2,
+                    source: "{% url 'ajax_autocomplete' %}" + "?app_label=backend&model=prospect&column_name=ruc&column_value=ruc&filters=tipo_cliente=2",
+                    select: function (i, o) {
+                        $('#id_razon_social').val(o.item.obj.razon_social).removeAttr('readonly');
+                        $('#id_nombre_comercial').val(o.item.obj.nombre_comercial).removeAttr('readonly');
+                        $('#id_fecha_constitucion').val(o.item.obj.fecha_constitucion).removeAttr('readonly');
+                        $('#id_actividad_economica').val(o.item.obj.actividad_economica).removeAttr('readonly');
+                        $('#id_pagina_web').val(o.item.obj.pagina_web).removeAttr('readonly');
+                        $('#id_observaciones').val(o.item.obj.observaciones).removeAttr('readonly');
+                        $('#id_telefono').val(o.item.obj.telefono).removeAttr('readonly');
+                        $('#id_departamento').val(o.item.obj.departamento).removeAttr('readonly');
+                        $('#id_municipio').val(o.item.obj.municipio).removeAttr('readonly');
+                        $('#id_domicilio').val(o.item.obj.domicilio).removeAttr('readonly');
+                        $('#id_cedula').attr('readonly', 'readonly');
+                        $('#id_tipo_cliente').attr('readonly', 'readonly');
+                        $('#id_tipo_identificacion').attr('readonly', 'readonly');
+                        $('.prospect-button-clear').css('display', 'initial');
+                    }
+                });
+
+                if ($(this).val().length === 14) {
+                    $('#id_razon_social').removeAttr('readonly');
+                    $('#id_nombre_comercial').removeAttr('readonly');
+                    $('#id_fecha_constitucion').removeAttr('readonly');
+                    $('#id_actividad_economica').removeAttr('readonly');
+                    $('#id_pagina_web').removeAttr('readonly');
+                    $('#id_observaciones').removeAttr('readonly');
+                    $('#id_telefono').removeAttr('readonly');
+                    $('#id_departamento').removeAttr('readonly');
+                    $('#id_municipio').removeAttr('readonly');
+                    $('#id_domicilio').removeAttr('readonly');
+                    $('#id_ruc').attr('readonly', 'readonly');
+                    $('#id_tipo_cliente').attr('readonly', 'readonly');
+                    $('#id_tipo_identificacion').attr('readonly', 'readonly');
+                    $('.prospect-button-clear').css('display', 'initial');
+                }
+            });
+
+            $(document).on('click', '.prospect-button-clear', function () {
+                $('#id_primer_nombre').val('').attr('readonly', 'readonly');
+                $('#id_segundo_nombre').val('').attr('readonly', 'readonly');
+                $('#id_apellido_paterno').val('').attr('readonly', 'readonly');
+                $('#id_apellido_materno').val('').attr('readonly', 'readonly');
+                $('#id_departamento').val('').attr('readonly', 'readonly');
+                $('#id_municipio').val('').attr('readonly', 'readonly');
+                $('#id_estado_civil').val('').attr('readonly', 'readonly');
+                $('#id_genero').val('').attr('readonly', 'readonly');
+                $('#id_telefono').val('').attr('readonly', 'readonly');
+                $('#id_celular').val('').attr('readonly', 'readonly');
+                $('#id_domicilio').val('').attr('readonly', 'readonly');
+                $('#id_email_personal').val('').attr('readonly', 'readonly');
+
+                $('#id_razon_social').val('').attr('readonly', 'readonly');
+                $('#id_nombre_comercial').val('').attr('readonly', 'readonly');
+                $('#id_fecha_constitucion').val('').attr('readonly', 'readonly');
+                $('#id_actividad_economica').val('').attr('readonly', 'readonly');
+                $('#id_pagina_web').val('').attr('readonly', 'readonly');
+                $('#id_observaciones').val('').attr('readonly', 'readonly');
+
+                $('#id_cedula').val('').removeAttr('readonly', 'readonly');
+                $('#id_ruc').val('').removeAttr('readonly', 'readonly');
+                $('#id_tipo_cliente').removeAttr('readonly', 'readonly');
+                $('#id_tipo_identificacion').removeAttr('readonly', 'readonly');
+                $('.prospect-button-clear').css('display', 'none');
+            });
+
+        })
+    </script>
+{% endblock %}

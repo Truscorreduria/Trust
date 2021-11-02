@@ -2423,9 +2423,23 @@ class PlanTravelView(Datatables):
 class AsistenciaTravelView(Datatables):
     modal_width = 1200
     model = AsistenciaTravel
+    form = AsistenciaTravelForm
     list_display = ('cliente',)
-    fields = ('fecha_emision', 'cliente', 'plan', 'pais_origen', 'territorio_destino',
-              'fecha_salida', 'fecha_regreso')
+    list_template = 'trustseguros/lte/asistencia-table.html'
+    fieldsets = (
+        {
+            'id': 'info',
+            'name': 'Información general',
+            'fields': (
+                ('codigo', 'fecha_emision', 'plan'),
+                ('pais_origen', 'territorio_destino', 'fecha_salida', 'fecha_regreso'),
+                ('valor', 'documento', 'referencia'),
+                ('ruta',),
+                ('cliente',),
+                ('passengers',),
+            )
+        },
+    )
 
 
 # endregion

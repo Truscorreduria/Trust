@@ -1,5 +1,6 @@
 from django.conf import settings
 import requests
+import json
 
 headers = {'content-type': 'application/json',
            'Authorization': settings.TRAVEL_KEY}
@@ -48,3 +49,11 @@ def coverages(id_play):
                     data={
                         'idPlan': id_play
                     })
+
+
+def create_order(data):
+    response = requests.post(f'{settings.TRAVEL_URL}/api/generate_order',
+                             json.dumps(data), headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return {}
