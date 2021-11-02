@@ -188,7 +188,7 @@ class Datatables(View):
 
     def get_instance(self, request):
         try:
-            return self.model.objects.get(id=int(request.POST.get('id').replace(',', '')))
+            return self.model.objects.get(pk=request.POST.get('pk').replace(',', ''))
         except TypeError:
             return None
         except ValueError:

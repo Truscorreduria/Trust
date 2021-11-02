@@ -2890,6 +2890,9 @@ class CityTravel(base):
 class AsistenciaTravel(base):
     fecha_emision = models.DateField()
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    plan = models.ForeignKey(PlanTravel, on_delete=models.PROTECT, null=True)
+    pais_origen = models.ForeignKey(CountryTravel, on_delete=models.PROTECT, null=True)
+    territorio_destino = models.ForeignKey(TerritoryTravel, on_delete=models.PROTECT, null=True)
     fecha_salida = models.DateField()
     fecha_regreso = models.DateField()
 

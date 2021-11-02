@@ -2420,6 +2420,14 @@ class PlanTravelView(Datatables):
     list_display = ('title',)
 
 
+class AsistenciaTravelView(Datatables):
+    modal_width = 1200
+    model = AsistenciaTravel
+    list_display = ('cliente',)
+    fields = ('fecha_emision', 'cliente', 'plan', 'pais_origen', 'territorio_destino',
+              'fecha_salida', 'fecha_regreso')
+
+
 # endregion
 
 
