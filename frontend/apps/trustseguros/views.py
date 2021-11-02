@@ -2425,7 +2425,6 @@ class AsistenciaTravelView(Datatables):
     model = AsistenciaTravel
     form = AsistenciaTravelForm
     list_display = ('codigo',)
-    list_template = 'trustseguros/lte/asistencia-table.html'
     fieldsets = (
         {
             'id': 'info',

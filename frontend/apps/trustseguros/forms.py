@@ -1491,9 +1491,11 @@ class EmailForm(forms.Form):
 
 
 class PassengersTravelForm(forms.ModelForm):
+    prefix = "passengers"
+
     class Meta:
         model = PassengersTravel
-        exclude = ('asistencia', )
+        exclude = ('asistencia',)
 
 
 class AsistenciaTravelForm(forms.ModelForm):

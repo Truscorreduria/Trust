@@ -227,7 +227,10 @@ class Datatables(View):
 
     @staticmethod
     def make_response(instance, html_form, errors, status):
-        return JsonResponse({'instance': instance.to_json(),
+        instance_json = {}
+        if instance:
+            instance_json = instance.to_json()
+        return JsonResponse({'instance': instance_json,
                              'form': html_form, 'errors': errors}, encoder=Codec,
                             status=status)
 
