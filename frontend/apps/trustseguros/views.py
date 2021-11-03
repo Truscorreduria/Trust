@@ -1834,7 +1834,7 @@ class Oportunidades(Datatables):
         if 'prepare_register' in request.POST:
             html = render_to_string('trustseguros/lte/includes/ofertas.html',
                                     context={
-                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
+                                        'oportunity': Oportunity.objects.get(pk=request.POST.get('pk')),
                                         'aseguradoras': Aseguradora.objects.all(),
                                     },
                                     request=request)
