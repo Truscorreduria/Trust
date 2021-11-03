@@ -3,7 +3,7 @@ $(document).ready(function () {
         $.ajax(".", {
             method: "POST",
             data: {
-                id: $('input[name="id"]').val(), cancelar: 'cancelar'
+                pk: $('input[name="pk"]').val(), cancelar: 'cancelar'
             }, success: function (response) {
                 redraw_object(response);
             }

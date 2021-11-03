@@ -4,7 +4,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 finalizar: 'finalizar',
-                id: $('input[name="id"]').val()
+                pk: $('input[name="pk"]').val()
             },
             success: function (response) {
                 redraw_object(response);

@@ -6,7 +6,7 @@ $(document).ready(function () {
         data.append('new', 'new');
         data.append('app_label', 'backend');
         data.append('model', 'tramite');
-        data.append('id', $('input[name="id"]').val());
+        data.append('pk', $('input[name="pk"]').val());
         $.ajax($ajax_soporte, {
             type: "POST",
             data: data,

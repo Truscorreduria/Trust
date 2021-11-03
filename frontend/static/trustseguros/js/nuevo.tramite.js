@@ -18,7 +18,7 @@ $(document).ready(function () {
             method: "POST",
             data: {
                 load_tramite: 'load_tramite',
-                id: $('input[name="id"]').val(),
+                p: $('input[name="p"]').val(),
                 tramite: _this.val(),
             },
             success: function (response, txtStatus, xhr) {

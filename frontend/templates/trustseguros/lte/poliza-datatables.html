@@ -173,7 +173,7 @@
                 data.append('new', 'new');
                 data.append('app_label', 'backend');
                 data.append('model', 'poliza');
-                data.append('id', $('input[name="id"]').val());
+                data.append('id', $('input[name="pk"]').val());
                 $.ajax("{% url 'trustseguros:documentos' %}", {
                     type: "POST",
                     data: data,

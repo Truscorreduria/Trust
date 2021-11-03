@@ -7,7 +7,7 @@ $(document).ready(function () {
                 data: {
                     new: 'new', comentario: comment,
                     app_label: 'backend', model: 'tramite',
-                    id: $('input[name="id"]').val()
+                    pk: $('input[name="pk"]').val()
                 },
                 success: function (response) {
                     $('#bitacora-table').prepend(`
