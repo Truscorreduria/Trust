@@ -1197,8 +1197,7 @@ class Polizas(Datatables):
 
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'modificando' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
-
+            p = self.get_instance(request)
             AddComment.send(p, request=request,
                             comentario="Se habilita el modo de edición")
             p.editable = True
@@ -1211,7 +1210,7 @@ class Polizas(Datatables):
         if 'modificar' in request.POST:
             status = 200
             errors = []
-            p = self.model.objects.get(id=int(request.POST.get('id')))
+            p = self.get_instance(request)
             form = self.get_form()(request.POST, instance=p)
             if form.is_valid():
                 form.save()
@@ -1232,7 +1231,7 @@ class Polizas(Datatables):
             return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
                                 encoder=Codec, status=status)
         if 'cancelando' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             AddComment.send(p, request=request,
                             comentario="Preparando poliza para cancelación")
             p.editable = False
@@ -1257,20 +1256,20 @@ class Polizas(Datatables):
             html_form = self.html_form(instance, request, form, 'POST')
             return self.make_response(instance, html_form, [], 200)
         if 'renovar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             nueva = RenovarPoliza.send(p, request=request)[0][1]
             form = self.get_form()(instance=nueva)
             html_form = self.html_form(nueva, request, form, 'POST')
             return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'norenovar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.estado_poliza = EstadoPoliza.NORENOVADA
             p.save()
             form = self.get_form()(instance=p)
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'import_data' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             file = request.FILES['file']
             data = pd.read_excel(file)
             forms = []
@@ -1396,7 +1395,7 @@ class Tramites(Datatables):
 
     def post(self, request):
         if 'finalizar' in request.POST:
-            p = Tramite.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.editable = False
             p.estado = "En Proceso"
             p.save()
@@ -1404,7 +1403,7 @@ class Tramites(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'activar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.estado_poliza = EstadoPoliza.ACTIVA
             p.editable = False
             p.perdir_comentarios = False
@@ -1413,7 +1412,7 @@ class Tramites(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'modificar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.editable = True
             p.perdir_comentarios = True
             p.save()
@@ -1423,7 +1422,7 @@ class Tramites(Datatables):
         if 'confirmar' in request.POST:
             status = 200
             errors = []
-            p = self.model.objects.get(id=int(request.POST.get('id')))
+            p = self.get_instance(request)
             form = self.get_form()(request.POST, instance=p)
             if form.is_valid():
                 form.save()
@@ -1442,7 +1441,7 @@ class Tramites(Datatables):
             return JsonResponse({'instance': p.to_json(), 'form': html_form, 'errors': errors},
                                 encoder=Codec, status=status)
         if 'cancelar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.estado_poliza = EstadoPoliza.CANCELADA
             p.editable = False
             p.perdir_comentarios = True
@@ -1451,7 +1450,7 @@ class Tramites(Datatables):
             html_form = self.html_form(p, request, form, 'POST')
             return JsonResponse({'instance': p.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'renovar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             p.estado_poliza = EstadoPoliza.RENOVADA
             p.save()
             nueva = RenovarPoliza.send(p, request=request)[0][1]
@@ -1459,7 +1458,7 @@ class Tramites(Datatables):
             html_form = self.html_form(nueva, request, form, 'POST')
             return JsonResponse({'instance': nueva.to_json(), 'form': html_form}, encoder=Codec, status=200)
         if 'import_data' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             file = request.FILES['file']
             data = pd.read_excel(file)
             forms = []
@@ -1478,7 +1477,7 @@ class Tramites(Datatables):
             return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
                                                 for p in polizas]}, encoder=Codec, safe=False)
         if 'contactos' in request.POST:
-            poliza = Poliza.objects.get(id=request.POST.get('poliza'))
+            p = self.get_instance(request)
             contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
                                                 for p in contactos],
