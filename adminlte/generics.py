@@ -263,7 +263,7 @@ class Datatables(View):
         if 'open' in request.POST:
             instance = self.get_instance(request)
             form = self.get_form()(instance=instance)
-            html_form = self.html_form(instance, request, form, 'POST')
+            html_form = self.html_form(instance, request, form, 'POST')  # fixme change to POST
         if 'save' in request.POST:
             instance = self.get_instance(request)
             instance, html_form, errors, status = self.process_request(request, 'POST', instance)

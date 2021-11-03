@@ -2464,6 +2464,7 @@ class AsistenciaTravelView(Datatables):
 
     def put(self, request):
         status = 200
+        method = 'PUT'
         errors = []
         if 'save' in request.PUT:
             form = self.get_form()(request.PUT)
@@ -2492,15 +2493,22 @@ class AsistenciaTravelView(Datatables):
                 data['observaciones_medicas'] = \
                     self.format_array(request.PUT.getlist('passengers-observaciones_medicas'))
                 response = create_order(data)
-                if response['success'] == '1':
-                    pass
+                if response['success'] == 1:
+                    instance = form.save(commit=False)
+                    instance.codigo = response['events']['codigo']
+                    instance.valor = response['events']['valor']
+                    instance.ruta = response['events']['ruta']
+                    instance = self.pre_save(instance, request)
+                    instance.save()
+                    form = self.get_form()(instance=instance)
+                    method = "POST"
                 else:
                     errors.append({'key': '', 'errors': [{'message': response['message']}, ]})
                     status = 203
             else:
                 errors = self.get_form_errors(form)
                 status = 203
-            html_form = self.html_form(None, request, form, 'PUT')
+            html_form = self.html_form(None, request, form, method)
             return self.make_response(None, html_form, errors, status)
         return super().post(request)
 

@@ -2912,6 +2912,8 @@ class AsistenciaTravel(base):
     moneda = models.ForeignKey(CurrencyTravel, on_delete=models.PROTECT, null=True)
     tasa_cambio = models.FloatField(null=True, blank=True, verbose_name="tasa de cambio")
 
+    def __str__(self):
+        return self.codigo or ''
 
     def get_array(self, field):
         return {
