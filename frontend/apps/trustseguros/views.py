@@ -2424,7 +2424,7 @@ class AsistenciaTravelView(Datatables):
     modal_width = 1200
     model = AsistenciaTravel
     form = AsistenciaTravelForm
-    list_display = ('codigo', 'fecha_emision', ('titular', 'titular'))
+    list_display = ('codigo', 'fecha_emision', ('Titular', 'titular'), ('Plan', 'plan_display'))
     fieldsets = (
         {
             'id': 'info',
@@ -2489,7 +2489,7 @@ class AsistenciaTravelView(Datatables):
                 data['apellidos'] = self.format_array(request.PUT.getlist('passengers-apellidos'))
                 data['telefonos'] = self.format_array(request.PUT.getlist('passengers-telefono'))
                 data['correos'] = self.format_array(request.PUT.getlist('passengers-correo'))
-                data['documentos'] = self.format_array(request.PUT.getlist('passengers-documento'))
+                data['documentos'] = {'item': ['CDI' for x in range(0, data['pasajeros'])]}
                 data['nacimientos'] = self.format_array(request.PUT.getlist('passengers-nacimiento'))
                 data['observaciones_medicas'] = \
                     self.format_array(request.PUT.getlist('passengers-observaciones_medicas'))
