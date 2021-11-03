@@ -2461,6 +2461,7 @@ class AsistenciaTravelView(Datatables):
             pasajero.documento = request.POST.getlist('passengers-documento')[i]
             pasajero.observaciones_medicas = request.POST.getlist('passengers-observaciones_medicas')[i]
             pasajero.save()
+        return instance
 
     def put(self, request):
         status = 200
@@ -2500,6 +2501,7 @@ class AsistenciaTravelView(Datatables):
                     instance.ruta = response['events']['ruta']
                     instance = self.pre_save(instance, request)
                     instance.save()
+                    instance = self.pos_save(instance, request)
                     form = self.get_form()(instance=instance)
                     method = "POST"
                 else:
