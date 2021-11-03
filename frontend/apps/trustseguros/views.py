@@ -20,6 +20,7 @@ from django.views.generic import View
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.core.exceptions import MultipleObjectsReturned
+from travel_bridge.utils import create_order
 
 
 def get_attr(obj, attr_name):
@@ -2424,20 +2425,85 @@ class AsistenciaTravelView(Datatables):
     modal_width = 1200
     model = AsistenciaTravel
     form = AsistenciaTravelForm
-    list_display = ('codigo',)
+    list_display = ('nombre_contacto', 'ap_contacto', 'am_contacto',)
     fieldsets = (
         {
             'id': 'info',
             'name': 'Información general',
             'fields': (
-                ('codigo', 'fecha_emision', 'plan'),
+                ('codigo', 'fecha_emision', 'categoria', 'plan'),
                 ('pais_origen', 'territorio_destino', 'fecha_salida', 'fecha_regreso'),
                 ('nombre_contacto', 'ap_contacto', 'am_contacto'),
-                ('email_contacto', 'moneda', 'tasa_cambio'),
+                ('email_contacto', 'telefono_contacto', 'moneda', 'tasa_cambio'),
+                ('consideraciones_generales',),
                 ('passengers',),
             )
         },
     )
+
+    def format_array(self, data):
+        del data[0]
+        return {
+            'item': [str(item).lower() for item in data]
+        }
+
+    def pos_save(self, instance, request):
+        for i in range(1, len(request.POST.getlist('passengerstravel_id'))):
+            try:
+                pasajero = PassengersTravel.objects.get(id=request.POST.getlist('passengerstravel_id')[i])
+            except ObjectDoesNotExist:
+                pasajero = PassengersTravel()
+            pasajero.asistencia = instance
+            pasajero.nombres = request.POST.getlist('passengers-nombres')[i]
+            pasajero.apellidos = request.POST.getlist('passengers-apellidos')[i]
+            pasajero.telefono = request.POST.getlist('passengers-telefono')[i]
+            pasajero.correo = request.POST.getlist('passengers-correo')[i]
+            pasajero.nacimiento = request.POST.getlist('passengers-nacimiento')[i]
+            pasajero.documento = request.POST.getlist('passengers-documento')[i]
+            pasajero.observaciones_medicas = request.POST.getlist('passengers-observaciones_medicas')[i]
+            pasajero.save()
+
+    def post(self, request):
+        status = 200
+        errors = []
+        if 'save' in request.POST:
+            form = self.get_form()(request.POST)
+            if form.is_valid():
+                data = {}
+                data['pasajeros'] = len(request.POST.getlist('passengerstravel_id')) - 1
+                data['fecha_salida'] = form.cleaned_data['fecha_salida'].strftime('%d/%m/%Y')
+                data['fecha_llegada'] = form.cleaned_data['fecha_regreso'].strftime('%d/%m/%Y')
+                data['id_plan'] = str(form.cleaned_data['plan'].id)
+                data['pais_origen'] = str(form.cleaned_data['pais_origen'].pk)
+                data['pais_destino'] = str(form.cleaned_data['territorio_destino'].pk)
+                data['moneda'] = str(form.cleaned_data['moneda'].pk)
+                data['tasa_cambio'] = str(form.cleaned_data['tasa_cambio'])
+                data['nombre_contacto'] = form.cleaned_data['nombre_contacto']
+                data['ap_contacto'] = form.cleaned_data['ap_contacto']
+                data['am_contacto'] = form.cleaned_data['am_contacto']
+                data['telefono_contacto'] = str(form.cleaned_data['telefono_contacto'])
+                data['email_contacto'] = str(form.cleaned_data['email_contacto'])
+                data['consideraciones_generales'] = str(form.cleaned_data['consideraciones_generales'])
+                data['nombres'] = self.format_array(request.POST.getlist('passengers-nombres'))
+                data['apellidos'] = self.format_array(request.POST.getlist('passengers-apellidos'))
+                data['telefonos'] = self.format_array(request.POST.getlist('passengers-telefono'))
+                data['correos'] = self.format_array(request.POST.getlist('passengers-correo'))
+                data['documentos'] = self.format_array(request.POST.getlist('passengers-documento'))
+                data['nacimientos'] = self.format_array(request.POST.getlist('passengers-nacimiento'))
+                data['observaciones_medicas'] = \
+                    self.format_array(request.POST.getlist('passengers-observaciones_medicas'))
+                response = create_order(data)
+                if response['success'] == '1':
+                    pass
+                else:
+                    errors.append({'key': '', 'errors': [{'message': response['message']}, ]})
+                    status = 203
+            else:
+                errors = self.get_form_errors(form)
+                status = 203
+            html_form = self.html_form(None, request, form, 'POST')
+            return self.make_response(None, html_form, errors, status)
+        return super().post(request)
 
 
 # endregion

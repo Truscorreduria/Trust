@@ -42,7 +42,7 @@
                 <form action="." data-method="{{ method }}" method="{{ method }}"
                       id="{{ opts.model_name }}-form"
                       data-toggle="validator">
-                    <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id|stringformat:"i" }}"{% endif %}>
+                    <input type="hidden" name="pk" {% if instance.pk %}value="{{ instance.pk|stringformat:"i" }}"{% endif %}>
 
                     {% csrf_token %}
                     <div class="tab-content">

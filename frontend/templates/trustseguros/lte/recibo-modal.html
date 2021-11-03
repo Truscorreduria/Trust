@@ -9,7 +9,7 @@
             <div class="card-body">
                 <form action="." data-method="{{ method }}" method="{{ method }}" id="{{ opts.model_name }}-form"
                       data-toggle="validator">
-                    <input type="hidden" name="id" {% if instance.id %}value="{{ instance.id|floatformat:'i' }}"{% endif %}>
+                    <input type="hidden" name="pk" {% if instance.pk %}value="{{ instance.pk|floatformat:'i' }}"{% endif %}>
                     {% csrf_token %}
                     <div class="row">
                         <div class="col">

@@ -2891,7 +2891,10 @@ class AsistenciaTravel(base):
     fecha_emision = models.DateField()
     categoria = models.ForeignKey(PlanCategoryTravel, on_delete=models.PROTECT, null=True)
     plan = models.ForeignKey(PlanTravel, on_delete=models.PROTECT, null=True)
-    pais_origen = models.ForeignKey(CountryTravel, on_delete=models.PROTECT, null=True)
+    pais_origen = models.ForeignKey(CountryTravel, on_delete=models.PROTECT, null=True,
+                                    related_name="pais_origen")
+    pais_destino = models.ForeignKey(CountryTravel, on_delete=models.PROTECT, null=True,
+                                     related_name="pais_destino")
     territorio_destino = models.ForeignKey(TerritoryTravel, on_delete=models.PROTECT, null=True)
     fecha_salida = models.DateField()
     fecha_regreso = models.DateField()
@@ -2905,8 +2908,10 @@ class AsistenciaTravel(base):
     ap_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido paterno del contacto")
     am_contacto = models.CharField(max_length=255, null=True, verbose_name="apellido materno del contacto")
     email_contacto = models.CharField(max_length=255, null=True, verbose_name="email del contacto")
+    telefono_contacto = models.CharField(max_length=255, null=True, verbose_name="teléfono del contacto")
     moneda = models.ForeignKey(CurrencyTravel, on_delete=models.PROTECT, null=True)
     tasa_cambio = models.FloatField(null=True, blank=True, verbose_name="tasa de cambio")
+
 
     def get_array(self, field):
         return {

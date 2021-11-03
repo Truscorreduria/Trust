@@ -1508,12 +1508,21 @@ class AsistenciaTravelForm(forms.ModelForm):
 
     class Meta:
         model = AsistenciaTravel
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ('pais_destino',)
 
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
+        if instance:
+            kwargs.update(initial={
+                'passengers': instance.passengers.all()
+            })
         super().__init__(*args, **kwargs)
         self.fields['codigo'].widget.attrs['readonly'] = 'readonly'
         self.fields['valor'].widget.attrs['readonly'] = 'readonly'
         self.fields['documento'].widget.attrs['readonly'] = 'readonly'
         self.fields['referencia'].widget.attrs['readonly'] = 'readonly'
         self.fields['ruta'].widget.attrs['readonly'] = 'readonly'
+
+    def clean(self):
+        cleaned_data = self.cleaned_data

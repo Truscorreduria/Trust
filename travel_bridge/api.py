@@ -1,6 +1,10 @@
+from json import JSONDecodeError
+
 from django.conf import settings
 import requests
 import json
+
+from adminlte.utils import Codec
 
 headers = {'content-type': 'application/json',
            'Authorization': settings.TRAVEL_KEY}
@@ -53,7 +57,16 @@ def coverages(id_play):
 
 def create_order(data):
     response = requests.post(f'{settings.TRAVEL_URL}/api/generate_order',
-                             json.dumps(data), headers=headers)
+                             json=data, headers=headers)
     if response.status_code == 200:
-        return response.json()
-    return {}
+        try:
+            json_response = response.json()
+            if not ('message' in json_response):
+                json_response['message'] = json_response['Message']
+            else:
+                if isinstance(json_response['message'], dict):
+                    json_response['message'] = json_response['message']['Notes']
+            return json_response
+        except JSONDecodeError:
+            return {'success': '0', 'message': response.text}
+    return {'success': '0', 'message': response.text}
