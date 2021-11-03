@@ -1477,7 +1477,7 @@ class Tramites(Datatables):
             return JsonResponse({'collection': [{'id': p.id, 'no_poliza': p.no_poliza}
                                                 for p in polizas]}, encoder=Codec, safe=False)
         if 'contactos' in request.POST:
-            p = self.get_instance(request)
+            poliza = self.get_instance(request)
             contactos = ContactoAseguradora.objects.filter(aseguradora=poliza.aseguradora)
             return JsonResponse({'collection': [{'id': p.id, 'name': p.name}
                                                 for p in contactos],
