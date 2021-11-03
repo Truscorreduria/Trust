@@ -1185,7 +1185,7 @@ class Polizas(Datatables):
 
     def post(self, request):
         if 'activar' in request.POST:
-            p = Poliza.objects.get(id=request.POST.get('id'))
+            p = self.get_instance(request)
             AddComment.send(p, request=request,
                             comentario="Actualizado en estado %s" % p.get_estado_poliza_display())
             p.estado_poliza = EstadoPoliza.ACTIVA
@@ -2199,7 +2199,7 @@ class Recibos(Datatables):
             }, encoder=Codec)
 
         if 'ecuenta' in request.POST:
-            poliza = Poliza.objects.get(id=request.POST.get('id'))
+            poliza = self.get_instance(request)
             pages = []
 
             paginator = Paginator(poliza.estado_cuenta(), 14)
