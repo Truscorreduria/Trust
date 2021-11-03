@@ -2930,6 +2930,7 @@ class AsistenciaTravel(base):
     def to_json(self):
         o = super().to_json()
         o['titular'] = self.titular
+        o['codigo'] = self.codigo or ''
         if self.id:
             o['plan_display'] = self.plan.title
         else:

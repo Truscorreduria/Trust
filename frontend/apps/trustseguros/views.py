@@ -2458,7 +2458,6 @@ class AsistenciaTravelView(Datatables):
             pasajero.telefono = request.POST.getlist('passengers-telefono')[i]
             pasajero.correo = request.POST.getlist('passengers-correo')[i]
             pasajero.nacimiento = request.POST.getlist('passengers-nacimiento')[i]
-            pasajero.documento = request.POST.getlist('passengers-documento')[i]
             pasajero.observaciones_medicas = request.POST.getlist('passengers-observaciones_medicas')[i]
             pasajero.save()
         return instance
