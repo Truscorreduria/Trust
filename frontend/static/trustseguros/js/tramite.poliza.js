@@ -17,7 +17,7 @@ $(document).ready(function () {
         const _this = $(this);
         $.ajax('.', {
             method: "POST",
-            data: {pk: _this.val(), contactos: 'contactos'},
+            data: {poliza: _this.val(), contactos: 'contactos'},
             success: function (response) {
                 const $contacto = $('#id_contacto_aseguradora').empty();
                 $contacto.append(`<option value="" selected="">---------</option>`);
