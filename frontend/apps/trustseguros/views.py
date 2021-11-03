@@ -2169,7 +2169,7 @@ class Recibos(Datatables):
             }, encoder=Codec)
 
         if 'guardarcuota' in request.POST:
-            instance = Cuota.objects.get(id=request.POST.get('id'))
+            instance = Cuota.objects.get(pk=request.POST.get('pk'))
             form = CuotaForm(request.POST, instance=instance)
             if form.is_valid():
                 for n, i in enumerate(request.POST.getlist('pagocuota')):
