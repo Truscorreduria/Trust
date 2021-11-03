@@ -62,7 +62,10 @@ def create_order(data):
         try:
             json_response = response.json()
             if not ('message' in json_response):
-                json_response['message'] = json_response['Message']
+                try:
+                    json_response['message'] = json_response['Message']
+                except KeyError:
+                    pass
             else:
                 if isinstance(json_response['message'], dict):
                     json_response['message'] = json_response['message']['Notes']
