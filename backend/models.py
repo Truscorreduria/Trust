@@ -2941,7 +2941,7 @@ class PassengersTravel(base):
     telefono = models.CharField(max_length=150, verbose_name="teléfono")
     correo = models.CharField(max_length=150, verbose_name="correo electrónico")
     nacimiento = models.CharField(max_length=150, verbose_name="fecha de nacimiento")
-    documento = models.CharField(max_length=150, verbose_name="tipo de documento")
+    documento = models.CharField(max_length=150, verbose_name="tipo de documento", default="CDI")
     observaciones_medicas = models.CharField(max_length=150, verbose_name="observaciones médicas")
 
 # endregion

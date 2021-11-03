@@ -1495,7 +1495,7 @@ class PassengersTravelForm(forms.ModelForm):
 
     class Meta:
         model = PassengersTravel
-        exclude = ('asistencia',)
+        exclude = ('asistencia', 'documento')
 
 
 class AsistenciaTravelForm(forms.ModelForm):
