@@ -2510,7 +2510,7 @@ class AsistenciaTravelView(Datatables):
                 status = 203
             html_form = self.html_form(None, request, form, method)
             return self.make_response(None, html_form, errors, status)
-        return super().post(request)
+        return super().put(request)
 
 
 # endregion
