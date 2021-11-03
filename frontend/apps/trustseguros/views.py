@@ -2424,7 +2424,7 @@ class AsistenciaTravelView(Datatables):
     modal_width = 1200
     model = AsistenciaTravel
     form = AsistenciaTravelForm
-    list_display = ('nombre_contacto', 'ap_contacto', 'am_contacto',)
+    list_display = ('codigo', 'fecha_emision', ('titular', 'titular'))
     fieldsets = (
         {
             'id': 'info',

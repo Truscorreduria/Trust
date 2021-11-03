@@ -2920,20 +2920,17 @@ class AsistenciaTravel(base):
             'item': self.passengers.all().values_list(field, flat=True)
         }
 
-    def authorize_data(self):
-        pasageros = self.passengers.all().count()
-        nombre_contacto = f'{self.cliente.primer_nombre} {self.cliente.segundo_nombre}'
-        ap_contacto = self.cliente.apellido_paterno
-        am_contacto = self.cliente.apellido_materno
-        email_contacto = self.cliente.email_personal
-        nombres = self.get_array('nombres')
-        apellidos = self.get_array('apellidos')
-        telefonos = self.get_array('telefono')
-        documentos = self.get_array('documento')
-        nacimientos = self.get_array('nacimiento')
-        return {pasageros, nombre_contacto, ap_contacto,
-                am_contacto, email_contacto, nombres, apellidos,
-                telefonos, documentos, nacimientos}
+    @property
+    def titular(self):
+        try:
+            return f'{self.passengers.all()[0].nombres} {self.passengers.all()[0].apellidos}'
+        except IndexError:
+            return ''
+
+    def to_json(self):
+        o = super().to_json()
+        o['titular'] = self.titular
+        return o
 
 
 class PassengersTravel(base):
