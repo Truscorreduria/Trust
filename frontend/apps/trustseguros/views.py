@@ -55,7 +55,7 @@ def documentos(request):
             file = None
             type = ContentType.objects.get(app_label=request.POST.get('app_label'),
                                            model=request.POST.get('model'))
-            original = type.get_object_for_this_type(id=int(request.POST.get('id')))
+            original = type.get_object_for_this_type(pk=request.POST.get('pk'))
             if original:
                 file = Archivo()
                 file.created_user = request.user

@@ -625,7 +625,7 @@
                 data.append('new', 'new');
                 data.append('app_label', 'backend');
                 data.append('model', 'oportunity');
-                data.append('id', $('input[name="id"]').val());
+                data.append('pk', $('input[name="pk"]').val());
                 $.ajax("{% url 'trustseguros:documentos' %}", {
                     type: "POST",
                     data: data,
