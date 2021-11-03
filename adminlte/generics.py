@@ -188,7 +188,7 @@ class Datatables(View):
 
     def get_instance(self, request):
         try:
-            return self.model.objects.get(pk=request.POST.get('pk').replace(',', ''))
+            return self.model.objects.get(pk=request.POST.get('pk', '').replace(',', ''))
         except TypeError:
             return None
         except ValueError:
@@ -261,9 +261,9 @@ class Datatables(View):
 
             return JsonResponse(self.get_data(start, per_page, filters, search_value, draw, order), encoder=Codec)
         if 'open' in request.POST:
-            instance = self.model.objects.get(pk=request.POST.get('pk'))
+            instance = self.get_instance(request)
             form = self.get_form()(instance=instance)
-            html_form = self.html_form(instance, request, form, 'POST')
+            html_form = self.html_form(instance, request, form, 'PUT')
         if 'save' in request.POST:
             instance = self.get_instance(request)
             instance, html_form, errors, status = self.process_request(request, 'POST', instance)

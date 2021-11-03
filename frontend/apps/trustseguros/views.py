@@ -1802,7 +1802,7 @@ class Oportunidades(Datatables):
                                            f'trustseguros/lte/pdf/oportunity.html',
                                            ],
                                           {
-                                              'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
+                                              'oportunity': self.get_instance(request),
                                               'today': timezone.now(),
                                           })
 
@@ -1810,7 +1810,7 @@ class Oportunidades(Datatables):
             html = render_to_string([f'trustseguros/lte/includes/send-email-template-{self.linea.id}.html',
                                      f'trustseguros/lte/includes/send-email-template.html'],
                                     context={
-                                        'oportunity': Oportunity.objects.get(id=request.POST.get('id')),
+                                        'oportunity': self.get_instance(request),
                                     },
                                     request=request)
             return JsonResponse({
@@ -2462,11 +2462,11 @@ class AsistenciaTravelView(Datatables):
             pasajero.observaciones_medicas = request.POST.getlist('passengers-observaciones_medicas')[i]
             pasajero.save()
 
-    def post(self, request):
+    def put(self, request):
         status = 200
         errors = []
-        if 'save' in request.POST:
-            form = self.get_form()(request.POST)
+        if 'save' in request.PUT:
+            form = self.get_form()(request.PUT)
             if form.is_valid():
                 data = {}
                 data['pasajeros'] = len(request.POST.getlist('passengerstravel_id')) - 1
@@ -2483,14 +2483,14 @@ class AsistenciaTravelView(Datatables):
                 data['telefono_contacto'] = str(form.cleaned_data['telefono_contacto'])
                 data['email_contacto'] = str(form.cleaned_data['email_contacto'])
                 data['consideraciones_generales'] = str(form.cleaned_data['consideraciones_generales'])
-                data['nombres'] = self.format_array(request.POST.getlist('passengers-nombres'))
-                data['apellidos'] = self.format_array(request.POST.getlist('passengers-apellidos'))
-                data['telefonos'] = self.format_array(request.POST.getlist('passengers-telefono'))
-                data['correos'] = self.format_array(request.POST.getlist('passengers-correo'))
-                data['documentos'] = self.format_array(request.POST.getlist('passengers-documento'))
-                data['nacimientos'] = self.format_array(request.POST.getlist('passengers-nacimiento'))
+                data['nombres'] = self.format_array(request.PUT.getlist('passengers-nombres'))
+                data['apellidos'] = self.format_array(request.PUT.getlist('passengers-apellidos'))
+                data['telefonos'] = self.format_array(request.PUT.getlist('passengers-telefono'))
+                data['correos'] = self.format_array(request.PUT.getlist('passengers-correo'))
+                data['documentos'] = self.format_array(request.PUT.getlist('passengers-documento'))
+                data['nacimientos'] = self.format_array(request.PUT.getlist('passengers-nacimiento'))
                 data['observaciones_medicas'] = \
-                    self.format_array(request.POST.getlist('passengers-observaciones_medicas'))
+                    self.format_array(request.PUT.getlist('passengers-observaciones_medicas'))
                 response = create_order(data)
                 if response['success'] == '1':
                     pass
@@ -2500,7 +2500,7 @@ class AsistenciaTravelView(Datatables):
             else:
                 errors = self.get_form_errors(form)
                 status = 203
-            html_form = self.html_form(None, request, form, 'POST')
+            html_form = self.html_form(None, request, form, 'PUT')
             return self.make_response(None, html_form, errors, status)
         return super().post(request)
 
