@@ -151,7 +151,7 @@
                 $.ajax('.', {
                     method: "POST",
                     data: {
-                        id: $('input[name="id"]').val(),
+                        pk: $('input[name="pk"]').val(),
                         estado_cuenta: 'estado_cuenta'
                     },
                     success: function (response) {
@@ -270,7 +270,7 @@
                         data: {
                             new: 'new', comentario: comment,
                             app_label: 'backend', model: 'poliza',
-                            id: $('input[name="id"]').val()
+                            pk: $('input[name="pk"]').val()
                         },
                         success: function (response) {
                             $('#bitacora-table').prepend(`

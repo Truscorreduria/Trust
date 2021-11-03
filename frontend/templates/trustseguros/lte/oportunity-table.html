@@ -512,7 +512,7 @@
                     method: "POST",
                     data: {
                         'print': 'print',
-                        'id': $('input[name="id"]').val()
+                        'pk': $('input[name="pk"]').val()
                     },
                     success: function (response) {
                         let blob = new Blob([response], {type: 'application/pdf'});
@@ -534,7 +534,7 @@
                     method: "POST",
                     data: {
                         'prepare_email': 'prepare_email',
-                        'id': $('input[name="id"]').val()
+                        'pk': $('input[name="pk"]').val()
                     },
                     success: function (response) {
                         _container.html(response.html);
@@ -587,7 +587,7 @@
                     method: "POST",
                     data: {
                         'prepare_register': 'prepare_register',
-                        'id': $('input[name="id"]').val()
+                        'pk': $('input[name="pk"]').val()
                     },
                     success: function (response) {
                         _container.html(response.html);
@@ -663,7 +663,7 @@
                         data: {
                             new: 'new', comentario: comment,
                             app_label: 'backend', model: 'oportunity',
-                            id: $('input[name="id"]').val()
+                            pk: $('input[name="pk"]').val()
                         },
                         success: function (response) {
                             $('#bitacora-table').prepend(`

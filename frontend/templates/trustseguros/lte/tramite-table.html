@@ -11,7 +11,7 @@
                     method: "POST",
                     data: {
                         'imprimir_remision': 'imprimir_remision',
-                        'id': $('input[name="id"]').val()
+                        'pk': $('input[name="pk"]').val()
                     },
                     success: function (response) {
                         let blob = new Blob([response], {type: 'application/pdf'});

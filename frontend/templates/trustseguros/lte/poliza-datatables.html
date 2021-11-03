@@ -173,7 +173,7 @@
                 data.append('new', 'new');
                 data.append('app_label', 'backend');
                 data.append('model', 'poliza');
-                data.append('id', $('input[name="pk"]').val());
+                data.append('pk', $('input[name="pk"]').val());
                 $.ajax("{% url 'trustseguros:documentos' %}", {
                     type: "POST",
                     data: data,
@@ -210,7 +210,7 @@
                         data: {
                             new: 'new', comentario: comment,
                             app_label: 'backend', model: 'poliza',
-                            id: $('input[name="id"]').val()
+                            pk: $('input[name="pk"]').val()
                         },
                         success: function (response) {
                             $('#bitacora-table').prepend(`
@@ -242,7 +242,7 @@
                         $.ajax("{% url 'trustseguros:polizas' %}", {
                             method: "POST",
                             data: {
-                                id: $('input[name="id"]').val(), renovar: 'renovar'
+                                pk: $('input[name="pk"]').val(), renovar: 'renovar'
                             }, success: function (response) {
                                 redraw_object(response);
                                 update_table(response);
@@ -270,7 +270,7 @@
                         $.ajax("{% url 'trustseguros:polizas' %}", {
                             method: "POST",
                             data: {
-                                id: $('input[name="id"]').val(), norenovar: 'norenovar'
+                                pk: $('input[name="pk"]').val(), norenovar: 'norenovar'
                             }, success: function (response) {
                                 redraw_object(response);
                                 update_table(response);
@@ -298,7 +298,7 @@
                         $.ajax("{% url 'trustseguros:polizas' %}", {
                             method: "POST",
                             data: {
-                                id: $('input[name="id"]').val(), cancelando: 'cancelando'
+                                pk: $('input[name="pk"]').val(), cancelando: 'cancelando'
                             }, success: function (response) {
                                 redraw_object(response);
                                 update_table(response);
@@ -327,7 +327,7 @@
                 let data = new FormData();
                 data.append('import_data', 'import_data');
                 data.append('file', this.files[0]);
-                data.append('id', $('input[name="id"]').val());
+                data.append('pk', $('input[name="pk"]').val());
                 $.ajax("{% url 'trustseguros:polizas' %}", {
                     method: "POST",
                     data: data,

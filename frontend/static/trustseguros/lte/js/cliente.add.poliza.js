@@ -14,7 +14,7 @@ function add_poliza() {
             $.ajax("/trustseguros/polizas/", {
                 method: "POST",
                 data: {
-                    customer: $('input[name="id"]').val(), add_from_customer: 'add_from_customer'
+                    customer: $('input[name="pk"]').val(), add_from_customer: 'add_from_customer'
                 }, success: function (response) {
                     window.location.assign("/trustseguros/polizas/#" + response.id);
                 }
