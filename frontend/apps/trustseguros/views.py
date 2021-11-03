@@ -2451,7 +2451,7 @@ class AsistenciaTravelView(Datatables):
         for i in range(1, len(request.POST.getlist('passengerstravel_id'))):
             try:
                 pasajero = PassengersTravel.objects.get(id=request.POST.getlist('passengerstravel_id')[i])
-            except ObjectDoesNotExist:
+            except:
                 pasajero = PassengersTravel()
             pasajero.asistencia = instance
             pasajero.nombres = request.POST.getlist('passengers-nombres')[i]

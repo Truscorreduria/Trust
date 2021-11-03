@@ -1499,7 +1499,7 @@ class PassengersTravelForm(forms.ModelForm):
 
 
 class AsistenciaTravelForm(forms.ModelForm):
-    passengers = forms.Field(label="datos de los acompañantes", required=False,
+    passengers = forms.Field(label="Datos de los viajeros", required=False,
                              widget=TableBorderedInput(
                                  attrs={
                                      'form': PassengersTravelForm
