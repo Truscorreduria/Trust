@@ -20,7 +20,7 @@ from django.views.generic import View
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.core.exceptions import MultipleObjectsReturned
-from travel_bridge.utils import create_order
+from travel_bridge.utils import create_order, price_plan_age
 
 
 def get_attr(obj, attr_name):
@@ -2439,12 +2439,30 @@ class AsistenciaTravelView(Datatables):
             )
         },
     )
+    buttons = [
+        {
+            'class': 'btn btn-success btn-perform',
+            'perform': 'get_price',
+            'callback': 'process_price',
+            'icon': 'fa fa-save',
+            'text': 'Guardar',
+        },
+    ]
+    list_template = 'trustseguros/lte/asistencia-table.html'
 
     def format_array(self, data):
         del data[0]
         return {
             'item': [str(item).lower() for item in data]
         }
+
+    def calculate_ages(self, request_data):
+        ages = []
+        for i in range(1, len(request_data.getlist('passengerstravel_id'))):
+            now = datetime.now()
+            nacimiento = datetime.strptime(request_data.getlist('passengers-nacimiento')[i], '%d/%m/%Y')
+            ages.append(int((now - nacimiento).days / 365.25))
+        return ages
 
     def pos_save(self, instance, request):
         for i in range(1, len(request.POST.getlist('passengerstravel_id'))):
@@ -2466,10 +2484,37 @@ class AsistenciaTravelView(Datatables):
         status = 200
         method = 'PUT'
         errors = []
+        if 'get_price' in request.PUT:
+            form = self.get_form()(request.PUT)
+            if form.is_valid():
+                edades = self.calculate_ages(request.PUT)
+                data = {
+                    "id_plan": str(form.cleaned_data['plan'].id),
+                    "pais_origen": form.cleaned_data['pais_origen'].iso,
+                    "territorio_destino": str(form.cleaned_data['territorio_destino'].id),
+                    "fecha_salida": form.cleaned_data['fecha_salida'].strftime("%d/%m/%Y"),
+                    "fecha_llegada": form.cleaned_data['fecha_regreso'].strftime("%d/%m/%Y"),
+                    "pasajeros": str(len(request.POST.getlist('passengerstravel_id')) - 1),
+                    "edad": {
+                        "item": edades
+                    }
+                }
+                response = price_plan_age(data)
+                if response['success'] == 1:
+                    html_form = render_to_string('trustseguros/lte/includes/travel-confirmation-message.html',
+                                                 {
+                                                     **response.get('events', {}),
+                                                     'plan': form.cleaned_data['plan']
+                                                 })
+                else:
+                    errors.append({'key': '', 'errors': [{'message': response['message']}, ]})
+                    status = 203
+                    html_form = ""
+                return self.make_response(None, html_form, errors, status)
         if 'save' in request.PUT:
             form = self.get_form()(request.PUT)
             if form.is_valid():
-                data = {}
+                data = dict()
                 data['pasajeros'] = len(request.POST.getlist('passengerstravel_id')) - 1
                 data['fecha_salida'] = form.cleaned_data['fecha_salida'].strftime('%d/%m/%Y')
                 data['fecha_llegada'] = form.cleaned_data['fecha_regreso'].strftime('%d/%m/%Y')

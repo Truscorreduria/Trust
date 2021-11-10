@@ -1,0 +1,38 @@
+{% extends 'adminlte/datatables.html' %}
+{% load static %}
+
+{% block javascript %}
+    {{ block.super }}
+
+    <script type="text/javascript">
+        function process_price(response, textStatus, xhr) {
+            if (xhr.status === 200) {
+                Swal.fire({
+                    imageUrl: "{% static 'cotizador/images/trusty/cool.png' %}",
+                    title: '¿Deseas continuar?',
+                    html: response.form,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si, Continuar',
+                    cancelButtonText: 'No, Cancelar'
+                }).then((result) => {
+                    if (result.value) {
+                        perform_action(this, 'save', process_response);
+                    } else {
+                        $('#btn-save').removeAttr('disabled')
+                    }
+                });
+            }
+
+            $.each(response.errors, function (n, error) {
+                $.growl.error({
+                    message: `<p>${error.key}</p>
+                                      <ul>${li_errors(error.errors)}</ul>`
+                });
+            });
+        }
+
+    </script>
+{% endblock %}
