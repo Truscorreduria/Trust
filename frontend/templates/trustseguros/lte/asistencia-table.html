@@ -19,7 +19,8 @@
                     cancelButtonText: 'No, Cancelar'
                 }).then((result) => {
                     if (result.value) {
-                        perform_action(this, 'save', process_response);
+                        const form = $('form')[0]
+                        perform_action(form, 'save', process_response);
                     } else {
                         $('#btn-save').removeAttr('disabled')
                     }
