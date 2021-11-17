@@ -1534,6 +1534,6 @@ class GenerarOportunidadForm(forms.Form):
                                       label="Vendedor")
     grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
     ramo = forms.ModelChoiceField(queryset=Ramo.objects.all(), required=False)
-    subramo = forms.ModelChoiceField(queryset=SubRamo.objects.all(), required=False)
+    sub_ramo = forms.ModelChoiceField(queryset=SubRamo.objects.all(), required=False)
     fecha_vence__gte = forms.DateField(required=True, label="Desde")
     fecha_vence__lte = forms.DateField(required=True, label="Hasta")
