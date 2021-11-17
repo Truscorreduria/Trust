@@ -1675,8 +1675,10 @@ class CargaOportunidades(View):
                 prospect = Prospect(**prospect_data)
             prospect.save()
             o = Oportunity()
+            o.fecha_vence = poliza.fecha_vence
             o.prospect = prospect
             o.campain = campain
+            o.vendedor = vendedor
             o.linea = campain.linea
             o.no_poliza = poliza.no_poliza
             o.grupo = poliza.grupo
