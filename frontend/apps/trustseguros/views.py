@@ -7,7 +7,7 @@ from .forms import *
 from django.http import JsonResponse
 from grappelli_extras.utils import Codec
 import pandas as pd
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, FieldError
 from backend.signals import RenovarPoliza
 from django.db import IntegrityError
 from backend.signals import AddComment
@@ -1622,6 +1622,93 @@ class ConfiguracionCotizador(Datatables):
             except:
                 pass
             f.save()
+
+
+class CargaOportunidades(View):
+    model = Poliza
+    form = GenerarOportunidadForm
+    template_name = "trustseguros/lte/carga-oportunidades.html"
+
+    @classmethod
+    def as_view(cls, **initkwars):
+        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
+
+    @staticmethod
+    def apply_filter(queryset, form_data):
+        for filter_key in form_data.keys():
+            if form_data.get(filter_key):
+                try:
+                    queryset = queryset.filter(Q((filter_key, form_data.get(filter_key))))
+                except FieldError:
+                    pass  # fixme aqui deberia ir un warning
+        return queryset
+
+    @staticmethod
+    def to_json(instance):
+        return {
+            'id': instance.id,
+            'no_poliza': instance.no_poliza,
+            'ramo': get_attr(instance, 'ramo'),
+            'subramo': get_attr(instance, 'sub_ramo'),
+            'aseguradora': get_attr(instance, 'aseguradora'),
+            'fecha_fin': get_attr(instance, 'fecha_vence'),
+            'cliente': get_attr(instance, 'cliente'),
+        }
+
+    @staticmethod
+    def generar_oportunidades(polizas, campain, vendedor, request):
+        for poliza in polizas:
+            prospect_data = model_to_dict(poliza.cliente)
+            prospect_data.pop('id', None)
+            prospect_data.pop('user_create', None)
+            prospect_data['departamento_id'] = prospect_data.pop('departamento', None)
+            prospect_data['municipio_id'] = prospect_data.pop('municipio', None)
+            prospect_data['user_id'] = prospect_data.pop('user', None)
+            prospect_data['sucursal_id'] = prospect_data.pop('sucursal', None)
+            prospect_data['empresa_id'] = prospect_data.pop('empresa', None)
+            prospect_data['empresa_id'] = prospect_data.pop('empresa', None)
+            if prospect_data['cedula'] and len(prospect_data['cedula']) == 14:
+                prospect, _ = Prospect.objects.get_or_create(cedula=prospect_data['cedula'])
+                for key in prospect_data.keys():
+                    setattr(prospect, key, prospect_data[key])
+            else:
+                prospect = Prospect(**prospect_data)
+            prospect.save()
+            o = Oportunity()
+            o.prospect = prospect
+            o.campain = campain
+            o.linea = campain.linea
+            o.no_poliza = poliza.no_poliza
+            o.grupo = poliza.grupo
+            o.ramo = poliza.ramo
+            o.sub_ramo = poliza.sub_ramo
+            o.user_create = request.user
+            o.aseguradora = poliza.aseguradora
+            extra_data = DatoPoliza.objects.filter(poliza=poliza)
+            if extra_data.count() > 0:
+                o.extra_data = extra_data[0].extra_data
+            o.save()
+
+    def get(self, request):
+        return render(request, self.template_name, {
+            'form': self.form()
+        })
+
+    def post(self, request, **kwargs):
+        if 'generaroportunidades' in request.POST:
+            campain = Campain.objects.get(id=request.POST.get('campain'))
+            vendedor = User.objects.get(id=request.POST.get('vendedor'))
+            polizas = Poliza.objects.filter(id__in=request.POST.getlist('poliza'))
+            self.generar_oportunidades(polizas, campain, vendedor, request)
+            return JsonResponse({})
+        form = self.form(request.POST)
+        raw_data = []
+        if form.is_valid():
+            queryset = self.model.objects.all()
+            queryset = self.apply_filter(queryset, form.cleaned_data)
+            for instance in queryset:
+                raw_data.append(self.to_json(instance))
+        return JsonResponse({'raw_data': raw_data}, encoder=Codec)
 
 
 # endregion

@@ -1526,3 +1526,14 @@ class AsistenciaTravelForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = self.cleaned_data
+
+
+class GenerarOportunidadForm(forms.Form):
+    campain = forms.ModelChoiceField(queryset=Campain.objects.all(), label="Campaña")
+    vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True),
+                                      label="Vendedor")
+    grupo = forms.ModelChoiceField(queryset=Grupo.objects.all(), required=False)
+    ramo = forms.ModelChoiceField(queryset=Ramo.objects.all(), required=False)
+    subramo = forms.ModelChoiceField(queryset=SubRamo.objects.all(), required=False)
+    fecha_vence__gte = forms.DateField(required=True, label="Desde")
+    fecha_vence__lte = forms.DateField(required=True, label="Hasta")

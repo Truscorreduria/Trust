@@ -1,0 +1,181 @@
+{% extends 'adminlte/index.html' %}
+{% load crispy_forms_filters static %}
+
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/bootstrap-select/dist/css/bootstrap-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/izimodal/css/iziModal.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <form action="." id="form-report" method="post" data-filename="{{ filename }}">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="row">
+                            <button type="submit" class="btn btn-info">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="izimodal" id="report-modal">
+            <div class="modal-body"></div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block javascript %}
+    <script src="{% static 'adminlte/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'adminlte/js/datatables.ES_NI.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/bootstrap-select/dist/js/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/izimodal/js/iziModal.js' %}"></script>
+    <script src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
+    <script src="{% static 'adminlte/plugins/sweetalert2/dist/sweetalert2.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.dateinput').datepicker({
+                dateFormat: 'dd/mm/yy',
+            });
+
+            const reportmodal = $('#report-modal').iziModal({});
+
+            const export_to_excel = function (data, filename) {
+                const book = XLSX.utils.book_new();
+                const sheet = XLSX.utils.json_to_sheet(data);
+                XLSX.utils.book_append_sheet(book, sheet, event.target.value);
+                XLSX.writeFile(book, filename);
+            };
+            const get_columns = function (data) {
+                return Object.keys(data[0]);
+            };
+            const make_thead = function (columns) {
+                let html = `<tr>`;
+                $.each(columns, function (i, o) {
+                    html += `<th>${o}</th>`
+                })
+                html += `</tr>`;
+                return html;
+            };
+            const make_tbody = function (columns, data) {
+                let html = ``;
+                $.each(data, function (i, row) {
+                    html += `<tr>`;
+                    $.each(columns, function (ii, column) {
+                        html += `<td><input type="hidden" name="${column}" value="${row[column]}">${row[column]}</td>`;
+                    });
+                    html += `</tr>`;
+                });
+                return html;
+            };
+            const export_to_html = function (data) {
+                const columns = get_columns(data);
+                const thead = make_thead(columns);
+                const tbody = make_tbody(columns, data);
+                return (`<div class="table-responsive">
+                        <table class="table table-bordered" id="report-table">
+                        <thead>${thead}</thead>
+                        <tbody class="data-tbody">${tbody}</tbody>
+                        </table>
+                        </div>
+                `)
+            }
+            const make_buttons = function () {
+                return (`
+                    <div class="row float-right">
+                    <button type="button" class="btn btn-info btn-download">
+                        <i class="fa fa-file-excel"></i>
+                        Descargar
+                    </button>
+                    <button type="button" class="btn btn-warning btn-continue">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        Generar oportunidades
+                    </button>
+                </div>
+                `)
+            }
+
+            $(document).on('submit', 'form', function (event) {
+                event.preventDefault();
+                const _this = $(this);
+                const data = new FormData(this);
+                $.ajax(_this.attr('action'), {
+                    method: "post",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.raw_data.length > 0) {
+                            const modalbody = reportmodal.find('.modal-body');
+                            modalbody.html(export_to_html(response.raw_data));
+                            modalbody.append(make_buttons())
+                            reportmodal.iziModal('destroy');
+                            reportmodal.iziModal({
+                                title: 'Generar Oportunidades de negocio',
+                                headerColor: '#51972d',
+                                openFullscreen: true,
+                                zindex: 1500,
+                            })
+                            reportmodal.iziModal('open');
+                            $('#report-table').dataTable({
+                                dom: 'Bfrtip',
+                                language: ES_ni,
+                            });
+                            $('.btn-download')
+                                .off('click')
+                                .on('click', () => {
+                                    export_to_excel(response.raw_data, "Polizas.xlsx");
+                                });
+                            $('.btn-continue')
+                                .off('click')
+                                .on('click', () => {
+                                    const data = new FormData();
+                                    const tbody = $('.data-tbody');
+                                    $.each(tbody.find('input[name="id"]'), (i, o) => {
+                                        data.append('poliza', $(o).val());
+                                    });
+                                    data.append('campain', $('#id_campain').val());
+                                    data.append('vendedor', $('#id_vendedor').val());
+                                    data.append('generaroportunidades', 'generaroportunidades');
+                                    $.ajax('.', {
+                                        method: "POST",
+                                        data: data,
+                                        processData: false,
+                                        contentType: false,
+                                        success: function (response) {
+                                            reportmodal.iziModal('close');
+                                            swal({
+                                                title: "Las oportunidades de negocio se generaron con éxito."
+                                            });
+                                        },
+                                        error: function (err) {
+                                            swal({
+                                                title: "Ocurrió un error inesperado.",
+                                                type: 'error'
+                                            })
+                                        }
+                                    })
+                                });
+
+                        } else {
+                            swal({
+                                title: 'No se encontraron registros',
+                                type: 'error',
+                            })
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

@@ -19,6 +19,7 @@ urlpatterns = [
     path('polizas/', Polizas.as_view(), name="polizas"),
     path('tramites/', Tramites.as_view(), name="tramites"),
     path('configcotizador/', ConfiguracionCotizador.as_view(), name="configcotizador"),
+    path('cargaoportunidades/', CargaOportunidades.as_view(), name="cargaoportunidades"),
     path('usuarios/', Usuarios.as_view(), name="usuarios"),
     path('oportunidades/<int:linea>/', Oportunidades.as_view(), name="oportunidades"),
     path('roles/', Roles.as_view(), name="roles"),
