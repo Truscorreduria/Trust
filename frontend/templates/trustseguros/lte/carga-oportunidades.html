@@ -127,10 +127,10 @@
                                 zindex: 1500,
                             })
                             reportmodal.iziModal('open');
-                            $('#report-table').dataTable({
+                            {% comment %}$('#report-table').dataTable({
                                 dom: 'Bfrtip',
                                 language: ES_ni,
-                            });
+                            });{% endcomment %}
                             $('.btn-download')
                                 .off('click')
                                 .on('click', () => {
@@ -166,7 +166,6 @@
                                         }
                                     })
                                 });
-
                         } else {
                             swal({
                                 title: 'No se encontraron registros',

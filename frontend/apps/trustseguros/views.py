@@ -1666,7 +1666,6 @@ class CargaOportunidades(View):
             prospect_data['user_id'] = prospect_data.pop('user', None)
             prospect_data['sucursal_id'] = prospect_data.pop('sucursal', None)
             prospect_data['empresa_id'] = prospect_data.pop('empresa', None)
-            prospect_data['empresa_id'] = prospect_data.pop('empresa', None)
             if prospect_data['cedula'] and len(prospect_data['cedula']) == 14:
                 prospect, _ = Prospect.objects.get_or_create(cedula=prospect_data['cedula'])
                 for key in prospect_data.keys():
