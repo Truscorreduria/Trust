@@ -1657,6 +1657,7 @@ class CargaOportunidades(View):
 
     @staticmethod
     def generar_oportunidades(polizas, campain, vendedor, request):
+        prospect = None
         for poliza in polizas:
             prospect_data = model_to_dict(poliza.cliente)
             prospect_data.pop('id', None)
@@ -1693,6 +1694,7 @@ class CargaOportunidades(View):
             if extra_data.count() > 0:
                 o.extra_data = extra_data[0].extra_data
             o.save()
+            print(o)
 
     def get(self, request):
         return render(request, self.template_name, {
