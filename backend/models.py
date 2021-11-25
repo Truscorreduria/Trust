@@ -1,22 +1,24 @@
-from django.db import models
-from grappelli_extras.models import base, BaseEntity, get_code
-from datetime import datetime, timedelta
-from django.contrib.auth.models import User
-from .numero_letra import numero_a_letras
-from datetime import date
-from utils.models import Departamento, Municipio, Direccion
-from django.contrib import messages
 import json
-from django.urls import reverse
-from django.utils.html import mark_safe
+from datetime import date
+from datetime import datetime, timedelta
+
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.utils import timezone
-from django.forms.models import model_to_dict
-from django.utils.translation import gettext as _
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 from django.db.models import Avg, Sum
-from image_cropping.fields import ImageCropField
+from django.forms.models import model_to_dict
+from django.urls import reverse
+from django.utils import timezone
+from django.utils.html import mark_safe
+from django.utils.translation import gettext as _
+from grappelli_extras.models import base, BaseEntity, get_code
 from image_cropping import ImageRatioField
+from image_cropping.fields import ImageCropField
+
+from utils.models import Departamento, Municipio, Direccion
+from .numero_letra import numero_a_letras
 
 
 class Base(base):
@@ -2490,6 +2492,14 @@ class Oportunity(BasePoliza):
         return OportunityQuotation.objects.filter(oportunity=self).order_by('aseguradora__code')
 
     def registrar(self, aseguradora):
+        try:
+            renovada = Poliza.objects.get(no_poliza=self.no_poliza,
+                                          estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE]
+                                          )
+            renovada.estado_poliza = EstadoPoliza.RENOVADA
+            renovada.save()
+        except ObjectDoesNotExist:
+            renovada = None
         p = Poliza(oportunity=self)
         cliente, _ = ClienteNatural.objects.get_or_create(cedula=self.prospect.cedula, tipo_cliente=TipoCliente.NATURAL,
                                                           estado_cliente=EstadoCliente.ACTIVO)
@@ -2510,6 +2520,10 @@ class Oportunity(BasePoliza):
         p.aseguradora = aseguradora
         p.ramo = self.ramo
         p.sub_ramo = self.sub_ramo
+        if renovada:
+            p.no_poliza = renovada.no_poliza
+            p.fecha_emision = renovada.fecha_vence + timedelta(days=1)
+            p.fecha_vence = renovada.fecha_vence + timedelta(days=366)
         p.save()
 
         d = DatoPoliza(poliza=p, extra_data=self.extra_data)

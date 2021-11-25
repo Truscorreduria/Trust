@@ -2,6 +2,11 @@
 
 <form action="." id="form-register" method="post">
     <input type="hidden" name="oportunity" value="{{ oportunity.id }}">
+    {% if poliza %}
+        <div class="row">
+            <div class="col">La póliza # {{ poliza.no_poliza }} existe! y se encuentra en estado: {{ poliza.get_estado_poliza_display }}</div>
+        </div>
+    {% endif %}
     {% if oportunity.cotizado %}
         <table class="table">
             <thead>

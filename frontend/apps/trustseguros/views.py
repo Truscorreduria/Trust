@@ -1,26 +1,25 @@
+import pandas as pd
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
+from django.core.exceptions import FieldError
+from django.core.exceptions import MultipleObjectsReturned
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from adminlte.generics import Datatables
-from django.contrib.auth.decorators import login_required
-from backend.utils import calcular_tabla_cuotas, parse_date
-from .forms import *
-from django.http import JsonResponse
-from grappelli_extras.utils import Codec
-import pandas as pd
-from django.core.exceptions import ObjectDoesNotExist, FieldError
-from backend.signals import RenovarPoliza
-from django.db import IntegrityError
-from backend.signals import AddComment
-from django.contrib.auth.models import Group
-from django.forms.models import model_to_dict
-from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
-from utils.utils import send_email
-from adminlte.utils import Codec
 from django.views.generic import View
-from django.db.models import Q
-from django.core.paginator import Paginator
-from django.core.exceptions import MultipleObjectsReturned
+from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
+from grappelli_extras.utils import Codec
+
+from adminlte.generics import Datatables
+from adminlte.utils import Codec
+from backend.signals import AddComment
+from backend.signals import RenovarPoliza
+from backend.utils import calcular_tabla_cuotas, parse_date
 from travel_bridge.utils import create_order, price_plan_age
+from utils.utils import send_email
+from .forms import *
 
 
 def get_attr(obj, attr_name):
@@ -1925,10 +1924,17 @@ class Oportunidades(Datatables):
             return JsonResponse({})
 
         if 'prepare_register' in request.POST:
+            oportunity = Oportunity.objects.get(pk=request.POST.get('pk'))
+            try:
+                poliza = Poliza.objects.get(no_poliza=oportunity.no_poliza,
+                                            estado_poliza__in=[EstadoPoliza.ACTIVA, EstadoPoliza.PENDIENTE])
+            except ObjectDoesNotExist:
+                poliza = None
             html = render_to_string('trustseguros/lte/includes/ofertas.html',
                                     context={
-                                        'oportunity': Oportunity.objects.get(pk=request.POST.get('pk')),
+                                        'oportunity': oportunity,
                                         'aseguradoras': Aseguradora.objects.all(),
+                                        'poliza': poliza,
                                     },
                                     request=request)
             return JsonResponse({
