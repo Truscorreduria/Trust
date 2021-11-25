@@ -99,9 +99,9 @@ def comentarios(request):
         if 'new' in request.POST:
             file = None
             try:
-                type = ContentType.objects.get(app_label=request.POST.get('app_label'),
+                content_type = ContentType.objects.get(app_label=request.POST.get('app_label'),
                                                model=request.POST.get('model'))
-                original = type.get_object_for_this_type(pk=int(request.POST.get('pk')))
+                original = content_type.get_object_for_this_type(pk=request.POST.get('pk'))
             except:
                 type = None
                 original = None
@@ -110,7 +110,7 @@ def comentarios(request):
                 file.created_user = request.user
                 file.updated_user = request.user
                 file.comentario = request.POST.get('comentario')
-                file.type = type
+                file.type = content_type
                 file.key = original.id
                 file.save()
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
