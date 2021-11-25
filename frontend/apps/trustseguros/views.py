@@ -1666,12 +1666,16 @@ class CargaOportunidades(View):
             prospect_data['user_id'] = prospect_data.pop('user', None)
             prospect_data['sucursal_id'] = prospect_data.pop('sucursal', None)
             prospect_data['empresa_id'] = prospect_data.pop('empresa', None)
-            if prospect_data['cedula'] and len(prospect_data['cedula']) == 14:
-                prospect, _ = Prospect.objects.get_or_create(cedula=prospect_data['cedula'])
-                for key in prospect_data.keys():
-                    setattr(prospect, key, prospect_data[key])
+            if poliza.cliente.tipo_cliente == TipoCliente.NATURAL:
+                if prospect_data['cedula'] and len(prospect_data['cedula']) == 14:
+                    prospect, _ = Prospect.objects.get_or_create(cedula=prospect_data['cedula'])
+                    for key in prospect_data.keys():
+                        setattr(prospect, key, prospect_data[key])
             else:
-                prospect = Prospect(**prospect_data)
+                if prospect_data['ruc'] and len(prospect_data['ruc']) == 14:
+                    prospect, _ = Prospect.objects.get_or_create(ruc=prospect_data['ruc'])
+                    for key in prospect_data.keys():
+                        setattr(prospect, key, prospect_data[key])
             prospect.save()
             o = Oportunity()
             o.fecha_vence = poliza.fecha_vence
