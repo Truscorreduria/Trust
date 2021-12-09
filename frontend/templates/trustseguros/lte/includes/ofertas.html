@@ -4,7 +4,10 @@
     <input type="hidden" name="oportunity" value="{{ oportunity.id }}">
     {% if poliza %}
         <div class="row">
-            <div class="col">La póliza # {{ poliza.no_poliza }} existe! y se encuentra en estado: {{ poliza.get_estado_poliza_display }}</div>
+            <div class="col">La póliza # {{ poliza.no_poliza }} existe! y se encuentra en estado:
+                {{ poliza.get_estado_poliza_display }}. Vigencia de: {{ poliza.fecha_emision|date:'d/m/Y' }} hasta
+                {{ poliza.fecha_vence|date:'d/m/Y' }}
+            </div>
         </div>
     {% endif %}
     {% if oportunity.cotizado %}
