@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^politicas/', politicas, name='politicas'),
     url(r'^contacto/', contacto, name='contacto'),
     url(r'^cotiza_auto/', cotiza_auto, name='cotiza_auto'),
+    url(r'^cotiza_api/', cotiza_api, name='cotiza_api'),
 ]

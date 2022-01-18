@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block header-slider %}
-    <div class="form-title">Cotización Seguro Automóvil</div>
+    <div class="form-title">Cotización Accidentes Personales</div>
 {% endblock %}
 
 {% block sub-header %}{% endblock %}
@@ -16,26 +16,6 @@
 {% block content %}
     <form class="container form-container">
         {% csrf_token %}
-        <div class="row">
-            <label for="">Datos del Vehículo</label>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.tipo_seguro|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.marca|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.modelo|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.anno|as_crispy_field }}
-            </div>
-        </div>
-        <br>
         <div class="row">
             <label for="">Datos del asegurado</label>
         </div>
@@ -69,6 +49,23 @@
             </div>
             <div class="col">
                 {{ form.email_personal|as_crispy_field }}
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <label for="">Información para el seguro</label>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form.profecion|as_crispy_field }}
+            </div>
+            <div class="col">
+                {{ form.ocupacion|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form.suma_asegurada|as_crispy_field }}
             </div>
         </div>
         <br>

@@ -31,7 +31,14 @@ def contacto(request):
 
 
 def cotiza_auto(request):
-    form = OportunityForm()
+    form = VehiculoForm()
     return render(request, template_name="home/cotiza-auto.html", context={
+        'form': form
+    })
+
+
+def cotiza_api(request):
+    form = AccidenteForm()
+    return render(request, template_name="home/cotiza-api.html", context={
         'form': form
     })
