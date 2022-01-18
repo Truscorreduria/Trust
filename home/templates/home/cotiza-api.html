@@ -14,7 +14,7 @@
 {% block sub-header %}{% endblock %}
 
 {% block content %}
-    <form class="container form-container">
+    <form class="container form-container" action="." method="post" novalidate>
         {% csrf_token %}
         <div class="row">
             <label for="">Datos del asegurado</label>

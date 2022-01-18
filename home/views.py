@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render
 from .forms import *
 
@@ -32,6 +33,11 @@ def contacto(request):
 
 def cotiza_auto(request):
     form = VehiculoForm()
+    if request.method == "POST":
+        print(request.POST)
+        form = VehiculoForm(request.POST)
+        if form.is_valid():
+            pass
     return render(request, template_name="home/cotiza-auto.html", context={
         'form': form
     })
@@ -39,6 +45,10 @@ def cotiza_auto(request):
 
 def cotiza_api(request):
     form = AccidenteForm()
+    if request.method == "POST":
+        form = AccidenteForm(request.POST)
+        if form.is_valid():
+            pass
     return render(request, template_name="home/cotiza-api.html", context={
         'form': form
     })
