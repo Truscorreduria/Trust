@@ -2,7 +2,7 @@ from django import forms
 from backend.models import Oportunity, TipoDoc
 
 
-class VehiculoForm(forms.ModelForm):
+class VehiculoForm(forms.Form):
     tipo_seguro = forms.ChoiceField(choices=(), label="Tipo de Seguro")
     marca = forms.ChoiceField(choices=(), label="Marca")
     modelo = forms.ChoiceField(choices=(), label="Modelo")
@@ -17,10 +17,6 @@ class VehiculoForm(forms.ModelForm):
     celular = forms.CharField(max_length=8, label="Celular")
     email_personal = forms.EmailField(max_length=255, label="Correo Electrónico")
 
-    class Meta:
-        model = Oportunity
-        fields = "__all__"
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['identificacion'].widget.attrs['placeholder'] = 'Ej. 0010101010000A'
@@ -32,7 +28,7 @@ class VehiculoForm(forms.ModelForm):
         self.fields['email_personal'].widget.attrs['placeholder'] = 'carlos@gmail.com'
 
 
-class AccidenteForm(forms.ModelForm):
+class AccidenteForm(forms.Form):
     tipo_doc = forms.ChoiceField(choices=TipoDoc.choices(), label="Tipo de ID")
     identificacion = forms.CharField(max_length=14, label="Identificación")
     primer_nombre = forms.CharField(max_length=125, label="Primer Nombre")
@@ -47,10 +43,6 @@ class AccidenteForm(forms.ModelForm):
         ("U$ 2,500.00", 2500.00),
         ("U$ 3,500.00", 3500.00),
     ), label="Suma Asegurada")
-
-    class Meta:
-        model = Oportunity
-        fields = "__all__"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
