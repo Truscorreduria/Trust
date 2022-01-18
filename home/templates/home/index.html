@@ -3568,19 +3568,19 @@
                                     <a id="logo" href="{% url 'home:index' %}" title="Trust Correduria" data-height="90"
                                        data-padding="15"><img class="logo-main scale-with-grid"
                                                               src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
-                                                              data-retina="https://trustcorreduria.net/wp-content/uploads/2018/05/trust-logo-700px.png"
+                                                              data-retina="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
                                                               data-height="87" alt="trust-logo-300px"/><img
                                             class="logo-sticky scale-with-grid"
                                             src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
-                                            data-retina="https://trustcorreduria.net/wp-content/uploads/2018/05/trust-logo-700px.png"
+                                            data-retina="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
                                             data-height="87" alt="trust-logo-300px"/><img
                                             class="logo-mobile scale-with-grid"
                                             src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
-                                            data-retina="https://trustcorreduria.net/wp-content/uploads/2018/05/trust-logo-700px.png"
+                                            data-retina="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
                                             data-height="87" alt="trust-logo-300px"/><img
                                             class="logo-mobile-sticky scale-with-grid"
                                             src="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
-                                            data-retina="https://trustcorreduria.net/wp-content/uploads/2018/05/trust-logo-700px.png"
+                                            data-retina="{% static 'seguros/wp-content/uploads/2018/05/trust-logo-300px.png' %}"
                                             data-height="87" alt="trust-logo-300px"/></a>
                                 </div>
                                 <div class="menu_wrapper">
@@ -4188,14 +4188,13 @@
                         <a id="back_to_top" class="button button_js" href="#"><i class="icon-up-open-big"></i></a>
                         <!-- Copyrights -->
                         <div class="copyright">
-                            © 2018 TRUST CORREDURÍA. Todos los derechos reservados. Desarrollado por <a
-                                href="https://www.hdwebnicaragua.com/">HDWEB NICARAGUA</a>
+                            © 2018 TRUST CORREDURÍA. Todos los derechos reservados.
                         </div>
 
                         <div class="top-link-container">
-                            <a class="top-link" target="_blank" href="http://app.trustcorreduria.net/">
-                                <button>ACCEDER</button>
-                            </a>
+{#                            <a class="top-link" target="_blank" href="http://app.trustcorreduria.net/">#}
+{#                                <button>ACCEDER</button>#}
+{#                            </a>#}
                         </div>
                         <ul class="social">
                             <li class="whatsapp"><a target="_blank" href="#" title="WhatsApp"><i
@@ -4228,9 +4227,6 @@
         </div>
         <div class="menu_wrapper"></div>
         <div class="top-link-container">
-            <a class="top-link" target="_blank" href="http://app.trustcorreduria.net/">
-                <button>ACCEDER</button>
-            </a>
         </div>
         <ul class="social">
             <li class="whatsapp"><a target="_blank" href="#" title="WhatsApp"><i class="icon-whatsapp"></i></a>

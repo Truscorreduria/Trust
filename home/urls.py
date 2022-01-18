@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^plataformas/', plataformas, name='plataformas'),
     url(r'^politicas/', politicas, name='politicas'),
     url(r'^contacto/', contacto, name='contacto'),
+    url(r'^cotiza_auto/', cotiza_auto, name='cotiza_auto'),
 ]
