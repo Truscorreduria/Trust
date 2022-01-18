@@ -100,8 +100,9 @@ class CotizaApi(View):
             oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
             oportunidad.save()
             result = 'success'
+            url = request.build_absolute_uri(reverse("trustseguros:oportunidades", kwargs={"linea": linea.id}))
             send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
-                       f'{reverse("trustseguros:oportunidades", kwargs={"linea": linea.id})}')
+                       f'{url}')
         else:
             html_form = render_to_string(self.form_content, {
                 'form': form,
