@@ -1,4 +1,4 @@
-from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, TipoDoc
+from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea
 from django.shortcuts import render
 from .forms import AccidenteForm, VehiculoForm
 from django.contrib.auth.models import User
@@ -64,15 +64,17 @@ def cotiza_api(request):
         form = AccidenteForm(request.POST)
         if form.is_valid():
             extra_data = {
-                'profecion': form.cleaned_data.get('profecion'),
-                'ocupacion': form.cleaned_data.get('ocupacion'),
-                'suma_asegurada': form.cleaned_data.get('suma_asegurada'),
+                'PROFESION': form.cleaned_data.get('profecion'),
+                'OCUPACION': form.cleaned_data.get('ocupacion'),
+                'SUMA_ASEGURADA': form.cleaned_data.get('suma_asegurada'),
             }
+            linea = Linea.objects.get(pk=4)
             campain = Campain.objects.get(pk=90)
             ramo = Ramo.objects.get(pk=3)
             sub_ramo = SubRamo.objects.get(pk=21)
             user = User.objects.get(pk=2647)
             oportunidad = Oportunity()
+            oportunidad.linea = linea
             oportunidad.campain = campain
             oportunidad.ramo = ramo
             oportunidad.sub_ramo = sub_ramo
