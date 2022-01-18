@@ -21,6 +21,16 @@ class VehiculoForm(forms.ModelForm):
         model = Oportunity
         fields = "__all__"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['identificacion'].widget.attrs['placeholder'] = 'Ej. 0010101010000A'
+        self.fields['primer_nombre'].widget.attrs['placeholder'] = 'Ej. Carlos'
+        self.fields['segundo_nombre'].widget.attrs['placeholder'] = 'Ej. Antonio'
+        self.fields['apellido_paterno'].widget.attrs['placeholder'] = 'Ej. Aguilar'
+        self.fields['apellido_materno'].widget.attrs['placeholder'] = 'Ej. Ruiz'
+        self.fields['celular'].widget.attrs['placeholder'] = '88888888'
+        self.fields['email_personal'].widget.attrs['placeholder'] = 'carlos@gmail.com'
+
 
 class AccidenteForm(forms.ModelForm):
     tipo_doc = forms.ChoiceField(choices=TipoDoc.choices(), label="Tipo de ID")
@@ -41,3 +51,15 @@ class AccidenteForm(forms.ModelForm):
     class Meta:
         model = Oportunity
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['identificacion'].widget.attrs['placeholder'] = 'Ej. 0010101010000A'
+        self.fields['primer_nombre'].widget.attrs['placeholder'] = 'Ej. Carlos'
+        self.fields['segundo_nombre'].widget.attrs['placeholder'] = 'Ej. Antonio'
+        self.fields['apellido_paterno'].widget.attrs['placeholder'] = 'Ej. Aguilar'
+        self.fields['apellido_materno'].widget.attrs['placeholder'] = 'Ej. Ruiz'
+        self.fields['celular'].widget.attrs['placeholder'] = '88888888'
+        self.fields['email_personal'].widget.attrs['placeholder'] = 'carlos@gmail.com'
+        self.fields['profecion'].widget.attrs['placeholder'] = 'Ej. Administración de Empresas'
+        self.fields['ocupacion'].widget.attrs['placeholder'] = 'Ej. Analista Financiero'
