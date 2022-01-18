@@ -4,6 +4,7 @@
 
 {% block extra-style %}
     {{ block.super }}
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'seguros/css/form.min.css' %}">
 {% endblock %}
 
@@ -12,12 +13,15 @@
 {% block sub-header %}{% endblock %}
 
 {% block content %}
-    {% include form_content %}
+    <div class="content">
+        {% include form_content %}
+    </div>
 {% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
 
     <script type="text/javascript">
       $(document).ready(function () {
@@ -31,10 +35,13 @@
             processData: false,
             success: function (response) {
               if (response.result === 'success') {
-                alert('todo bien gracias');
-                window.location.href = "{% url 'home:index' %}"
-              }else{
-                alert('mal, completa todos los campos')
+                swal({
+                  title: '',
+                  text: 'Su solicitud de cotización está en proceso.',
+                  type: 'success',
+                }).then(() => window.location.href = "{% url 'home:index' %}")
+              } else {
+                $('.content').html(response.form)
               }
               console.log(response)
             },

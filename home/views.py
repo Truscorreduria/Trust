@@ -1,6 +1,7 @@
 from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from .forms import AccidenteForm, VehiculoForm
 from django.contrib.auth.models import User
 import json
@@ -72,6 +73,7 @@ class CotizaApi(View):
 
     def post(self, request):
         result = 'error'
+        html_form = ''
         form = AccidenteForm(request.POST)
         if form.is_valid():
             extra_data = {
@@ -94,6 +96,11 @@ class CotizaApi(View):
             oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
             oportunidad.save()
             result = 'success'
+        else:
+            html_form = render_to_string(self.form_content, {
+                'form': form,
+            }, request)
         return JsonResponse({
-            'result': result
+            'result': result,
+            'form': html_form
         })
