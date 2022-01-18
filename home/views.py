@@ -71,6 +71,7 @@ class CotizaApi(View):
         })
 
     def post(self, request):
+        result = 'error'
         form = AccidenteForm(request.POST)
         if form.is_valid():
             extra_data = {
@@ -92,4 +93,7 @@ class CotizaApi(View):
             oportunidad.prospect = get_prospect(form.cleaned_data)
             oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
             oportunidad.save()
-        return JsonResponse({})
+            result = 'success'
+        return JsonResponse({
+            'result': result
+        })
