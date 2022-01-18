@@ -1980,7 +1980,7 @@ class Notificacion(Base):
 # region Utils
 
 
-class DocumentType(base):
+class DocumentType(Base):
     name = models.CharField(max_length=125, verbose_name="nombre")
 
     def __str__(self):
