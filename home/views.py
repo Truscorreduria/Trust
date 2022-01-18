@@ -1,8 +1,10 @@
 from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea
 from django.shortcuts import render
+from django.http import JsonResponse
 from .forms import AccidenteForm, VehiculoForm
 from django.contrib.auth.models import User
 import json
+from django.views.generic import View
 
 
 def index(request):
@@ -58,9 +60,17 @@ def cotiza_auto(request):
     })
 
 
-def cotiza_api(request):
-    form = AccidenteForm()
-    if request.method == "POST":
+class CotizaApi(View):
+    form = AccidenteForm
+    container_template = "home/form-container.html"
+    form_content = "home/cotiza-api.html"
+
+    def get(self, request):
+        return render(request, template_name=self.container_template, context={
+            'form': self.form(), 'form_content': self.form_content
+        })
+
+    def post(self, request):
         form = AccidenteForm(request.POST)
         if form.is_valid():
             extra_data = {
@@ -82,9 +92,4 @@ def cotiza_api(request):
             oportunidad.prospect = get_prospect(form.cleaned_data)
             oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
             oportunidad.save()
-            print(oportunidad.id)
-        else:
-            print(form.errors)
-    return render(request, template_name="home/cotiza-api.html", context={
-        'form': form
-    })
+        return JsonResponse({})

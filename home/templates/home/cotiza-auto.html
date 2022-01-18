@@ -1,87 +1,71 @@
-{% extends 'home/index.html' %}
+<div class="form-title">Cotización Seguro Automóvil</div>
+<form class="container form-container">
+    {% csrf_token %}
+    <div class="row">
+        <label for="">Datos del Vehículo</label>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.tipo_seguro|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.marca|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.modelo|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.anno|as_crispy_field }}
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <label for="">Datos del asegurado</label>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.tipo_doc|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.identificacion|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.primer_nombre|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.segundo_nombre|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.apellido_paterno|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.apellido_materno|as_crispy_field }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form.celular|as_crispy_field }}
+        </div>
+        <div class="col">
+            {{ form.email_personal|as_crispy_field }}
+        </div>
+    </div>
+    <br>
+    <div class="row-center">
+        <spam class="warning">Recuerde Verificar sus datos antes de presionar el botón de envíar</spam>
+    </div>
 
-{% load static crispy_forms_filters %}
-
-{% block extra-style %}
-    {{ block.super }}
-    <link rel="stylesheet" href="{% static 'seguros/css/form.min.css' %}">
-{% endblock %}
-
-{% block header-slider %}
-    <div class="form-title">Cotización Seguro Automóvil</div>
-{% endblock %}
-
-{% block sub-header %}{% endblock %}
-
-{% block content %}
-    <form class="container form-container">
-        {% csrf_token %}
-        <div class="row">
-            <label for="">Datos del Vehículo</label>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.tipo_seguro|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.marca|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.modelo|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.anno|as_crispy_field }}
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <label for="">Datos del asegurado</label>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.tipo_doc|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.identificacion|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.primer_nombre|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.segundo_nombre|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.apellido_paterno|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.apellido_materno|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                {{ form.celular|as_crispy_field }}
-            </div>
-            <div class="col">
-                {{ form.email_personal|as_crispy_field }}
-            </div>
-        </div>
-        <br>
-        <div class="row-center">
-            <spam class="warning">Recuerde Verificar sus datos antes de presionar el botón de envíar</spam>
-        </div>
-
-        <div class="row-center">
-            <spam class="warning">En caso de inconvenientes puede contactar a nuestros ejecutivos</spam>
-        </div>
-        <div class="row-center">
-            <button type="submit" class="form-button">Enviar</button>
-        </div>
-    </form>
-{% endblock %}
+    <div class="row-center">
+        <spam class="warning">En caso de inconvenientes puede contactar a nuestros ejecutivos</spam>
+    </div>
+    <div class="row-center">
+        <button type="submit" class="form-button">Enviar</button>
+    </div>
+</form>
 
