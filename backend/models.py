@@ -1990,7 +1990,7 @@ class DocumentType(Base):
         verbose_name = "documento"
 
 
-class Archivo(base):
+class Archivo(Base):
     created = models.DateTimeField(auto_now_add=True)
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
                                      related_name="archivo_user_created")
@@ -2044,7 +2044,7 @@ class Archivo(base):
         return o
 
 
-class Comentario(base):
+class Comentario(Base):
     created = models.DateTimeField(auto_now_add=True)
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
                                      related_name="comentario_user_created")
@@ -2077,7 +2077,7 @@ class Comentario(base):
 # region Cotizador
 
 
-class CotizadorConfig(base):
+class CotizadorConfig(Base):
     empresa = models.ForeignKey(ClienteJuridico, on_delete=models.CASCADE)
     email_trust = models.CharField(max_length=255, null=True)
     imagen = ImageCropField(upload_to='banners', blank=True, null=True)
@@ -2262,7 +2262,7 @@ class FieldMapType:
         return (cls.AUTOMOVIL, "Automovil"), (cls.SEPELIO, "Sepelio"), (cls.ACCIDENTE, "Accidente"), (cls.VIDA, "Vida")
 
 
-class FieldMap(base):
+class FieldMap(Base):
     config = models.ForeignKey(CotizadorConfig, null=True, on_delete=models.CASCADE)
     fieldmap_type = models.PositiveSmallIntegerField(choices=FieldMapType.choices(),
                                                      blank=True)
@@ -2271,7 +2271,7 @@ class FieldMap(base):
     origin_field = models.CharField(max_length=200)
 
 
-class SolicitudRenovacion(base):
+class SolicitudRenovacion(Base):
     created = models.DateTimeField(auto_now_add=True, null=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     poliza = models.ForeignKey(Poliza, null=True, blank=True, on_delete=models.CASCADE)
@@ -2830,7 +2830,7 @@ class Siniestro(Base):
 # region Travel
 
 
-class CurrencyTravel(base):
+class CurrencyTravel(Base):
     iso = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=160, verbose_name="nombre")
 
@@ -2838,14 +2838,14 @@ class CurrencyTravel(base):
         return self.name
 
 
-class PlanCategoryTravel(base):
+class PlanCategoryTravel(Base):
     name = models.CharField(max_length=160, verbose_name="nombre")
 
     def __str__(self):
         return self.name
 
 
-class PlanTravel(base):
+class PlanTravel(Base):
     title = models.CharField(max_length=160, verbose_name="nombre", null=True)
     description = models.CharField(max_length=160, verbose_name="descripción", null=True)
     languaje = models.CharField(max_length=3, verbose_name="lenguaje")
@@ -2867,7 +2867,7 @@ class PlanTravel(base):
         return self.title
 
 
-class BenefitTravel(base):
+class BenefitTravel(Base):
     name = models.CharField(max_length=160, verbose_name="nombre")
     plan = models.ForeignKey(PlanTravel, on_delete=models.CASCADE)
     valor_eng = models.CharField(max_length=160)
@@ -2878,14 +2878,14 @@ class BenefitTravel(base):
         return self.name
 
 
-class TerritoryTravel(base):
+class TerritoryTravel(Base):
     name = models.CharField(max_length=160, verbose_name="nombre")
 
     def __str__(self):
         return self.name
 
 
-class CountryTravel(base):
+class CountryTravel(Base):
     iso = models.CharField(max_length=3, primary_key=True)
     name = models.CharField(max_length=160, verbose_name="nombre")
 
@@ -2893,7 +2893,7 @@ class CountryTravel(base):
         return self.name
 
 
-class CityTravel(base):
+class CityTravel(Base):
     iso = models.CharField(max_length=25, primary_key=True)
     country = models.ForeignKey(CountryTravel, on_delete=models.CASCADE)
     name = models.CharField(max_length=160, verbose_name="nombre")
@@ -2903,7 +2903,7 @@ class CityTravel(base):
         return self.name
 
 
-class AsistenciaTravel(base):
+class AsistenciaTravel(Base):
     fecha_emision = models.DateField()
     categoria = models.ForeignKey(PlanCategoryTravel, on_delete=models.PROTECT, null=True)
     plan = models.ForeignKey(PlanTravel, on_delete=models.PROTECT, null=True)
@@ -2954,7 +2954,7 @@ class AsistenciaTravel(base):
         return o
 
 
-class PassengersTravel(base):
+class PassengersTravel(Base):
     asistencia = models.ForeignKey(AsistenciaTravel, on_delete=models.CASCADE,
                                    related_name="passengers")
     nombres = models.CharField(max_length=150)
