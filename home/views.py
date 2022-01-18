@@ -1,4 +1,4 @@
-from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea
+from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea, Grupo
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -6,6 +6,8 @@ from .forms import AccidenteForm, VehiculoForm
 from django.contrib.auth.models import User
 import json
 from django.views.generic import View
+from utils.utils import send_email
+from django.urls import reverse
 
 
 def index(request):
@@ -86,7 +88,9 @@ class CotizaApi(View):
             ramo = Ramo.objects.get(pk=3)
             sub_ramo = SubRamo.objects.get(pk=21)
             user = User.objects.get(pk=2647)
+            grupo = Grupo.objects.get(pk=4)
             oportunidad = Oportunity()
+            oportunidad.grupo = grupo
             oportunidad.linea = linea
             oportunidad.campain = campain
             oportunidad.ramo = ramo
@@ -96,6 +100,8 @@ class CotizaApi(View):
             oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
             oportunidad.save()
             result = 'success'
+            send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
+                       f'{reverse("oportunidades")}')
         else:
             html_form = render_to_string(self.form_content, {
                 'form': form,
