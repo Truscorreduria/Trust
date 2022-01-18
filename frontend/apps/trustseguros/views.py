@@ -1126,7 +1126,7 @@ class Polizas(Datatables):
 
     def get_buttons(self, request, instance=None):
         buttons = self.buttons.copy()
-        if instance.id:
+        if instance and instance.id:
             if instance.editable:
                 buttons.append({
                     'class': 'btn btn-info btn-perform',
@@ -2095,7 +2095,7 @@ class Recibos(Datatables):
 
     def get_buttons(self, request, instance):
         instance = self.get_instance(request)
-        if instance.modificando_recibo:
+        if instance and instance.modificando_recibo:
             return [
                 {
                     'class': 'btn btn-success btn-perform',
@@ -2122,7 +2122,7 @@ class Recibos(Datatables):
                     'text': 'Modificar',
                 },
             ]
-            if instance.recibo_editar:
+            if instance and instance.recibo_editar:
                 buttons.append({
                     'class': 'btn btn-danger btn-perform',
                     'perform': 'anular_recibo',

@@ -25,6 +25,7 @@ class Base(base):
     def to_json(self):
         o = super().to_json()
         o['str'] = str(self)
+        o['pk'] = str(self.pk)
         return o
 
     class Meta:
