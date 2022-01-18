@@ -101,7 +101,7 @@ class CotizaApi(View):
             oportunidad.save()
             result = 'success'
             send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
-                       f'{reverse("oportunidades")}')
+                       f'{reverse("trustseguros:oportunidades", kwargs={"linea": linea.id})}')
         else:
             html_form = render_to_string(self.form_content, {
                 'form': form,
