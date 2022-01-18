@@ -71,6 +71,7 @@ def user_to_json(user):
     o['str'] = user.get_full_name()
     o['user_permissions'] = []
     o['groups'] = []
+    o['pk'] = str(user.pk)
     return o
 
 
