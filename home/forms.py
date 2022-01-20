@@ -1,6 +1,5 @@
 from django import forms
 from backend.models import TipoDoc, Referencia
-from datetime import datetime
 from django.db.models import Count
 
 
@@ -35,6 +34,15 @@ class VehiculoForm(forms.Form):
         self.fields['apellido_materno'].widget.attrs['placeholder'] = 'Ej. Ruiz'
         self.fields['celular'].widget.attrs['placeholder'] = '88888888'
         self.fields['email_personal'].widget.attrs['placeholder'] = 'carlos@gmail.com'
+        if self.data.get('marca'):
+            annos = Referencia.objects.filter(marca=self.data.get('marca')).values('anno').annotate(
+                Count('valor')).order_by('marca', 'anno')
+            self.fields['anno'].choices = [(str(a['anno']), str(a['anno'])) for a in annos]
+        if self.data.get('marca') and self.data.get('anno'):
+            modelos = Referencia.objects.filter(marca=self.data.get('marca'), anno=self.data.get(
+                'anno')).values('modelo').annotate(
+                Count('valor')).order_by('marca', 'anno', 'modelo')
+            self.fields['modelo'].choices = [(m['modelo'], m['modelo']) for m in modelos]
 
 
 class AccidenteForm(forms.Form):
