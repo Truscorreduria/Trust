@@ -16,6 +16,9 @@
     <div class="content">
         {% include form_content %}
     </div>
+    <div class="loader">
+        <img src="{% static 'seguros/images/spinner.gif' %}" alt="">
+    </div>
 {% endblock %}
 
 {% block scripts %}
@@ -26,6 +29,12 @@
 
     <script type="text/javascript">
       $(document).ready(function () {
+        $(document).ajaxStart(function () {
+          $('.loader').css('display', 'flex');
+        })
+          .ajaxStop(function () {
+            $('.loader').css('display', 'none');
+          });
         $(document).on('submit', 'form', function (event) {
           event.preventDefault();
           const data = new FormData(this);
@@ -57,11 +66,11 @@
                 'get_annos': 'get_annos',
                 'marca': _this.val()
               },
-              success: function (response){
+              success: function (response) {
                 const $anno = $('#id_anno').empty();
                 $anno.append(`<option value="">---------</option>`);
-                $.each(response, function (i, o){
-                    $anno.append(`<option value="${o}">${o}</option>`);
+                $.each(response, function (i, o) {
+                  $anno.append(`<option value="${o}">${o}</option>`);
                 });
               }
             })
@@ -78,11 +87,11 @@
                 'anno': _this.val(),
                 'marca': marca.val(),
               },
-              success: function (response){
+              success: function (response) {
                 const $modelo = $('#id_modelo').empty();
                 $modelo.append(`<option value="">---------</option>`);
-                $.each(response, function (i, o){
-                    $modelo.append(`<option value="${o}">${o}</option>`);
+                $.each(response, function (i, o) {
+                  $modelo.append(`<option value="${o}">${o}</option>`);
                 });
               }
             })
