@@ -107,7 +107,7 @@ class CotizaAuto(View):
             send_email(f'Nueva contizacion de seguro de vehículo', grupo.email_notificacion,
                        f'{url}')
             send_sms(f'Estimado(a) {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
-                     f'Le saluda Trust Correduria. Su cotización está en proceso, '
+                     f'Le saludamos de Trust Correduría. Su cotización está en proceso, '
                      f'para consultas llamar o escribir al 87427466',
                      oportunidad.prospect.celular)
         else:
@@ -161,7 +161,7 @@ class CotizaApi(View):
             send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
                        f'{url}')
             send_sms(f'Estimado(a) {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
-                     f'Le saluda Trust Correduria. Su cotización está en proceso, '
+                     f'Le saludamos de Trust Correduría. Su cotización está en proceso, '
                      f'para consultas llamar o escribir al 87427466',
                      oportunidad.prospect.celular)
         else:
