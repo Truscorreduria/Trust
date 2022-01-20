@@ -21,6 +21,7 @@
 {% block scripts %}
     {{ block.super }}
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
     <script src="{% static 'sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
 
     <script type="text/javascript">
@@ -46,7 +47,47 @@
               console.log(response)
             },
           })
-        })
+        });
+        $(document).on('change', '#id_marca', function () {
+          const _this = $(this);
+          if (_this.val() !== '') {
+            $.ajax('.', {
+              method: "POST",
+              data: {
+                'get_annos': 'get_annos',
+                'marca': _this.val()
+              },
+              success: function (response){
+                const $anno = $('#id_anno').empty();
+                $anno.append(`<option value="">---------</option>`);
+                $.each(response, function (i, o){
+                    $anno.append(`<option value="${o}">${o}</option>`);
+                });
+              }
+            })
+          }
+        });
+        $(document).on('change', '#id_anno', function () {
+          const _this = $(this);
+          const marca = $('#id_marca');
+          if (_this.val() !== '') {
+            $.ajax('.', {
+              method: "POST",
+              data: {
+                'get_modelos': 'get_modelos',
+                'anno': _this.val(),
+                'marca': marca.val(),
+              },
+              success: function (response){
+                const $modelo = $('#id_modelo').empty();
+                $modelo.append(`<option value="">---------</option>`);
+                $.each(response, function (i, o){
+                    $modelo.append(`<option value="${o}">${o}</option>`);
+                });
+              }
+            })
+          }
+        });
       });
     </script>
 {% endblock %}

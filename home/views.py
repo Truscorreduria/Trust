@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea, Grupo, Referencia
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -8,8 +10,6 @@ import json
 from django.views.generic import View
 from utils.utils import send_email, send_sms
 from django.urls import reverse
-from datetime import datetime
-from django.db.models import Count
 
 
 def index(request):
@@ -59,22 +59,21 @@ class CotizaAuto(View):
     form_content = "home/cotiza-auto.html"
 
     def get(self, request):
-        today = datetime.now()
-        year = int(str(today.year))
-        marcas = Referencia.objects.values('marca').annotate(annos=Count('anno')).order_by('marca')
-        annos = Referencia.objects.filter(marca=marcas[0]['marca']).values('anno').annotate(
-            Count('valor')).order_by('marca', 'anno')
-        modelos = Referencia.objects.filter(marca=marcas[0]['marca'], anno=annos[0]['anno']).values('modelo').annotate(
-            Count('valor')).order_by('marca', 'anno', 'modelo')
-        annos = [(a, a) for a in annos]
-        marcas = [(m, m) for m in marcas]
-        modelos = [(m, m) for m in modelos]
+
         return render(request, template_name=self.container_template, context={
             'form': self.form(), 'form_content': self.form_content,
-            'annos': annos, 'marcas': marcas, 'modelos': modelos
         })
 
     def post(self, request):
+        if 'get_annos' in request.POST:
+            annos = Referencia.objects.filter(marca=request.POST.get('marca')).values('anno').annotate(
+                Count('valor')).order_by('marca', 'anno')
+            return JsonResponse([a['anno'] for a in annos], safe=False)
+        if 'get_modelos' in request.POST:
+            modelos = Referencia.objects.filter(marca=request.POST.get('marca'), anno=request.POST.get('anno')).values(
+                'modelo').annotate(
+                Count('valor')).order_by('marca', 'anno', 'modelo')
+            return JsonResponse([a['modelo'] for a in modelos], safe=False)
         result = 'error'
         html_form = ''
         form = VehiculoForm(request.POST)

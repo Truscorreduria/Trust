@@ -1,9 +1,15 @@
 from django import forms
-from backend.models import Oportunity, TipoDoc
+from backend.models import TipoDoc, Referencia
+from datetime import datetime
+from django.db.models import Count
 
 
 class VehiculoForm(forms.Form):
-    tipo_seguro = forms.ChoiceField(choices=(), label="Tipo de Seguro")
+    tipo_seguro = forms.ChoiceField(choices=(
+        ('', '---------'),
+        ('soa', 'Seguro obligatorio'),
+        ('dap', 'Daños propios'),
+    ), label="Tipo de Seguro")
     marca = forms.ChoiceField(choices=(), label="Marca")
     modelo = forms.ChoiceField(choices=(), label="Modelo")
     anno = forms.ChoiceField(choices=(), label="Año")
@@ -19,6 +25,9 @@ class VehiculoForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        marcas = Referencia.objects.values('marca').annotate(annos=Count('anno')).order_by('marca')
+        marcas = [('', '---------')] + [(m['marca'], m['marca']) for m in marcas]
+        self.fields['marca'].choices = marcas
         self.fields['identificacion'].widget.attrs['placeholder'] = 'Ej. 0010101010000A'
         self.fields['primer_nombre'].widget.attrs['placeholder'] = 'Ej. Carlos'
         self.fields['segundo_nombre'].widget.attrs['placeholder'] = 'Ej. Antonio'
