@@ -1,4 +1,4 @@
-from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea, Grupo
+from backend.models import Oportunity, Campain, Ramo, SubRamo, Prospect, Linea, Grupo, Referencia
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -8,6 +8,8 @@ import json
 from django.views.generic import View
 from utils.utils import send_email, send_sms
 from django.urls import reverse
+from datetime import datetime
+from django.db.models import Count
 
 
 def index(request):
@@ -51,16 +53,69 @@ def get_prospect(cleaned_data):
     return prospect
 
 
-def cotiza_auto(request):
-    form = VehiculoForm()
-    if request.method == "POST":
-        print(request.POST)
+class CotizaAuto(View):
+    form = VehiculoForm
+    container_template = "home/form-container.html"
+    form_content = "home/cotiza-auto.html"
+
+    def get(self, request):
+        today = datetime.now()
+        year = int(str(today.year))
+        marcas = Referencia.objects.values('marca').annotate(annos=Count('anno')).order_by('marca')
+        annos = Referencia.objects.filter(marca=marcas[0]['marca']).values('anno').annotate(
+            Count('valor')).order_by('marca', 'anno')
+        modelos = Referencia.objects.filter(marca=marcas[0]['marca'], anno=annos[0]['anno']).values('modelo').annotate(
+            Count('valor')).order_by('marca', 'anno', 'modelo')
+        annos = [(a, a) for a in annos]
+        marcas = [(m, m) for m in marcas]
+        modelos = [(m, m) for m in modelos]
+        return render(request, template_name=self.container_template, context={
+            'form': self.form(), 'form_content': self.form_content,
+            'annos': annos, 'marcas': marcas, 'modelos': modelos
+        })
+
+    def post(self, request):
+        result = 'error'
+        html_form = ''
         form = VehiculoForm(request.POST)
         if form.is_valid():
-            pass
-    return render(request, template_name="home/cotiza-auto.html", context={
-        'form': form
-    })
+            extra_data = {
+                'PROFESION': form.cleaned_data.get('profecion'),
+                'OCUPACION': form.cleaned_data.get('ocupacion'),
+                'SUMA_ASEGURADA': form.cleaned_data.get('suma_asegurada'),
+            }
+            linea = Linea.objects.get(pk=4)
+            campain = Campain.objects.get(pk=90)
+            ramo = Ramo.objects.get(pk=3)
+            sub_ramo = SubRamo.objects.get(pk=21)
+            user = User.objects.get(pk=2647)
+            grupo = Grupo.objects.get(pk=4)
+            oportunidad = Oportunity()
+            oportunidad.grupo = grupo
+            oportunidad.linea = linea
+            oportunidad.campain = campain
+            oportunidad.ramo = ramo
+            oportunidad.sub_ramo = sub_ramo
+            oportunidad.vendedor = user
+            oportunidad.prospect = get_prospect(form.cleaned_data)
+            oportunidad.extra_data = json.dumps(extra_data, ensure_ascii=False)
+            oportunidad.save()
+            result = 'success'
+            url = request.build_absolute_uri(reverse("trustseguros:oportunidades", kwargs={"linea": linea.id}))
+            send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
+                       f'{url}')
+            send_sms(f'Estimado(a) {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
+                     f'Le saluda Trust Correduria. Su cotización está en proceso, '
+                     f'para consultas llamar o escribir al 87427466',
+                     oportunidad.prospect.celular)
+        else:
+            html_form = render_to_string(self.form_content, {
+                'form': form,
+            }, request)
+        return JsonResponse({
+            'result': result,
+            'form': html_form
+        })
 
 
 class CotizaApi(View):
@@ -105,7 +160,7 @@ class CotizaApi(View):
                        f'{url}')
             send_sms(f'Estimado(a) {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
                      f'Le saluda Trust Correduria. Su cotización está en proceso, '
-                     f'para consultas llamar o escribir al 87425466',
+                     f'para consultas llamar o escribir al 87427466',
                      oportunidad.prospect.celular)
         else:
             html_form = render_to_string(self.form_content, {
