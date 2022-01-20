@@ -1,4 +1,8 @@
 import requests
+from twilio.rest import Client
+from django.conf import settings
+
+client = Client(settings.TWILIO_SID, settings.TWILIO_TOKEN)
 
 
 def dos_decimales(number):
@@ -34,3 +38,11 @@ def send_email(subject, receipt, html, files=None, fr=None):
                   "to": receipt,
                   "subject": subject,
                   "html": html})
+
+
+def send_sms(text, number):
+    client.messages.create(
+        from_=settings.TWILIO_PHONE_NUMBER,
+        to='+505' + number,
+        body=text
+    )
