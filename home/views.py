@@ -103,7 +103,9 @@ class CotizaApi(View):
             url = request.build_absolute_uri(reverse("trustseguros:oportunidades", kwargs={"linea": linea.id}))
             send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
                        f'{url}')
-            send_sms('Su cotización está en proceso, para consultas llamar o escribir al 87425466',
+            send_sms(f'Estimado {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
+                     f'Le saluda Trust Correduria. Su cotización está en proceso, '
+                     f'para consultas llamar o escribir al 87425466',
                      oportunidad.prospect.celular)
         else:
             html_form = render_to_string(self.form_content, {
