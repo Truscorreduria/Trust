@@ -79,14 +79,17 @@ class CotizaAuto(View):
         form = VehiculoForm(request.POST)
         if form.is_valid():
             extra_data = {
-                'PROFESION': form.cleaned_data.get('profecion'),
-                'OCUPACION': form.cleaned_data.get('ocupacion'),
-                'SUMA_ASEGURADA': form.cleaned_data.get('suma_asegurada'),
+                'MARCA': form.cleaned_data.get('marca'),
+                'MODELO': form.cleaned_data.get('modelo'),
+                'ANIO': form.cleaned_data.get('anno'),
             }
             linea = Linea.objects.get(pk=4)
             campain = Campain.objects.get(pk=90)
-            ramo = Ramo.objects.get(pk=3)
-            sub_ramo = SubRamo.objects.get(pk=21)
+            ramo = Ramo.objects.get(pk=5)
+            if form.cleaned_data['tipo_seguro'] == 'soa':
+                sub_ramo = SubRamo.objects.get(pk=1)
+            else:
+                sub_ramo = SubRamo.objects.get(pk=55)
             user = User.objects.get(pk=2647)
             grupo = Grupo.objects.get(pk=4)
             oportunidad = Oportunity()
@@ -101,7 +104,7 @@ class CotizaAuto(View):
             oportunidad.save()
             result = 'success'
             url = request.build_absolute_uri(reverse("trustseguros:oportunidades", kwargs={"linea": linea.id}))
-            send_email(f'Nueva contizacion de accidentes personales', grupo.email_notificacion,
+            send_email(f'Nueva contizacion de seguro de vehículo', grupo.email_notificacion,
                        f'{url}')
             send_sms(f'Estimado(a) {oportunidad.prospect.primer_nombre} {oportunidad.prospect.apellido_paterno}, '
                      f'Le saluda Trust Correduria. Su cotización está en proceso, '
