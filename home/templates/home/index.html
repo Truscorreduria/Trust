@@ -3445,7 +3445,7 @@
             white-space: nowrap;
             border-right-width: 1px;
             border-style: solid;
-            font-size: 15px;
+            font-size: 12.5px;
         }
 
         .widgets_wrapper {
@@ -3467,6 +3467,87 @@
                 float: none;
             }
         }
+    </style>
+
+    <style id="menu-dropdown">
+
+    @media only screen and (min-width: 1240px) {
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown a {
+            padding-bottom: 0px !important;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            margin-top: -15px; 
+            padding-right: 80px;
+            padding-bottom: 16px;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+        color: #8491A2;
+        margin: 0px -70px 8px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 12.5px;
+        }
+
+        a#top_option {
+            padding-top: 16px;
+        }
+
+        a#bottom_option {
+            padding-bottom: 16px;
+        }
+
+        .dropdown-content a:hover {
+            color: #386539;
+            transition: color 0.5s ease-in-out;}
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    }
+
+    @media only screen and (max-width: 1240px) {
+
+        .dropdown-content {
+            display: none;
+            position: static;
+            background-color: #191919;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+        color: #A6A6A6;
+        text-decoration: none;
+        display: absolute;
+        font-size: 13px;
+        padding-right: -50px;
+        }
+
+        a#top_option {
+            border-top: 1px solid rgba(255,255,255,.02);
+        }
+
+        .dropdown-content a:hover {
+            color: #FFFFFF;
+            transition: color 0.5s ease-in-out;}
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {display: block;}
+
+    }
+
+
     </style>
 
     <noscript>
@@ -3603,6 +3684,15 @@
                                             <li id="menu-item-139"
                                                 class="menu-item menu-item-type-post_type menu-item-object-page"><a
                                                     href="{% url 'home:plataformas' %}"><span>PLATAFORMAS</span></a>
+                                            </li>
+                                            <li
+                                                class="dropdown"><a class ="dropbtn">
+                                                    <span>COTIZA CON NOSOTROS</span></a>
+                                                <div
+                                                class="menu-item menu-item-type-post_type menu-item-object-page dropdown-content">
+                                                    <a id="top_option" href="{% url 'home:cotiza_auto' %}">COTIZA AUTO</a>
+                                                    <a id="bottom_option" href="{% url 'home:cotiza_api' %}">COTIZA ACCIDENTES PERSONALES</a>
+                                                </div>
                                             </li>
                                             <li id="menu-item-96"
                                                 class="menu-item menu-item-type-post_type menu-item-object-page"><a
