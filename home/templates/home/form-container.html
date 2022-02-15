@@ -24,6 +24,7 @@
 {% block scripts %}
     {{ block.super }}
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'jquery-mask-plugin/dist/jquery.mask.min.js' %}"></script>
     <script src="{% static 'adminlte/js/csfr.token.js' %}"></script>
     <script src="{% static 'sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
 
@@ -34,6 +35,7 @@
         })
           .ajaxStop(function () {
             $('.loader').css('display', 'none');
+            $('#id_celular').mask('00000000');
           });
         $(document).on('submit', 'form', function (event) {
           event.preventDefault();
@@ -97,6 +99,7 @@
             })
           }
         });
+            $('#id_celular').mask('00000000');
       });
     </script>
 {% endblock %}

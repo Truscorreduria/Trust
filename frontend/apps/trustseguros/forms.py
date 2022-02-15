@@ -1144,37 +1144,37 @@ class CuotaForm(forms.ModelForm):
     #                                 }
     #                             ))
     monto = forms.FloatField(label="Valor a pagar", required=False,
-                             widget=forms.NumberInput(
+                             widget=forms.DecimalField(
                                  attrs={
                                      'readonly': 'readonly'
                                  }
                              ))
     saldo = forms.FloatField(label="Saldo", required=False,
-                             widget=forms.NumberInput(
+                             widget=forms.DecimalField(
                                  attrs={
                                      'readonly': 'readonly'
                                  }
                              ))
     monto_pagado = forms.FloatField(label="Monto pagado", required=False,
-                                    widget=forms.NumberInput(
+                                    widget=forms.DecimalField(
                                         attrs={
                                             'readonly': 'readonly'
                                         }
                                     ))
     monto_comision = forms.FloatField(label="Monto comisión", required=False,
-                                      widget=forms.NumberInput(
+                                      widget=forms.DecimalField(
                                           attrs={
                                               'readonly': 'readonly'
                                           }
                                       ))
     comision_pagada = forms.FloatField(label="Comision recibida", required=False,
-                                       widget=forms.NumberInput(
+                                       widget=forms.DecimalField(
                                            attrs={
                                                'readonly': 'readonly'
                                            }
                                        ))
     comision_pendiente = forms.FloatField(label="Comision pendiente", required=False,
-                                          widget=forms.NumberInput(
+                                          widget=forms.DecimalField(
                                               attrs={
                                                   'readonly': 'readonly'
                                               }
