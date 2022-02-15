@@ -1003,6 +1003,8 @@ class ReciboForm(forms.ModelForm):
 
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
+
     class Meta:
         model = Poliza
         fields = (
