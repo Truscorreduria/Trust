@@ -1231,10 +1231,11 @@ class Poliza(BasePoliza):
         return self.cuotas().aggregate(Sum('monto_comision'))['monto_comision__sum'] or 0.0
 
     def saldo_pendiente(self):
-        return self.cuotas().filter(estado__in=[
-            EstadoPago.VIGENTE,
-            EstadoPago.VENCIDO
-        ]).aggregate(Sum('monto'))['monto__sum']
+        try:
+            return self.prima_total() - PagoCuota.objects.filter(cuota__in=self.cuotas()).aggregate(Sum('monto'))[
+                'monto__sum']
+        except TypeError:
+            return self.prima_total()
 
     def con_pagos(self):
         return self.saldo_pendiente() != self.prima_total()
