@@ -495,7 +495,7 @@ class PolizaForm(forms.ModelForm):
                                           'readonly': 'readonly'
                                       }
                                   ))
-    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput, required=False)
 
     class Meta:
         model = Poliza
@@ -630,7 +630,7 @@ class TramiteForm(forms.ModelForm):
                                     widget=forms.Select(
                                         choices=[]
                                     ))
-    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput, required=False)
 
     class Meta:
         model = Tramite
@@ -1005,7 +1005,7 @@ class ReciboForm(forms.ModelForm):
 
     bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
 
-    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput, required=False)
 
     class Meta:
         model = Poliza
