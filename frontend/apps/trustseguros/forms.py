@@ -1092,6 +1092,9 @@ class ReciboForm(forms.ModelForm):
 class PagoForm(forms.ModelForm):
     prefix = 'pagocuota'
 
+    monto = forms.FloatField(label="Monto", widget=forms.TextInput)
+    comision = forms.FloatField(label="Comisión cobrada", widget=forms.TextInput)
+
     class Meta:
         model = PagoCuota
         fields = ('monto', 'referencia_pago', 'medio_pago', 'fecha_pago', 'comision', 'fecha_pago_comision')
@@ -1137,44 +1140,38 @@ class CuotaForm(forms.ModelForm):
                                           'readonly': 'readonly'
                                       }
                                   ))
-    # numero = forms.IntegerField(label="Número de cuota", required=False,
-    #                             widget=forms.NumberInput(
-    #                                 attrs={
-    #                                     'readonly': 'readonly'
-    #                                 }
-    #                             ))
     monto = forms.FloatField(label="Valor a pagar", required=False,
-                             widget=forms.DecimalField(
+                             widget=forms.TextInput(
                                  attrs={
                                      'readonly': 'readonly'
                                  }
                              ))
     saldo = forms.FloatField(label="Saldo", required=False,
-                             widget=forms.DecimalField(
+                             widget=forms.TextInput(
                                  attrs={
                                      'readonly': 'readonly'
                                  }
                              ))
     monto_pagado = forms.FloatField(label="Monto pagado", required=False,
-                                    widget=forms.DecimalField(
+                                    widget=forms.TextInput(
                                         attrs={
                                             'readonly': 'readonly'
                                         }
                                     ))
     monto_comision = forms.FloatField(label="Monto comisión", required=False,
-                                      widget=forms.DecimalField(
+                                      widget=forms.TextInput(
                                           attrs={
                                               'readonly': 'readonly'
                                           }
                                       ))
     comision_pagada = forms.FloatField(label="Comision recibida", required=False,
-                                       widget=forms.DecimalField(
+                                       widget=forms.TextInput(
                                            attrs={
                                                'readonly': 'readonly'
                                            }
                                        ))
     comision_pendiente = forms.FloatField(label="Comision pendiente", required=False,
-                                          widget=forms.DecimalField(
+                                          widget=forms.TextInput(
                                               attrs={
                                                   'readonly': 'readonly'
                                               }
@@ -1233,7 +1230,14 @@ class CuotaForm(forms.ModelForm):
             update_initial['comision_pendiente'] = instance.comision_pendiente
             kwargs.update(initial=update_initial)
         super().__init__(*args, **kwargs)
+        self.fields['monto'].widget.attrs['readonly'] = 'readonly'
         self.fields['estado'].widget.attrs['readonly'] = 'readonly'
+        self.fields['saldo'].widget.attrs['readonly'] = 'readonly'
+        self.fields['monto_pagado'].widget.attrs['readonly'] = 'readonly'
+        self.fields['monto_comision'].widget.attrs['readonly'] = 'readonly'
+        self.fields['comision_pagada'].widget.attrs['readonly'] = 'readonly'
+        self.fields['comision_pendiente'].widget.attrs['readonly'] = 'readonly'
+        self.fields['dias_mora'].widget.attrs['readonly'] = 'readonly'
         if instance:
             self.fields['pagos'].widget.attrs['cuota'] = instance
 
