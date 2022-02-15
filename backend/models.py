@@ -1222,7 +1222,7 @@ class Poliza(BasePoliza):
         return Cuota.objects.filter(poliza=self).order_by('numero')
 
     def prima_total(self):
-        return self.cuotas().aggregate(Sum('monto'))['monto__sum'] or 0.0
+        return round(self.cuotas().aggregate(Sum('monto'))['monto__sum'], 2) or 0.0
 
     def comision_total(self):
         return self.cuotas().aggregate(Sum('monto_comision'))['monto_comision__sum'] or 0.0
@@ -1680,7 +1680,7 @@ class Tramite(Base):
         return Cuota.objects.filter(tramite=self)
 
     def prima_total(self):
-        return self.cuotas().aggregate(Sum('monto'))['monto__sum'] or 0.0
+        return round(self.cuotas().aggregate(Sum('monto'))['monto__sum'], 2) or 0.0
 
     def comision_total(self):
         return self.cuotas().aggregate(Sum('monto_comision'))['monto_comision__sum'] or 0.0
