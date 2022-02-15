@@ -495,6 +495,7 @@ class PolizaForm(forms.ModelForm):
                                           'readonly': 'readonly'
                                       }
                                   ))
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
 
     class Meta:
         model = Poliza
