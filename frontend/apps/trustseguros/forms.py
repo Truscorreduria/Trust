@@ -630,6 +630,7 @@ class TramiteForm(forms.ModelForm):
                                     widget=forms.Select(
                                         choices=[]
                                     ))
+    per_comision = forms.FloatField(label="% comisión", widget=forms.TextInput)
 
     class Meta:
         model = Tramite
