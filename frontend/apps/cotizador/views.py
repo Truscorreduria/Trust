@@ -1158,7 +1158,7 @@ def invitacion(request):
         template = Template(content)
         for i in range(0, len(customers)):
             secret = secrets.token_urlsafe(8)
-            c = Cliente.objects.get(id=customers[i])
+            c = Cliente.objects.get(id=customers[i].replace(",", ""))
             user = c.user
             user.set_password(secret)
             user.save()
