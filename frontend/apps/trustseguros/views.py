@@ -1248,8 +1248,9 @@ class Polizas(Datatables):
             instance.editable = False
             instance.perdir_comentarios = False
             instance.cancelando = False
-            instance.fecha_cancelacion = datetime.now()
-            instance.motivo_cancelacion = request.POST.get('comentarios')
+            instance.fecha_cancelacion = datetime.strptime(request.POST.get('fecha_cancelacion'), '%d/%m/%Y')
+            instance.motivo_cancelacion = int(request.POST.get('motivo_cancelacion'))
+            instance.otro_motivo = request.POST.get('otro_motivo')
             instance.save()
             form = self.get_form()(instance=instance)
             html_form = self.html_form(instance, request, form, 'POST')
