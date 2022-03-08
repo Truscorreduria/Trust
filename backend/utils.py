@@ -1,8 +1,7 @@
 import calendar
 from datetime import timedelta, datetime
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Border, Side, Alignment, Protection, Font
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 
 
 def render_to_excell(data, filename="Reporte.xlsx"):

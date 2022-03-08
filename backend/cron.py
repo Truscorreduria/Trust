@@ -5,8 +5,8 @@ from openpyxl import Workbook
 from twilio.rest import Client
 from django.conf import settings
 
-account_sid = settings.TWILIO_ACCOUNT_SID
-auth_token = settings.TWILIO_AUTH_TOKEN
+account_sid = settings.TWILIO_SID
+auth_token = settings.TWILIO_TOKEN
 client = Client(account_sid, auth_token)
 
 
@@ -149,12 +149,15 @@ def notificar_polizas_por_vencer(fecha):
                 'Ejecutivo',
             ])
             for poliza in polizas:
+                ejecutivo = ""
+                if poliza.ejecutivo:
+                    ejecutivo = poliza.ejecutivo.get_full_name()
                 sheet.append([
                     poliza.no_poliza,
                     poliza.cliente.get_full_name(),
                     poliza.fecha_vence.strftime('%d/%m/%y'),
                     poliza.grupo.name,
-                    poliza.ejecutivo.get_full_name(),
+                    ejecutivo,
                 ])
             book.save(attachment)
             subject = f'Recordatorio de Pólizas por Vencer {grupo.name} {fecha.strftime("%d/%m/%y")}'
