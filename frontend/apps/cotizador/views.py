@@ -1167,7 +1167,7 @@ def invitacion(request):
                        'password': secret}
             context = Context(context)
             html = template.render(context)
-            send_email('Trust correduria te invita a que ingrese a nuestro portal',
+            send_email('Trust correduria le invita a que ingrese a nuestro portal',
                        c.user.email, html)
     return HttpResponseRedirect('/admin/backend/cliente/')
 
