@@ -90,10 +90,10 @@ EXTRA_MENUS = [
      },
 ]
 
-REST_FRAMEWORK = {  # added
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.AllowAny'
-    # ],
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'knox.auth.TokenAuthentication',
     ),
