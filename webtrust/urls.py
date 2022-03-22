@@ -22,6 +22,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('admin/', admin.site.urls),
     path('grappelli/', include('grappelli.urls')),
+    path('admin/ajax/', include('grappelli_extras.ajax_urls')),
     path('cotizador/', include('frontend.apps.cotizador.urls')),
     path('trustseguros/', include('frontend.apps.trustseguros.urls')),
     path('api/auth/', include('accounts.urls')),
