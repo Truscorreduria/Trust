@@ -1,6 +1,16 @@
 from django.urls import path
 from .views import *
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView as AuthLoginView, LogoutView
+from django.contrib.auth.forms import AuthenticationForm
+from captcha.fields import CaptchaField
+
+
+class LoginForm(AuthenticationForm):
+    captcha = CaptchaField()
+
+
+class LoginView(AuthLoginView):
+    authentication_form = LoginForm
 
 
 app_name = 'cotizador'
