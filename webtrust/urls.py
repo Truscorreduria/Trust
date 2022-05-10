@@ -25,10 +25,10 @@ urlpatterns = [
     path('admin/ajax/', include('grappelli_extras.ajax_urls')),
     path('cotizador/', include('frontend.apps.cotizador.urls')),
     path('trustseguros/', include('frontend.apps.trustseguros.urls')),
-    #    path('api/auth/', include('accounts.urls')),
-    #    path('api/', include('api.urls')),
-    path('oauth/', include('social_django.urls', namespace='social')),
-    path('captcha/', include('captcha.urls')),
+    # path('api/auth/', include('accounts.urls')),
+    # path('api/', include('api.urls')),
+    # path('oauth/', include('social_django.urls', namespace='social')),
+    # path('captcha/', include('captcha.urls')),
 ]
 
 if settings.DEBUG:

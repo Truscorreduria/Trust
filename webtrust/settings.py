@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'django_crontab',
-
 ]
 
 REST_FRAMEWORK = {
