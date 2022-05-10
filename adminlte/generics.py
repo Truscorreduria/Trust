@@ -12,6 +12,7 @@ import operator
 from django.db.models.fields.related_descriptors import ForwardManyToOneDescriptor
 from django.db.models.query_utils import DeferredAttribute
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db import IntegrityError
 
 
@@ -104,7 +105,7 @@ class Datatables(View):
 
     @classmethod
     def as_view(cls, **initkwars):
-        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
+        return staff_member_required(super().as_view(**initkwars), login_url="/cotizador/login/")
 
     def get_fields(self):
         field_names = []

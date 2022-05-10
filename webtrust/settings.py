@@ -73,23 +73,6 @@ INSTALLED_APPS = [
 
 ]
 
-EXTRA_MENUS = [
-    {'menu': 'Reportería', 'link': '#',
-     'options': [
-         {'link': '/reportes/reporte_cotizacion_auto', 'label': 'Cotizaciónes de Automovil',
-          'perm': 'cotizador.report_cotizaciones'},
-         {'link': '/reportes/reporte_debito_automatico', 'label': 'Débito Automático',
-          'perm': 'cotizador.report_debito_automatico'},
-         {'link': '/reportes/reporte_deduccion_nomina', 'label': 'Deducción de Nómina',
-          'perm': 'cotizador.reporte_deduccion_nomina'},
-         {'link': '/reportes/reporte_polizas_vencer', 'label': 'Póliza a vencer',
-          'perm': 'cotizador.reporte_polizas_vencer'},
-         {'link': '/reportes/reporte_renovaciones', 'label': 'Solicitud de renovación',
-          'perm': 'cotizador.reporte_renovaciones'},
-     ]
-     },
-]
-
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -161,7 +144,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'grappelli_extras.context_processors.applist',
-                'grappelli_extras.context_processors.extra_menus',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
                 'backend.context_processors.Entidades',
