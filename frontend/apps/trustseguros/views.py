@@ -1,5 +1,4 @@
 import pandas as pd
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
 from django.core.exceptions import FieldError
 from django.core.exceptions import MultipleObjectsReturned
@@ -1631,7 +1630,7 @@ class CargaOportunidades(View):
 
     @classmethod
     def as_view(cls, **initkwars):
-        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
+        return staff_member_required(super().as_view(**initkwars), login_url="/cotizador/login/")
 
     @staticmethod
     def apply_filter(queryset, form_data):
