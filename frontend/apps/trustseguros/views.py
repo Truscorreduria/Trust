@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 from easy_pdf.rendering import render_to_pdf_response, render_to_pdf
 from grappelli_extras.utils import Codec
-
+from django.contrib.admin.views.decorators import staff_member_required
 from adminlte.generics import Datatables
 from adminlte.utils import Codec
 from backend.signals import AddComment
@@ -570,7 +570,7 @@ def comentarios(request):
 #         raise Http404
 
 
-@login_required(login_url="/cotizador/login/")
+@staff_member_required(login_url="/cotizador/login/")
 def index(request):
     def get_ejecutivo(poliza):
         if poliza.ejecutivo:
@@ -671,7 +671,7 @@ def index(request):
     return render(request, 'adminlte/index.html', {'filter_form': DashboardFiltersForm})
 
 
-@login_required(login_url="/cotizador/login/")
+@staff_member_required(login_url="/cotizador/login/")
 def profile(request):
     return render(request, 'trustseguros/lte/profile.html', {
 
@@ -2676,7 +2676,7 @@ class ReportLab(View):
 
     @classmethod
     def as_view(cls, **initkwars):
-        return login_required(super().as_view(**initkwars), login_url="/cotizador/login/")
+        return staff_member_required(super().as_view(**initkwars), login_url="/cotizador/login/")
 
     def get(self, request, **kwargs):
         return render(request, 'trustseguros/lte/reportes.html', {
