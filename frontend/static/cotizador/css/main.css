@@ -757,6 +757,9 @@ section .products-list p {
 #links .link-siniestro {
   background-color: #cf403d;
 }
+#links .link-recomendados {
+  background-color: #673201;
+}
 #links .link-contactanos {
   background-color: #ec822b;
 }
@@ -962,7 +965,7 @@ footer .copyright {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffffc7;
+  background-color: rgba(255, 255, 255, 0.7803921569);
   z-index: 100;
 }
 #smartwizard #step-1 #form-step-1 {
@@ -972,6 +975,43 @@ footer .copyright {
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
   width: 38em !important;
+}
+
+#recomendados-section .recomendados-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 50px;
+}
+#recomendados-section .recomendados-list .recomendado-item {
+  width: 500px;
+  box-shadow: 4px 5px 11px 0px rgba(0, 0, 0, 0.41);
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-content: center;
+  align-items: center;
+  justify-content: space-evenly;
+}
+@media screen and (max-width: 500px) {
+  #recomendados-section .recomendados-list .recomendado-item {
+    width: 90%;
+  }
+}
+#recomendados-section .recomendados-list .recomendado-item figure {
+  width: 80%;
+  border-radius: 50%;
+  padding: 20px;
+  margin: 20px;
+  background-color: gray;
+}
+#recomendados-section .recomendados-list .recomendado-item figure img {
+  filter: invert(1);
+}
+#recomendados-section .recomendados-list .recomendado-item .info {
+  padding-left: 30px;
+}
+#recomendados-section .recomendados-list .recomendado-item .info p, #recomendados-section .recomendados-list .recomendado-item .info h3 {
+  font-weight: 900;
 }
 
 /*# sourceMappingURL=main.css.map */

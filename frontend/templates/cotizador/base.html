@@ -108,7 +108,17 @@
                         </a>
                     </li>
                     <li>
-                        {% url 'cotizador:referenciados' as url %}
+                        {% url 'cotizador:recomendados' as url %}
+                        <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
+                            <figure>
+                                <img src="{% static 'cotizador/images/siniestro.png' %}" alt="Mis Recomendados">
+                                <span>MIS RECOMENDADOS</span>
+                            </figure>
+                            <div class="menu-bar"></div>
+                        </a>
+                    </li>
+                    <li>
+                        {% url 'cotizador:siniestros' as url %}
                         <a href="{{ url }}" {% ifequal url request.path %}class="active"{% endifequal %}>
                             <figure>
                                 <img src="{% static 'cotizador/images/siniestro.png' %}" alt="Siniestros">
@@ -157,7 +167,7 @@
 
 {% block content %}
     <div id="content">
-
+        {% csrf_token %}
         <div id="section-container">
             {% block content-section %}
                 <section id="inicio-section">
@@ -182,6 +192,13 @@
                                 <span class="message">Ver lista de seguros</span>
                             </div>
                         </a>
+                        <a href="{% url 'cotizador:recomendados' %}" class="link-recomendados">
+                            <img src="{% static 'cotizador/images/inicio/siniestro.blanco.png' %}">
+                            <div class="link-description">
+                                <span class="action">RECOMENDADOS</span>
+                                <span class="message">Ver lista de recomendados</span>
+                            </div>
+                        </a>
                         <a href="{% url 'cotizador:contactanos' %}" class="link-contactanos">
                             <img src="{% static 'cotizador/images/inicio/contact.blanco.png' %}">
                             <div class="link-description">
@@ -189,7 +206,7 @@
                                 <span class="message">Comentanos tus dudas</span>
                             </div>
                         </a>
-                        <a href="{% url 'cotizador:referenciados' %}" class="link-siniestro">
+                        <a href="{% url 'cotizador:siniestros' %}" class="link-siniestro">
                             <img src="{% static 'cotizador/images/inicio/siniestro.blanco.png' %}">
                             <div class="link-description">
                                 <span class="action">SINIESTROS</span>
@@ -203,8 +220,8 @@
         </div>
 
         <aside>
-                <img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
-                     style="width: 100%">
+            <img src="{% cropped_thumbnail config "cropping" max_size="400x800" %}" alt=""
+                 style="width: 100%">
         </aside>
     </div>
 {% endblock %}
@@ -276,6 +293,7 @@
     <script src="{% static 'inputmask/dist/jquery.inputmask.bundle.js' %}"></script>
     <script src="{% static 'cotizador/js/main.js' %}"></script>
     <script src="{% static 'cotizador/js/mask.js' %}"></script>
+    <script src="{% static 'ajax/token.js' %}"></script>
 {% endblock %}
 
 {% block spinner %}

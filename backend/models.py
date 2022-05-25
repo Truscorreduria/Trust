@@ -2312,6 +2312,10 @@ class SolicitudRenovacion(Base):
         super().save(*args, **kwargs)
 
 
+class Recomendado(Persona):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+
 # endregion
 
 

@@ -25,6 +25,8 @@ from django.contrib.auth import update_session_auth_hash
 import secrets
 from django.template import Template, Context
 from django.contrib import messages
+from .forms import RecomendadoForm
+from utils.utils import send_email
 
 
 # region views cotizador
@@ -800,9 +802,46 @@ def change_password(request):
 
 @profile_required
 @login_required(login_url="/cotizador/login/")
-def referenciados(request):
-    return render(request, 'cotizador/referenciados.html', {
+def siniestros(request):
+    return render(request, 'cotizador/siniestros.html', {
         'config': get_config(request.user)
+    })
+
+
+@profile_required
+@login_required(login_url="/cotizador/login/")
+def recomendados(request):
+    config = get_config(request.user)
+    if request.method == 'POST':
+        if 'new' in request.POST:
+            html = render_to_string('cotizador/includes/form.html', {
+                'form': RecomendadoForm
+            }, request=request)
+            return JsonResponse({
+                'html': html
+            })
+        if 'save' in request.POST:
+            form = RecomendadoForm(request.POST)
+            if form.is_valid():
+                instance = form.save()
+                instance.user = request.user
+                instance.save()
+                send_email('MIS RECOMENDADOS – COTIZADOR DE EMPLEADOS.', config.email_trust,
+                           render_to_string('cotizador/email/recomendado.html', {
+                               'recomendado': instance
+                           }))
+                return JsonResponse({
+                    'result': 'success',
+                }, encoder=Codec)
+            return JsonResponse({
+                'result': 'error',
+                'html': render_to_string('cotizador/includes/form.html', {
+                    'form': form
+                }, request=request)
+            })
+    return render(request, 'cotizador/recomendados.html', {
+        'config': config,
+        'recomendados': Recomendado.objects.filter(user=request.user)
     })
 
 

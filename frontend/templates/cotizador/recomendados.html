@@ -1,0 +1,125 @@
+{% extends 'cotizador/base.html' %}
+
+{% load static %}
+
+{% block extra-style %}
+    <link rel="stylesheet" href="{% static 'sweetalert2/dist/sweetalert2.css' %}">
+    {{ block.super }}
+    <style type="text/css">
+        span.bold {
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content-section %}
+    <section id="recomendados-section">
+
+        <div class="title">
+            <figure>
+                <img src="{% static 'cotizador/images/inicio/siniestro.blanco.png' %}" alt="siniestros">
+            </figure>
+            <p>
+                Mis recomendados
+            </p>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <button type="button" class="btn btn-trust float-right" id="nuevo-recomendado">Recomendar</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body recomendados-list">
+                {% for recomendado in recomendados %}
+                    <div class="recomendado-item">
+                        <figure>
+                            <img src="{% static 'cotizador/images/svg/User.svg' %}" alt="">
+                        </figure>
+                        <div class="info">
+                            <h3>{{ recomendado.full_name }}</h3>
+                            {% if recomendado.email_personal %}
+                                <p>{{ recomendado.email_personal }}</p>
+                            {% endif %}
+                            <p>+505 {{ recomendado.celular }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </section>
+{% endblock %}
+
+
+{% block modales %}
+    <div class="modal fade" id="modal-recomendado" tabindex="-1" role="dialog"
+         aria-labelledby="modal-siniestro-auto-title" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modal-siniestro-auto-title">
+                        Recomienda un amigo
+                    </h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'sweetalert2/dist/sweetalert2.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#nuevo-recomendado').on('click', function () {
+                $.ajax('.', {
+                    method: "post",
+                    data: {new: 'new'},
+                    success: function (response) {
+                        $('#modal-recomendado .modal-body').empty().append(response.html);
+                        $('#modal-recomendado').modal('show');
+                    }
+                })
+            });
+            $(document).on('submit', '#recomendado-form', function (e) {
+                e.preventDefault();
+                const data = new FormData(this);
+                $.ajax('.', {
+                    method: 'post',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.result === 'success') {
+                            $('#modal-recomendado').modal('hide');
+                            swal({
+                                title: '<strong>Información enviada</strong>',
+                                html: '¡Gracias por compartir!. Uno de nuestros ascesores se pondrá en contacto con tu recomendado.',
+                                showCloseButton: true,
+                                showCancelButton: false,
+                                focusConfirm: false,
+                                confirmButtonText: 'Aceptar',
+                                imageUrl: "{% static 'cotizador/images/trusty/exito.png' %}"
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            $('#modal-recomendado .modal-body').empty().append(response.html);
+                        }
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

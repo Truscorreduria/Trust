@@ -41,6 +41,7 @@ body {
 .user-menu-mobil {
   width: 90vw;
   margin-top: 15px;
+
   ul {
     display: flex;
     justify-content: space-around;
@@ -51,18 +52,22 @@ body {
     -webkit-margin-start: 0;
     -webkit-margin-end: 0;
     -webkit-padding-start: 0;
+
     li {
       list-style: none;
       text-align: center;
       font-size: 8pt;
+
       a {
         text-transform: uppercase;
         color: $verde;
+
         img {
           height: 30px;
         }
       }
     }
+
     .user-menu-mobil-name {
       font-size: 1.4em;
     }
@@ -74,6 +79,7 @@ body {
   width: 90vw;
   display: flex;
   flex-direction: column;
+
   aside {
     display: none;
   }
@@ -95,10 +101,12 @@ section {
     margin-bottom: 20px;
     height: 85px;
     align-items: center;
+
     figure {
       grid-area: logo;
       width: 100%;
       text-align: right;
+
       img {
         height: 50px;
       }
@@ -119,16 +127,20 @@ section {
     background-color: $blanco;
     border-radius: 5px;
     box-shadow: $verde 12px 10px 31px 0;
+
     a {
       text-align: center;
       cursor: pointer;
+
       img {
         height: 100px;
       }
-      &:active{
+
+      &:active {
         transform: scale(.9);
       }
     }
+
     p {
       font-size: 2em;
       font-weight: 900;
@@ -170,6 +182,7 @@ section {
     background-color: $blanco;
     display: flex;
     justify-content: flex-end;
+
     button {
       position: relative;
       cursor: pointer;
@@ -183,6 +196,7 @@ section {
       color: $blanco;
       transition: background-color .3s;
       font-size: 1.2em;
+
       &:hover, &:focus {
         background-color: #27ae60;
       }
@@ -225,36 +239,46 @@ section {
     box-shadow: $verde 12px 10px 31px 0;
     max-width: 100%;
     overflow-x: auto;
+
     p {
       font-size: .8em;
     }
+
     .table-title {
       display: grid;
       grid-template: 1fr / .8fr .2fr;
+
       h2 {
         text-align: left;
         font-size: 1em;
       }
+
       img {
         height: 30px;
       }
     }
+
     table {
       width: 100%;
+
       thead tr {
         border-bottom: 1px solid black;
+
         th {
           text-align: left;
           font-size: .8em;
         }
       }
+
       tbody tr td {
         font-size: .7em;
         text-align: left;
+
         &.td-buttons {
           text-align: right;
         }
       }
+
       tbody tr td.descripcion {
         font-size: .7em;
       }
@@ -265,16 +289,20 @@ section {
     margin-top: 100px;
     display: flex;
     justify-content: space-evenly;
+
     a {
       text-align: center;
       cursor: pointer;
+
       img {
         height: 100px;
       }
     }
-    a:active{
+
+    a:active {
       transform: scale(.9);
     }
+
     p {
       font-size: 2em;
       font-weight: 900;
@@ -315,11 +343,13 @@ section {
   font-weight: 900;
   font-size: 1.5em;
   font-family: "Museo Sans", Arial, monospace;
+
   img {
     height: 45px;
     margin-right: 10%;
     margin-left: 10%;
   }
+
   a {
     display: flex;
     align-items: center;
@@ -327,41 +357,54 @@ section {
     min-height: 100px;
     border-radius: 5px;
     box-shadow: $verde 12px 10px 31px 0;
+
     .link-description {
       display: flex;
       flex-direction: column;
+
       .action {
         font-size: 1em;
       }
+
       .message {
         font-size: .8em;
       }
     }
   }
+
   a:hover {
     text-decoration: none;
   }
+
   a:active {
     transform: scale(.9);
   }
+
   .link {
     background-color: $blanco;
     color: $negro;
     border: 1px solid $verde;
   }
+
   .link-cotizar {
     background-color: $cotizar;
   }
+
   .link-mis-seguros {
     background-color: $misseguros;
   }
+
   .link-siniestro {
     background-color: $siniestro;
   }
+
+  .link-recomendados {
+    background-color: $recomendados;
+  }
+
   .link-contactanos {
     background-color: $contactanos;
   }
-
 }
 
 .nav-tabs .nav-link.active {
@@ -417,26 +460,32 @@ footer {
   display: flex;
   flex-direction: column;
   border-top: 1px solid white;
+
   .info {
     display: grid;
     grid-template: repeat(3, auto)/1fr;
     grid-template-areas: "nosotros" "contacto" "mapa";
+
     div {
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 0 5%;
     }
+
     &-nosotros {
       grid-area: nosotros;
     }
+
     &-contacto {
       grid-area: contacto;
     }
+
     &-mapa {
       grid-area: mapa;
     }
   }
+
   .copyright {
     border-top: 1px solid white;
     padding-top: 5px;
@@ -448,6 +497,7 @@ footer {
 .datos-vehiculo {
   font-size: .5em;
   width: 100%;
+
   #btn-cotizacion, #btn-cotizacion-basica {
     width: 100%;
     color: white;
@@ -546,6 +596,7 @@ footer {
 #clothing-nav a.nav-link {
   color: black !important;
   background-color: #cccccc !important;
+
   &.active {
     color: #007bff !important;
     background-color: #ffffff !important;
@@ -558,6 +609,7 @@ footer {
   background: url("../images/logo.gif") no-repeat center;
   background-size: 200px;
   min-height: 600px;
+
   .layer {
     position: absolute;
     top: 0;
@@ -567,6 +619,7 @@ footer {
     background-color: #ffffffc7;
     z-index: 100;
   }
+
   #form-step-1 {
     position: relative;
     z-index: 1000;
@@ -575,4 +628,46 @@ footer {
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
   width: 38em !important;
+}
+
+#recomendados-section {
+
+  .recomendados-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 50px;
+
+    .recomendado-item {
+      width: 500px;
+      @media screen and (max-width: 500px) {
+        width: 90%;
+      }
+      box-shadow: 4px 5px 11px 0px rgba(0, 0, 0, 0.41);
+      display: grid;
+      grid-template-columns: 30% 70%;
+      align-content: center;
+      align-items: center;
+      justify-content: space-evenly;
+
+      figure {
+        width: 80%;
+        border-radius: 50%;
+        padding: 20px;
+        margin: 20px;
+        background-color: gray;
+
+        img {
+          filter: invert(1);
+        }
+      }
+
+      .info {
+        padding-left: 30px;
+        p, h3 {
+          font-weight: 900;
+        }
+      }
+    }
+  }
 }
