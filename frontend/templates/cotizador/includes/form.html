@@ -8,11 +8,13 @@
             <div class="row">
                 <div class="col">{{ form.primer_nombre|as_crispy_field }}</div>
                 <div class="col">{{ form.segundo_nombre|as_crispy_field }}</div>
-                <div class="col">{{ form.email_personal|as_crispy_field }}</div>
             </div>
             <div class="row">
                 <div class="col">{{ form.apellido_paterno|as_crispy_field }}</div>
                 <div class="col">{{ form.apellido_materno|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col">{{ form.email_personal|as_crispy_field }}</div>
                 <div class="col">{{ form.celular|as_crispy_field }}</div>
             </div>
         </fieldset>
