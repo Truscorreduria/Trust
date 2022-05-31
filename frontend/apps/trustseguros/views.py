@@ -2641,8 +2641,14 @@ class AsistenciaTravelView(Datatables):
                 if response['success'] == 1:
                     instance = form.save(commit=False)
                     instance.codigo = response['events']['codigo']
-                    instance.valor = response['events']['valor']
-                    instance.ruta = response['events']['ruta']
+                    try:
+                        instance.valor = response['events']['valor']
+                    except:
+                        instance.valor = 0
+                    try:
+                        instance.ruta = response['events']['ruta']
+                    except:
+                        instance.ruta = 0
                     instance = self.pre_save(instance, request)
                     instance.save()
                     instance = self.pos_save(instance, request)
