@@ -62,7 +62,7 @@ def fetch_plan():
         travel_plan.normal_age = plan['normal_age']
         travel_plan.plan_local = plan['plan_local']
         travel_plan.modo_plan = plan['modo_plan']
-        travel_plan.combo = plan['combo']
+#        travel_plan.combo = plan['combo']
         travel_plan.is_active = True
         travel_plan.save()
 
