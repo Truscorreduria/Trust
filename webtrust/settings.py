@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!9*w%_k@mo0j&uvfu2f6k-l%g2h(h5&qd6uocwk-(s60)rjc&#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = ["*"]
@@ -316,7 +316,7 @@ TWILIO_SID = "AC0473e376e14a6e31a50034be50123e8e"
 TWILIO_TOKEN = "155e060c7d78c6298e714880cedf5041"
 TWILIO_PHONE_NUMBER = "+16067160455"
 
-TRAVEL_URL = 'http://146.148.79.211/banpro_dev/'
+TRAVEL_URL = 'https://clubdeprotecciontotal.com.mx/api/banpro/'
 TRAVEL_KEY = 'd2ec2eb4-8002-4957-9059-3018bd1b606e'
 
 SESSION_COOKIE_SECURE = True
