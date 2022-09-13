@@ -182,7 +182,7 @@ def polizas_por_vencer_60():
 
 
 def notificar_poliza_por_vencer_cliente_email(poliza, email):
-    email = "sistemas@trustcorreduria.com,xangcastle@gmail.com"
+    email = "sistemas@trustcorreduria.com,"
     grupo = poliza.grupo
     content = grupo.email_cliente.replace('[[', '{{').replace(']]', '}}')
     template = Template(content)
