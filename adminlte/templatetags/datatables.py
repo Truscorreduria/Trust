@@ -17,7 +17,7 @@ def datatables_label(form, fieldname):
 def datatables_field(form, fieldname):
     try:
         return form[fieldname] or "-"
-    except KeyError:
+    except (KeyError, TypeError):
         return ""
 
 
