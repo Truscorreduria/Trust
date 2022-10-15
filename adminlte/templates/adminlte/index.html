@@ -15,6 +15,13 @@
     {% block style %}
         <link rel="stylesheet" href="{% static 'adminlte/plugins/datatables-bs4/css/dataTables.bootstrap4.css' %}">
         <link rel="stylesheet" href="{% static 'adminlte/plugins/izimodal/css/iziModal.min.css' %}">
+        <link rel="stylesheet" href="{% static 'fullcalendar/dist/fullcalendar.min.css' %}">
+        <style type="text/css">
+            .fc-title {
+                white-space: normal;
+                color: white;
+            }
+        </style>
     {% endblock %}
 
     <script src="{% static 'adminlte/plugins/jquery/jquery.min.js' %}"></script>
@@ -97,6 +104,20 @@
             <div class="container-fluid">
                 {% block content %}
                     <div class="row">
+                        <div class="col" style="background-color: #fff">
+                            <div id='calendar'></div>
+                        </div>
+                        <div class="col" style="max-width: 600px">
+                            <div class="row">
+                                <canvas id="chartOportunidades" width="400" height="300"></canvas>
+                            </div>
+                            <div class="row">
+                                <canvas id="chartClientes" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% comment %}                    <div class="row">
                         <div class="col">
                             <div class="card">
                                 <div class="card-header">
@@ -352,7 +373,7 @@
                     </div>
                     <div class="izimodal" id="dashboard-modal">
                         <div class="modal-body"></div>
-                    </div>
+                    </div>{% endcomment %}
                 {% endblock %}
             </div>
         </section>
@@ -396,13 +417,121 @@
     <script src="{% static 'adminlte/plugins/datatables-bs4/js/dataTables.bootstrap4.js' %}"></script>
     <script src="{% static 'adminlte/plugins/izimodal/js/iziModal.min.js' %}"></script>
     <script src="{% static 'js-xlsx/dist/xlsx.full.min.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.crm.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.siniestros.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.cartera.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.vencimiento.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.canceladas.js' %}"></script>
-    <script src="{% static 'trustseguros/js/dashboard.js' %}"></script>
+    <script src="{% static 'moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'fullcalendar/dist/fullcalendar.js' %}"></script>
+    <script src="{% static 'fullcalendar/dist/locale/es.js' %}"></script>
+    <script src="{% static 'chart.js/dist/Chart.min.js' %}"></script>
+    {#    <script src="{% static 'trustseguros/js/dashboard.crm.js' %}"></script>#}
+    {#    <script src="{% static 'trustseguros/js/dashboard.siniestros.js' %}"></script>#}
+    {#    <script src="{% static 'trustseguros/js/dashboard.cartera.js' %}"></script>#}
+    {#    <script src="{% static 'trustseguros/js/dashboard.vencimiento.js' %}"></script>#}
+    {#    <script src="{% static 'trustseguros/js/dashboard.canceladas.js' %}"></script>#}
+    {#    <script src="{% static 'trustseguros/js/dashboard.js' %}"></script>#}
+    <script>
+        $(document).ready(function () {
+            $('#calendar').fullCalendar({
+                header: {center: 'month,agendaWeek'},
+                locale: 'es',
+                events: function (start, end, timezone, callback) {
+                    $.ajax("{% url 'ajax_getCollection' %}", {
+                        type: "POST",
+                        data: {
+                            app_label: 'backend', model: 'event',
+                            filters: `{'alert_date__gte': '${start.format('Y-MM-DD')}', 'alert_date__lte': '${end.format('Y-MM-DD')}', 'created_user': '{{ user.id }}'}`
+                        },
+                        success: function (response) {
+                            callback(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    })
+                }
+            });
 
+            $.ajax({
+                url: ".",
+                type: "POST",
+                data: {
+                    oportunidades: 'oportunidades',
+                },
+                success: function (response) {
+                    var context = document.getElementById("chartOportunidades").getContext('2d');
+                    new Chart(context, {
+                        type: 'bar',
+                        data: {
+                            labels: response.labels,
+                            datasets: [{
+                                label: 'Oportunidades',
+                                data: response.data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+            $.ajax({
+                url: ".",
+                type: "POST",
+                data: {
+                    clientes: 'clientes',
+                },
+                success: function (response) {
+                    var context = document.getElementById("chartClientes").getContext('2d');
+                    new Chart(context, {
+                        type: 'pie',
+                        data: {
+                            labels: response.labels,
+                            datasets: [{
+                                label: 'Clientes / Prospectos',
+                                data: response.data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                    });
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        })
+    </script>
 {% endblock %}
 
 </body>

@@ -676,6 +676,23 @@ def index(request):
                         fecha_cancelacion__lte=form.cleaned_data['hasta'],
                     )]
                 }
+        if 'oportunidades' in request.POST:
+            data = (Oportunity.objects
+                    .values('status')
+                    .annotate(total=models.Count('status'))
+                    .order_by()
+                    )
+            response = {
+                'labels': [OportunityStatus.get_label(x['status']) for x in data],
+                'data': [x['total'] for x in data],
+            }
+        if 'clientes' in request.POST:
+            clientes = Cliente.objects.all()
+            prospectos = Prospect.objects.all().exclude(cedula__in=clientes.values_list('cedula', flat=True))
+            response = {
+                'labels': ['Cliente', 'Prospecto'],
+                'data': [clientes.count(), prospectos.count()],
+            }
 
         return JsonResponse(response, encoder=Codec)
 

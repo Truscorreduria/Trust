@@ -386,6 +386,10 @@ class EstadoCliente:
     def choices(cls):
         return (cls.PROSPECTO, "Prospecto"), (cls.ACTIVO, "Activo"), (cls.INACTIVO, "Inactivo")
 
+    @classmethod
+    def get_label(cls, value):
+        return dict(cls.choices()).get(value, "Sin estado")
+
 
 class GeneroCliente:
     MASCULINO = 'M'
@@ -2100,6 +2104,26 @@ class Comentario(Base):
         return o
 
 
+class EventManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(alert_date__isnull=False)
+
+
+class Event(Comentario):
+    objects = models.Manager()
+
+    class Meta:
+        proxy = True
+        ordering = ['-alert_date']
+
+    def to_json(self):
+        return {
+            'id': self.id,
+            'date': self.alert_date,
+            'title': self.comentario,
+        }
+
+
 # endregion
 
 
@@ -2409,6 +2433,10 @@ class OportunityStatus:
         return (cls.PENDIENTE, "No gestionado"), (cls.COTIZAZDO, "Cotizado"), \
                (cls.CONTACTADO, "Contactado"), (cls.EMISION, "En emisión"), \
                (cls.VENDIDO, "Vendido"), (cls.NOVENDIDO, "No vendido")
+
+    @classmethod
+    def get_label(cls, value):
+        return dict(cls.choices()).get(value, "Sin estado")
 
 
 class OportunityCausal:

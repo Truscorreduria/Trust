@@ -247,6 +247,7 @@ BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 BOWER_INSTALLED_APPS = ['bootstrap#4.2.1',
                         'bootstrap-select#1.13.15',
                         'bootstrap-validator#0.11.9',
+                        'chart.js#2.6.0',
                         'd3#5.16.0',
                         'd3-arrays#2.5.0',
                         'datatables#1.10.19',
