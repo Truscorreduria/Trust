@@ -104,6 +104,10 @@ def comentarios(request):
             except:
                 type = None
                 original = None
+            try:
+                tag_seguimiento = TagSeguimiento.objects.get(id=request.POST.get('tag'))
+            except:
+                tag_seguimiento = None
             if original:
                 file = Comentario()
                 file.created_user = request.user
@@ -111,6 +115,8 @@ def comentarios(request):
                 file.comentario = request.POST.get('comentario')
                 file.type = content_type
                 file.key = original.id
+                if tag_seguimiento:
+                    file.tag = tag_seguimiento
                 file.save()
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
 

@@ -2076,6 +2076,7 @@ class Comentario(Base):
     comentario = models.CharField(max_length=500, null=True)
     type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     key = models.PositiveIntegerField(null=True)
+    tag = models.ForeignKey(TagSeguimiento, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.comentario
@@ -2090,6 +2091,7 @@ class Comentario(Base):
         o['updated'] = self.updated
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
+        o['tag'] = {'id': self.tag.id, 'name': self.tag.name}
         return o
 
 

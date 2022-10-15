@@ -657,18 +657,20 @@
 
             $(document).on('click', '#bitacorabtn-add-comment', function () {
                 let comment = $('#bitacora-comentario-input').val();
-                if (comment.length > 0) {
+                let tag = $('#bitacora-comentario-tag').val();
+                if (comment.length > 0 && tag.length > 0) {
                     $.ajax("{% url 'trustseguros:comentarios' %}", {
                         method: "post",
                         data: {
-                            new: 'new', comentario: comment,
+                            new: 'new', comentario: comment, tag: tag,
                             app_label: 'backend', model: 'oportunity',
                             pk: $('input[name="pk"]').val()
                         },
                         success: function (response) {
                             $('#bitacora-table').prepend(`
                                 <tr>
-                                    <td colspan="2">${response.instance.comentario}</td>
+                                    <td>${response.instance.comentario}</td>
+                                    <td>${response.instance.tag.name}</td>
                                     <td>${response.instance.created_user.username}</td>
                                     <td>${response.instance.created}</td>
                                 </tr>

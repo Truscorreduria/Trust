@@ -1,5 +1,5 @@
 from adminlte.widgets import *
-from backend.models import Cliente, Linea, OportunityStatus, Prospect
+from backend.models import Cliente, Linea, OportunityStatus, Prospect, TagSeguimiento
 from django.forms import TextInput
 
 
@@ -76,6 +76,17 @@ class BitacoraWidget(Widget):
 
     def format_value(self, value):
         return value
+
+
+class BitacoraOportunidadWidget(Widget):
+    template_name = "trustseguros/lte/widgets/bitacora.oportunidad.html"
+
+    def format_value(self, value):
+        return value
+
+    def build_attrs(self, base_attrs, extra_attrs=None):
+        extra_attrs = {'tags': TagSeguimiento.objects.filter(active=True)}
+        return super().build_attrs(base_attrs, extra_attrs)
 
 
 class PedirComentarioWidget(Widget):

@@ -884,7 +884,7 @@ class OportunityForm(forms.ModelForm):
                                           }
                                       ))
     drive = forms.Field(label="", required=False, widget=DriveWidget)
-    bitacora = forms.Field(label="", required=False, widget=BitacoraWidget)
+    bitacora = forms.Field(label="", required=False, widget=BitacoraOportunidadWidget)
 
     extra_data = forms.Field(label="", required=False, widget=JsonWidget)
 
