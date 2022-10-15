@@ -658,11 +658,15 @@
             $(document).on('click', '#bitacorabtn-add-comment', function () {
                 let comment = $('#bitacora-comentario-input').val();
                 let tag = $('#bitacora-comentario-tag').val();
-                if (comment.length > 0 && tag.length > 0) {
+                let alert = $('#bitacora-comentario-alert').val();
+                if (comment.length > 0 && tag.length > 0 && alert.length > 0) {
                     $.ajax("{% url 'trustseguros:comentarios' %}", {
                         method: "post",
                         data: {
-                            new: 'new', comentario: comment, tag: tag,
+                            new: 'new',
+                            comentario: comment,
+                            tag: tag,
+                            alert: alert,
                             app_label: 'backend', model: 'oportunity',
                             pk: $('input[name="pk"]').val()
                         },
@@ -673,9 +677,12 @@
                                     <td>${response.instance.tag.name}</td>
                                     <td>${response.instance.created_user.username}</td>
                                     <td>${response.instance.created}</td>
+                                    <td>${response.instance.alert_date}</td>
                                 </tr>
                             `);
                             $('#bitacora-comentario-input').val('')
+                            $('#bitacora-comentario-tag').val('');
+                            $('#bitacora-comentario-alert').val('');
                         }
                     })
                 }

@@ -108,6 +108,10 @@ def comentarios(request):
                 tag_seguimiento = TagSeguimiento.objects.get(id=request.POST.get('tag'))
             except:
                 tag_seguimiento = None
+            try:
+                alert_date = datetime.strptime(request.POST.get('alert'), '%d/%m/%Y')
+            except:
+                alert_date = None
             if original:
                 file = Comentario()
                 file.created_user = request.user
@@ -117,6 +121,8 @@ def comentarios(request):
                 file.key = original.id
                 if tag_seguimiento:
                     file.tag = tag_seguimiento
+                if alert_date:
+                    file.alert_date = alert_date
                 file.save()
             return JsonResponse({'instance': file.to_json()}, encoder=Codec)
 

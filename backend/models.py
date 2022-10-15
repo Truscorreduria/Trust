@@ -1,7 +1,7 @@
 import json
 from datetime import date
 from datetime import datetime, timedelta
-
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -2077,6 +2077,7 @@ class Comentario(Base):
     type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     key = models.PositiveIntegerField(null=True)
     tag = models.ForeignKey(TagSeguimiento, null=True, blank=True, on_delete=models.SET_NULL)
+    alert_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.comentario
@@ -2087,11 +2088,12 @@ class Comentario(Base):
 
     def to_json(self):
         o = super().to_json()
-        o['created'] = self.created
-        o['updated'] = self.updated
+        o['created'] = str(naturaltime(self.created))
+        o['updated'] = str(naturaltime(self.updated))
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
         o['tag'] = {'id': self.tag.id, 'name': self.tag.name}
+        o['alert_date'] = str(naturaltime(self.alert_date)) if self.alert_date else ''
         return o
 
 
