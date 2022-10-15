@@ -79,10 +79,13 @@ def full_name(user):
     return user.get_full_name()
 
 
+email_list = models.TextField(blank=True, null=True, verbose_name="Emails asociados")
+
 User.add_to_class('profile', get_profile)
 User.add_to_class('config', get_config)
 User.add_to_class('to_json', user_to_json)
 User.add_to_class('__str__', full_name)
+User.add_to_class('email_list', email_list)
 
 
 # region Aseguradora

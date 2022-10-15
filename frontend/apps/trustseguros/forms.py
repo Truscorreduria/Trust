@@ -809,11 +809,15 @@ class UserForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
+    email_list = forms.CharField(label="Lista de correos", widget=forms.Textarea(attrs={
+        'placeholder': 'Separados por coma',
+        'rows': '3',
+    }), required=False)
     lineas = forms.Field(label="líneas de negocio autorizadas", widget=LineaWidget, required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name')
+        fields = ('username', 'email', 'first_name', 'last_name', 'email_list')
 
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')

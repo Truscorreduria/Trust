@@ -243,7 +243,6 @@ class ordenTrabajoAdmin(admin.ModelAdmin):
     readonly_fields = ('tipo', 'user')
 
     def get_inline_instances(self, request, obj=None):
-        print(obj.tipo)
         if obj.tipo == 'CF':
             self.inlines = [beneficiarios_sepelio_tabular, ]
         if obj.tipo == 'AP':

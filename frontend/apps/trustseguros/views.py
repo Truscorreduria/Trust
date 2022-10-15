@@ -1756,6 +1756,7 @@ class Usuarios(Datatables):
             'fields': (
                 ('username', 'email'),
                 ('first_name', 'last_name'),
+                ('email_list',),
                 ('lineas',),
             )
         },
