@@ -99,7 +99,7 @@ def comentarios(request):
             file = None
             try:
                 content_type = ContentType.objects.get(app_label=request.POST.get('app_label'),
-                                               model=request.POST.get('model'))
+                                                       model=request.POST.get('model'))
                 original = content_type.get_object_for_this_type(pk=request.POST.get('pk'))
             except:
                 type = None
@@ -2860,22 +2860,53 @@ class ReporteCRM(ReportLab):
             else:
                 return None
 
-        return {
-            'Número': get_attr(instance, 'code'),
-            'Línea': get_attr(instance, 'linea.name'),
-            'Campaña': get_attr(instance, 'campain.name'),
-            'Prospecto': get_attr(instance, 'prospect.get_full_name'),
+        o = {
+            'Fecha de creación': get_attr(instance, 'created'),
+            'Número de póliza': get_attr(instance, 'no_poliza'),
+            'Grupo': get_attr(instance, 'grupo'),
             'Ramo': get_attr(instance, 'ramo.name'),
             'Sub Ramo': get_attr(instance, 'sub_ramo.name'),
+            'Usuario que registra': get_attr(instance, 'user_create'),
+            'Número de oportunidad': get_attr(instance, 'code'),
+            'Campaña': get_attr(instance, 'campain.name'),
+            'Línea': get_attr(instance, 'linea.name'),
             'Estado': instance.get_status_display(),
-            'Vendedor': get_attr(instance, 'vendedor.username'),
-            'Póliza': get_attr(instance, 'no_poliza'),
             'Aseguradora': get_attr(instance, 'aseguradora.name'),
             'Fecha de vencimiento': vencimiento(instance),
-            'Valor nuevo': get_attr(instance, 'valor_nuevo'),
-            'Monto exceso': get_attr(instance, 'valor_exceso'),
-            'Razón no concretada la venta': instance.get_causal_display(),
+            'Vendedor': get_attr(instance, 'vendedor'),
         }
+        if instance.prospect.tipo_cliente == TipoCliente.NATURAL:
+            o['Primer Nombre'] = instance.prospect.primer_nombre
+            o['Segundo Nombre'] = instance.prospect.segundo_nombre
+            o['Apellido Paterno'] = instance.prospect.apellido_paterno
+            o['Apellido Materno'] = instance.prospect.apellido_materno
+            o['Razón social'] = ''
+            o['Número de identificación'] = instance.prospect.cedula
+            o['Celular'] = instance.prospect.celular
+            o['Email personál'] = instance.prospect.email_personal
+        else:
+            o['Primer Nombre'] = ''
+            o['Segundo Nombre'] = ''
+            o['Apellido Paterno'] = ''
+            o['Apellido Materno'] = ''
+            o['Razón social'] = instance.prospect.razon_social
+            o['Número de identificación'] = instance.prospect.ruc
+            o['Celular'] = ''
+            o['Email personál'] = ''
+        bitacora = Comentario.bitacora(instance)
+        if bitacora.count() > 0:
+            bitacora = bitacora[0]
+        else:
+            bitacora = None
+        if bitacora:
+            o['Fecha de última actividad'] = bitacora.created.strftime('%d/%m/%Y')
+            o['Comentario'] = bitacora.comentario
+            o['Tipo de actividad'] = bitacora.tag
+        else:
+            o['Fecha de última actividad'] = ''
+            o['Comentario'] = ''
+            o['Tipo de actividad'] = ''
+        return o
 
 
 class ReporteCotizaciones(ReportLab):

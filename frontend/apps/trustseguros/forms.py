@@ -1418,13 +1418,13 @@ class ReportTramiteForm(forms.Form):
 
 
 class ReporteCrmForm(forms.Form):
-    linea = forms.ModelChoiceField(queryset=Linea.objects.all(), required=True)
+    linea = forms.ModelChoiceField(queryset=Linea.objects.all(), required=False)
     campain = forms.ModelChoiceField(queryset=Campain.objects.all(), required=False, label="Campaña")
     vendedor = forms.ModelChoiceField(queryset=User.objects.filter(is_staff=True), required=False)
     status = forms.ChoiceField(choices=(('', '---------'),) + OportunityStatus.choices(),
                                required=False, label="Estado")
-    # created__gte = forms.DateField(required=True, label="Desde")
-    # created__lte = forms.DateField(required=True, label="Hasta")
+    created__gte = forms.DateField(required=True, label="Desde")
+    created__lte = forms.DateField(required=True, label="Hasta")
 
 
 class ReporteSiniestroForm(forms.Form):
