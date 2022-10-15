@@ -809,7 +809,7 @@ class UserForm(forms.ModelForm):
             'readonly': 'readonly'
         }
     ))
-    email_list = forms.CharField(label="Lista de correos", widget=forms.Textarea(attrs={
+    email_list = forms.CharField(label="Correos asociados", widget=forms.Textarea(attrs={
         'placeholder': 'Separados por coma',
         'rows': '3',
     }), required=False)

@@ -336,3 +336,15 @@ class TarifaAdmin(ImportExportModelAdmin):
 class ProspectAdmin(admin.ModelAdmin):
     search_fields = ('cedula',)
     list_display = ('cedula', 'nombre')
+
+
+class AsistenciaPassengers(admin.TabularInline):
+    model = PassengersTravel
+    extra = 0
+    classes = ('grp-collapse', 'grp-open')
+
+
+@admin.register(AsistenciaTravel)
+class AsistenciaTravelAdmin(admin.ModelAdmin):
+    list_display = ('codigo', 'fecha_emision', 'titular', 'plan')
+    inlines = [AsistenciaPassengers, ]
