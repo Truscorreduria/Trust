@@ -16,6 +16,7 @@ urlpatterns = [
     path('grupos/', Grupos.as_view(), name="grupos"),
     path('ramos/', Ramos.as_view(), name="ramos"),
     path('subramos/', SubRamos.as_view(), name="subramos"),
+    path('seguimientos/', Seguimientos.as_view(), name="seguimientos"),
     path('polizas/', Polizas.as_view(), name="polizas"),
     path('tramites/', Tramites.as_view(), name="tramites"),
     path('configcotizador/', ConfiguracionCotizador.as_view(), name="configcotizador"),

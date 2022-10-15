@@ -314,6 +314,16 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if perms.backend.trust_catalogos_seguimiento %}
+                        <li class="nav-item">
+                            <a href="{% url 'trustseguros:seguimientos' %}" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Seguimientos
+                                </p>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </li>
         {% endif %}

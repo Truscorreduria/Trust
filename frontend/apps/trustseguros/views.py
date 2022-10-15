@@ -1098,6 +1098,13 @@ class TiposDocumentos(Datatables):
     fields = ('name',)
 
 
+class Seguimientos(Datatables):
+    model = TagSeguimiento
+    list_display = ('name', 'active')
+    search_fields = ('name',)
+    fields = ('name', 'active')
+
+
 # endregion
 
 

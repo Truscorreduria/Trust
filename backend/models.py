@@ -717,6 +717,20 @@ class SubRamo(Base):
         return Cobertura.objects.filter(sub_ramo=self, en_cotizacion=ActivoChoices.ACTIVO)
 
 
+class TagSeguimiento(Base):
+    name = models.CharField(max_length=65, verbose_name="nombre")
+    color = models.CharField(max_length=65, verbose_name="color", default="#000000", null=True, blank=True)
+    icon = models.CharField(max_length=65, verbose_name="icono", default="fa fa-tag", null=True, blank=True)
+    active = models.BooleanField(default=True, verbose_name="activo")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "tag de seguimiento"
+        verbose_name_plural = "tags de seguimiento"
+
+
 class CampoAdicional(Base):
     sub_ramo = models.ForeignKey(SubRamo, on_delete=models.CASCADE, related_name="datos_tecnicos",
                                  null=True)
@@ -1072,6 +1086,7 @@ class Poliza(BasePoliza):
             ("trust_catalogos_grupo", "Catálogos Grupos(trustseguros)"),
             ("trust_catalogos_ramo", "Catálogos Ramos(trustseguros)"),
             ("trust_catalogos_subramo", "Catálogos Sub Ramos(trustseguros)"),
+            ("trust_catalogos_seguimiento", "Catálogos Seguimiento(trustseguros)"),
             ("trust_cotizador_empresa", "Cotizador Empresas Afiliadas(trustseguros)"),
             ("trust_cotizador_marca", "Cotizador Marcas con Recargo(trustseguros)"),
             ("trust_usuarios_usuario", "Administrar Usuarios(trustseguros)"),
