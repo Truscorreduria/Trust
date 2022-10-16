@@ -1,0 +1,33 @@
+{% extends 'admin/base_site.html' %}
+
+
+{% block content %}
+        <header id="grp-content-title">
+            <h1>Comentarios: {{ options.verbose_name|capfirst }} {{ instance }}</h1>
+        </header>
+
+        <div id="grp-content-container">
+            <div class="g-d-c grp-object-history">
+                <table id="grp-change-history" class="grp-table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Fecha/hora</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Comentario</th>
+                        <th scope="col">Alerta</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for comment in queryset %}
+                        <tr>
+                            <td>{{ comment.created }}</td>
+                            <td>{{ comment.created_user }}</td>
+                            <td>{{ comment.comentario }}</td>
+                            <td>{{ comment.alert_date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endblock %}

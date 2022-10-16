@@ -7,6 +7,10 @@ from .forms import MarcaRecargoForm, InvitationForm, PolizaForm
 from django.shortcuts import render
 
 
+class BitacoraMixin(object):
+    change_form_template = 'backend/bitacora/change_form.html'
+
+
 @admin.register(Aseguradora)
 class AseguradoraAdmin(ImageCroppingMixin, entidad_admin):
     fields = (('name', 'active'), ('emision', 'phone'), 'address', 'logo', 'cropping')
@@ -304,9 +308,11 @@ class OportunityRows(admin.TabularInline):
 
 
 @admin.register(Oportunity)
-class OportunityAdmin(admin.ModelAdmin):
+class OportunityAdmin(BitacoraMixin, admin.ModelAdmin):
     date_hierarchy = 'created'
+    search_fields = ('code',)
     list_display = (
+        'code',
         'campain',
         'linea',
         'prospect',
