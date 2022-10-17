@@ -52,8 +52,12 @@
 
             const export_to_excel = function (data, filename) {
                 const book = XLSX.utils.book_new();
-                const sheet = XLSX.utils.json_to_sheet(data);
+                const sheet = XLSX.utils.json_to_sheet(data.raw_data);
                 XLSX.utils.book_append_sheet(book, sheet, event.target.value);
+                if (data.extra_data){
+                    const extra_sheet = XLSX.utils.json_to_sheet(data.extra_data);
+                    XLSX.utils.book_append_sheet(book, extra_sheet, 'Extra');
+                }
                 XLSX.writeFile(book, filename);
             };
             const get_columns = function (data) {
@@ -130,7 +134,7 @@
                             $('.btn-download')
                                 .off('click')
                                 .on('click', () => {
-                                    export_to_excel(response.raw_data, _this.data('filename'));
+                                    export_to_excel(response, _this.data('filename'));
                                 })
 
                         } else {

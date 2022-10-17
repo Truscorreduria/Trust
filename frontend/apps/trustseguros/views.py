@@ -2746,15 +2746,24 @@ class ReportLab(View):
         """
         return instance.to_json()
 
+    def get_raw_data(self, form_data):
+        raw_data = []
+        queryset = self.model.objects.all()
+        queryset = self.apply_filter(queryset, form_data)
+        for instance in queryset:
+            raw_data.append(self.to_json(instance))
+        return raw_data, queryset
+
     def post(self, request, **kwargs):
         form = self.form(request.POST)
-        raw_data = []
+        data = {}
+        queryset = None
         if form.is_valid():
-            queryset = self.model.objects.all()
-            queryset = self.apply_filter(queryset, form.cleaned_data)
-            for instance in queryset:
-                raw_data.append(self.to_json(instance))
-        return JsonResponse({'raw_data': raw_data}, encoder=Codec)
+            raw_data, queryset = self.get_raw_data(form.cleaned_data)
+            data['raw_data'] = raw_data
+        if hasattr(self, 'get_extra_data'):
+            data.update(self.get_extra_data(form.cleaned_data, queryset))
+        return JsonResponse(data, encoder=Codec)
 
 
 class ReportePoliza(ReportLab):
@@ -2876,8 +2885,8 @@ class ReporteCRM(ReportLab):
                 return i.fecha_vence.strftime('%d/%m/%Y')
             else:
                 return None
-
         o = {
+            'Key': instance.id,
             'Fecha de creación': get_attr(instance, 'created'),
             'Número de póliza': get_attr(instance, 'no_poliza'),
             'Grupo': get_attr(instance, 'grupo'),
@@ -2910,20 +2919,21 @@ class ReporteCRM(ReportLab):
             o['Número de identificación'] = instance.prospect.ruc
             o['Celular'] = ''
             o['Email personál'] = ''
-        bitacora = Comentario.bitacora(instance)
-        if bitacora.count() > 0:
-            bitacora = bitacora[0]
-        else:
-            bitacora = None
-        if bitacora:
-            o['Fecha de última actividad'] = bitacora.created.strftime('%d/%m/%Y')
-            o['Comentario'] = bitacora.comentario
-            o['Tipo de actividad'] = bitacora.tag
-        else:
-            o['Fecha de última actividad'] = ''
-            o['Comentario'] = ''
-            o['Tipo de actividad'] = ''
         return o
+
+    def comentario_to_json(self, instance):
+        return {
+            'key': instance.key,
+            'comentario': instance.comentario,
+            'seguimiento': instance.tag.name if instance.tag else '',
+            'fecha': instance.created,
+            'usuario': instance.created_user.username,
+        }
+
+    def get_extra_data(self, form_data, queryset):
+        content_type = ContentType.objects.get_for_model(Oportunity)
+        comentarios = Comentario.objects.filter(type=content_type, key__in=queryset.values_list('id', flat=True))
+        return {'extra_data': [self.comentario_to_json(c) for c in comentarios]}
 
 
 class ReporteCotizaciones(ReportLab):

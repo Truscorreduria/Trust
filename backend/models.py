@@ -2099,7 +2099,7 @@ class Comentario(Base):
         o['updated'] = str(naturaltime(self.updated))
         o['created_user'] = {'id': self.created_user.id, 'username': self.created_user.username}
         o['updated_user'] = {'id': self.updated_user.id, 'username': self.updated_user.username}
-        o['tag'] = {'id': self.tag.id, 'name': self.tag.name}
+        o['tag'] = {'id': self.tag.id, 'name': self.tag.name} if self.tag else {}
         o['alert_date'] = str(naturaltime(self.alert_date)) if self.alert_date else ''
         return o
 
