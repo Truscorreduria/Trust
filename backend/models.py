@@ -1503,13 +1503,14 @@ class SubTipoTramite:
     DISMINUCION_SUMA = 5
     CANCELACION = 6
     MODIFICACION = 7
+    NUEVO = 8
 
     @classmethod
     def choices(cls):
         return (cls.INCLUSION, "Inclusión"), (cls.EXCLUSION, "Exclusión"), \
                (cls.RENOVACION, "Renovación"), (cls.AUMENTO_SUMA, "Aumento de Suma"), \
                (cls.DISMINUCION_SUMA, "Disminución de suma"), (cls.CANCELACION, "Cancelación"), \
-               (cls.MODIFICACION, "Modificación")
+               (cls.MODIFICACION, "Modificación"), (cls.NUEVO, 'Nuevo')
 
 
 class EstadoTramite:
