@@ -1510,7 +1510,7 @@ class SubTipoTramite:
         return (cls.INCLUSION, "Inclusión"), (cls.EXCLUSION, "Exclusión"), \
                (cls.RENOVACION, "Renovación"), (cls.AUMENTO_SUMA, "Aumento de Suma"), \
                (cls.DISMINUCION_SUMA, "Disminución de suma"), (cls.CANCELACION, "Cancelación"), \
-               (cls.MODIFICACION, "Modificación"), (cls.NUEVO, 'Nuevo')
+               (cls.MODIFICACION, "Modificación"), (cls.NUEVO, 'Liquidacion')
 
 
 class EstadoTramite:
