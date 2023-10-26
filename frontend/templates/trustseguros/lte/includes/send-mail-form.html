@@ -1,6 +1,7 @@
 {% load static crispy_forms_filters %}
 <form action="." method="post" class="send-mail-form">
     {% csrf_token %}
+
     <input type="hidden" name="id" value="{{ instance.id }}">
 
     <table style="width: 100%">
@@ -27,7 +28,29 @@
     </table>
     <div class="row">
         <div class="col">
-            <textarea name="{{ form.contenido.name }}" cols="30" rows="10" class="htmleditor"></textarea>
+            <textarea name="{{ form.contenido.name }}" cols="30" rows="10" class="htmleditor">
+                <p><strong>Buenos días estimado cliente.</strong></p>
+
+                <p>Espero que se encuentre bien, hemos recibido la siguiente notificación de siniestro.</p>
+
+                <p>Le detallo parte de los requisitos que se deben completar para la apertura formal del reclamo:</p>
+
+                <ol>
+                    <li>Aviso de accidente debidamente firmado y sellado (formato adjunto)</li>
+                    <li>Cédula conductor</li>
+                    <li>Licencia conductor</li>
+                    <li>Circulación</li>
+                    <li>RUC</li>
+                    <li>Certificado de tránsito o denuncia policial, en caso de no contar con este documento, debe elaborar una carta explicando los motivos por los cuales no se notificó a la institución.</li>
+                    <li>Presupuestos de repuestos</li>
+                    <li>Presupuestos de mano de obra</li>
+                    <li>Presentar el vehículo a las oficinas de Seguros America para inspección.</li>
+                </ol>
+
+                <p>Por favor, remitir la documentación en original a nuestras oficinas, para dar la formal apertura del reclamo ante la aseguradora.</p>
+
+                <p>Cualquier consulta a la orden.</p>
+            </textarea>
         </div>
     </div>
 
