@@ -67,17 +67,17 @@
             <td><b>Trámite:</b> {{ tramite.code }}</td>
         </tr>
     </table>
-
-    <p>Por este media hago formal entrega de adenda por {{ tramite.get_sub_tipo_tramite_display }}. A continuación,
-        detallo lo entregado:</p>
-
-    <table style="border: 1px solid black; border-collapse: collapse;">
-        <tr>
-            <td style="padding-top: 3px; padding-left: 3px"><b>Recibo de prima/monto</b></td>
-            <td style="padding-top: 3px; padding-left: 3px"><b>{{ tramite.no_recibo }}</b></td>
-            <td style="padding-top: 3px; padding-left: 3px"><b>${{ tramite.total }}</b></td>
-        </tr>
-    </table>
+    {% if tramite.no_recibo %}
+        <p>Por este media hago formal entrega de adenda por {{ tramite.get_sub_tipo_tramite_display }}. A continuación,
+            detallo lo entregado:</p>
+        <table style="border: 1px solid black; border-collapse: collapse;">
+            <tr>
+                <td style="padding-top: 3px; padding-left: 3px"><b>Recibo de prima/monto</b></td>
+                <td style="padding-top: 3px; padding-left: 3px"><b>{{ tramite.no_recibo }}</b></td>
+                <td style="padding-top: 3px; padding-left: 3px"><b>${{ tramite.total }}</b></td>
+            </tr>
+        </table>
+    {% endif %}
     <p>{{ tramite.descripcion }}</p>
 
     <p>Sin otro particular.</p>
