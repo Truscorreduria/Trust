@@ -1541,7 +1541,7 @@ class Tramite(Base):
         (3, 'Alta'),
     ), default=2, null=True, blank=True)
     vence = models.DateTimeField(null=True, blank=True)
-    estado = models.CharField(max_length=55, null=True, blank=True, default="Pendiente",
+    estado = models.CharField(max_length=55, null=True, blank=True, default=EstadoTramite.ENPROCESO,
                               choices=EstadoTramite.choices())
     code = models.CharField(max_length=10, null=True, blank=True, verbose_name="número")
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='ticketes',
