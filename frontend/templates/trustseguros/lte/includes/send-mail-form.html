@@ -55,10 +55,16 @@
     </div>
 
     <div class="send-email-attachment">
-        <figure class="email-attachment">
-            <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
-            <figcaption>Documento</figcaption>
-        </figure>
+        <div class="send-email-attachment-item">
+            <i class="fa fa-window-close send-email-attachment-delete"></i>
+            <figure class="email-attachment">
+                <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
+                <figcaption>Documento</figcaption>
+            </figure>
+        </div>
+        <div class="send-email-attachment-item send-email-attachment-new">
+            <i class="fa fa-plus"></i>
+        </div>
     </div>
 
     <div class="send-email-buttons" style="display: flex; justify-content: flex-end">

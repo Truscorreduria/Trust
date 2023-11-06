@@ -31,17 +31,44 @@
         .send-email-attachment {
             display: flex;
             padding: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .send-email-attachment figure {
+        .send-email-attachment .send-email-attachment-new {
+            background-color: #0c0c0c44;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-width: 100px;
             cursor: pointer;
+            transform: scale(.90);
+            font-size: 25pt;
         }
 
-        .send-email-attachment figure:active {
+        .send-email-attachment .send-email-attachment-new:hover {
+            transform: scale(1);
+        }
+
+        .send-email-attachment .send-email-attachment-item .send-email-attachment-delete {
+            cursor: pointer;
+            margin: 0 5px;
+            display: flex;
+            justify-content: flex-end;
+            transform: translate(8px, 10px);
+        }
+
+        .send-email-attachment .send-email-attachment-item figure {
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .send-email-attachment .send-email-attachment-item figure:active {
             transform: scale(.95);
         }
 
-        .send-email-attachment img {
+        .send-email-attachment .send-email-attachment-item img {
             width: 85px;
         }
     </style>
