@@ -1500,6 +1500,11 @@ class EmailForm(forms.Form):
                                         'class': 'htmleditor'
                                     }
                                 ))
+    adjuntos = forms.FileField(required=False,widget=forms.ClearableFileInput(
+        attrs={
+            'multiple': 'multiple'
+        }
+    ))
 
 
 class PassengersTravelForm(forms.ModelForm):

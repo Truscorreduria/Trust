@@ -1,10 +1,19 @@
 {% extends 'adminlte/datatables.html' %}
-
+{% load static %}
 
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
         $(document).ready(function () {
+            const icon = "{% static 'trustseguros/lte/img/PDF_file_icon.png' %}";
+            const documentTemplate = docName => `<div class="send-email-attachment-item send-email-attachment-file">
+                <i class="fa fa-window-close send-email-attachment-delete"></i>
+                <figure class="email-attachment">
+                    <img src="${icon}">
+                    <figcaption>${docName}</figcaption>
+                </figure>
+            </div>`;
+
             const imprimir_remision = function () {
                 const _this = $(this);
                 $.ajax('.', {
@@ -39,6 +48,24 @@
                         .iziModal('open');
                 })
             });
+            $(document).on('click', '.send-email-attachment-new', function (){
+                const $this = $(this);
+                const $parent = $this.closest('.send-email-attachment');
+                const filesInput = $parent.find('.send-email-attachment-input');
+                $(filesInput).trigger('click');
+            });
+            $(document).on('click', '.send-email-attachment-delete', function (){
+                $(this).parent().remove();
+            });
+            $(document).on('change', '.send-email-attachment-input', function (){
+                const $this = $(this);
+                const files = $this[0].files;
+                const $parent = $this.closest('.send-email-attachment');
+                const filesContainer = $parent.find('.send-email-attachment-files-container').empty();
+                $.each(files, function (i, file) {
+                    $(filesContainer).append(documentTemplate(file.name));
+                });
+            });
             $(document).on('submit', '.send-mail-form', function (e) {
                 e.preventDefault();
                 const data = new FormData(this);
@@ -51,7 +78,7 @@
                     success: function (response) {
                         console.log(response)
                     },
-                    error: function(response){
+                    error: function (response) {
                         console.log(response)
                     }
                 })

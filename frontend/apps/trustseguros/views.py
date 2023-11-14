@@ -1544,7 +1544,19 @@ class Tramites(Datatables):
             instance = self.get_instance(request)
             form = EmailForm(request.POST)
             if form.is_valid():
-                pass
+                de = form.cleaned_data['de']
+                para = form.cleaned_data['para']
+                asunto = form.cleaned_data['asunto']
+                contenido = form.cleaned_data['contenido']
+                adjuntos = request.FILES.getlist('adjuntos')
+                send_email(
+                    subject=asunto,
+                    receipt=para,
+                    html=contenido,
+                    files=adjuntos,
+                    fr=de,
+                )
+
             else:
                 html = render_to_string('trustseguros/lte/includes/send-mail-form.html', {
                     'instance': instance,

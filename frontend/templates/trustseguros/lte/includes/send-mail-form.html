@@ -54,18 +54,22 @@
         </div>
     </div>
 
+
     <div class="send-email-attachment">
-        <div class="send-email-attachment-item">
+        <input id="id_attachment" type="file" name="adjuntos" multiple class="send-email-attachment-input">
+{% comment %}        <div class="send-email-attachment-item">
             <i class="fa fa-window-close send-email-attachment-delete"></i>
             <figure class="email-attachment">
                 <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
                 <figcaption>Documento</figcaption>
             </figure>
-        </div>
+        </div>{% endcomment %}
+        <div class="send-email-attachment-files-container"></div>
         <div class="send-email-attachment-item send-email-attachment-new">
             <i class="fa fa-plus"></i>
         </div>
     </div>
+
 
     <div class="send-email-buttons" style="display: flex; justify-content: flex-end">
         <button type="submit" class="btn btn-primary btn-trust btn-send-mail">
