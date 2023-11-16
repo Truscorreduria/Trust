@@ -175,7 +175,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'webtrust',
         'USER': 'postgres',
-        'PASSWORD': '141115',
+        'PASSWORD': 'ABC123#$',
         'HOST': 'localhost',
         'PORT': '5432'
     }
