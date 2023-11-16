@@ -39,11 +39,11 @@
         <thead>
         <tr>
             <th style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Compañia</b></th>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <th style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
-                    <img src="https://www.trustcorreduria.com{{ oferta.aseguradora.logo.url }}" width="65">
-                </th>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <th style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
+            <img src="https://www.trustcorreduria.com{{ oferta.aseguradora.logo.url }}" width="65">
+            </th>
+        {% endfor %}
         </tr>
         </thead>
         <tbody>
@@ -51,41 +51,41 @@
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Suma asegurada</b>
             </td>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
-                    U$ {{ oferta.suma_asegurada|intcomma }}</td>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+            U$ {{ oferta.suma_asegurada|intcomma }}</td>
+        {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center"><b>Deducible</b></td>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
-                    U$ {{ oferta.deducible|intcomma }}</td>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center">
+            U$ {{ oferta.deducible|intcomma }}</td>
+        {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro robo</b>
             </td>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
-                    %
-                </td>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_robo }}
+            %
+            </td>
+        {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Coaseguro daños</b></td>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
-                    %
-                </td>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">{{ oferta.coaseguro_dano }}
+            %
+            </td>
+        {% endfor %}
         </tr>
         <tr>
             <td style="border: 1px solid darkgreen; padding: 4px 0 15px 15px; text-align: center"><b>Prima total</b></td>
-            {% for oferta in oportunity.ofertas_cotizacion %}
-                <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
-                    U$ {{ oferta.total|intcomma }}</td>
-            {% endfor %}
+        {% for oferta in oportunity.ofertas_cotizacion %}
+            <td style="border: 1px solid darkgreen; padding: 4px 0 0 0; text-align: center">
+            U$ {{ oferta.total|intcomma }}</td>
+        {% endfor %}
         </tr>
         </tbody>
     </table>
@@ -142,10 +142,13 @@
     </textarea>
 
     <div class="send-email-attachment">
-        <figure class="email-attachment">
-            <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
-            <figcaption>Cotización</figcaption>
-        </figure>
+        <input id="id_attachment" type="file" name="adjuntos" multiple class="send-email-attachment-input">
+        <div class="send-email-attachment-item">
+            <figure class="email-attachment">
+                <img src="{% static 'trustseguros/lte/img/PDF_file_icon.png' %}">
+                <figcaption>Cotización</figcaption>
+            </figure>
+        </div>
     </div>
 
     <div class="send-email-buttons" style="display: flex; justify-content: flex-end">
