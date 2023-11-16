@@ -1556,7 +1556,7 @@ class Tramites(Datatables):
                     files=adjuntos,
                     fr=de,
                 )
-
+                return JsonResponse({})
             else:
                 html = render_to_string('trustseguros/lte/includes/send-mail-form.html', {
                     'instance': instance,
@@ -1966,7 +1966,7 @@ class Oportunidades(Datatables):
                                            'oportunity': Oportunity.objects.get(id=request.POST.get('oportunity_id'))
                                        })
 
-            files.append(("attachment", ("Oferta.pdf", cotizacion)))
+            files.append(cotizacion)
 
             send_email(request.POST.get('asunto'), request.POST.get('para'),
                        html=request.POST.get('email_content'), files=files, fr=request.POST.get('de'))
@@ -2039,12 +2039,12 @@ class Oportunidades(Datatables):
                             tarifa = Tarifa.objects.get(aseguradora=aseguradora, marca=cotizacion.marca,
                                                         modelo=cotizacion.modelo)
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_dano, cotizacion.deducible, \
-                            cotizacion.exceso = tarifa.calcular_tarifa()
+                                cotizacion.coaseguro_dano, cotizacion.deducible, \
+                                cotizacion.exceso = tarifa.calcular_tarifa()
                         except ObjectDoesNotExist:
                             cotizacion.tarifa, cotizacion.coaseguro_robo, \
-                            cotizacion.coaseguro_dano, cotizacion.deducible, \
-                            cotizacion.exceso = aseguradora.calcular_tarifa()
+                                cotizacion.coaseguro_dano, cotizacion.deducible, \
+                                cotizacion.exceso = aseguradora.calcular_tarifa()
                         cotizacion.emision = aseguradora.emision
                         cotizacion.suma_asegurada = cotizacion.get_suma_asegurada
                         cotizacion.prima = cotizacion.get_prima
@@ -2897,6 +2897,7 @@ class ReporteCRM(ReportLab):
                 return i.fecha_vence.strftime('%d/%m/%Y')
             else:
                 return None
+
         o = {
             'Key': instance.id,
             'Fecha de creación': get_attr(instance, 'created'),

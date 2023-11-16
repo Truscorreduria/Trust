@@ -1,6 +1,7 @@
 from twilio.rest import Client
 from django.conf import settings
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
 
 client = Client(settings.TWILIO_SID, settings.TWILIO_TOKEN)
 
@@ -11,17 +12,19 @@ def dos_decimales(number):
 
 def send_email(subject, receipt, html, files=None, fr=None):
     from_email = fr or 'info@truscorreduria.com'
+    text_version = strip_tags(html)
 
-    email = EmailMessage(
+    email = EmailMultiAlternatives(
         subject=subject,
-        body=html,
+        body=text_version,
         from_email="Trust Corredurida de Seguros <%s>" % from_email,
         to=[receipt],
     )
+    email.attach_alternative(html, "text/html")
 
-    if files and len(files) > 0:
+    if files:
         for file in files:
-            email.attach_file(file)
+            email.attach(file.name, file.read(), file.content_type)
     return email.send()
 
 
